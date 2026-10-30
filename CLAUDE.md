@@ -39,3 +39,6 @@ docker compose build worker && docker compose up -d worker relay   # after chang
 - New failure types go through `errors.classify`: transient is retried, permanent is dead-lettered. Error
   classes must stay picklable (Celery pickles exceptions).
 - The worker image doesn't reload code: rebuild it after changing anything under `apps/api/src`.
+- All model calls go through `extraction._chat`, which budgets the prompt first: Ollama truncates over-long
+  prompts silently and `prompt_eval_count` is the only way to notice afterwards (ADR 0010).
+- Rendering pages uses PDFium via pdfplumber, which isn't thread-safe: keep it behind `_render_lock`.

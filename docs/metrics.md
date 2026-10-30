@@ -117,6 +117,33 @@ HTTP 503, two workers with one killed after 110 uploads. Not a speed benchmark (
 | Uploading 203 files (21 requests) | 8.7 s |
 | Whole run, including waiting out the killed worker's leases | 120.9 s |
 
+## Slice 3b: per-page extraction (real model)
+
+`scripts/check_scenarios.py` on 2026-10-31, gemma4:12b, one worker, one model call at a time. All 36 header fields
+across the four invoices matched their gold files.
+
+| Scenario | Outcome | Model calls | Wall-clock |
+|---|---|---|---|
+| 3 pages, dense fine print in the middle | `partially_extracted`; page 2 failed `prompt_too_long` (no model call) | 2 text pages: 30.7 s, 30.6 s | 66 s |
+| 3 pages, blank page in the middle | `extracted`; page 2 `blank` (rendered, no model call) | 2 text pages: 31.6 s, 23.5 s | 62 s |
+| 1 page, total misprinted by 10,000 yen | `exception` after one repair call | text page 34.0 s + repair 38.6 s | 74 s |
+| 1 page, scanned and rotated 2° | `extracted` from the image | image page 34.2 s | 41 s |
+
+| Per call (warm) | Calls | Range |
+|---|---|---|
+| Text page | 5 | 23.5–34.0 s |
+| Image page (scan) | 1 | 34.2 s (a standalone warm probe measured 29.7 s, 21.4 s of it encoding the image) |
+| Repair call (whole invoice) | 1 | 38.6 s |
+
+What this shows:
+
+- **Cost scales with pages, not invoices.** A 3-page invoice with two readable pages costs two model calls
+  (~55–61 s); a blank or over-long page costs none.
+- **A repair roughly doubles an invoice's model time**, which is why it's limited to one call and skipped when a
+  page is already missing.
+- **Scans cost about the same as text pages** on this machine.
+- These are 7 calls in total, a smoke-test reading; the slice 6 golden set measures properly.
+
 ## What slice 3 was expected to change (kept for reference)
 
 | Metric | Slice 2 (now) | Slice 3 target |
