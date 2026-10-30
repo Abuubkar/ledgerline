@@ -7,6 +7,7 @@ Usage: uv run python scripts/make_invoice.py [out_dir]
 import json
 import sys
 from dataclasses import dataclass
+from datetime import UTC, datetime
 from pathlib import Path
 
 from fpdf import FPDF
@@ -46,6 +47,8 @@ def fmt(minor: int, sample: Sample) -> str:
     text = f"{units:,}"
     return f"{text}.{cents:0{sample.exponent}d}" if sample.exponent else text
 
+
+FIXED_CREATION_DATE = datetime(2026, 10, 30, tzinfo=UTC)
 
 SAMPLES = [
     Sample(
@@ -118,6 +121,8 @@ def totals(sample: Sample) -> tuple[int, int, int]:
 def render(sample: Sample, path: Path) -> None:
     subtotal, tax, total = totals(sample)
     pdf = FPDF()
+    # A fixed date keeps regenerated PDFs byte-identical, so rerunning the script never shows up as a git diff.
+    pdf.set_creation_date(FIXED_CREATION_DATE)
     pdf.add_page()
 
     pdf.set_font("helvetica", style="B", size=16)
