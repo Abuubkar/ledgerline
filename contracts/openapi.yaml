@@ -1,0 +1,391 @@
+openapi: 3.1.0
+info:
+  title: Ledgerline
+  version: 0.2.0
+  description: |
+    Accounts-payable automation. This file is the source of truth for the HTTP API: the app is checked
+    against it with `make contract-check`, and the typed clients are generated from it with `make codegen`.
+
+    **Idempotency.** `POST /v1/invoices` requires an `Idempotency-Key` (a UUID), following
+    draft-ietf-httpapi-idempotency-key-header-08. A retry with the same key and the same files returns the
+    stored response with `Idempotent-Replayed: true`. Keys expire after 24 hours. Missing key → 400; same key
+    with different files → 422; same key while the first request is still running → 409.
+
+    **Errors** use RFC 9457 `application/problem+json` with a stable `code`.
+
+    **Money** is always `{amount_minor, currency}`: an integer count of the currency's minor unit (cents,
+    yen) and an ISO-4217 code. Never a float.
+servers:
+  - url: http://localhost:8000
+paths:
+  /v1/invoices:
+    post:
+      operationId: uploadInvoices
+      summary: Upload 1–10 invoice PDFs and extract their header fields
+      description: |
+        Extraction runs synchronously for now (about 25 s per invoice on the reference machine), so one
+        request carries at most 10 files. One file returns 201 (or an error status); several return 207
+        with one result per file, so a bad file never fails the others.
+
+        A file whose content is already stored (same normalized text, or the same bytes for PDFs without
+        a text layer) is a duplicate: 409 with a link to the original. Failed extractions don't count as
+        duplicates, so the same invoice can be re-uploaded after a model outage.
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UploadInvoicesBody'
+      responses:
+        '201':
+          description: One file, stored. Check `status`; a failed extraction is still stored.
+          headers:
+            Idempotent-Replayed:
+              $ref: '#/components/headers/IdempotentReplayed'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Invoice'
+        '207':
+          description: Several files; one result per file, in upload order.
+          headers:
+            Idempotent-Replayed:
+              $ref: '#/components/headers/IdempotentReplayed'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MultiStatus'
+        '400':
+          $ref: '#/components/responses/Problem'
+        '409':
+          $ref: '#/components/responses/Problem'
+        '415':
+          $ref: '#/components/responses/Problem'
+        '422':
+          $ref: '#/components/responses/Problem'
+    get:
+      operationId: listInvoices
+      summary: List invoices, newest first, with keyset pagination
+      description: |
+        Pass `next_cursor` from one page as `cursor` to get the next. Cursors are opaque, signed and bound
+        to the filters they were issued with: a tampered cursor, or one reused with different filters, is
+        rejected with 400 `invalid_cursor`.
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 25
+        - name: cursor
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+        - name: status
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - $ref: '#/components/schemas/InvoiceStatus'
+              - type: 'null'
+        - name: created_after
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+                format: date-time
+              - type: 'null'
+      responses:
+        '200':
+          description: One page of invoices.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvoicePage'
+        '400':
+          $ref: '#/components/responses/Problem'
+  /v1/invoices/{invoice_id}:
+    get:
+      operationId: getInvoice
+      summary: Get one invoice
+      parameters:
+        - name: invoice_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The invoice.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Invoice'
+        '400':
+          $ref: '#/components/responses/Problem'
+        '404':
+          $ref: '#/components/responses/Problem'
+components:
+  parameters:
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      description: |
+        A client-generated UUID identifying this upload. Reuse it to retry safely.
+        Declared with a pattern rather than `format: uuid` because openapi-python-client 0.29.1 passes a
+        `uuid.UUID` object into the header, which httpx rejects (see docs/adr/0007).
+      schema:
+        type: string
+        pattern: '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+  headers:
+    IdempotentReplayed:
+      description: Present and `true` when this response is a stored replay of an earlier request.
+      schema:
+        type: string
+        enum: ['true']
+  responses:
+    Problem:
+      description: An RFC 9457 problem.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+  schemas:
+    UploadInvoicesBody:
+      type: object
+      required: [files]
+      properties:
+        files:
+          type: array
+          minItems: 1
+          maxItems: 10
+          items:
+            type: string
+            format: binary
+            contentMediaType: application/octet-stream
+          description: PDF files. A file sent with any other content type gets a 415 result.
+    InvoiceStatus:
+      type: string
+      enum: [extracted, failed]
+    Money:
+      type: object
+      required: [amount_minor, currency]
+      properties:
+        amount_minor:
+          type: integer
+          format: int64
+          description: Integer count of the currency's minor unit.
+        currency:
+          type: string
+          pattern: '^[A-Z]{3}$'
+    Invoice:
+      type: object
+      required:
+        - id
+        - status
+        - original_filename
+        - page_count
+        - vendor_name
+        - vendor_tax_id
+        - invoice_number
+        - invoice_date
+        - due_date
+        - currency
+        - subtotal
+        - tax
+        - total
+        - field_confidence
+        - invalid_fields
+        - error_code
+        - error_detail
+        - model
+        - prompt_version
+        - prompt_tokens
+        - output_tokens
+        - llm_ms
+        - created_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        status:
+          $ref: '#/components/schemas/InvoiceStatus'
+        original_filename:
+          type: string
+        page_count:
+          anyOf:
+            - type: integer
+            - type: 'null'
+        vendor_name:
+          anyOf:
+            - type: string
+            - type: 'null'
+        vendor_tax_id:
+          description: Uppercase letters and digits only; country prefixes are kept (DE812345678).
+          anyOf:
+            - type: string
+            - type: 'null'
+        invoice_number:
+          anyOf:
+            - type: string
+            - type: 'null'
+        invoice_date:
+          anyOf:
+            - type: string
+              format: date
+            - type: 'null'
+        due_date:
+          anyOf:
+            - type: string
+              format: date
+            - type: 'null'
+        currency:
+          anyOf:
+            - type: string
+              pattern: '^[A-Z]{3}$'
+            - type: 'null'
+        subtotal:
+          anyOf:
+            - $ref: '#/components/schemas/Money'
+            - type: 'null'
+        tax:
+          anyOf:
+            - $ref: '#/components/schemas/Money'
+            - type: 'null'
+        total:
+          anyOf:
+            - $ref: '#/components/schemas/Money'
+            - type: 'null'
+        field_confidence:
+          anyOf:
+            - type: object
+              additionalProperties:
+                type: number
+            - type: 'null'
+        invalid_fields:
+          description: Fields the model returned in a shape that couldn't be used, with the reason.
+          anyOf:
+            - type: object
+              additionalProperties:
+                type: string
+            - type: 'null'
+        error_code:
+          description: Why extraction failed, when `status` is `failed`.
+          anyOf:
+            - type: string
+            - type: 'null'
+        error_detail:
+          anyOf:
+            - type: string
+            - type: 'null'
+        model:
+          anyOf:
+            - type: string
+            - type: 'null'
+        prompt_version:
+          anyOf:
+            - type: string
+            - type: 'null'
+        prompt_tokens:
+          anyOf:
+            - type: integer
+            - type: 'null'
+        output_tokens:
+          anyOf:
+            - type: integer
+            - type: 'null'
+        llm_ms:
+          anyOf:
+            - type: integer
+            - type: 'null'
+        created_at:
+          type: string
+          format: date-time
+    InvoicePage:
+      type: object
+      required: [data, next_cursor]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Invoice'
+        next_cursor:
+          description: Pass as `cursor` to get the next page; null on the last page.
+          anyOf:
+            - type: string
+            - type: 'null'
+    UploadResult:
+      type: object
+      required: [filename, status, invoice, problem]
+      properties:
+        filename:
+          type: string
+        status:
+          type: integer
+          description: The HTTP status this file would have had on its own (201, 409, 415, ...).
+        invoice:
+          anyOf:
+            - $ref: '#/components/schemas/Invoice'
+            - type: 'null'
+        problem:
+          anyOf:
+            - $ref: '#/components/schemas/Problem'
+            - type: 'null'
+    MultiStatus:
+      type: object
+      required: [results]
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/UploadResult'
+    ProblemCode:
+      type: string
+      enum:
+        - invalid_request
+        - idempotency_key_missing
+        - idempotency_key_reused
+        - request_in_progress
+        - too_many_files
+        - unsupported_media_type
+        - duplicate_invoice
+        - invalid_cursor
+        - not_found
+    Problem:
+      type: object
+      required: [type, title, status, code]
+      properties:
+        type:
+          type: string
+          description: A URI identifying the problem type.
+        title:
+          type: string
+        status:
+          type: integer
+        detail:
+          anyOf:
+            - type: string
+            - type: 'null'
+        code:
+          $ref: '#/components/schemas/ProblemCode'
+        duplicate_of:
+          description: For `duplicate_invoice`, the id of the invoice already stored.
+          anyOf:
+            - type: string
+              format: uuid
+            - type: 'null'
+        duplicate_of_url:
+          description: For `duplicate_invoice`, the path of the invoice already stored.
+          anyOf:
+            - type: string
+            - type: 'null'
