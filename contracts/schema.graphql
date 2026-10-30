@@ -1,0 +1,70 @@
+scalar BigInt
+
+"""Date (isoformat)"""
+scalar Date
+
+"""Date with time (isoformat)"""
+scalar DateTime
+
+type Invoice {
+  id: UUID!
+  status: String!
+  originalFilename: String!
+  pageCount: Int
+  vendorName: String
+  vendorTaxId: String
+  invoiceNumber: String
+  invoiceDate: Date
+  dueDate: Date
+  currency: String
+  subtotal: Money
+  tax: Money
+  total: Money
+  errorCode: String
+  model: String
+  createdAt: DateTime!
+}
+
+type InvoiceConnection {
+  """Pagination data for this connection"""
+  pageInfo: PageInfo!
+
+  """Contains the nodes in this connection"""
+  edges: [InvoiceEdge!]!
+}
+
+"""An edge in a connection."""
+type InvoiceEdge {
+  """A cursor for use in pagination"""
+  cursor: String!
+
+  """The item at the end of the edge"""
+  node: Invoice!
+}
+
+type Money {
+  amountMinor: BigInt!
+  currency: String!
+}
+
+"""Information to aid in pagination."""
+type PageInfo {
+  """When paginating forwards, are there more items?"""
+  hasNextPage: Boolean!
+
+  """When paginating backwards, are there more items?"""
+  hasPreviousPage: Boolean!
+
+  """When paginating backwards, the cursor to continue."""
+  startCursor: String
+
+  """When paginating forwards, the cursor to continue."""
+  endCursor: String
+}
+
+type Query {
+  invoice(id: UUID!): Invoice
+  invoices(first: Int! = 25, after: String = null): InvoiceConnection!
+}
+
+scalar UUID
