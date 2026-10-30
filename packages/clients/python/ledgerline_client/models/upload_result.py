@@ -19,7 +19,7 @@ class UploadResult:
     """
     Attributes:
         filename (str):
-        status (int): The HTTP status this file would have had on its own (201, 409, 415, ...).
+        status (int): The HTTP status this file would have had on its own (202, 409, 415, ...).
         invoice (Invoice | None):
         problem (None | Problem):
     """

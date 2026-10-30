@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Ledgerline
-  version: 0.2.0
+  version: 0.3.0
   description: |
     Accounts-payable automation. This file is the source of truth for the HTTP API: the app is checked
     against it with `make contract-check`, and the typed clients are generated from it with `make codegen`.
@@ -13,6 +13,10 @@ info:
 
     **Errors** use RFC 9457 `application/problem+json` with a stable `code`.
 
+    **Extraction is queued.** An upload stores the PDF and returns 202 with status `received`; a worker
+    extracts it and the status moves to `extracting`, then `extracted` or `failed`. Poll
+    `GET /v1/invoices/{invoice_id}`. When the queue is full, uploads get 429 with `Retry-After`.
+
     **Money** is always `{amount_minor, currency}`: an integer count of the currency's minor unit (cents,
     yen) and an ISO-4217 code. Never a float.
 servers:
@@ -21,11 +25,12 @@ paths:
   /v1/invoices:
     post:
       operationId: uploadInvoices
-      summary: Upload 1–10 invoice PDFs and extract their header fields
+      summary: Upload 1–50 invoice PDFs for extraction
       description: |
-        Extraction runs synchronously for now (about 25 s per invoice on the reference machine), so one
-        request carries at most 10 files. One file returns 201 (or an error status); several return 207
-        with one result per file, so a bad file never fails the others.
+        Each PDF is stored and queued for extraction; the response comes back before the model runs.
+        One file returns 202 with the invoice in status `received` (or an error status); several return 207
+        with one result per file, so a bad file never fails the others. When more than the configured number
+        of extraction jobs are waiting, the whole request gets 429 with `Retry-After` and nothing is stored.
 
         A file whose content is already stored (same normalized text, or the same bytes for PDFs without
         a text layer) is a duplicate: 409 with a link to the original. Failed extractions don't count as
@@ -39,8 +44,8 @@ paths:
             schema:
               $ref: '#/components/schemas/UploadInvoicesBody'
       responses:
-        '201':
-          description: One file, stored. Check `status`; a failed extraction is still stored.
+        '202':
+          description: One file, stored and queued for extraction (status `received`).
           headers:
             Idempotent-Replayed:
               $ref: '#/components/headers/IdempotentReplayed'
@@ -65,6 +70,16 @@ paths:
           $ref: '#/components/responses/Problem'
         '422':
           $ref: '#/components/responses/Problem'
+        '429':
+          description: Too many extraction jobs waiting; retry after the number of seconds in `Retry-After`.
+          headers:
+            Retry-After:
+              schema:
+                type: integer
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
     get:
       operationId: listInvoices
       summary: List invoices, newest first, with keyset pagination
@@ -134,6 +149,71 @@ paths:
           $ref: '#/components/responses/Problem'
         '404':
           $ref: '#/components/responses/Problem'
+  /v1/admin/dead-letters:
+    get:
+      operationId: listDeadLetters
+      summary: List extraction jobs that gave up, newest first
+      description: |
+        A job is dead-lettered when it hits a permanent error (a corrupt PDF, unusable model output) or runs
+        out of retries for a transient one (model or storage unavailable). Keyset pagination as for invoices.
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 25
+        - name: cursor
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+      responses:
+        '200':
+          description: One page of dead letters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeadLetterPage'
+        '400':
+          $ref: '#/components/responses/Problem'
+  /v1/admin/dead-letters/{dead_letter_id}/replay:
+    post:
+      operationId: replayDeadLetter
+      summary: Queue a dead-lettered job again with a fresh retry budget
+      description: |
+        The invoice goes back to `received` and is extracted again. Replaying the same dead letter twice
+        does nothing the second time: it returns 200 with the original `replayed_at`.
+      parameters:
+        - name: dead_letter_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '202':
+          description: Queued again.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeadLetter'
+        '200':
+          description: Already replayed earlier; nothing was queued.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeadLetter'
+        '400':
+          $ref: '#/components/responses/Problem'
+        '404':
+          $ref: '#/components/responses/Problem'
+        '409':
+          $ref: '#/components/responses/Problem'
 components:
   parameters:
     IdempotencyKey:
@@ -168,7 +248,7 @@ components:
         files:
           type: array
           minItems: 1
-          maxItems: 10
+          maxItems: 50
           items:
             type: string
             format: binary
@@ -176,7 +256,8 @@ components:
           description: PDF files. A file sent with any other content type gets a 415 result.
     InvoiceStatus:
       type: string
-      enum: [extracted, failed]
+      description: received → extracting → extracted, or failed when the job is dead-lettered.
+      enum: [received, extracting, extracted, failed]
     Money:
       type: object
       required: [amount_minor, currency]
@@ -332,7 +413,7 @@ components:
           type: string
         status:
           type: integer
-          description: The HTTP status this file would have had on its own (201, 409, 415, ...).
+          description: The HTTP status this file would have had on its own (202, 409, 415, ...).
         invoice:
           anyOf:
             - $ref: '#/components/schemas/Invoice'
@@ -361,6 +442,46 @@ components:
         - duplicate_invoice
         - invalid_cursor
         - not_found
+        - queue_full
+    DeadLetter:
+      type: object
+      required: [id, task_name, invoice_id, error_code, exception_chain, attempts, created_at, replayed_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        task_name:
+          type: string
+        invoice_id:
+          type: string
+          format: uuid
+        error_code:
+          type: string
+          description: Why the job gave up, e.g. unreadable_pdf, model_unavailable.
+        exception_chain:
+          type: string
+        attempts:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+        replayed_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: 'null'
+    DeadLetterPage:
+      type: object
+      required: [data, next_cursor]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeadLetter'
+        next_cursor:
+          anyOf:
+            - type: string
+            - type: 'null'
     Problem:
       type: object
       required: [type, title, status, code]

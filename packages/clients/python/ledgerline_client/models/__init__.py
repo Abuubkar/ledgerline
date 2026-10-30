@@ -1,5 +1,7 @@
 """Contains all the data models used in inputs/outputs"""
 
+from .dead_letter import DeadLetter
+from .dead_letter_page import DeadLetterPage
 from .invoice import Invoice
 from .invoice_field_confidence_type_0 import InvoiceFieldConfidenceType0
 from .invoice_invalid_fields_type_0 import InvoiceInvalidFieldsType0
@@ -13,6 +15,8 @@ from .upload_invoices_body import UploadInvoicesBody
 from .upload_result import UploadResult
 
 __all__ = (
+    "DeadLetter",
+    "DeadLetterPage",
     "Invoice",
     "InvoiceFieldConfidenceType0",
     "InvoiceInvalidFieldsType0",

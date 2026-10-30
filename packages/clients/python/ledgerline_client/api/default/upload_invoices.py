@@ -36,10 +36,10 @@ def _get_kwargs(
 def _parse_response(
     *, client: AuthenticatedClient | Client, response: httpx.Response
 ) -> Invoice | MultiStatus | Problem | None:
-    if response.status_code == 201:
-        response_201 = Invoice.from_dict(response.json())
+    if response.status_code == 202:
+        response_202 = Invoice.from_dict(response.json())
 
-        return response_201
+        return response_202
 
     if response.status_code == 207:
         response_207 = MultiStatus.from_dict(response.json())
@@ -66,6 +66,11 @@ def _parse_response(
 
         return response_422
 
+    if response.status_code == 429:
+        response_429 = Problem.from_dict(response.json())
+
+        return response_429
+
     if client.raise_on_unexpected_status:
         raise errors.UnexpectedStatus(response.status_code, response.content)
     else:
@@ -89,11 +94,12 @@ def sync_detailed(
     body: UploadInvoicesBody,
     idempotency_key: str,
 ) -> Response[Invoice | MultiStatus | Problem]:
-    """Upload 1–10 invoice PDFs and extract their header fields
+    """Upload 1–50 invoice PDFs for extraction
 
-     Extraction runs synchronously for now (about 25 s per invoice on the reference machine), so one
-    request carries at most 10 files. One file returns 201 (or an error status); several return 207
-    with one result per file, so a bad file never fails the others.
+     Each PDF is stored and queued for extraction; the response comes back before the model runs.
+    One file returns 202 with the invoice in status `received` (or an error status); several return 207
+    with one result per file, so a bad file never fails the others. When more than the configured number
+    of extraction jobs are waiting, the whole request gets 429 with `Retry-After` and nothing is stored.
 
     A file whose content is already stored (same normalized text, or the same bytes for PDFs without
     a text layer) is a duplicate: 409 with a link to the original. Failed extractions don't count as
@@ -129,11 +135,12 @@ def sync(
     body: UploadInvoicesBody,
     idempotency_key: str,
 ) -> Invoice | MultiStatus | Problem | None:
-    """Upload 1–10 invoice PDFs and extract their header fields
+    """Upload 1–50 invoice PDFs for extraction
 
-     Extraction runs synchronously for now (about 25 s per invoice on the reference machine), so one
-    request carries at most 10 files. One file returns 201 (or an error status); several return 207
-    with one result per file, so a bad file never fails the others.
+     Each PDF is stored and queued for extraction; the response comes back before the model runs.
+    One file returns 202 with the invoice in status `received` (or an error status); several return 207
+    with one result per file, so a bad file never fails the others. When more than the configured number
+    of extraction jobs are waiting, the whole request gets 429 with `Retry-After` and nothing is stored.
 
     A file whose content is already stored (same normalized text, or the same bytes for PDFs without
     a text layer) is a duplicate: 409 with a link to the original. Failed extractions don't count as
@@ -164,11 +171,12 @@ async def asyncio_detailed(
     body: UploadInvoicesBody,
     idempotency_key: str,
 ) -> Response[Invoice | MultiStatus | Problem]:
-    """Upload 1–10 invoice PDFs and extract their header fields
+    """Upload 1–50 invoice PDFs for extraction
 
-     Extraction runs synchronously for now (about 25 s per invoice on the reference machine), so one
-    request carries at most 10 files. One file returns 201 (or an error status); several return 207
-    with one result per file, so a bad file never fails the others.
+     Each PDF is stored and queued for extraction; the response comes back before the model runs.
+    One file returns 202 with the invoice in status `received` (or an error status); several return 207
+    with one result per file, so a bad file never fails the others. When more than the configured number
+    of extraction jobs are waiting, the whole request gets 429 with `Retry-After` and nothing is stored.
 
     A file whose content is already stored (same normalized text, or the same bytes for PDFs without
     a text layer) is a duplicate: 409 with a link to the original. Failed extractions don't count as
@@ -202,11 +210,12 @@ async def asyncio(
     body: UploadInvoicesBody,
     idempotency_key: str,
 ) -> Invoice | MultiStatus | Problem | None:
-    """Upload 1–10 invoice PDFs and extract their header fields
+    """Upload 1–50 invoice PDFs for extraction
 
-     Extraction runs synchronously for now (about 25 s per invoice on the reference machine), so one
-    request carries at most 10 files. One file returns 201 (or an error status); several return 207
-    with one result per file, so a bad file never fails the others.
+     Each PDF is stored and queued for extraction; the response comes back before the model runs.
+    One file returns 202 with the invoice in status `received` (or an error status); several return 207
+    with one result per file, so a bad file never fails the others. When more than the configured number
+    of extraction jobs are waiting, the whole request gets 429 with `Retry-After` and nothing is stored.
 
     A file whose content is already stored (same normalized text, or the same bytes for PDFs without
     a text layer) is a duplicate: 409 with a link to the original. Failed extractions don't count as
