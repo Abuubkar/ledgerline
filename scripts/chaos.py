@@ -98,6 +98,10 @@ def main() -> None:
     parser.add_argument("--fail-rate", type=float, default=0.15)
     parser.add_argument("--timeout", type=int, default=900)
     args = parser.parse_args()
+    try:
+        httpx.get("http://localhost:8000/docs", timeout=3).raise_for_status()
+    except httpx.HTTPError:
+        raise SystemExit("API not reachable on localhost:8000. Start it: uv run uvicorn ledgerline_api.main:app --port 8000")
     tag = f"chaos{int(time.time())}"
     started = time.monotonic()
 
