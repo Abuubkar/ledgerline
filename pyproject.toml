@@ -1,0 +1,24 @@
+[project]
+name = "ledgerline"
+version = "0.1.0"
+description = "Workspace root: dev tooling and scripts. App code lives in apps/."
+requires-python = ">=3.13"
+dependencies = ["ledgerline-api"]
+
+[dependency-groups]
+dev = [
+    "fpdf2>=2.9.0",
+    "pytest>=9.2.0",
+]
+
+[tool.uv]
+package = false
+
+[tool.uv.workspace]
+members = ["apps/api"]
+
+[tool.uv.sources]
+ledgerline-api = { workspace = true }
+
+[tool.pytest.ini_options]
+testpaths = ["apps/api/tests"]
