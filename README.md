@@ -9,16 +9,23 @@ Finance data punishes mistakes: a double-paid invoice costs real money. So the i
 unglamorous ones: idempotent ingestion, money that is never a float, failures that are recorded instead of
 guessed around, and a human approving every write.
 
-> **Status:** slice 3a of 8. Uploads return immediately and extraction runs on a queue that survives model
-> outages, corrupt files and killed workers without losing or duplicating an invoice (chaos-tested with 200
-> invoices). See the [roadmap](#roadmap) for what's next.
+> **Status:** slice 3b of 8. Invoices are extracted page by page, including scanned pages and line items, and
+> code checks that the totals add up, on a queue that survives model outages, corrupt files and killed workers
+> (chaos-tested with 200 invoices). See the [roadmap](#roadmap) for what's next.
 
 ## What works today
 
-Upload up to 50 invoice PDFs with a text layer. The API stores them and answers **202** in well under a
-second; a queue worker then has a local model (`gemma4:12b` via Ollama) extract each one's header fields:
-vendor, tax ID, invoice number, dates, currency, subtotal, tax and total. Poll `GET /v1/invoices/{id}` until
-`status` is `extracted` (or `failed`, with the reason).
+Upload up to 50 invoice PDFs. The API stores them and answers **202** in well under a second; a queue worker
+then has a local model (`gemma4:12b` via Ollama) read each page, from its text or, for scans, from the page
+image, and extract the header (vendor, tax ID, invoice number, dates, currency, subtotal, tax, total) and the
+line items. Poll `GET /v1/invoices/{id}` until `status` is final:
+
+| Status | Meaning |
+|---|---|
+| `extracted` | Every page read and the numbers add up |
+| `partially_extracted` | Some pages couldn't be read (see `pages`); the rest are kept |
+| `exception` | The line amounts plus tax don't equal the total, even after one repair attempt (see `invalid_fields`) |
+| `failed` | The job gave up (see `error_code`); listed in the dead-letter queue and replayable |
 
 ```bash
 curl -H "Idempotency-Key: $(uuidgen)" -F "files=@samples/inv-002.pdf;type=application/pdf" \
@@ -76,6 +83,9 @@ Around that:
 - **The OpenAPI file is the contract.** [contracts/openapi.yaml](contracts/openapi.yaml) is written first;
   `make contract-check` fails if the code would break a client generated from it, and `make codegen`
   regenerates the typed client. ([ADR 0007](docs/adr/0007-spec-first-contracts-and-graphql.md))
+- **Code checks the numbers; the model never does arithmetic.** If the totals don't add up, the model gets one
+  repair call naming the problem; a number is never changed to make the sum work.
+  ([ADR 0010](docs/adr/0010-page-by-page-extraction-and-one-repair.md))
 - **Leases, not long-held locks.** A worker owns an invoice through a lease it renews; a unique index allows
   only one completed extraction per invoice, so double extraction is impossible rather than unlikely.
   ([ADR 0009](docs/adr/0009-queued-extraction-with-leases-and-dead-letters.md))
@@ -104,6 +114,7 @@ make test                                 # unit tests, offline
 make test-int                             # service tests against a throwaway Postgres (needs Docker)
 make contract-check                       # code vs. contracts/openapi.yaml (needs Docker)
 make chaos                                # 200 invoices, stub model failing 15%, a worker killed mid-run
+uv run python scripts/check_scenarios.py  # real model: failing page, blank page, misprinted total, scan
 ```
 
 Configuration is read from environment variables or `.env`; every key is listed in
@@ -118,7 +129,7 @@ Each slice is one end-to-end change. The destination layout and stack are in [do
 | 1 | Upload one PDF → local model extracts header fields → stored → fetched | Done |
 | 2 | Spec-first REST API, idempotent bulk upload, keyset pagination, typed Python client, GraphQL reads | Done |
 | 3a | Queued extraction (Celery + RabbitMQ): retries, dead letters + replay, backpressure, outbox, chaos test | Done |
-| 3b | Per-page extraction, line items, scanned pages, arithmetic check with one repair call | Planned |
+| 3b | Per-page extraction, line items, scanned pages, arithmetic check with one repair call | Done |
 | 4 | ERP sync with cursor pagination, 3-way match, seed data, a live expand/contract migration | Planned |
 | 5 | Exception agent with tool calling; reviewer UI to approve or reject its proposals | Planned |
 | 6 | Golden set of 60 invoices, eval script with gates, model sweep | Planned |
