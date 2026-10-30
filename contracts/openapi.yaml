@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Ledgerline
-  version: 0.3.0
+  version: 0.4.0
   description: |
     Accounts-payable automation. This file is the source of truth for the HTTP API: the app is checked
     against it with `make contract-check`, and the typed clients are generated from it with `make codegen`.
@@ -14,7 +14,9 @@ info:
     **Errors** use RFC 9457 `application/problem+json` with a stable `code`.
 
     **Extraction is queued.** An upload stores the PDF and returns 202 with status `received`; a worker
-    extracts it and the status moves to `extracting`, then `extracted` or `failed`. Poll
+    extracts it page by page and the status moves to `extracting`, then one of: `extracted`;
+    `partially_extracted` (some pages failed, see `pages`); `exception` (the totals don't add up even after
+    one repair attempt, see `invalid_fields`); or `failed` (the job was dead-lettered). Poll
     `GET /v1/invoices/{invoice_id}`. When the queue is full, uploads get 429 with `Retry-After`.
 
     **Money** is always `{amount_minor, currency}`: an integer count of the currency's minor unit (cents,
@@ -256,8 +258,65 @@ components:
           description: PDF files. A file sent with any other content type gets a 415 result.
     InvoiceStatus:
       type: string
-      description: received → extracting → extracted, or failed when the job is dead-lettered.
-      enum: [received, extracting, extracted, failed]
+      description: |
+        received → extracting → extracted | partially_extracted | exception, or failed when the job is
+        dead-lettered. Precedence when several apply: failed > partially_extracted > exception > extracted.
+      enum: [received, extracting, extracted, partially_extracted, exception, failed]
+    PageStatus:
+      type: string
+      description: blank pages (e.g. the back of a scan) are skipped, not failed.
+      enum: [extracted, blank, failed]
+    PageResult:
+      type: object
+      required: [page_no, status, source, error_code, llm_ms]
+      properties:
+        page_no:
+          type: integer
+        status:
+          $ref: '#/components/schemas/PageStatus'
+        source:
+          type: string
+          enum: [text, image]
+          description: text when the page has a text layer; image when it was rendered and read visually.
+        error_code:
+          anyOf:
+            - type: string
+            - type: 'null'
+        llm_ms:
+          anyOf:
+            - type: integer
+            - type: 'null'
+    InvoiceLine:
+      type: object
+      required: [page_no, line_no, description, quantity, unit_price, amount, invalid_reason]
+      properties:
+        page_no:
+          type: integer
+        line_no:
+          type: integer
+        description:
+          anyOf:
+            - type: string
+            - type: 'null'
+        quantity:
+          anyOf:
+            - type: string
+            - type: 'null'
+          description: Decimal as a string (e.g. "2.5"), so no precision is lost to JSON floats.
+        unit_price:
+          anyOf:
+            - type: string
+            - type: 'null'
+          description: Decimal as a string; may have more decimals than the currency (e.g. "0.125").
+        amount:
+          anyOf:
+            - $ref: '#/components/schemas/Money'
+            - type: 'null'
+        invalid_reason:
+          anyOf:
+            - type: string
+            - type: 'null'
+          description: Why a value on this line couldn't be used, if any.
     Money:
       type: object
       required: [amount_minor, currency]
@@ -294,6 +353,9 @@ components:
         - prompt_tokens
         - output_tokens
         - llm_ms
+        - repair_attempted
+        - pages
+        - lines
         - created_at
       properties:
         id:
@@ -389,6 +451,18 @@ components:
           anyOf:
             - type: integer
             - type: 'null'
+          description: Total model time across all pages and any repair call.
+        repair_attempted:
+          type: boolean
+          description: True when the totals didn't add up and the model was asked once to re-read them.
+        pages:
+          type: array
+          items:
+            $ref: '#/components/schemas/PageResult'
+        lines:
+          type: array
+          items:
+            $ref: '#/components/schemas/InvoiceLine'
         created_at:
           type: string
           format: date-time

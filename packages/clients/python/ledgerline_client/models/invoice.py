@@ -13,7 +13,9 @@ from ..models.invoice_status import InvoiceStatus
 if TYPE_CHECKING:
     from ..models.invoice_field_confidence_type_0 import InvoiceFieldConfidenceType0
     from ..models.invoice_invalid_fields_type_0 import InvoiceInvalidFieldsType0
+    from ..models.invoice_line import InvoiceLine
     from ..models.money import Money
+    from ..models.page_result import PageResult
 
 
 T = TypeVar("T", bound="Invoice")
@@ -24,7 +26,9 @@ class Invoice:
     """
     Attributes:
         id (UUID):
-        status (InvoiceStatus): received → extracting → extracted, or failed when the job is dead-lettered.
+        status (InvoiceStatus): received → extracting → extracted | partially_extracted | exception, or failed when the
+            job is
+            dead-lettered. Precedence when several apply: failed > partially_extracted > exception > extracted.
         original_filename (str):
         page_count (int | None):
         vendor_name (None | str):
@@ -45,7 +49,10 @@ class Invoice:
         prompt_version (None | str):
         prompt_tokens (int | None):
         output_tokens (int | None):
-        llm_ms (int | None):
+        llm_ms (int | None): Total model time across all pages and any repair call.
+        repair_attempted (bool): True when the totals didn't add up and the model was asked once to re-read them.
+        pages (list[PageResult]):
+        lines (list[InvoiceLine]):
         created_at (datetime.datetime):
     """
 
@@ -71,6 +78,9 @@ class Invoice:
     prompt_tokens: int | None
     output_tokens: int | None
     llm_ms: int | None
+    repair_attempted: bool
+    pages: list[PageResult]
+    lines: list[InvoiceLine]
     created_at: datetime.datetime
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
@@ -163,6 +173,18 @@ class Invoice:
         llm_ms: int | None
         llm_ms = self.llm_ms
 
+        repair_attempted = self.repair_attempted
+
+        pages = []
+        for pages_item_data in self.pages:
+            pages_item = pages_item_data.to_dict()
+            pages.append(pages_item)
+
+        lines = []
+        for lines_item_data in self.lines:
+            lines_item = lines_item_data.to_dict()
+            lines.append(lines_item)
+
         created_at = self.created_at.isoformat()
 
         field_dict: dict[str, Any] = {}
@@ -191,6 +213,9 @@ class Invoice:
                 "prompt_tokens": prompt_tokens,
                 "output_tokens": output_tokens,
                 "llm_ms": llm_ms,
+                "repair_attempted": repair_attempted,
+                "pages": pages,
+                "lines": lines,
                 "created_at": created_at,
             }
         )
@@ -201,7 +226,9 @@ class Invoice:
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         from ..models.invoice_field_confidence_type_0 import InvoiceFieldConfidenceType0  # noqa: PLC0415
         from ..models.invoice_invalid_fields_type_0 import InvoiceInvalidFieldsType0  # noqa: PLC0415
+        from ..models.invoice_line import InvoiceLine  # noqa: PLC0415
         from ..models.money import Money  # noqa: PLC0415
+        from ..models.page_result import PageResult  # noqa: PLC0415
 
         d = dict(src_dict)
         id = UUID(d.pop("id"))
@@ -399,6 +426,22 @@ class Invoice:
 
         llm_ms = _parse_llm_ms(d.pop("llm_ms"))
 
+        repair_attempted = d.pop("repair_attempted")
+
+        pages = []
+        _pages = d.pop("pages")
+        for pages_item_data in _pages:
+            pages_item = PageResult.from_dict(pages_item_data)
+
+            pages.append(pages_item)
+
+        lines = []
+        _lines = d.pop("lines")
+        for lines_item_data in _lines:
+            lines_item = InvoiceLine.from_dict(lines_item_data)
+
+            lines.append(lines_item)
+
         created_at = datetime.datetime.fromisoformat(d.pop("created_at"))
 
         invoice = cls(
@@ -424,6 +467,9 @@ class Invoice:
             prompt_tokens=prompt_tokens,
             output_tokens=output_tokens,
             llm_ms=llm_ms,
+            repair_attempted=repair_attempted,
+            pages=pages,
+            lines=lines,
             created_at=created_at,
         )
 
