@@ -32,7 +32,7 @@ def postgres_url() -> Iterator[str]:
 
 
 @pytest.fixture
-async def client(postgres_url, tmp_path, monkeypatch) -> AsyncIterator:
+async def client(postgres_url) -> AsyncIterator:
     """The real app over ASGI, against the container database, with an empty invoices table."""
     import httpx
     from sqlalchemy import text
@@ -40,20 +40,18 @@ async def client(postgres_url, tmp_path, monkeypatch) -> AsyncIterator:
 
     from ledgerline_api.db import get_session
     from ledgerline_api.main import app
-    from ledgerline_api.settings import settings
 
     # One engine per test: asyncpg connections are bound to the event loop that created them.
     engine = create_async_engine(postgres_url)
     sessions = async_sessionmaker(engine, expire_on_commit=False)
     async with engine.begin() as conn:
-        await conn.execute(text("TRUNCATE invoices, idempotency_keys"))
+        await conn.execute(text("TRUNCATE invoices, idempotency_keys, outbox, extraction_runs, dead_letters CASCADE"))
 
     async def test_session():
         async with sessions() as session:
             yield session
 
     app.dependency_overrides[get_session] = test_session
-    monkeypatch.setattr(settings, "upload_dir", tmp_path)
     transport = httpx.ASGITransport(app=app)
     async with httpx.AsyncClient(transport=transport, base_url="http://test") as http:
         http.sessions = sessions
