@@ -4,7 +4,8 @@
 import enum
 import uuid
 from datetime import date, datetime
-from typing import Annotated
+from decimal import Decimal
+from typing import Annotated, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -29,6 +30,14 @@ class InvoiceStatus(enum.StrEnum):
     RECEIVED = "received"
     EXTRACTING = "extracting"
     EXTRACTED = "extracted"
+    PARTIALLY_EXTRACTED = "partially_extracted"
+    EXCEPTION = "exception"
+    FAILED = "failed"
+
+
+class PageStatus(enum.StrEnum):
+    EXTRACTED = "extracted"
+    BLANK = "blank"
     FAILED = "failed"
 
 
@@ -68,9 +77,36 @@ class ApiProblem(Exception):
 Currency = Annotated[str, Field(pattern=r"^[A-Z]{3}$")]
 
 
+def _decimal_str(value: Decimal | None) -> str | None:
+    # NUMERIC columns pad to their scale ("2.0000"); trailing zeros carry no meaning here.
+    if value is None:
+        return None
+    text = format(value.normalize(), "f")
+    return text
+
+
 class Money(BaseModel):
     amount_minor: Annotated[int, Field(json_schema_extra={"format": "int64"})]
     currency: Currency
+
+
+class PageResult(BaseModel):
+    page_no: int
+    status: PageStatus
+    source: Literal["text", "image"]
+    error_code: str | None
+    llm_ms: int | None
+
+
+class InvoiceLine(BaseModel):
+    page_no: int
+    line_no: int
+    description: str | None
+    # Decimals travel as strings so JSON floats can't round them.
+    quantity: str | None
+    unit_price: str | None
+    amount: Money | None
+    invalid_reason: str | None
 
 
 class Invoice(BaseModel):
@@ -96,6 +132,9 @@ class Invoice(BaseModel):
     prompt_tokens: int | None
     output_tokens: int | None
     llm_ms: int | None
+    repair_attempted: bool
+    pages: list[PageResult]
+    lines: list[InvoiceLine]
     created_at: datetime
 
     @classmethod
@@ -105,8 +144,24 @@ class Invoice(BaseModel):
                 return None
             return Money(amount_minor=minor, currency=invoice.currency)
 
-        plain = {name: getattr(invoice, name) for name in cls.model_fields if name not in ("subtotal", "tax", "total")}
-        return cls(**plain, subtotal=money(invoice.subtotal_minor), tax=money(invoice.tax_minor), total=money(invoice.total_minor))
+        nested = ("subtotal", "tax", "total", "pages", "lines")
+        plain = {name: getattr(invoice, name) for name in cls.model_fields if name not in nested}
+        return cls(
+            **plain,
+            subtotal=money(invoice.subtotal_minor), tax=money(invoice.tax_minor), total=money(invoice.total_minor),
+            pages=[
+                PageResult(page_no=p.page_no, status=p.status, source=p.source, error_code=p.error_code, llm_ms=p.llm_ms)
+                for p in invoice.pages
+            ],
+            lines=[
+                InvoiceLine(
+                    page_no=line.page_no, line_no=line.line_no, description=line.description,
+                    quantity=_decimal_str(line.quantity), unit_price=_decimal_str(line.unit_price),
+                    amount=money(line.amount_minor), invalid_reason=line.invalid_reason,
+                )
+                for line in invoice.lines
+            ],
+        )
 
 
 class InvoicePage(BaseModel):

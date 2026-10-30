@@ -42,7 +42,7 @@ class UploadResponse:
 def content_fingerprint(pages: list[str] | None, content: bytes) -> str:
     """Same invoice, same fingerprint, even if the PDF was re-rendered: hash the text with whitespace collapsed.
     PDFs without a text layer (scans) all have empty text, so they fall back to the raw bytes."""
-    text = re.sub(r"\s+", " ", " ".join(pages or [])).strip()
+    text = re.sub(r"\s+", " ", " ".join(page or "" for page in pages or [])).strip()
     return hashlib.sha256(text.encode() if text else content).hexdigest()
 
 
