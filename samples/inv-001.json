@@ -1,0 +1,11 @@
+{
+  "vendor_name": "ACME Werkzeuge GmbH",
+  "vendor_tax_id": "DE812345678",
+  "invoice_number": "RE-2026-0915",
+  "invoice_date": "2026-09-15",
+  "due_date": "2026-10-15",
+  "currency": "EUR",
+  "subtotal_minor": 60600,
+  "tax_minor": 11514,
+  "total_minor": 72114
+}

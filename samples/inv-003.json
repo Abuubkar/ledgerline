@@ -1,0 +1,11 @@
+{
+  "vendor_name": "Sakura Components K.K.",
+  "vendor_tax_id": "T1234567890123",
+  "invoice_number": "SK-2026-1020-07",
+  "invoice_date": "2026-10-20",
+  "due_date": "2026-11-30",
+  "currency": "JPY",
+  "subtotal_minor": 125000,
+  "tax_minor": 12500,
+  "total_minor": 137500
+}
