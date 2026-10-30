@@ -71,7 +71,53 @@ What this baseline shows:
 - **Throughput is one invoice at a time per request**: about 150 invoices per hour for a single client with
   a warm model (projected from 24.2 s per call).
 
-## What slice 3 should change (to be measured, not assumed)
+## Slice 3a: queued extraction (after)
+
+Measured on 2026-10-30 with the real model: one worker container (`--concurrency=2`), `LLM_MAX_CONCURRENCY=1`,
+10 freshly generated invoices uploaded in one request, polled until all were terminal. All 10 model calls warm.
+
+| Metric | Slice 2 (before, synchronous) | Slice 3a (after, queued) | Based on |
+|---|---|---|---|
+| Upload response time, 10 files | ~4.0 min warm (projected) | **0.50 s** (207, all `received`) | 1 request |
+| Time until all 10 are extracted | ~4.0 min warm (projected) | **246.7 s** (4.1 min) | 1 run, 10 invoices |
+| Model time per invoice (warm) | 24.2 s avg (7 calls) | 24.0 s avg, 21.9–25.6 s (10 calls) | `llm_ms` |
+| Queue overhead per invoice | n/a | ~0.6 s ((246.7 − 240.5 s of model time) / 10) | the same run |
+| Concurrent model calls | 1 per request, unbounded across requests | capped at 1 across all workers (Redis semaphore) | config |
+| Upload cap per request | 10 | **50** (raised once uploads no longer wait for the model) | config |
+
+What changed and what didn't:
+
+- **The client no longer waits for the model.** The same 10 invoices that held a request open for ~4 minutes
+  now return in half a second, and the client polls `GET /v1/invoices/{id}`.
+- **Throughput is unchanged, and is still bound by the model**: one call at a time on this machine, about 24 s
+  each, so ~150 invoices per hour. A queue doesn't make a single local model faster; it makes waiting safe.
+- **Per-invoice queue cost is small**: ~0.6 s for publish, claim, S3 read, and the result write.
+
+### A stall the measurement caught
+
+The first after-run, started right after the chaos test, waited **~76 s** before its first model call
+(first invoice done at 112 s with only 35.6 s of model time). The chaos test had killed a worker holding model
+slots with a fixed 240 s lease; with one slot, the stale lease blocked every job until it expired. Slots now use
+a 30 s lease renewed while the call runs (ADR 0009), and the rerun above had no stall (first invoice done at
+29.5 s with 24.9 s of model time).
+
+## Slice 3a: chaos test (stub model)
+
+`make chaos` on 2026-10-30: 200 generated invoices + 3 corrupt PDFs, a stub model answering 15% of calls with
+HTTP 503, two workers with one killed after 110 uploads. Not a speed benchmark (the stub answers in ~0.2 s).
+
+| Check | Result |
+|---|---|
+| Uploaded (202) / stored | 203 / 203; 0 lost |
+| Terminal status | all 203: 200 extracted, 3 failed |
+| Dead letters | exactly the 3 corrupt PDFs (`unreadable_pdf`) |
+| Invoices with more than one completed run | 0 |
+| Transient failures retried | 35 runs (stub answered 36 calls with 503; one went to the killed worker) |
+| Runs taken over after the kill | 2 abandoned leases, both completed by the other worker |
+| Uploading 203 files (21 requests) | 8.7 s |
+| Whole run, including waiting out the killed worker's leases | 120.9 s |
+
+## What slice 3 was expected to change (kept for reference)
 
 | Metric | Slice 2 (now) | Slice 3 target |
 |---|---|---|

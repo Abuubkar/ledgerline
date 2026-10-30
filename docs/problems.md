@@ -20,12 +20,12 @@ draft-ietf-httpapi-idempotency-key-header-08.)
 
 ## request_in_progress
 
-409. A request with this key is still running (extraction takes about 25 s per invoice). Wait and retry with
-the same key; you'll get the stored result once it finishes.
+409. A request with this key is still running. Uploads return as soon as the files are stored, so this only
+lasts a moment. Retry with the same key; you'll get the stored result once it finishes.
 
 ## too_many_files
 
-400. At most 10 files per request while extraction is synchronous.
+400. At most 50 files per request.
 
 ## unsupported_media_type
 
@@ -34,7 +34,8 @@ files are still processed.
 
 ## duplicate_invoice
 
-409. An invoice with the same content is already stored. `duplicate_of` and `duplicate_of_url` point at it.
+409. An invoice with the same content is already stored. Also returned by a dead-letter replay when the same
+content has been stored since the job failed. `duplicate_of` and `duplicate_of_url` point at it.
 Content means the PDF's text with whitespace collapsed, or the raw bytes for PDFs without a text layer.
 Failed extractions don't count, so you can re-upload after a model outage.
 
@@ -45,7 +46,12 @@ again from the first page.
 
 ## not_found
 
-404. No invoice with that id.
+404. No invoice (or dead letter) with that id.
+
+## queue_full
+
+429. Too many extraction jobs are waiting. Nothing was stored, and the `Idempotency-Key` was released, so retry
+the same request after the number of seconds in `Retry-After`.
 
 ## Idempotency keys
 
