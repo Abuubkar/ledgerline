@@ -1,9 +1,9 @@
 """Read an invoice PDF and ask the local model for its header fields."""
 
 import asyncio
+import io
 import time
 from dataclasses import dataclass
-from pathlib import Path
 
 import ollama
 import pdfplumber
@@ -32,13 +32,16 @@ class Extraction:
     llm_ms: int
 
 
-def read_pages(path: Path) -> list[str]:
-    with pdfplumber.open(path) as pdf:
-        return [page.extract_text() or "" for page in pdf.pages]
+def read_pages(content: bytes) -> list[str]:
+    """Text per page. Raises ExtractionError for files pdfplumber can't parse."""
+    try:
+        with pdfplumber.open(io.BytesIO(content)) as pdf:
+            return [page.extract_text() or "" for page in pdf.pages]
+    except Exception as exc:  # pdfminer raises a zoo of parser errors for corrupt files
+        raise ExtractionError("unreadable_pdf", f"{type(exc).__name__}: {exc}") from exc
 
 
-async def extract_invoice(path: Path) -> Extraction:
-    pages = await asyncio.to_thread(read_pages, path)
+async def extract_header(pages: list[str]) -> Extraction:
     if not any(text.strip() for text in pages):
         # Scanned pages (no text layer) are handled from slice 3 on.
         raise ExtractionError("no_text_layer", "the PDF has no extractable text")
