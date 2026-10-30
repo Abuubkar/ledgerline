@@ -1,6 +1,6 @@
 OASDIFF := docker run --rm -v $(CURDIR):/specs:ro tufin/oasdiff:v1.35.0
 
-.PHONY: codegen contract-check test test-int smoke
+.PHONY: codegen contract-check test test-int smoke chaos
 
 # Regenerate everything derived from the contracts. Generated code is never edited by hand.
 codegen:
@@ -22,3 +22,8 @@ test-int:
 
 smoke:
 	uv run python scripts/smoke.py
+
+# Slice 3a acceptance: 200 invoices + 3 corrupt PDFs, a stub model failing 15% of calls, one worker killed.
+chaos:
+	docker compose build worker
+	uv run python scripts/chaos.py

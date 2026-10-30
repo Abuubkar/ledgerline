@@ -36,7 +36,7 @@ def timed_upload(client: Client, body: UploadInvoicesBody, key: uuid.UUID):
 def describe(parsed) -> str:
     if isinstance(parsed, MultiStatus):
         return ", ".join(
-            f"{r.filename}→{r.status}" + (f" ({r.problem.code.value})" if r.problem else f" ({r.invoice.status.value}, {r.invoice.llm_ms} ms)")
+            f"{r.filename}→{r.status}" + (f" ({r.problem.code.value})" if r.problem else f" ({r.invoice.status.value})")
             for r in parsed.results
         )
     if isinstance(parsed, Invoice):
@@ -69,18 +69,21 @@ def main() -> None:
     if isinstance(third.parsed, Problem):
         print(f"   duplicate_of_url: {third.parsed.duplicate_of_url}")
 
-    print("4. Page through the list, 2 at a time")
-    cursor, rest_first_page, page_no = None, None, 0
+    print("4. Page through the whole list, 2 at a time")
+    cursor, rest_first_page, page_no, seen = None, None, 0, []
     while True:
         response = list_invoices.sync_detailed(client=client, limit=2, cursor=cursor) if cursor else list_invoices.sync_detailed(client=client, limit=2)
         page = response.parsed
         assert isinstance(page, InvoicePage), describe(page)
         page_no += 1
+        seen += [str(i.id) for i in page.data]
         rest_first_page = rest_first_page or [str(i.id) for i in page.data]
-        print(f"   page {page_no}: " + ", ".join(f"{i.original_filename} ({i.status.value})" for i in page.data))
+        if page_no <= 3:
+            print(f"   page {page_no}: " + ", ".join(f"{i.original_filename} ({i.status.value})" for i in page.data))
         cursor = page.next_cursor
         if not cursor:
             break
+    print(f"   ... {page_no} pages, {len(seen)} invoices, each exactly once: {len(seen) == len(set(seen))}")
 
     print("5. GraphQL: first page of invoices")
     query = "{ invoices(first: 2) { edges { node { id originalFilename total { amountMinor currency } } } pageInfo { hasNextPage } } }"
