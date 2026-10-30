@@ -8,6 +8,7 @@ from typing import Annotated
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from ledgerline_api.db import DeadLetter as DeadLetterRow
 from ledgerline_api.db import Invoice as InvoiceRow
 
 
@@ -21,9 +22,12 @@ class ProblemCode(enum.StrEnum):
     DUPLICATE_INVOICE = "duplicate_invoice"
     INVALID_CURSOR = "invalid_cursor"
     NOT_FOUND = "not_found"
+    QUEUE_FULL = "queue_full"
 
 
 class InvoiceStatus(enum.StrEnum):
+    RECEIVED = "received"
+    EXTRACTING = "extracting"
     EXTRACTED = "extracted"
     FAILED = "failed"
 
@@ -45,8 +49,12 @@ class Problem(BaseModel):
 class ApiProblem(Exception):
     """Raised anywhere in request handling; rendered as application/problem+json."""
 
-    def __init__(self, status: int, code: ProblemCode, title: str, detail: str | None = None, **extra):
+    def __init__(
+        self, status: int, code: ProblemCode, title: str, detail: str | None = None,
+        headers: dict[str, str] | None = None, **extra,
+    ):
         super().__init__(f"{status} {code}: {detail or title}")
+        self.headers = headers
         self.problem = Problem(
             type=f"https://github.com/Abuubkar/ledgerline/blob/main/docs/problems.md#{code}",
             title=title,
@@ -115,3 +123,25 @@ class UploadResult(BaseModel):
 
 class MultiStatus(BaseModel):
     results: list[UploadResult]
+
+
+class DeadLetter(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: uuid.UUID
+    task_name: str
+    invoice_id: uuid.UUID
+    error_code: str
+    exception_chain: str
+    attempts: int
+    created_at: datetime
+    replayed_at: datetime | None
+
+    @classmethod
+    def from_row(cls, row: DeadLetterRow) -> "DeadLetter":
+        return cls.model_validate(row)
+
+
+class DeadLetterPage(BaseModel):
+    data: list[DeadLetter]
+    next_cursor: str | None

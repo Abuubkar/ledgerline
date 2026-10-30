@@ -3,19 +3,26 @@
 import asyncio
 import hashlib
 import re
+import time
 import uuid
-from dataclasses import asdict, dataclass
+from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 
-from sqlalchemy import select, tuple_
+import httpx
+from sqlalchemy import func, select, tuple_
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from ledgerline_api import cursor, idempotency
+from ledgerline_api import cursor, idempotency, storage
+from ledgerline_api.db import DeadLetter as DeadLetterRow
 from ledgerline_api.db import Invoice as InvoiceRow
-from ledgerline_api.extraction import ExtractionError, extract_header, read_pages
+from ledgerline_api.db import OutboxMessage
+from ledgerline_api.extraction import ExtractionError, read_pages
 from ledgerline_api.schemas import ApiProblem, Invoice, MultiStatus, ProblemCode, UploadResult
 from ledgerline_api.settings import settings
+
+EXTRACT_TASK = "ledgerline.extract_invoice"
+EXTRACT_QUEUE = "invoices.extract"
 
 
 @dataclass
@@ -37,6 +44,42 @@ def content_fingerprint(pages: list[str] | None, content: bytes) -> str:
     PDFs without a text layer (scans) all have empty text, so they fall back to the raw bytes."""
     text = re.sub(r"\s+", " ", " ".join(pages or [])).strip()
     return hashlib.sha256(text.encode() if text else content).hexdigest()
+
+
+def enqueue_extraction(session: AsyncSession, invoice_id: uuid.UUID) -> None:
+    """Add the job to the caller's transaction; the outbox relay publishes it once that transaction commits."""
+    session.add(OutboxMessage(task_name=EXTRACT_TASK, payload={"invoice_id": str(invoice_id)}))
+
+
+# --- backpressure ---------------------------------------------------------------------------------------
+
+_depth_cache: tuple[float, int] | None = None
+
+
+async def queue_depth(session: AsyncSession) -> int | None:
+    """Jobs waiting: ready messages in RabbitMQ plus jobs not yet published from the outbox. Cached for 2 s so
+    a burst of uploads doesn't hammer the management API. None if RabbitMQ can't be asked."""
+    global _depth_cache
+    now = time.monotonic()
+    if _depth_cache and now - _depth_cache[0] < 2:
+        return _depth_cache[1]
+    try:
+        async with httpx.AsyncClient(timeout=2) as client:
+            response = await client.get(f"{settings.rabbitmq_management_url}/api/queues/%2F/{EXTRACT_QUEUE}")
+            response.raise_for_status()
+            ready = response.json().get("messages_ready", 0)
+    except httpx.HTTPError:
+        # Fail open: an unreachable management API shouldn't stop uploads; the broker's own max-length still
+        # bounds the queue.
+        return None
+    unpublished = (
+        await session.execute(select(func.count()).select_from(OutboxMessage).where(OutboxMessage.published_at.is_(None)))
+    ).scalar_one()
+    _depth_cache = (now, ready + unpublished)
+    return _depth_cache[1]
+
+
+# --- uploads --------------------------------------------------------------------------------------------
 
 
 async def _find_duplicate(session: AsyncSession, sha: str) -> InvoiceRow | None:
@@ -63,53 +106,36 @@ async def _store_one(session: AsyncSession, file: IncomingFile) -> UploadResult:
                              f"{file.filename} is {file.content_type}; only application/pdf is accepted").problem
         return UploadResult(filename=file.filename, status=415, invoice=None, problem=problem)
 
+    # Text is read here only to fingerprint the file. An unreadable PDF is still accepted: the worker records
+    # why it can't be extracted, so the client sees the reason on the invoice rather than a bare 4xx.
     try:
         pages: list[str] | None = await asyncio.to_thread(read_pages, file.content)
-        read_error = None
-    except ExtractionError as exc:
-        pages, read_error = None, exc
+    except ExtractionError:
+        pages = None
 
     sha = content_fingerprint(pages, file.content)
-    # Checked before the model call: a duplicate costs a query, not 25 seconds of model time.
     if (original := await _find_duplicate(session, sha)) is not None:
         return _duplicate_result(file.filename, original.id)
 
-    settings.upload_dir.mkdir(parents=True, exist_ok=True)
-    path = settings.upload_dir / f"{uuid.uuid4()}.pdf"
-    await asyncio.to_thread(path.write_bytes, file.content)
-    invoice = InvoiceRow(original_filename=file.filename, file_path=str(path), content_sha256=sha)
-
-    try:
-        if read_error:
-            raise read_error
-        extraction = await extract_header(pages or [])
-    except ExtractionError as exc:
-        # The upload itself succeeded, so it is kept with the reason extraction failed.
-        invoice.status, invoice.error_code, invoice.error_detail = "failed", exc.code, exc.detail
-        invoice.page_count = len(pages) if pages is not None else None
-    else:
-        for name, value in asdict(extraction.header).items():
-            setattr(invoice, name, value)
-        invoice.status = "extracted"
-        invoice.page_count = extraction.page_count
-        invoice.model = extraction.model
-        invoice.prompt_version = extraction.prompt_version
-        invoice.prompt_tokens = extraction.prompt_tokens
-        invoice.output_tokens = extraction.output_tokens
-        invoice.llm_ms = extraction.llm_ms
-
+    invoice_id = uuid.uuid4()
+    file_uri = await asyncio.to_thread(storage.put, f"{invoice_id}.pdf", file.content)
+    invoice = InvoiceRow(
+        id=invoice_id, status="received", original_filename=file.filename, file_path=file_uri,
+        content_sha256=sha, page_count=len(pages) if pages is not None else None,
+    )
     session.add(invoice)
+    enqueue_extraction(session, invoice_id)
     try:
         await session.commit()
     except IntegrityError:
-        # Another request stored the same content while this one was extracting; the unique index decided.
+        # Another request stored the same content at the same moment; the unique index decided.
         await session.rollback()
         original = await _find_duplicate(session, sha)
         if original is None:
             raise
         return _duplicate_result(file.filename, original.id)
     await session.refresh(invoice)
-    return UploadResult(filename=file.filename, status=201, invoice=Invoice.from_row(invoice), problem=None)
+    return UploadResult(filename=file.filename, status=202, invoice=Invoice.from_row(invoice), problem=None)
 
 
 async def upload_invoices(session: AsyncSession, files: list[IncomingFile], key: uuid.UUID) -> UploadResponse:
@@ -135,6 +161,15 @@ async def upload_invoices(session: AsyncSession, files: list[IncomingFile], key:
     if decision is idempotency.Decision.REPLAY:
         return UploadResponse(status=row.response_status, body=row.response_body, replayed=True)
 
+    # Checked after the idempotency claim so a retry of a request that already went through is still
+    # answered from storage even when the queue is full.
+    depth = await queue_depth(session)
+    if depth is not None and depth >= settings.max_queue_depth:
+        await idempotency.release(session, key)
+        raise ApiProblem(429, ProblemCode.QUEUE_FULL, "Extraction queue full",
+                         f"{depth} extraction jobs are waiting; retry later",
+                         headers={"Retry-After": str(settings.upload_retry_after_s)})
+
     try:
         results = [await _store_one(session, file) for file in files]
     except BaseException:
@@ -151,15 +186,32 @@ async def upload_invoices(session: AsyncSession, files: list[IncomingFile], key:
     return UploadResponse(status=status, body=body, replayed=False)
 
 
+# --- reading --------------------------------------------------------------------------------------------
+
+
 @dataclass
 class Page:
-    items: list[InvoiceRow]
+    items: list
     next_cursor: str | None
     cursors: list[str]  # one per item, for GraphQL edges
 
 
-def _filters(status: str | None, created_after: datetime | None) -> dict[str, str | None]:
-    return {"status": status, "created_after": created_after.isoformat() if created_after else None}
+async def keyset_page(session: AsyncSession, query, model, limit: int, after: str | None, filters: dict) -> Page:
+    """Newest-first keyset pagination over (created_at, id) with signed cursors bound to `filters` (ADR 0006).
+    The one implementation every list endpoint uses."""
+    if after is not None:
+        try:
+            position = cursor.decode(after, filters, settings.cursor_secret)
+        except cursor.InvalidCursor as exc:
+            raise ApiProblem(400, ProblemCode.INVALID_CURSOR, "Invalid cursor", str(exc)) from None
+        # Row-value comparison matches the (created_at DESC, id DESC) index exactly.
+        query = query.where(tuple_(model.created_at, model.id) < (position.created_at, position.id))
+
+    # One extra row tells us whether a next page exists without a COUNT.
+    rows = list((await session.execute(query.order_by(model.created_at.desc(), model.id.desc()).limit(limit + 1))).scalars())
+    items = rows[:limit]
+    cursors = [cursor.encode(cursor.Position(row.created_at, row.id), filters, settings.cursor_secret) for row in items]
+    return Page(items=items, next_cursor=cursors[-1] if len(rows) > limit else None, cursors=cursors)
 
 
 async def list_invoices(
@@ -169,31 +221,50 @@ async def list_invoices(
     status: str | None = None,
     created_after: datetime | None = None,
 ) -> Page:
-    filters = _filters(status, created_after)
+    filters = {"status": status, "created_after": created_after.isoformat() if created_after else None}
     query = select(InvoiceRow)
     if status is not None:
         query = query.where(InvoiceRow.status == status)
     if created_after is not None:
         query = query.where(InvoiceRow.created_at > created_after)
-    if after is not None:
-        try:
-            position = cursor.decode(after, filters, settings.cursor_secret)
-        except cursor.InvalidCursor as exc:
-            raise ApiProblem(400, ProblemCode.INVALID_CURSOR, "Invalid cursor", str(exc)) from None
-        # Row-value comparison matches the (created_at DESC, id DESC) index exactly.
-        query = query.where(tuple_(InvoiceRow.created_at, InvoiceRow.id) < (position.created_at, position.id))
-
-    # One extra row tells us whether a next page exists without a COUNT.
-    rows = list(
-        (await session.execute(query.order_by(InvoiceRow.created_at.desc(), InvoiceRow.id.desc()).limit(limit + 1))).scalars()
-    )
-    items = rows[:limit]
-    cursors = [
-        cursor.encode(cursor.Position(row.created_at, row.id), filters, settings.cursor_secret) for row in items
-    ]
-    next_cursor = cursors[-1] if len(rows) > limit else None
-    return Page(items=items, next_cursor=next_cursor, cursors=cursors)
+    return await keyset_page(session, query, InvoiceRow, limit, after, filters)
 
 
 async def get_invoice(session: AsyncSession, invoice_id: uuid.UUID) -> InvoiceRow | None:
     return await session.get(InvoiceRow, invoice_id)
+
+
+# --- dead letters ---------------------------------------------------------------------------------------
+
+
+async def list_dead_letters(session: AsyncSession, limit: int, after: str | None = None) -> Page:
+    return await keyset_page(session, select(DeadLetterRow), DeadLetterRow, limit, after, {"list": "dead_letters"})
+
+
+async def replay_dead_letter(session: AsyncSession, dead_letter_id: uuid.UUID) -> tuple[DeadLetterRow, bool]:
+    """Queue the invoice again with a fresh retry budget. Returns (row, replayed_now); a second replay of the
+    same dead letter changes nothing."""
+    row = (
+        await session.execute(select(DeadLetterRow).where(DeadLetterRow.id == dead_letter_id).with_for_update())
+    ).scalar_one_or_none()
+    if row is None:
+        raise ApiProblem(404, ProblemCode.NOT_FOUND, "Dead letter not found", f"no dead letter with id {dead_letter_id}")
+    if row.replayed_at is not None:
+        await session.commit()
+        return row, False
+
+    invoice = await session.get(InvoiceRow, row.invoice_id, with_for_update=True)
+    invoice.status, invoice.error_code, invoice.error_detail = "received", None, None
+    row.replayed_at = datetime.now(UTC)
+    enqueue_extraction(session, invoice.id)
+    try:
+        await session.commit()
+    except IntegrityError:
+        # The same content was uploaded again (and stored) while this one sat in the dead-letter queue.
+        await session.rollback()
+        original = await _find_duplicate(session, invoice.content_sha256)
+        raise ApiProblem(409, ProblemCode.DUPLICATE_INVOICE, "Duplicate invoice",
+                         "an invoice with the same content has been stored since; replay would duplicate it",
+                         duplicate_of=original.id if original else None,
+                         duplicate_of_url=f"/v1/invoices/{original.id}" if original else None) from None
+    return row, True
