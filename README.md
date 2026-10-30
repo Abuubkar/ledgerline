@@ -9,15 +9,16 @@ Finance data punishes mistakes: a double-paid invoice costs real money. So the i
 unglamorous ones: idempotent ingestion, money that is never a float, failures that are recorded instead of
 guessed around, and a human approving every write.
 
-> **Status:** slice 2 of 8. Uploads are idempotent, duplicates are caught before the model runs, lists
-> paginate with signed cursors, and the API is defined by a checked-in OpenAPI contract with a generated
-> typed client and a GraphQL read API. See the [roadmap](#roadmap) for what's next.
+> **Status:** slice 3a of 8. Uploads return immediately and extraction runs on a queue that survives model
+> outages, corrupt files and killed workers without losing or duplicating an invoice (chaos-tested with 200
+> invoices). See the [roadmap](#roadmap) for what's next.
 
 ## What works today
 
-Upload up to 10 invoice PDFs with a text layer, and a local model (`gemma4:12b` via Ollama) extracts each
-one's header fields: vendor, tax ID, invoice number, dates, currency, subtotal, tax and total. The results are
-validated, normalized and stored in Postgres.
+Upload up to 50 invoice PDFs with a text layer. The API stores them and answers **202** in well under a
+second; a queue worker then has a local model (`gemma4:12b` via Ollama) extract each one's header fields:
+vendor, tax ID, invoice number, dates, currency, subtotal, tax and total. Poll `GET /v1/invoices/{id}` until
+`status` is `extracted` (or `failed`, with the reason).
 
 ```bash
 curl -H "Idempotency-Key: $(uuidgen)" -F "files=@samples/inv-002.pdf;type=application/pdf" \
@@ -41,6 +42,13 @@ curl -H "Idempotency-Key: $(uuidgen)" -F "files=@samples/inv-002.pdf;type=applic
 
 Around that:
 
+- **A queue that doesn't lose work.** Celery on RabbitMQ quorum queues. Model outages are retried with
+  exponential backoff and jitter; corrupt PDFs go straight to a dead-letter queue (`GET /v1/admin/dead-letters`)
+  and can be replayed once fixed. A killed worker's job is taken over when its lease lapses.
+- **Backpressure.** A Redis semaphore caps model calls across all workers, and uploads get 429 with
+  `Retry-After` when too many jobs are waiting.
+- **No job without its data, no data without its job.** Jobs are written to an outbox table in the same
+  transaction as the upload and published by a relay.
 - **Safe retries.** Every upload carries an `Idempotency-Key`; a retry returns the stored response in tens of
   milliseconds (`Idempotent-Replayed: true`), per the IETF idempotency-key draft.
 - **Duplicates never reach the model.** The same invoice uploaded again is a 409 with a link to the original,
@@ -68,6 +76,9 @@ Around that:
 - **The OpenAPI file is the contract.** [contracts/openapi.yaml](contracts/openapi.yaml) is written first;
   `make contract-check` fails if the code would break a client generated from it, and `make codegen`
   regenerates the typed client. ([ADR 0007](docs/adr/0007-spec-first-contracts-and-graphql.md))
+- **Leases, not long-held locks.** A worker owns an invoice through a lease it renews; a unique index allows
+  only one completed extraction per invoice, so double extraction is impossible rather than unlikely.
+  ([ADR 0009](docs/adr/0009-queued-extraction-with-leases-and-dead-letters.md))
 - **Built in thin vertical slices**, each running end to end on real input, with every real choice recorded
   as an [ADR](docs/adr/). The working rules are in [HOW_WE_BUILD.md](HOW_WE_BUILD.md).
 
@@ -78,7 +89,7 @@ macOS has no GPU access, so the model runs outside it).
 
 ```bash
 ollama pull gemma4:12b
-docker compose up -d --wait               # Postgres 18 on localhost:5434
+docker compose up -d --wait               # Postgres, RabbitMQ, Redis, SeaweedFS, worker, outbox relay
 uv run alembic upgrade head
 uv run uvicorn ledgerline_api.main:app --port 8000
 ```
@@ -92,6 +103,7 @@ make smoke                                # end to end with the generated client
 make test                                 # unit tests, offline
 make test-int                             # service tests against a throwaway Postgres (needs Docker)
 make contract-check                       # code vs. contracts/openapi.yaml (needs Docker)
+make chaos                                # 200 invoices, stub model failing 15%, a worker killed mid-run
 ```
 
 Configuration is read from environment variables or `.env`; every key is listed in
@@ -105,7 +117,8 @@ Each slice is one end-to-end change. The destination layout and stack are in [do
 |---|---|---|
 | 1 | Upload one PDF → local model extracts header fields → stored → fetched | Done |
 | 2 | Spec-first REST API, idempotent bulk upload, keyset pagination, typed Python client, GraphQL reads | Done |
-| 3 | Queued extraction (Celery + RabbitMQ): retries, dead letters, partial page failures, backpressure, scanned pages | Planned |
+| 3a | Queued extraction (Celery + RabbitMQ): retries, dead letters + replay, backpressure, outbox, chaos test | Done |
+| 3b | Per-page extraction, line items, scanned pages, arithmetic check with one repair call | Planned |
 | 4 | ERP sync with cursor pagination, 3-way match, seed data, a live expand/contract migration | Planned |
 | 5 | Exception agent with tool calling; reviewer UI to approve or reject its proposals | Planned |
 | 6 | Golden set of 60 invoices, eval script with gates, model sweep | Planned |
@@ -115,7 +128,8 @@ Each slice is one end-to-end change. The destination layout and stack are in [do
 ## Layout
 
 ```text
-apps/api/                 FastAPI app, SQLAlchemy models, Alembic migrations, tests
+apps/api/                 FastAPI app, Celery worker, outbox relay, SQLAlchemy models, migrations, tests
+infra/rabbitmq/           queue topology and dead-letter policy, imported at broker boot
 contracts/                openapi.yaml (source of truth), schema.graphql (exported from code)
 packages/clients/python/  typed client generated from the contract; never edited by hand
 scripts/                  sample invoice generator, end-to-end checks
