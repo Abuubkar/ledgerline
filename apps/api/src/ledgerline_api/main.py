@@ -1,104 +1,132 @@
 import uuid
-from dataclasses import asdict
-from datetime import date, datetime
+from datetime import datetime
 from typing import Annotated
 
-from fastapi import Depends, FastAPI, HTTPException, UploadFile
-from pydantic import BaseModel
+from fastapi import Depends, FastAPI, Header, Query, Request, UploadFile
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
-from ledgerline_api.db import Invoice, get_session
-from ledgerline_api.extraction import ExtractionError, extract_invoice
-from ledgerline_api.settings import settings
+from ledgerline_api import service
+from ledgerline_api.db import get_session
+from ledgerline_api.graphql import graphql_router
+from ledgerline_api.schemas import (
+    ApiProblem,
+    Invoice,
+    InvoicePage,
+    InvoiceStatus,
+    MultiStatus,
+    Problem,
+    ProblemCode,
+)
 
-app = FastAPI(title="Ledgerline")
+app = FastAPI(title="Ledgerline", version="0.2.0")
+app.include_router(graphql_router, prefix="/graphql")
 
-
-class Money(BaseModel):
-    amount_minor: int
-    currency: str
-
-
-class InvoiceOut(BaseModel):
-    id: uuid.UUID
-    status: str
-    original_filename: str
-    page_count: int | None
-    vendor_name: str | None
-    vendor_tax_id: str | None
-    invoice_number: str | None
-    invoice_date: date | None
-    due_date: date | None
-    currency: str | None
-    subtotal: Money | None
-    tax: Money | None
-    total: Money | None
-    field_confidence: dict | None
-    invalid_fields: dict | None
-    error_code: str | None
-    error_detail: str | None
-    model: str | None
-    prompt_version: str | None
-    prompt_tokens: int | None
-    output_tokens: int | None
-    llm_ms: int | None
-    created_at: datetime
-
-
-def _money(minor: int | None, currency: str | None) -> Money | None:
-    if minor is None or currency is None:
-        return None
-    return Money(amount_minor=minor, currency=currency)
-
-
-def to_out(invoice: Invoice) -> InvoiceOut:
-    return InvoiceOut(
-        **{name: getattr(invoice, name) for name in InvoiceOut.model_fields if hasattr(invoice, name)},
-        subtotal=_money(invoice.subtotal_minor, invoice.currency),
-        tax=_money(invoice.tax_minor, invoice.currency),
-        total=_money(invoice.total_minor, invoice.currency),
-    )
-
-
+PROBLEM_JSON = "application/problem+json"
 Session = Annotated[AsyncSession, Depends(get_session)]
 
 
-@app.post("/v1/invoices", status_code=201)
-async def upload_invoice(file: UploadFile, session: Session) -> InvoiceOut:
-    if file.content_type != "application/pdf":
-        raise HTTPException(415, "only application/pdf is accepted")
+def problem_response(problem: Problem, headers: dict[str, str] | None = None) -> JSONResponse:
+    return JSONResponse(problem.model_dump(mode="json"), status_code=problem.status, media_type=PROBLEM_JSON, headers=headers)
 
-    settings.upload_dir.mkdir(parents=True, exist_ok=True)
-    path = settings.upload_dir / f"{uuid.uuid4()}.pdf"
-    path.write_bytes(await file.read())
 
-    invoice = Invoice(original_filename=file.filename or path.name, file_path=str(path))
+@app.exception_handler(ApiProblem)
+async def api_problem_handler(_: Request, exc: ApiProblem) -> JSONResponse:
+    return problem_response(exc.problem)
+
+
+@app.exception_handler(RequestValidationError)
+async def validation_handler(_: Request, exc: RequestValidationError) -> JSONResponse:
+    details = "; ".join(f"{'.'.join(str(p) for p in err['loc'])}: {err['msg']}" for err in exc.errors())
+    return problem_response(ApiProblem(400, ProblemCode.INVALID_REQUEST, "Invalid request", details).problem)
+
+
+@app.exception_handler(StarletteHTTPException)
+async def http_exception_handler(_: Request, exc: StarletteHTTPException) -> JSONResponse:
+    code = ProblemCode.NOT_FOUND if exc.status_code == 404 else ProblemCode.INVALID_REQUEST
+    return problem_response(ApiProblem(exc.status_code, code, str(exc.detail)).problem)
+
+
+def _problems(*statuses: int) -> dict:
+    return {status: {"model": Problem, "description": "An RFC 9457 problem."} for status in statuses}
+
+
+_default_openapi = app.openapi
+
+
+def openapi_with_problem_json() -> dict:
+    """FastAPI documents every response model as application/json and adds a 422 validation response to each
+    route. Ours differ: errors are application/problem+json, and validation failures are 400 problems."""
+    if app.openapi_schema is None:
+        schema = _default_openapi()
+        for operations in schema["paths"].values():
+            for operation in operations.values():
+                responses = operation.get("responses", {})
+                if "HTTPValidationError" in str(responses.get("422", "")):
+                    del responses["422"]
+                for status, response in responses.items():
+                    content = response.get("content", {})
+                    if int(status) >= 400 and "application/json" in content:
+                        response["content"] = {PROBLEM_JSON: content["application/json"]}
+        for unused in ("HTTPValidationError", "ValidationError"):
+            schema["components"]["schemas"].pop(unused, None)
+    return app.openapi_schema
+
+
+app.openapi = openapi_with_problem_json
+
+
+@app.post(
+    "/v1/invoices",
+    operation_id="uploadInvoices",
+    status_code=201,
+    responses={
+        201: {"model": Invoice, "description": "One file, stored."},
+        207: {"model": MultiStatus, "description": "Several files; one result per file, in upload order."},
+        **_problems(400, 409, 415, 422),
+    },
+)
+async def upload_invoices(
+    files: list[UploadFile],
+    session: Session,
+    # Checked by hand, not by FastAPI, so a missing key is 400 idempotency_key_missing as the draft asks.
+    idempotency_key: Annotated[str | None, Header(alias="Idempotency-Key")] = None,
+) -> JSONResponse:
+    if idempotency_key is None:
+        raise ApiProblem(400, ProblemCode.IDEMPOTENCY_KEY_MISSING, "Idempotency-Key header required",
+                         "send a client-generated UUID in Idempotency-Key so the upload can be retried safely")
     try:
-        extraction = await extract_invoice(path)
-    except ExtractionError as exc:
-        # The upload itself succeeded, so the record is kept with the reason extraction failed.
-        invoice.status, invoice.error_code, invoice.error_detail = "failed", exc.code, exc.detail
-    else:
-        header = asdict(extraction.header)
-        for name, value in header.items():
-            setattr(invoice, name, value)
-        invoice.status = "extracted"
-        invoice.page_count = extraction.page_count
-        invoice.model = extraction.model
-        invoice.prompt_version = extraction.prompt_version
-        invoice.prompt_tokens = extraction.prompt_tokens
-        invoice.output_tokens = extraction.output_tokens
-        invoice.llm_ms = extraction.llm_ms
+        key = uuid.UUID(idempotency_key)
+    except ValueError:
+        raise ApiProblem(400, ProblemCode.INVALID_REQUEST, "Invalid Idempotency-Key", "must be a UUID") from None
 
-    session.add(invoice)
-    await session.commit()
-    await session.refresh(invoice)
-    return to_out(invoice)
+    incoming = [
+        service.IncomingFile(f.filename or "upload.pdf", f.content_type or "application/octet-stream", await f.read())
+        for f in files
+    ]
+    result = await service.upload_invoices(session, incoming, key)
+    headers = {"Idempotent-Replayed": "true"} if result.replayed else None
+    media_type = PROBLEM_JSON if result.status >= 400 else "application/json"
+    return JSONResponse(result.body, status_code=result.status, media_type=media_type, headers=headers)
 
 
-@app.get("/v1/invoices/{invoice_id}")
-async def get_invoice(invoice_id: uuid.UUID, session: Session) -> InvoiceOut:
-    invoice = await session.get(Invoice, invoice_id)
+@app.get("/v1/invoices", operation_id="listInvoices", responses=_problems(400))
+async def list_invoices(
+    session: Session,
+    limit: Annotated[int, Query(ge=1, le=100)] = 25,
+    cursor: str | None = None,
+    status: InvoiceStatus | None = None,
+    created_after: datetime | None = None,
+) -> InvoicePage:
+    page = await service.list_invoices(session, limit, cursor, status, created_after)
+    return InvoicePage(data=[Invoice.from_row(row) for row in page.items], next_cursor=page.next_cursor)
+
+
+@app.get("/v1/invoices/{invoice_id}", operation_id="getInvoice", responses=_problems(400, 404))
+async def get_invoice(invoice_id: uuid.UUID, session: Session) -> Invoice:
+    invoice = await service.get_invoice(session, invoice_id)
     if invoice is None:
-        raise HTTPException(404, "invoice not found")
-    return to_out(invoice)
+        raise ApiProblem(404, ProblemCode.NOT_FOUND, "Invoice not found", f"no invoice with id {invoice_id}")
+    return Invoice.from_row(invoice)
