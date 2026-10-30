@@ -36,3 +36,8 @@ def put(key: str, content: bytes) -> str:
 def get(file_uri: str) -> bytes:
     bucket, _, key = file_uri.removeprefix("s3://").partition("/")
     return _client().get_object(Bucket=bucket, Key=key)["Body"].read()
+
+
+def delete(file_uri: str) -> None:
+    bucket, _, key = file_uri.removeprefix("s3://").partition("/")
+    _client().delete_object(Bucket=bucket, Key=key)
