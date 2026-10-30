@@ -24,7 +24,7 @@ class Invoice:
     """
     Attributes:
         id (UUID):
-        status (InvoiceStatus):
+        status (InvoiceStatus): received → extracting → extracted, or failed when the job is dead-lettered.
         original_filename (str):
         page_count (int | None):
         vendor_name (None | str):
