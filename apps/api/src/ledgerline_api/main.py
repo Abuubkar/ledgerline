@@ -13,6 +13,8 @@ from ledgerline_api.db import get_session
 from ledgerline_api.graphql import graphql_router
 from ledgerline_api.schemas import (
     ApiProblem,
+    DeadLetter,
+    DeadLetterPage,
     Invoice,
     InvoicePage,
     InvoiceStatus,
@@ -34,7 +36,7 @@ def problem_response(problem: Problem, headers: dict[str, str] | None = None) ->
 
 @app.exception_handler(ApiProblem)
 async def api_problem_handler(_: Request, exc: ApiProblem) -> JSONResponse:
-    return problem_response(exc.problem)
+    return problem_response(exc.problem, exc.headers)
 
 
 @app.exception_handler(RequestValidationError)
@@ -81,11 +83,11 @@ app.openapi = openapi_with_problem_json
 @app.post(
     "/v1/invoices",
     operation_id="uploadInvoices",
-    status_code=201,
+    status_code=202,
     responses={
-        201: {"model": Invoice, "description": "One file, stored."},
+        202: {"model": Invoice, "description": "One file, stored and queued for extraction (status `received`)."},
         207: {"model": MultiStatus, "description": "Several files; one result per file, in upload order."},
-        **_problems(400, 409, 415, 422),
+        **_problems(400, 409, 415, 422, 429),
     },
 )
 async def upload_invoices(
@@ -130,3 +132,26 @@ async def get_invoice(invoice_id: uuid.UUID, session: Session) -> Invoice:
     if invoice is None:
         raise ApiProblem(404, ProblemCode.NOT_FOUND, "Invoice not found", f"no invoice with id {invoice_id}")
     return Invoice.from_row(invoice)
+
+
+@app.get("/v1/admin/dead-letters", operation_id="listDeadLetters", responses=_problems(400))
+async def list_dead_letters(
+    session: Session, limit: Annotated[int, Query(ge=1, le=100)] = 25, cursor: str | None = None
+) -> DeadLetterPage:
+    page = await service.list_dead_letters(session, limit, cursor)
+    return DeadLetterPage(data=[DeadLetter.from_row(row) for row in page.items], next_cursor=page.next_cursor)
+
+
+@app.post(
+    "/v1/admin/dead-letters/{dead_letter_id}/replay",
+    operation_id="replayDeadLetter",
+    status_code=202,
+    responses={
+        202: {"model": DeadLetter, "description": "Queued again."},
+        200: {"model": DeadLetter, "description": "Already replayed earlier; nothing was queued."},
+        **_problems(400, 404, 409),
+    },
+)
+async def replay_dead_letter(dead_letter_id: uuid.UUID, session: Session) -> JSONResponse:
+    row, replayed_now = await service.replay_dead_letter(session, dead_letter_id)
+    return JSONResponse(DeadLetter.from_row(row).model_dump(mode="json"), status_code=202 if replayed_now else 200)

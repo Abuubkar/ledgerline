@@ -16,9 +16,13 @@ from ledgerline_api.settings import settings
 
 class ExtractionError(Exception):
     def __init__(self, code: str, detail: str):
-        super().__init__(f"{code}: {detail}")
+        # Both values go to Exception so the error survives pickling (Celery pickles exceptions).
+        super().__init__(code, detail)
         self.code = code
         self.detail = detail
+
+    def __str__(self) -> str:
+        return f"{self.code}: {self.detail}"
 
 
 @dataclass

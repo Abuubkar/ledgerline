@@ -33,3 +33,9 @@ by the database when two uploads race.
   validation errors (no key, too many files) happen before the claim and are not stored.
 - Scanned PDFs have no text, so their fingerprint falls back to the file bytes; otherwise every scan would be
   a "duplicate" of every other.
+
+## Update 2026-10-30 (slice 3a)
+
+Uploads no longer wait for the model; a request now holds its key for well under a second (a 10-file upload
+answered in 0.5 s). The 15-minute abandoned-claim timeout is far more than needed but harmless, so it stays.
+Requests carry up to 50 files.

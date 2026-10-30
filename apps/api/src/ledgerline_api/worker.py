@@ -1,0 +1,75 @@
+"""Celery worker for invoice extraction. Run with:
+
+    celery -A ledgerline_api.worker worker --concurrency=2
+
+Failure handling, end to end (ADR 0009):
+- TransientError: retried with exponential backoff and full jitter, up to `extraction_max_retries` times.
+- PermanentError, or retries exhausted: `on_failure` writes a dead_letters row and marks the invoice failed;
+  Celery then rejects the message without requeue, and RabbitMQ moves it to invoices.extract.dlq.
+- Worker process or container dies mid-task: the message was never acked (acks_late), so RabbitMQ redelivers
+  it. A message that keeps killing workers is dead-lettered by the queue's delivery limit (6).
+
+Celery has no asyncio support, so each task runs the async job with asyncio.run.
+"""
+
+import asyncio
+import random
+import traceback
+import uuid
+
+from celery import Celery, Task
+from kombu import Queue
+
+from ledgerline_api import jobs
+from ledgerline_api.errors import TransientError, classify
+from ledgerline_api.service import EXTRACT_QUEUE, EXTRACT_TASK
+from ledgerline_api.settings import settings
+
+app = Celery("ledgerline", broker=settings.broker_url)
+app.conf.update(
+    # Must match infra/rabbitmq/definitions.json, which declares the queue at broker boot; the dead-letter
+    # exchange, delivery limit and overflow come from the broker policy, not from here.
+    task_queues=[Queue(EXTRACT_QUEUE, routing_key=EXTRACT_QUEUE, queue_arguments={"x-queue-type": "quorum"})],
+    task_default_queue=EXTRACT_QUEUE,
+    task_routes={EXTRACT_TASK: {"queue": EXTRACT_QUEUE}},
+    task_acks_late=True,  # ack only after the task finishes, so a crash means redelivery
+    task_acks_on_failure_or_timeout=False,  # a failed task is rejected without requeue → dead-lettered
+    task_reject_on_worker_lost=True,  # a killed worker process requeues its message
+    worker_prefetch_multiplier=1,  # one message per process: no prefetched work stuck on a dead worker
+    task_time_limit=300,
+    task_soft_time_limit=270,
+    task_ignore_result=True,  # results live in Postgres; no result backend
+    broker_transport_options={"confirm_publish": True},  # required for quorum queues
+    broker_connection_retry_on_startup=True,
+    # RabbitMQ 4.3+ refuses transient non-exclusive queues, which is what Celery's remote-control and event
+    # queues are by default. Exclusive queues are allowed and vanish when the worker disconnects.
+    control_queue_exclusive=True,
+    event_queue_exclusive=True,
+)
+
+
+def backoff_seconds(retries: int, base: float | None = None, cap: float | None = None) -> float:
+    """Exponential backoff with full jitter: a random wait in [0, min(cap, base * 2^retries)], so many jobs
+    that failed together don't retry together."""
+    base = settings.extraction_retry_backoff_base_s if base is None else base
+    cap = settings.extraction_retry_backoff_max_s if cap is None else cap
+    return random.uniform(0, min(cap, base * 2**retries))
+
+
+class ExtractionTask(Task):
+    def on_failure(self, exc, task_id, args, kwargs, einfo):
+        error = classify(exc)
+        chain = "".join(traceback.format_exception(exc))
+        asyncio.run(jobs.dead_letter(self.name, kwargs, error, chain, attempts=self.request.retries + 1))
+
+
+@app.task(bind=True, base=ExtractionTask, name=EXTRACT_TASK)
+def extract_invoice(self, invoice_id: str) -> str:
+    try:
+        outcome = asyncio.run(jobs.extract(uuid.UUID(invoice_id), self.request.id, attempt=self.request.retries + 1))
+    except TransientError as exc:
+        if self.request.retries >= settings.extraction_max_retries:
+            raise  # out of retries: on_failure dead-letters it
+        raise self.retry(exc=exc, countdown=backoff_seconds(self.request.retries), max_retries=None) from exc
+    # PermanentError propagates: on_failure dead-letters it straight away.
+    return outcome.value

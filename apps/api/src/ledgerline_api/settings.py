@@ -1,5 +1,3 @@
-from pathlib import Path
-
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -7,11 +5,38 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
     database_url: str = "postgresql+asyncpg://ledgerline:ledgerline@localhost:5434/ledgerline"
-    upload_dir: Path = Path("data/uploads")
+
+    # Uploaded PDFs live in S3-compatible storage (SeaweedFS locally) so the API and workers can run apart.
+    s3_endpoint_url: str = "http://localhost:8333"
+    s3_bucket: str = "invoices"
+    s3_access_key: str = "ledgerline"
+    s3_secret_key: str = "ledgerline-secret"
+
+    broker_url: str = "amqp://ledgerline:ledgerline@localhost:5672//"
+    rabbitmq_management_url: str = "http://ledgerline:ledgerline@localhost:15672"
+    redis_url: str = "redis://localhost:6379/0"
+
+    # Backpressure: uploads get 429 once this many extraction jobs are waiting.
+    max_queue_depth: int = 500
+    upload_retry_after_s: int = 30
+
+    # Model calls in flight across all workers. Match Ollama's OLLAMA_NUM_PARALLEL; more just queue inside it.
+    llm_max_concurrency: int = 1
+    # Slots are leased and renewed every lease/3 while the call runs; a killed worker's slot frees itself
+    # after at most one lease.
+    llm_slot_lease_s: int = 30
+    llm_slot_wait_s: int = 600
+
+    # An extraction attempt holds a lease it renews while working; a killed worker's lease lapses quickly.
+    extraction_lease_s: int = 60
+    extraction_heartbeat_s: int = 20
+    extraction_max_retries: int = 5
+    extraction_retry_backoff_base_s: float = 2.0
+    extraction_retry_backoff_max_s: int = 300
     # Signs pagination cursors so clients can't forge or edit them. Override in every real deployment.
     cursor_secret: str = "dev-only-cursor-secret"
-    # Extraction is synchronous until slice 3, so a request is capped at ~4 minutes of model time.
-    max_files_per_request: int = 10
+    # Extraction is queued, so the cap only bounds request size (50 PDFs), not model time.
+    max_files_per_request: int = 50
     idempotency_ttl_hours: int = 24
     # An in-progress key older than this is treated as abandoned (the server died mid-request).
     idempotency_lock_timeout_s: int = 900
