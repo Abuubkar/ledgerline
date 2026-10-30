@@ -8,10 +8,11 @@ only if the lease is still its own. A worker killed mid-job stops renewing; its 
 
 import asyncio
 import enum
+import json
 import uuid
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
-from dataclasses import asdict
+from dataclasses import asdict, dataclass
 from datetime import UTC, datetime, timedelta
 
 import redis.asyncio as redis
@@ -20,14 +21,18 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.pool import NullPool
 
-from ledgerline_api import storage
-from ledgerline_api.db import DeadLetter, ExtractionRun, Invoice
+from ledgerline_api import prompts, storage
+from ledgerline_api.db import DeadLetter, ExtractionRun, Invoice, InvoiceLine, InvoicePageResult
 from ledgerline_api.errors import PermanentError, TransientError, classify
-from ledgerline_api.extraction import extract_header, read_pages
+from ledgerline_api.extraction import ExtractionError, ModelCall, extract_page, read_pages, render_page, repair_invoice
+from ledgerline_api.normalize import (
+    ExtractedPage, check_totals, decide_status, from_repair, merge_pages, needs_repair,
+)
 from ledgerline_api.semaphore import llm_slot
 from ledgerline_api.settings import settings
 
-TERMINAL = {"extracted", "failed"}
+FINISHED = {"extracted", "partially_extracted", "exception"}
+TERMINAL = FINISHED | {"failed"}
 
 
 class Outcome(enum.Enum):
@@ -120,6 +125,89 @@ async def _finish_run(session: AsyncSession, run_id: uuid.UUID, outcome: str, er
     return run
 
 
+@dataclass
+class DocumentResult:
+    header: object
+    lines: list
+    pages: list[InvoicePageResult]
+    status: str
+    repair_attempted: bool
+    calls: list[ModelCall]
+    prompt_version: str
+
+
+async def _extract_document(content: bytes, redis_client: redis.Redis) -> DocumentResult:
+    """Every page on its own, then merge, check the totals, and give the model one chance to repair them.
+
+    A model outage on any page raises TransientError and the whole job is retried. Bad output or an unreadable
+    page fails only that page."""
+    texts = await asyncio.to_thread(read_pages, content)
+    pages: list[InvoicePageResult] = []
+    extracted: list[tuple[int, ExtractedPage]] = []
+    images: list[bytes] = []
+    calls: list[ModelCall] = []
+    for index, text in enumerate(texts):
+        page_no = index + 1
+        if text is None:
+            pages.append(InvoicePageResult(page_no=page_no, status="failed", source="text", error_code="unreadable_page",
+                                           error_detail="the page's content could not be parsed"))
+            continue
+        image = None
+        if not text.strip():  # no text layer: read the page visually
+            image = await asyncio.to_thread(render_page, content, index)
+            if image is None:
+                pages.append(InvoicePageResult(page_no=page_no, status="blank", source="image"))
+                continue
+            images.append(image)
+        source = "image" if image else "text"
+        try:
+            async with llm_slot(redis_client):
+                call = await extract_page(page_no, len(texts), text, image)
+        except ExtractionError as exc:
+            error = classify(exc)
+            if isinstance(error, TransientError):
+                raise error from exc
+            pages.append(InvoicePageResult(page_no=page_no, status="failed", source=source,
+                                           error_code=error.code, error_detail=error.detail))
+            continue
+        calls.append(call)
+        extracted.append((page_no, call.parsed))
+        pages.append(InvoicePageResult(page_no=page_no, status="extracted", source=source,
+                                       prompt_tokens=call.prompt_tokens, output_tokens=call.output_tokens,
+                                       llm_ms=call.llm_ms))
+
+    statuses = [page.status for page in pages]
+    if not extracted:
+        if statuses and all(status == "blank" for status in statuses):
+            raise PermanentError("empty_document", "every page is blank")
+        failures = ", ".join(f"page {p.page_no}: {p.error_code}" for p in pages if p.status == "failed")
+        raise PermanentError("no_page_extracted", failures or "the document has no pages")
+
+    header, lines = merge_pages(extracted)
+    problems = check_totals(header, lines)
+    prompt_version = prompts.EXTRACT_PAGE_VERSION
+    repair_attempted = needs_repair(statuses, problems, repair_attempted=False)
+    if repair_attempted:
+        prompt_version += f"+{prompts.REPAIR_VERSION}"
+        previous = json.dumps([{"page": n, **p.model_dump()} for n, p in extracted])
+        try:
+            async with llm_slot(redis_client):
+                call = await repair_invoice(texts, images, previous, problems)
+        except ExtractionError as exc:
+            if isinstance(classify(exc), TransientError):
+                raise classify(exc) from exc
+            call = None  # unusable repair: keep the page-by-page result and its problems
+        if call is not None:
+            calls.append(call)
+            repaired_header, repaired_lines = from_repair(call.parsed)
+            if not check_totals(repaired_header, repaired_lines):
+                header, lines, problems = repaired_header, repaired_lines, []
+
+    if problems:
+        header.invalid_fields["total"] = "; ".join(problems)
+    return DocumentResult(header, lines, pages, decide_status(statuses, problems), repair_attempted, calls, prompt_version)
+
+
 async def extract(invoice_id: uuid.UUID, task_id: str, attempt: int) -> Outcome:
     """Run one extraction attempt. Raises TransientError (worth retrying) or PermanentError (dead-letter it)."""
     async with job_resources() as (sessions, redis_client):
@@ -142,9 +230,7 @@ async def extract(invoice_id: uuid.UUID, task_id: str, attempt: int) -> Outcome:
             async with sessions() as session:
                 file_uri = (await session.get(Invoice, invoice_id)).file_path
             content = await asyncio.to_thread(storage.get, file_uri)
-            pages = await asyncio.to_thread(read_pages, content)
-            async with llm_slot(redis_client):
-                extraction = await extract_header(pages)
+            result = await _extract_document(content, redis_client)
         except BaseException as exc:
             error = classify(exc) if isinstance(exc, Exception) else TransientError("cancelled", repr(exc))
             async with sessions() as session:
@@ -162,16 +248,25 @@ async def extract(invoice_id: uuid.UUID, task_id: str, attempt: int) -> Outcome:
                 await session.rollback()
                 return Outcome.LEASE_LOST
             invoice = await session.get(Invoice, invoice_id)
-            for name, value in asdict(extraction.header).items():
+            for name, value in asdict(result.header).items():
                 setattr(invoice, name, value)
-            invoice.status = "extracted"
-            invoice.page_count = extraction.page_count
-            invoice.model = extraction.model
-            invoice.prompt_version = extraction.prompt_version
-            invoice.prompt_tokens = extraction.prompt_tokens
-            invoice.output_tokens = extraction.output_tokens
-            invoice.llm_ms = extraction.llm_ms
+            invoice.status = result.status
+            invoice.page_count = len(result.pages)
+            invoice.model = settings.llm_model
+            invoice.prompt_version = result.prompt_version
+            invoice.prompt_tokens = sum(c.prompt_tokens for c in result.calls)
+            invoice.output_tokens = sum(c.output_tokens for c in result.calls)
+            invoice.llm_ms = sum(c.llm_ms for c in result.calls)
+            invoice.repair_attempted = result.repair_attempted
             invoice.error_code = invoice.error_detail = None
+            # Replacing the collections deletes the rows from any earlier attempt (delete-orphan).
+            invoice.pages = result.pages
+            invoice.lines = [
+                InvoiceLine(page_no=line.page_no, line_no=line.line_no, description=line.description,
+                            quantity=line.quantity, unit_price=line.unit_price, amount_minor=line.amount_minor,
+                            invalid_reason=line.invalid_reason)
+                for line in result.lines
+            ]
             await session.commit()
         return Outcome.COMPLETED
 
@@ -182,7 +277,7 @@ async def dead_letter(task_name: str, payload: dict, error: TransientError | Per
     async with job_resources() as (sessions, _):
         async with sessions() as session:
             invoice = await session.get(Invoice, invoice_id, with_for_update=True)
-            if invoice is None or invoice.status == "extracted":
+            if invoice is None or invoice.status in FINISHED:
                 return  # nothing to dead-letter: unknown invoice, or a duplicate delivery of a finished job
             invoice.status, invoice.error_code, invoice.error_detail = "failed", error.code, error.detail
             session.add(DeadLetter(

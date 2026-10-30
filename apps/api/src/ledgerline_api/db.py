@@ -2,10 +2,12 @@ import uuid
 from collections.abc import AsyncIterator
 from datetime import date, datetime
 
-from sqlalchemy import BigInteger, CheckConstraint, DateTime, ForeignKey, Index, String, func, text
+from decimal import Decimal
+
+from sqlalchemy import BigInteger, CheckConstraint, DateTime, ForeignKey, Index, Numeric, String, UniqueConstraint, func, text
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 from ledgerline_api.settings import settings
 
@@ -25,9 +27,10 @@ class Base(DeclarativeBase):
 class Invoice(Base):
     __tablename__ = "invoices"
     __table_args__ = (
-        # received → extracting → extracted | failed. Slice 3b adds partially_extracted and exception.
+        # received → extracting → extracted | partially_extracted | exception, or failed (dead-lettered).
         CheckConstraint(
-            "status IN ('received', 'extracting', 'extracted', 'failed')", name="invoices_status_check"
+            "status IN ('received', 'extracting', 'extracted', 'partially_extracted', 'exception', 'failed')",
+            name="invoices_status_check",
         ),
         CheckConstraint("currency ~ '^[A-Z]{3}$'", name="invoices_currency_check"),
         # Failed extractions don't block a re-upload of the same invoice (e.g. after a model outage).
@@ -72,8 +75,54 @@ class Invoice(Base):
     prompt_tokens: Mapped[int | None]
     output_tokens: Mapped[int | None]
     llm_ms: Mapped[int | None]
+    repair_attempted: Mapped[bool] = mapped_column(server_default=text("false"))
 
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+    # Loaded with the invoice: async sessions can't lazy-load, and the API always returns both.
+    pages: Mapped[list["InvoicePageResult"]] = relationship(
+        lazy="selectin", order_by="InvoicePageResult.page_no", cascade="all, delete-orphan"
+    )
+    lines: Mapped[list["InvoiceLine"]] = relationship(
+        lazy="selectin", order_by="(InvoiceLine.page_no, InvoiceLine.line_no)", cascade="all, delete-orphan"
+    )
+
+
+class InvoicePageResult(Base):
+    __tablename__ = "invoice_pages"
+    __table_args__ = (
+        UniqueConstraint("invoice_id", "page_no"),
+        CheckConstraint("status IN ('extracted', 'blank', 'failed')", name="invoice_pages_status_check"),
+        CheckConstraint("source IN ('text', 'image')", name="invoice_pages_source_check"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, server_default=text("uuidv7()"))
+    invoice_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("invoices.id", ondelete="CASCADE"))
+    page_no: Mapped[int]
+    status: Mapped[str] = mapped_column(String(20))
+    source: Mapped[str] = mapped_column(String(10))
+    error_code: Mapped[str | None]
+    error_detail: Mapped[str | None]
+    prompt_tokens: Mapped[int | None]
+    output_tokens: Mapped[int | None]
+    llm_ms: Mapped[int | None]
+
+
+class InvoiceLine(Base):
+    __tablename__ = "invoice_lines"
+    __table_args__ = (UniqueConstraint("invoice_id", "page_no", "line_no"),)
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, server_default=text("uuidv7()"))
+    invoice_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("invoices.id", ondelete="CASCADE"))
+    page_no: Mapped[int]
+    line_no: Mapped[int]
+    description: Mapped[str | None]
+    quantity: Mapped[Decimal | None] = mapped_column(Numeric(18, 4))
+    # Unit prices can be finer than the currency's minor unit (0.125 EUR per screw), so they stay decimal;
+    # the line amount is money and is stored in minor units.
+    unit_price: Mapped[Decimal | None] = mapped_column(Numeric(18, 6))
+    amount_minor: Mapped[int | None] = mapped_column(BigInteger)
+    invalid_reason: Mapped[str | None]
 
 
 class IdempotencyKey(Base):

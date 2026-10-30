@@ -1,17 +1,31 @@
-"""Read an invoice PDF and ask the local model for its header fields."""
+"""Read invoice PDFs page by page and ask the local model about each page."""
 
 import asyncio
 import io
+import threading
 import time
 from dataclasses import dataclass
 
 import ollama
 import pdfplumber
-from pydantic import ValidationError
+from pydantic import BaseModel, ValidationError
 
 from ledgerline_api import prompts
-from ledgerline_api.normalize import ExtractedHeader, InvoiceHeader, normalize_header
+from ledgerline_api.normalize import ExtractedPage, RepairedInvoice
 from ledgerline_api.settings import settings
+
+# PDFium (which renders pages for pdfplumber) is not thread-safe, even across documents.
+_render_lock = threading.Lock()
+RENDER_DPI = 150
+
+# Token estimates without a tokenizer, measured on gemma4:12b (2026-10-30). A real page prompt counts ~2.8
+# characters per token, because the chat template and JSON schema add tokens our character count doesn't
+# see; plain prose runs ~6.5. Budgeting at 2 stays on the safe side. One rendered page measured ~520 tokens.
+CHARS_PER_TOKEN_SAFE = 2.0
+TOKENS_PER_IMAGE = 600
+# A silently truncated prompt measured 15.5 characters per reported token; intact page prompts measure ~2.8.
+# prompt_eval_count includes cached prefix tokens, so a reused system prompt doesn't skew the ratio.
+TRUNCATED_CHARS_PER_TOKEN = 10.0
 
 
 class ExtractionError(Exception):
@@ -26,41 +40,79 @@ class ExtractionError(Exception):
 
 
 @dataclass
-class Extraction:
-    header: InvoiceHeader
-    page_count: int
-    model: str
-    prompt_version: str
+class ModelCall:
+    parsed: BaseModel
     prompt_tokens: int
     output_tokens: int
     llm_ms: int
 
 
-def read_pages(content: bytes) -> list[str]:
-    """Text per page. Raises ExtractionError for files pdfplumber can't parse."""
+def read_pages(content: bytes) -> list[str | None]:
+    """Text per page; None for a page whose content can't be parsed. Raises ExtractionError only when the file
+    as a whole can't be opened."""
     try:
-        with pdfplumber.open(io.BytesIO(content)) as pdf:
-            return [page.extract_text() or "" for page in pdf.pages]
+        pdf = pdfplumber.open(io.BytesIO(content))
+        pages = pdf.pages
     except Exception as exc:  # pdfminer raises a zoo of parser errors for corrupt files
         raise ExtractionError("unreadable_pdf", f"{type(exc).__name__}: {exc}") from exc
+    with pdf:
+        texts: list[str | None] = []
+        for page in pages:
+            try:
+                texts.append(page.extract_text() or "")
+            except Exception:
+                texts.append(None)
+        return texts
 
 
-async def extract_header(pages: list[str]) -> Extraction:
-    if not any(text.strip() for text in pages):
-        # Scanned pages (no text layer) are handled from slice 3 on.
-        raise ExtractionError("no_text_layer", "the PDF has no extractable text")
+def render_page(content: bytes, page_index: int) -> bytes | None:
+    """The page as a PNG, or None if it renders blank (e.g. the back of a scan)."""
+    with _render_lock, pdfplumber.open(io.BytesIO(content)) as pdf:
+        image = pdf.pages[page_index].to_image(resolution=RENDER_DPI)
+        # getextrema gives (min, max); an all-near-white page has nothing to read.
+        if image.original.convert("L").getextrema()[0] >= 250:
+            return None
+        buffer = io.BytesIO()
+        image.save(buffer, format="PNG")
+        return buffer.getvalue()
 
+
+def prompt_too_long(text_chars: int, image_count: int, num_ctx: int, reserve: int) -> bool:
+    """Would this prompt crowd out room for the answer? Checked before sending, because Ollama truncates
+    silently instead of failing."""
+    estimated = text_chars / CHARS_PER_TOKEN_SAFE + image_count * TOKENS_PER_IMAGE
+    return estimated > num_ctx - reserve
+
+
+def looks_truncated(text_chars: int, image_count: int, prompt_tokens: int, num_ctx: int) -> bool:
+    """Did Ollama drop part of the prompt anyway? Far fewer tokens than the text's length implies means yes."""
+    if prompt_tokens >= num_ctx:
+        return True
+    if image_count or prompt_tokens == 0:
+        return False  # image tokens make the ratio meaningless
+    return text_chars / prompt_tokens > TRUNCATED_CHARS_PER_TOKEN
+
+
+async def _chat(system: str, user: str, schema: type[BaseModel], images: list[bytes] | None = None) -> ModelCall:
+    """The one way Ledgerline calls the model."""
+    text_chars, image_count = len(system) + len(user), len(images or [])
+    if prompt_too_long(text_chars, image_count, settings.llm_num_ctx, settings.llm_output_reserve_tokens):
+        raise ExtractionError(
+            "prompt_too_long",
+            f"~{text_chars} characters and {image_count} image(s) won't fit num_ctx {settings.llm_num_ctx} "
+            f"with {settings.llm_output_reserve_tokens} tokens left for the answer",
+        )
     client = ollama.AsyncClient(host=settings.ollama_host)
+    message: dict = {"role": "user", "content": user}
+    if images:
+        message["images"] = images
     started = time.perf_counter()
     try:
         async with asyncio.timeout(settings.llm_timeout_s):
             response = await client.chat(
                 model=settings.llm_model,
-                messages=[
-                    {"role": "system", "content": prompts.EXTRACT_HEADER_SYSTEM},
-                    {"role": "user", "content": prompts.extract_header_user(pages)},
-                ],
-                format=ExtractedHeader.model_json_schema(),
+                messages=[{"role": "system", "content": system}, message],
+                format=schema.model_json_schema(),
                 # gemma4 thinks by default; copying fields needs no reasoning trace, and it costs seconds.
                 think=False,
                 options={"temperature": settings.llm_temperature, "num_ctx": settings.llm_num_ctx},
@@ -75,21 +127,27 @@ async def extract_header(pages: list[str]) -> Extraction:
     prompt_tokens = response.prompt_eval_count or 0
     if response.done_reason == "length":
         raise ExtractionError("output_truncated", "the model hit its output limit")
-    if prompt_tokens >= settings.llm_num_ctx:
-        # Ollama drops the start of an over-long prompt instead of failing, so check it ourselves.
-        raise ExtractionError("prompt_truncated", f"{prompt_tokens} prompt tokens >= num_ctx {settings.llm_num_ctx}")
-
+    if looks_truncated(text_chars, image_count, prompt_tokens, settings.llm_num_ctx):
+        raise ExtractionError(
+            "prompt_truncated", f"{text_chars} characters came back as only {prompt_tokens} prompt tokens"
+        )
     try:
-        extracted = ExtractedHeader.model_validate_json(response.message.content or "")
+        parsed = schema.model_validate_json(response.message.content or "")
     except ValidationError as exc:
         raise ExtractionError("invalid_model_output", str(exc)) from exc
+    return ModelCall(parsed, prompt_tokens, response.eval_count or 0, llm_ms)
 
-    return Extraction(
-        header=normalize_header(extracted),
-        page_count=len(pages),
-        model=settings.llm_model,
-        prompt_version=prompts.EXTRACT_HEADER_VERSION,
-        prompt_tokens=prompt_tokens,
-        output_tokens=response.eval_count or 0,
-        llm_ms=llm_ms,
+
+async def extract_page(page_no: int, page_count: int, text: str | None, image: bytes | None) -> ModelCall:
+    """One page, from its text or, when it has none, from its rendered image."""
+    user = prompts.extract_page_user(page_no, page_count, text if image is None else None)
+    return await _chat(prompts.EXTRACT_PAGE_SYSTEM, user, ExtractedPage, [image] if image else None)
+
+
+async def repair_invoice(
+    texts: list[str | None], images: list[bytes], previous_json: str, problems: list[str]
+) -> ModelCall:
+    """The single second look when the totals don't add up."""
+    return await _chat(
+        prompts.REPAIR_SYSTEM, prompts.repair_user(texts, previous_json, problems), RepairedInvoice, images or None
     )

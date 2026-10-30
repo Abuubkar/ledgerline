@@ -47,6 +47,9 @@ class Settings(BaseSettings):
     llm_temperature: float = 0.0
     # Always sent explicitly: Ollama's default context is small and truncates long prompts silently.
     llm_num_ctx: int = 8192
+    # Ollama truncates an over-long prompt silently (measured: a ~9.7k-token prompt with num_ctx 8192 came back
+    # as 4,099 prompt tokens) and has no tokenizer endpoint, so prompts are budgeted client-side.
+    llm_output_reserve_tokens: int = 2048
     llm_keep_alive: str = "10m"
     llm_timeout_s: float = 180.0
 
