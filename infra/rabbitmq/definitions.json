@@ -1,0 +1,84 @@
+{
+  "users": [
+    {
+      "name": "ledgerline",
+      "password_hash": "3efljyGS926i2KA7LATLz2lNrViDdVY65rflIm2Nl5ooDpWa",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": [
+        "administrator"
+      ]
+    }
+  ],
+  "vhosts": [
+    {
+      "name": "/"
+    }
+  ],
+  "permissions": [
+    {
+      "user": "ledgerline",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    }
+  ],
+  "exchanges": [
+    {
+      "name": "ledgerline.dlx",
+      "vhost": "/",
+      "type": "direct",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    }
+  ],
+  "queues": [
+    {
+      "name": "invoices.extract",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-queue-type": "quorum"
+      }
+    },
+    {
+      "name": "invoices.extract.dlq",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-queue-type": "quorum"
+      }
+    }
+  ],
+  "bindings": [
+    {
+      "source": "ledgerline.dlx",
+      "vhost": "/",
+      "destination": "invoices.extract.dlq",
+      "destination_type": "queue",
+      "routing_key": "invoices.extract.dlq",
+      "arguments": {}
+    }
+  ],
+  "policies": [
+    {
+      "vhost": "/",
+      "name": "invoices-extract",
+      "pattern": "^invoices\\.extract$",
+      "apply-to": "quorum_queues",
+      "priority": 10,
+      "definition": {
+        "dead-letter-exchange": "ledgerline.dlx",
+        "dead-letter-routing-key": "invoices.extract.dlq",
+        "delivery-limit": 6,
+        "dead-letter-strategy": "at-least-once",
+        "overflow": "reject-publish",
+        "max-length": 100000
+      }
+    }
+  ]
+}

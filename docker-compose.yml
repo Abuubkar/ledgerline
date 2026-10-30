@@ -16,5 +16,74 @@ services:
       timeout: 3s
       retries: 20
 
+  rabbitmq:
+    image: rabbitmq:4.4.0-management-alpine
+    ports:
+      - "5672:5672"
+      - "15672:15672"  # management UI and API (queue depth for backpressure)
+    volumes:
+      - ./infra/rabbitmq/rabbitmq.conf:/etc/rabbitmq/conf.d/20-ledgerline.conf:ro
+      - ./infra/rabbitmq/definitions.json:/etc/rabbitmq/definitions.json:ro
+      - rabbitmqdata:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "check_port_connectivity"]
+      interval: 5s
+      timeout: 10s
+      retries: 20
+
+  redis:
+    image: redis:8.8.4-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 2s
+      timeout: 3s
+      retries: 20
+
+  # S3-compatible object storage for uploaded PDFs (MinIO's community edition is archived; see ADR 0008).
+  seaweedfs:
+    image: chrislusf/seaweedfs:4.51
+    environment:
+      AWS_ACCESS_KEY_ID: ledgerline
+      AWS_SECRET_ACCESS_KEY: ledgerline-secret
+      S3_BUCKET: invoices
+    ports:
+      - "8333:8333"
+    volumes:
+      - seaweeddata:/data
+
+  # The worker and relay run the app image; the API still runs on the host during development.
+  worker:
+    build: .
+    image: ledgerline:dev
+    command: ["celery", "-A", "ledgerline_api.worker", "worker", "--loglevel=INFO", "--concurrency=${WORKER_CONCURRENCY:-2}"]
+    environment: &app-env
+      DATABASE_URL: postgresql+asyncpg://ledgerline:ledgerline@postgres:5432/ledgerline
+      BROKER_URL: amqp://ledgerline:ledgerline@rabbitmq:5672//
+      RABBITMQ_MANAGEMENT_URL: http://ledgerline:ledgerline@rabbitmq:15672
+      REDIS_URL: redis://redis:6379/0
+      S3_ENDPOINT_URL: http://seaweedfs:8333
+      # Ollama runs natively on the Mac (Docker on macOS has no GPU). The chaos test points this at a stub.
+      OLLAMA_HOST: ${WORKER_OLLAMA_HOST:-http://host.docker.internal:11434}
+      LLM_MAX_CONCURRENCY: ${LLM_MAX_CONCURRENCY:-1}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      postgres: {condition: service_healthy}
+      rabbitmq: {condition: service_healthy}
+      redis: {condition: service_healthy}
+      seaweedfs: {condition: service_started}
+
+  relay:
+    image: ledgerline:dev
+    command: ["python", "-m", "ledgerline_api.relay"]
+    environment: *app-env
+    depends_on:
+      postgres: {condition: service_healthy}
+      rabbitmq: {condition: service_healthy}
+
 volumes:
   pgdata:
+  rabbitmqdata:
+  seaweeddata:
