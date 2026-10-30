@@ -6,6 +6,7 @@ Stdlib only, so it adds no dependency.
 
 import json
 import sys
+import urllib.error
 import urllib.request
 import uuid
 from pathlib import Path
@@ -19,15 +20,23 @@ FIELDS = [
 def upload(api: str, pdf: Path) -> dict:
     boundary = uuid.uuid4().hex
     body = (
-        f"--{boundary}\r\nContent-Disposition: form-data; name=\"file\"; filename=\"{pdf.name}\"\r\n"
+        f"--{boundary}\r\nContent-Disposition: form-data; name=\"files\"; filename=\"{pdf.name}\"\r\n"
         "Content-Type: application/pdf\r\n\r\n"
     ).encode() + pdf.read_bytes() + f"\r\n--{boundary}--\r\n".encode()
     request = urllib.request.Request(
         f"{api}/v1/invoices", data=body, method="POST",
-        headers={"Content-Type": f"multipart/form-data; boundary={boundary}"},
+        headers={"Content-Type": f"multipart/form-data; boundary={boundary}", "Idempotency-Key": str(uuid.uuid4())},
     )
-    with urllib.request.urlopen(request, timeout=300) as response:
-        return json.load(response)
+    try:
+        with urllib.request.urlopen(request, timeout=300) as response:
+            return json.load(response)
+    except urllib.error.HTTPError as exc:
+        problem = json.load(exc)
+        if problem.get("code") != "duplicate_invoice":
+            raise SystemExit(f"{pdf.name}: HTTP {exc.code} {problem}") from None
+        # Already uploaded on an earlier run: compare the stored original instead.
+        with urllib.request.urlopen(f"{api}{problem['duplicate_of_url']}", timeout=30) as response:
+            return json.load(response)
 
 
 def flatten(invoice: dict) -> dict:
