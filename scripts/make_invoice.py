@@ -1,11 +1,14 @@
 """Render sample invoice PDFs plus their gold JSON (the exact values printed), so extraction has real input.
 
 The gold file is the template input, so it is correct by construction. Slice 6 grows this into the golden set.
-Usage: uv run python scripts/make_invoice.py [out_dir]
+Usage:
+  uv run python scripts/make_invoice.py [out_dir]                      # the 3 fixed samples
+  uv run python scripts/make_invoice.py --random 200 --seed 7 out_dir  # 200 varied, unique invoices
 """
 
+import argparse
 import json
-import sys
+import random
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
@@ -189,13 +192,73 @@ def gold(sample: Sample) -> dict:
     }
 
 
+VENDORS = [
+    ("Brightline Office Supply LLC", "EIN", "84-1937465", "USD", 8),
+    ("Nordwerk Industrietechnik GmbH", "USt-IdNr.", "DE 274 918 365", "EUR", 19),
+    ("Harbourside Catering Ltd", "VAT No.", "GB 482 1937 56", "GBP", 20),
+    ("Kawasemi Electronics K.K.", "Registration No.", "T9876543210987", "JPY", 10),
+    ("Alpenblick Logistik AG", "MWST-Nr.", "CHE-123.456.789", "CHF", 8),
+    ("Pacific Rim Packaging Inc.", "EIN", "91-2846573", "USD", 8),
+]
+ITEMS = [
+    "Laser printer toner, black", "A4 copy paper, 5 reams", "Ergonomic office chair", "USB-C docking station",
+    "Pallet wrap film, 500 m", "Industrial shelving bracket", "Safety goggles, anti-fog", "Cable ties, pack of 1000",
+    "Thermal labels 100x150", "Hand truck, folding", "LED panel light 60x60", "Server rack screws, M6",
+]
+
+
+def random_sample(rng: random.Random, index: int, tag: str) -> Sample:
+    """A varied invoice whose text is unique to (tag, index), so duplicate detection never fires by accident."""
+    name, tax_label, tax_printed, currency, rate = rng.choice(VENDORS)
+    exponent = 0 if currency == "JPY" else 2
+    day = rng.randint(1, 28)
+    month = rng.randint(1, 9)
+    lines = [
+        Line(rng.choice(ITEMS), rng.randint(1, 20), rng.randint(1, 500) * (100 if exponent == 0 else 1) * rng.choice([99, 100, 150]))
+        for _ in range(rng.randint(1, 4))
+    ]
+    return Sample(
+        slug=f"{tag}-{index:04d}",
+        vendor_name=name,
+        vendor_address=["Generated test vendor", f"Unit {rng.randint(1, 999)}"],
+        vendor_tax_label=tax_label,
+        vendor_tax_id_printed=tax_printed,
+        vendor_tax_id="".join(c for c in tax_printed.upper() if c.isalnum()),
+        buyer=["Ledgerline Demo Corp", "88 Market Street", "San Francisco, CA 94105"],
+        invoice_number=f"{tag.upper()}-{index:05d}",
+        invoice_date=f"2026-{month:02d}-{day:02d}",
+        invoice_date_printed=f"2026-{month:02d}-{day:02d}",
+        due_date=f"2026-{month + 1:02d}-{day:02d}",
+        due_date_printed=f"2026-{month + 1:02d}-{day:02d}",
+        currency=currency,
+        exponent=exponent,
+        tax_rate_pct=rate,
+        lines=lines,
+    )
+
+
+def write(sample: Sample, out: Path) -> None:
+    render(sample, out / f"{sample.slug}.pdf")
+    (out / f"{sample.slug}.json").write_text(json.dumps(gold(sample), indent=2) + "\n")
+
+
 def main() -> None:
-    out = Path(sys.argv[1] if len(sys.argv) > 1 else "samples")
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("out", nargs="?", default="samples")
+    parser.add_argument("--random", type=int, default=0, help="generate this many random invoices instead")
+    parser.add_argument("--seed", default="1", help="any string; the same seed gives the same invoices")
+    parser.add_argument("--tag", default="gen", help="prefix for file names and invoice numbers")
+    args = parser.parse_args()
+
+    out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
-    for sample in SAMPLES:
-        render(sample, out / f"{sample.slug}.pdf")
-        (out / f"{sample.slug}.json").write_text(json.dumps(gold(sample), indent=2) + "\n")
-        print(f"wrote {out / sample.slug}.pdf and .json")
+    samples = (
+        [random_sample(random.Random(f"{args.seed}-{i}"), i, args.tag) for i in range(args.random)]
+        if args.random else SAMPLES
+    )
+    for sample in samples:
+        write(sample, out)
+    print(f"wrote {len(samples)} invoice(s) to {out}/")
 
 
 if __name__ == "__main__":
