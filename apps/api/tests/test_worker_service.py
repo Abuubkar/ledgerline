@@ -14,8 +14,8 @@ from sqlalchemy import func, select
 
 from ledgerline_api import jobs, semaphore, storage
 from ledgerline_api.db import DeadLetter, ExtractionRun, Invoice
-from ledgerline_api.extraction import Extraction, ExtractionError
-from ledgerline_api.normalize import InvoiceHeader
+from ledgerline_api.extraction import ExtractionError, ModelCall
+from ledgerline_api.normalize import ExtractedLine, ExtractedPage, RepairedInvoice, RepairedLine
 from ledgerline_api.settings import settings
 
 pytestmark = [pytest.mark.integration, pytest.mark.anyio]
@@ -82,35 +82,72 @@ async def relay(client, worker):
     await task
 
 
+def _page(page_no: int, total: str = "46.41") -> ExtractedPage:
+    """A consistent one-line page: 39.00 + 7.41 tax = 46.41 EUR."""
+    return ExtractedPage(
+        vendor_name="ACME GmbH", vendor_tax_id=None, invoice_number="INV-1", invoice_date=None, due_date=None,
+        currency="EUR", subtotal=None, tax="7.41", total=total, field_confidence={"total": 0.9},
+        line_items=[ExtractedLine(description=f"Item on page {page_no}", quantity="1", unit_price="39.00", amount="39.00")],
+    )
+
+
 @pytest.fixture
 def model(monkeypatch):
-    """Stands in for Ollama. `script` is a list of outcomes for successive calls: 'ok', 'transient', 'permanent'.
-    Calls past the end of the script succeed."""
+    """Stands in for Ollama. `script` gives outcomes for successive page calls ('ok', 'transient', 'permanent');
+    calls past its end succeed. `fail_pages` fails those page numbers permanently. `printed_total` is what
+    every page reports as the total; `repair_total` is what a repair call reports (None = repair keeps it)."""
 
     class Fake:
         def __init__(self):
             self.script: list[str] = []
+            self.fail_pages: set[int] = set()
+            self.printed_total = "46.41"
+            self.repair_total: str | None = None
             self.calls = 0
+            self.repair_calls = 0
             self.lock = threading.Lock()  # the worker runs in another thread
 
-        async def __call__(self, pages):
+        async def page(self, page_no, page_count, text, image):
             with self.lock:
                 step = self.script[self.calls] if self.calls < len(self.script) else "ok"
                 self.calls += 1
             if step == "transient":
                 raise ExtractionError("model_unavailable", "stubbed outage")
-            if step == "permanent":
+            if step == "permanent" or page_no in self.fail_pages:
                 raise ExtractionError("invalid_model_output", "stubbed bad output")
-            return Extraction(
-                header=InvoiceHeader(invoice_number="INV-1", currency="EUR", total_minor=4641),
-                page_count=len(pages), model="fake", prompt_version="test/1",
-                prompt_tokens=10, output_tokens=5, llm_ms=1,
+            # Only the last page prints the totals, as on a real multi-page invoice.
+            total = self.printed_total if page_no == page_count else None
+            result = _page(page_no, total=total) if total else _page(page_no).model_copy(update={"total": None, "tax": None})
+            return ModelCall(result, prompt_tokens=10, output_tokens=5, llm_ms=1)
+
+        async def repair(self, texts, images, previous_json, problems):
+            with self.lock:
+                self.repair_calls += 1
+            pages = len(texts)
+            total = self.repair_total or self.printed_total
+            repaired = RepairedInvoice(
+                **_page(1, total=total).model_dump(exclude={"line_items"}),
+                line_items=[RepairedLine(page=n, description=f"Item on page {n}", quantity="1", unit_price="39.00", amount="39.00")
+                            for n in range(1, pages + 1)],
             )
+            return ModelCall(repaired, prompt_tokens=20, output_tokens=10, llm_ms=2)
 
     fake = Fake()
-    monkeypatch.setattr(jobs, "extract_header", fake)
+    monkeypatch.setattr(jobs, "extract_page", fake.page)
+    monkeypatch.setattr(jobs, "repair_invoice", fake.repair)
     monkeypatch.setattr(settings, "extraction_retry_backoff_base_s", 0.05)
     return fake
+
+
+def three_page_pdf(tag: str) -> bytes:
+    from fpdf import FPDF
+
+    pdf = FPDF()
+    for n in range(1, 4):
+        pdf.add_page()
+        pdf.set_font("helvetica", size=12)
+        pdf.cell(0, 10, f"Invoice {tag}, page {n} of 3")
+    return bytes(pdf.output())
 
 
 def _s3_ready() -> bool:
@@ -180,7 +217,9 @@ async def test_permanent_failure_is_dead_lettered_and_replay_runs_once(client, r
     invoice = await upload(client)
 
     failed = await wait_for_status(client, invoice["id"], {"extracted", "failed"})
-    assert failed["status"] == "failed" and failed["error_code"] == "invalid_model_output"
+    # Its only page failed, so no page was extracted; the page's own reason is kept in the detail.
+    assert failed["status"] == "failed" and failed["error_code"] == "no_page_extracted"
+    assert "page 1: invalid_model_output" in failed["error_detail"]
     assert model.calls == 1  # permanent errors are never retried
     dead = (await client.get("/v1/admin/dead-letters")).json()["data"]
     assert len(dead) == 1 and dead[0]["invoice_id"] == invoice["id"] and dead[0]["attempts"] == 1
@@ -197,6 +236,47 @@ async def test_permanent_failure_is_dead_lettered_and_replay_runs_once(client, r
     await asyncio.sleep(1)  # give a wrongly double-queued replay time to show up
     assert await runs(client, invoice["id"]) == ["permanent_failure", "completed"]
     assert model.calls == 2
+
+
+async def test_one_failing_page_leaves_the_invoice_partially_extracted_with_the_other_pages_kept(client, relay, model):
+    model.fail_pages = {2}
+    invoice = await upload(client, "three-pages.pdf", three_page_pdf("partial"))
+
+    done = await wait_for_status(client, invoice["id"], {"extracted", "partially_extracted", "exception", "failed"})
+
+    assert done["status"] == "partially_extracted"
+    assert [(p["page_no"], p["status"], p["error_code"]) for p in done["pages"]] == [
+        (1, "extracted", None), (2, "failed", "invalid_model_output"), (3, "extracted", None),
+    ]
+    assert [line["page_no"] for line in done["lines"]] == [1, 3]
+    assert model.repair_calls == 0  # with a page missing, a sum mismatch is expected, so no repair
+    assert done["repair_attempted"] is False
+
+
+async def test_totals_that_dont_add_up_get_exactly_one_repair_and_then_go_to_exception(client, relay, model):
+    model.printed_total = "99.99"  # 3 lines of 39.00 + 7.41 tax is 124.41, not 99.99
+    invoice = await upload(client, "three-pages.pdf", three_page_pdf("exception"))
+
+    done = await wait_for_status(client, invoice["id"], {"extracted", "partially_extracted", "exception", "failed"})
+
+    assert done["status"] == "exception"
+    assert model.repair_calls == 1
+    assert done["repair_attempted"] is True
+    assert "but the total is 99.99" in done["invalid_fields"]["total"]
+    assert done["total"]["amount_minor"] == 9999  # the printed number is kept, never "fixed"
+
+
+async def test_a_repair_that_makes_the_totals_add_up_is_used(client, relay, model):
+    model.printed_total = "99.99"
+    model.repair_total = "124.41"  # the model re-reads the total correctly
+    invoice = await upload(client, "three-pages.pdf", three_page_pdf("repaired"))
+
+    done = await wait_for_status(client, invoice["id"], {"extracted", "partially_extracted", "exception", "failed"})
+
+    assert done["status"] == "extracted"
+    assert model.repair_calls == 1 and done["repair_attempted"] is True
+    assert done["total"]["amount_minor"] == 12441
+    assert "total" not in (done["invalid_fields"] or {})
 
 
 async def test_running_out_of_retries_dead_letters_the_job(client, relay, model, monkeypatch):
