@@ -4,8 +4,12 @@ Uploads N generated invoices plus 3 corrupt PDFs while a stub model fails 15% of
 one of two worker containers mid-run. Then checks that nothing was lost or extracted twice, that every invoice
 reached a terminal status, and that exactly the corrupt files were dead-lettered.
 
+It runs against the dev database, so every invoice it uploads is named `chaos<timestamp>-...`, and at the end
+everything from any chaos run (rows, queued jobs, stored PDFs) is deleted. `--keep` leaves this run's data in
+place for debugging; the next run cleans it up.
+
 Needs: the compose stack up (`docker compose up -d --wait`), migrations applied, the API on localhost:8000.
-Usage: uv run python scripts/chaos.py [--count 200] [--fail-rate 0.15]
+Usage: uv run python scripts/chaos.py [--count 200] [--fail-rate 0.15] [--keep]
 """
 
 import argparse
@@ -23,15 +27,17 @@ from ledgerline_client import Client
 from ledgerline_client.api.default import upload_invoices
 from ledgerline_client.models import MultiStatus, UploadInvoicesBody
 from ledgerline_client.types import File
-from sqlalchemy import func, select, text
+from sqlalchemy import delete, func, select, text
 from sqlalchemy.ext.asyncio import create_async_engine
 
-from ledgerline_api.db import DeadLetter, ExtractionRun, Invoice
+from ledgerline_api import storage
+from ledgerline_api.db import DeadLetter, ExtractionRun, Invoice, OutboxMessage
 from ledgerline_api.settings import settings
 
 REPO = Path(__file__).resolve().parents[1]
 STUB_PORT = 11435
 TERMINAL = ("extracted", "failed")
+CHAOS_FILES = r"^chaos[0-9]+-"  # every chaos run's file names, from make_inputs' tag
 
 
 def sh(*args: str, env: dict | None = None) -> str:
@@ -92,11 +98,33 @@ async def run_stats(tag: str) -> dict:
     return {"statuses": statuses, "outcomes": outcomes, "duplicate_completed": duplicate_completed, "dead": dead}
 
 
+async def clean_up() -> int:
+    """Delete every chaos run's invoices with what hangs off them: runs, dead letters, queued jobs, stored PDFs.
+    Pages and lines go with the invoice (ON DELETE CASCADE)."""
+    engine = create_async_engine(settings.database_url)
+    async with engine.begin() as conn:
+        rows = (await conn.execute(
+            select(Invoice.id, Invoice.file_path).where(Invoice.original_filename.regexp_match(CHAOS_FILES))
+        )).all()
+        ids = [row.id for row in rows]
+        if ids:
+            await conn.execute(delete(DeadLetter).where(DeadLetter.invoice_id.in_(ids)))
+            await conn.execute(delete(ExtractionRun).where(ExtractionRun.invoice_id.in_(ids)))
+            await conn.execute(delete(OutboxMessage).where(OutboxMessage.payload["invoice_id"].astext.in_([str(i) for i in ids])))
+            await conn.execute(delete(Invoice).where(Invoice.id.in_(ids)))
+    await engine.dispose()
+    # After the commit: a PDF left behind by a failed delete is harmless; a row pointing at a missing PDF isn't.
+    for row in rows:
+        await asyncio.to_thread(storage.delete, row.file_path)
+    return len(rows)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--count", type=int, default=200)
     parser.add_argument("--fail-rate", type=float, default=0.15)
     parser.add_argument("--timeout", type=int, default=900)
+    parser.add_argument("--keep", action="store_true", help="leave this run's invoices in the dev database")
     args = parser.parse_args()
     try:
         httpx.get("http://localhost:8000/docs", timeout=3).raise_for_status()
@@ -161,6 +189,10 @@ def main() -> None:
     print(f"dead letters: {sorted(stats['dead'])}")
     print(f"stub model: {model['calls']} calls, {model['failed_503']} answered 503 ({model['failed_503'] / max(model['calls'], 1):.1%})")
     print(f"total time: {time.monotonic() - started:.1f}s")
+    if args.keep:
+        print(f"kept this run's invoices (file names {tag}-*); the next run without --keep deletes them")
+    else:
+        print(f"cleaned up {asyncio.run(clean_up())} chaos invoices from the dev database")
     sys.exit(0 if all(got == want for _, got, want in checks) else 1)
 
 

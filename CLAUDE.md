@@ -21,7 +21,7 @@ make test             # unit tests, offline
 make test-int         # service tests (testcontainers Postgres)
 make codegen          # regenerate client + schema.graphql after changing contracts or GraphQL types
 make contract-check   # oasdiff: code vs contracts/openapi.yaml
-make chaos            # 200 invoices, stub model failing 15%, one worker killed; checks nothing lost
+make chaos            # 200 invoices, stub model failing 15%, one worker killed; checks nothing lost, then deletes its data (--keep to keep)
 docker compose build worker && docker compose up -d worker relay   # after changing worker code
 ```
 

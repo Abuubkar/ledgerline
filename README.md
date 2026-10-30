@@ -113,7 +113,7 @@ make smoke                                # end to end with the generated client
 make test                                 # unit tests, offline
 make test-int                             # service tests against a throwaway Postgres (needs Docker)
 make contract-check                       # code vs. contracts/openapi.yaml (needs Docker)
-make chaos                                # 200 invoices, stub model failing 15%, a worker killed mid-run
+make chaos                                # 200 invoices, stub model failing 15%, a worker killed mid-run; cleans up after
 uv run python scripts/check_scenarios.py  # real model: failing page, blank page, misprinted total, scan
 ```
 
