@@ -4,6 +4,7 @@ The gold file is the template input, so it is correct by construction. Slice 6 g
 Usage:
   uv run python scripts/make_invoice.py [out_dir]                      # the 3 fixed samples
   uv run python scripts/make_invoice.py --random 200 --seed 7 out_dir  # 200 varied, unique invoices
+  uv run python scripts/make_invoice.py --scenarios out_dir            # slice 3b edge cases (see SCENARIOS)
 """
 
 import argparse
@@ -41,6 +42,11 @@ class Sample:
     exponent: int
     tax_rate_pct: int
     lines: list[Line]
+    # "single": one page. "dense-middle" / "blank-middle": three pages, lines split over pages 1 and 3, with a
+    # page of dense fine print or a blank page in between.
+    layout: str = "single"
+    total_misprint_minor: int = 0  # printed total = true total + this, to test the arithmetic check
+    scanned: bool = False  # image-only PDF of the rendered page, rotated 2 degrees, no text layer
 
 
 def fmt(minor: int, sample: Sample) -> str:
@@ -121,13 +127,7 @@ def totals(sample: Sample) -> tuple[int, int, int]:
     return subtotal, tax, subtotal + tax
 
 
-def render(sample: Sample, path: Path) -> None:
-    subtotal, tax, total = totals(sample)
-    pdf = FPDF()
-    # A fixed date keeps regenerated PDFs byte-identical, so rerunning the script never shows up as a git diff.
-    pdf.set_creation_date(FIXED_CREATION_DATE)
-    pdf.add_page()
-
+def _header(pdf: FPDF, sample: Sample) -> None:
     pdf.set_font("helvetica", style="B", size=16)
     pdf.cell(0, 8, sample.vendor_name, new_x="LMARGIN", new_y="NEXT")
     pdf.set_font("helvetica", size=9)
@@ -152,11 +152,14 @@ def render(sample: Sample, path: Path) -> None:
     pdf.set_font("helvetica", size=10)
     for line in sample.buyer:
         pdf.cell(0, 5, line, new_x="LMARGIN", new_y="NEXT")
-
     pdf.ln(6)
+
+
+def _lines_table(pdf: FPDF, sample: Sample, lines: list[Line]) -> None:
+    pdf.set_font("helvetica", size=10)
     with pdf.table(col_widths=(90, 20, 40, 40), text_align=("LEFT", "RIGHT", "RIGHT", "RIGHT")) as table:
         table.row(["Description", "Qty", f"Unit price ({sample.currency})", f"Amount ({sample.currency})"])
-        for line in sample.lines:
+        for line in lines:
             table.row([
                 line.description,
                 str(line.quantity),
@@ -164,17 +167,77 @@ def render(sample: Sample, path: Path) -> None:
                 fmt(line.quantity * line.unit_price_minor, sample),
             ])
 
+
+def _totals(pdf: FPDF, sample: Sample) -> None:
+    subtotal, tax, total = totals(sample)
     pdf.ln(4)
     for label, minor, bold in [
         ("Subtotal", subtotal, False),
         (f"Tax ({sample.tax_rate_pct}%)", tax, False),
-        ("Total due", total, True),
+        ("Total due", total + sample.total_misprint_minor, True),
     ]:
         pdf.set_font("helvetica", style="B" if bold else "", size=10)
         pdf.cell(150, 6, label, align="R")
         pdf.cell(40, 6, f"{sample.currency} {fmt(minor, sample)}", align="R", new_x="LMARGIN", new_y="NEXT")
 
-    pdf.output(str(path))
+
+def _fine_print(pdf: FPDF) -> None:
+    # A page of dense terms: more text than fits the model's context window, a realistic page-level failure.
+    clause = ("The supplier warrants that all goods delivered under this invoice conform to the agreed "
+              "specifications, are free from defects in material and workmanship, and comply with applicable law. ")
+    pdf.set_auto_page_break(False)
+    pdf.set_font("helvetica", size=3.5)
+    pdf.set_xy(8, 8)
+    pdf.multi_cell(194, 1.25, clause * 260)
+    pdf.set_auto_page_break(True)
+
+
+def _new_pdf() -> FPDF:
+    pdf = FPDF()
+    # A fixed date keeps regenerated PDFs byte-identical, so rerunning the script never shows up as a git diff.
+    pdf.set_creation_date(FIXED_CREATION_DATE)
+    return pdf
+
+
+def render_bytes(sample: Sample) -> bytes:
+    pdf = _new_pdf()
+    pdf.add_page()
+    _header(pdf, sample)
+    if sample.layout == "single":
+        _lines_table(pdf, sample, sample.lines)
+        _totals(pdf, sample)
+    else:
+        half = max(1, len(sample.lines) // 2)
+        _lines_table(pdf, sample, sample.lines[:half])
+        pdf.add_page()
+        if sample.layout == "dense-middle":
+            _fine_print(pdf)
+        pdf.add_page()
+        pdf.set_font("helvetica", size=9)
+        pdf.cell(0, 6, f"{sample.vendor_name} - invoice {sample.invoice_number} (continued)", new_x="LMARGIN", new_y="NEXT")
+        pdf.ln(4)
+        _lines_table(pdf, sample, sample.lines[half:])
+        _totals(pdf, sample)
+    return bytes(pdf.output())
+
+
+def _as_scan(pdf_bytes: bytes) -> bytes:
+    """Rasterize the first page and put the picture, slightly rotated, in a PDF with no text layer."""
+    import io
+
+    import pdfplumber
+
+    with pdfplumber.open(io.BytesIO(pdf_bytes)) as source:
+        image = source.pages[0].to_image(resolution=150).original.rotate(2, expand=True, fillcolor="white")
+    scan = _new_pdf()
+    scan.add_page()
+    scan.image(image, x=0, y=0, w=210)
+    return bytes(scan.output())
+
+
+def render(sample: Sample, path: Path) -> None:
+    content = render_bytes(sample)
+    path.write_bytes(_as_scan(content) if sample.scanned else content)
 
 
 def gold(sample: Sample) -> dict:
@@ -188,7 +251,10 @@ def gold(sample: Sample) -> dict:
         "currency": sample.currency,
         "subtotal_minor": subtotal,
         "tax_minor": tax,
-        "total_minor": total,
+        "total_minor": total + sample.total_misprint_minor,
+        "arithmetic_error": sample.total_misprint_minor != 0,
+        "layout": sample.layout,
+        "scanned": sample.scanned,
     }
 
 
@@ -237,6 +303,23 @@ def random_sample(rng: random.Random, index: int, tag: str) -> Sample:
     )
 
 
+def scenarios() -> list[Sample]:
+    """The slice 3b edge cases, built from the fixed samples so their content is known."""
+    from dataclasses import replace
+
+    acme, northwind, sakura = SAMPLES
+    more = [Line("Spare blades, pack of 10", 3, 1250), Line("Carry case", 1, 3400)]
+    return [
+        replace(northwind, slug="scenario-dense-middle", invoice_number="NW-48300",
+                layout="dense-middle", lines=northwind.lines + more),
+        replace(acme, slug="scenario-blank-middle", invoice_number="RE-2026-0930",
+                layout="blank-middle", lines=acme.lines + more),
+        replace(sakura, slug="scenario-misprinted-total", invoice_number="SK-2026-1101-01",
+                total_misprint_minor=10000),  # printed total is 10,000 yen too high
+        replace(northwind, slug="scenario-scanned", invoice_number="NW-48301", scanned=True),
+    ]
+
+
 def write(sample: Sample, out: Path) -> None:
     render(sample, out / f"{sample.slug}.pdf")
     (out / f"{sample.slug}.json").write_text(json.dumps(gold(sample), indent=2) + "\n")
@@ -248,14 +331,17 @@ def main() -> None:
     parser.add_argument("--random", type=int, default=0, help="generate this many random invoices instead")
     parser.add_argument("--seed", default="1", help="any string; the same seed gives the same invoices")
     parser.add_argument("--tag", default="gen", help="prefix for file names and invoice numbers")
+    parser.add_argument("--scenarios", action="store_true", help="write the slice 3b edge cases instead")
     args = parser.parse_args()
 
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
-    samples = (
-        [random_sample(random.Random(f"{args.seed}-{i}"), i, args.tag) for i in range(args.random)]
-        if args.random else SAMPLES
-    )
+    if args.scenarios:
+        samples = scenarios()
+    elif args.random:
+        samples = [random_sample(random.Random(f"{args.seed}-{i}"), i, args.tag) for i in range(args.random)]
+    else:
+        samples = SAMPLES
     for sample in samples:
         write(sample, out)
     print(f"wrote {len(samples)} invoice(s) to {out}/")

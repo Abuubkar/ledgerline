@@ -7,5 +7,8 @@
   "currency": "JPY",
   "subtotal_minor": 125000,
   "tax_minor": 12500,
-  "total_minor": 137500
+  "total_minor": 137500,
+  "arithmetic_error": false,
+  "layout": "single",
+  "scanned": false
 }

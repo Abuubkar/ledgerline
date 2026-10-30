@@ -35,11 +35,31 @@ def _amount(label: str, text: str) -> tuple[str | None, str | None]:
     return (match.group(1), match.group(2).replace(",", "")) if match else (None, None)
 
 
+_LINE = re.compile(r"^(.+?)\s+(\d+)\s+([\d,]+(?:\.\d+)?)\s+([\d,]+(?:\.\d+)?)\s*$", re.MULTILINE)
+
+
+def read_lines(text: str) -> list[dict]:
+    """Rows of the generated invoices' line tables (description, qty, unit price, amount): only lines after a
+    'Description Qty' header and before the totals, so IDs like 'DE 274 918 365' aren't mistaken for rows."""
+    tables = []
+    for segment in re.split(r"^Description Qty.*$", text, flags=re.MULTILINE)[1:]:
+        tables.append(re.split(r"^(?:Subtotal|--- page)", segment, maxsplit=1, flags=re.MULTILINE)[0])
+    rows = []
+    for match in _LINE.finditer("\n".join(tables)):
+        description, qty, unit, amount = match.groups()
+        if description.startswith(("Description", "Subtotal", "Tax", "Total")):
+            continue
+        rows.append({"description": description, "quantity": qty, "unit_price": unit.replace(",", ""),
+                     "amount": amount.replace(",", "")})
+    return rows
+
+
 def read_header(text: str) -> dict:
     currency, total = _amount("Total due", text)
     _, subtotal = _amount("Subtotal", text)
     _, tax = _amount(r"Tax \(\d+%\)", text)
-    first_line = text.split("--- page 1 ---", 1)[-1].strip().splitlines()[0]
+    body = text.split("Its text:", 1)[-1].split("--- page 1 ---", 1)[-1].strip()
+    first_line = body.splitlines()[0] if body else None
     fields = {
         "vendor_name": first_line,
         "vendor_tax_id": _find(r"^(?:EIN|USt-IdNr\.|VAT No\.|Registration No\.|MWST-Nr\.):\s*(.+)$", text),
@@ -66,13 +86,20 @@ async def chat(request: Request):
         return JSONResponse({"error": "server busy (fake outage)"}, status_code=503)
 
     prompt = "\n".join(m["content"] for m in body["messages"] if m["role"] == "user")
-    content = json.dumps(read_header(prompt))
+    system = next((m["content"] for m in body["messages"] if m["role"] == "system"), "")
+    fields = read_header(prompt)
+    if system.startswith("You re-read"):  # the repair call: the whole invoice, each line with its page
+        fields["line_items"] = [{"page": 1, **row} for row in read_lines(prompt)]
+    else:
+        fields["line_items"] = read_lines(prompt)
+    content = json.dumps(fields)
     return {
         "model": body["model"], "created_at": "2026-10-30T00:00:00Z",
         "message": {"role": "assistant", "content": content},
         "done": True, "done_reason": "stop",
         "total_duration": 1, "load_duration": 0,
-        "prompt_eval_count": len(prompt) // 4, "prompt_eval_duration": 1,
+        # ~3 characters per token over the whole prompt, as gemma4 measures for page prompts.
+        "prompt_eval_count": sum(len(m["content"]) for m in body["messages"]) // 3, "prompt_eval_duration": 1,
         "eval_count": len(content) // 4, "eval_duration": 1,
     }
 
