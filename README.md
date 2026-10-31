@@ -9,10 +9,10 @@ Finance data punishes mistakes: a double-paid invoice costs real money. So the i
 unglamorous ones: idempotent ingestion, money that is never a float, failures that are recorded instead of
 guessed around, and a human approving every write.
 
-> **Status:** slice 5a of 8. Invoices are extracted page by page (scans and line items included), checked for
+> **Status:** slice 5 of 8. Invoices are extracted page by page (scans and line items included), checked for
 > arithmetic and duplicates, and 3-way matched against purchase orders and goods receipts synced from an ERP.
-> For exceptions, a local-model agent gathers evidence and proposes one action that a person approves or
-> rejects through the API. The reviewer UI is next. See the [roadmap](#roadmap).
+> For exceptions, a local-model agent gathers evidence and proposes one action; a person approves or rejects it
+> in the reviewer UI. See the [roadmap](#roadmap).
 
 ## What works today
 
@@ -75,6 +75,10 @@ Around that:
   before receipts and variance were checked, computes its amount itself, and caps each run at 8 tool turns
   and 90 s. A person approves or rejects (`POST /v1/pending-actions/{id}:approve`, with `If-Match`), and of
   two reviewers deciding at once exactly one wins.
+- **A reviewer UI built for deciding.** One invoice at a time: why it was stopped, its lines next to the purchase
+  order and what was received, the 3-way match as plain checks, the agent's steps, and Approve / Reject. ⌘K to jump
+  anywhere, J/K to move through the queue, A/R to decide; if someone else decided first it says so instead of
+  overwriting. ([ADR 0014](docs/adr/0014-reviewer-ui-nextjs-urql.md))
 - **Errors** are RFC 9457 problem+json with stable codes, documented in [docs/problems.md](docs/problems.md).
 
 **Measured so far** (Apple M1 Pro, 16 GB): 27 of 27 header fields correct across the 3 sample invoices
@@ -125,6 +129,7 @@ ollama pull gemma4:12b
 docker compose up -d --wait               # Postgres, RabbitMQ, Redis, SeaweedFS, worker, relay, beat, ERP mock
 uv run alembic upgrade head
 uv run uvicorn ledgerline_api.main:app --port 8000
+pnpm --dir apps/web install && make web   # reviewer UI on http://localhost:3000 (Node 22.12+, pnpm)
 ```
 
 In another terminal:
@@ -135,6 +140,7 @@ uv run python scripts/check_samples.py    # uploads them and compares with gold
 make smoke                                # end to end with the generated client: idempotency, paging, GraphQL
 make test                                 # unit tests, offline
 make test-int                             # service tests against a throwaway Postgres (needs Docker)
+make test-web                             # reviewer UI tests (Jest, GraphQL mocked with MSW)
 make contract-check                       # code vs. contracts/openapi.yaml (needs Docker)
 make chaos                                # 200 invoices, stub model failing 15%, a worker killed mid-run; cleans up after
 make seed                                 # 200 vendors, 20k invoices, 30 near-duplicates, 5k POs for the ERP mock
@@ -160,7 +166,7 @@ Each slice is one end-to-end change. The destination layout and stack are in [do
 | 4a | Vendors table via a live expand/contract migration, duplicate-invoice guard, seed data | Done |
 | 4b | ERP mock, resumable ERP sync on Celery beat, 3-way match, `matched` status | Done |
 | 5a | Exception agent (tool calling, guards, budgets), pending actions, ETag approval in REST and GraphQL | Done |
-| 5b | Reviewer UI (Next.js + urql), Jest tests | Planned |
+| 5b | Reviewer UI (Next.js + urql): queue, case file, decisions, upload, dead letters; Jest tests | Done |
 | 6 | Golden set of 60 invoices, eval script with gates, model sweep | Planned |
 | 7 | GitHub Actions: checks, offline eval, signed images to GHCR | Planned |
 | 8 | OpenTelemetry: one invoice traced from upload to approval; dashboards and alerts | Planned |

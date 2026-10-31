@@ -28,6 +28,8 @@ uv run python scripts/match_pending.py       # queue matches for extracted invoi
 uv run python scripts/agent_scenarios.py     # real model: agent on 5 seeded exception scenarios, prints traces
 make chaos            # 200 invoices, stub model failing 15%, one worker killed; checks nothing lost, then deletes its data (--keep to keep)
 docker compose build worker && docker compose up -d worker relay   # after changing worker code
+pnpm --dir apps/web install && make web   # reviewer UI on :3000, proxying /graphql and /v1 to the API on :8000
+make test-web                             # Jest + MSW for the UI
 ```
 
 ## Rules that are easy to break
@@ -65,3 +67,10 @@ docker compose build worker && docker compose up -d worker relay   # after chang
   fields. Guards and budgets live in `agent.run_loop`, not in the prompt (ADR 0013).
 - Approve/reject goes through `service.decide_pending_action` (one conditional UPDATE on `version`), from REST
   and GraphQL alike.
+- The UI reads through GraphQL (`apps/web/src/lib/queries.ts`, typed by `make codegen`; never edit `src/gql`). REST
+  only for uploads and dead letters (`src/lib/rest.ts`). Wording for reviewers lives in `src/lib/present.ts`;
+  decision rules never move into the UI.
+- Money in the UI goes through `formatMinor` / `formatMoney` (`src/lib/money.ts`), which must agree with Python's
+  `format_minor` on `packages/clients/fixtures/money.json`. Never divide minor units by 100 in TypeScript.
+- Anything that can differ between server and browser (random ids, the current time) is computed in an effect,
+  or the page fails to hydrate.
