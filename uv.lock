@@ -859,7 +859,7 @@ requires-dist = [
 
 [[package]]
 name = "ledgerline-client"
-version = "0.7.0"
+version = "0.8.0"
 source = { editable = "packages/clients/python" }
 dependencies = [
     { name = "attrs" },
