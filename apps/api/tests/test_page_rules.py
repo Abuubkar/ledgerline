@@ -186,3 +186,6 @@ def test_letters_inside_the_number_still_count():
 def test_vendor_name_key_ignores_case_and_punctuation():
     assert vendor_name_key("Northwind Supplies, Inc.") == vendor_name_key("NORTHWIND  supplies inc") == "northwind supplies inc"
     assert vendor_name_key("ACME GmbH") != vendor_name_key("ACME AG")
+    assert vendor_name_key("株式会社サクラ") == "株式会社サクラ"  # not every name is Latin
+    assert vendor_name_key("Café Lumière") == vendor_name_key("CAFE LUMIERE")
+    assert vendor_name_key("ザクラ") != vendor_name_key("サクラ")
