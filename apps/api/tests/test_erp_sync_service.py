@@ -194,3 +194,29 @@ async def test_two_partial_receipts_add_up_and_a_short_one_is_an_exception(clien
     invoice = (await client.get(f"/v1/invoices/{ids[1]}")).json()
     assert invoice["match"]["reasons"] == [{"code": "short_shipment", "detail": "billed 4, received 3", "line": "page 1 line 1"}]
     assert uuid.UUID(invoice["match"]["purchase_order_id"])
+
+
+INVOICE_EVIDENCE = """
+query($id: UUID!) { invoice(id: $id) { poNumber purchaseOrder { poNumber lines { lineNo description quantity unitPrice } }
+  goodsReceipts { receivedOn lines { poLineNo quantity } } } }"""
+
+
+async def test_graphql_shows_the_po_and_receipts_an_invoice_cites(client):
+    """The reviewer UI reads the PO and receipts through the invoice, found by its PO number as printed."""
+    async with client.sessions() as session:
+        vendor = Vendor(tax_id=VENDOR["tax_id"], name=VENDOR["name"], name_key="acme gmbh")
+        session.add(vendor)
+        await session.flush()
+        invoice = Invoice(status="exception", original_filename="a.pdf", file_path="s3://invoices/a.pdf", vendor_id=vendor.id,
+                          invoice_number="A-1", po_number="P.O. No. 4500000001", currency="EUR")
+        other = Invoice(status="extracted", original_filename="b.pdf", file_path="s3://invoices/b.pdf", invoice_number="B-1")
+        session.add_all([invoice, other])
+        await session.commit()
+    await erp_sync.run(erp(CrashOnPage(create_app({"purchase_orders": [purchase_order(1)], "receipts": [receipt(1, widgets="3")]}))))
+
+    found = (await client.post("/graphql", json={"query": INVOICE_EVIDENCE, "variables": {"id": str(invoice.id)}})).json()["data"]["invoice"]
+    assert found["purchaseOrder"]["poNumber"] == "4500000001"
+    assert found["purchaseOrder"]["lines"][0] == {"lineNo": 1, "description": "Widget", "quantity": "4", "unitPrice": "10"}
+    assert found["goodsReceipts"] == [{"receivedOn": "2026-02-01", "lines": [{"poLineNo": 1, "quantity": "3"}, {"poLineNo": 2, "quantity": "2"}]}]
+    none = (await client.post("/graphql", json={"query": INVOICE_EVIDENCE, "variables": {"id": str(other.id)}})).json()["data"]["invoice"]
+    assert none == {"poNumber": None, "purchaseOrder": None, "goodsReceipts": []}

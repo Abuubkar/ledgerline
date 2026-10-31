@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Ledgerline
-  version: 0.7.0
+  version: 0.8.0
   description: |
     Accounts-payable automation. This file is the source of truth for the HTTP API: the app is checked
     against it with `make contract-check`, and the typed clients are generated from it with `make codegen`.
@@ -148,6 +148,32 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Invoice'
+        '400':
+          $ref: '#/components/responses/Problem'
+        '404':
+          $ref: '#/components/responses/Problem'
+  /v1/invoices/{invoice_id}/file:
+    get:
+      operationId: getInvoiceFile
+      summary: The invoice's PDF as uploaded
+      description: |
+        Served inline (`Content-Disposition: inline`), so a browser tab shows it. Invoices stored before
+        files moved to object storage (slices 1–2), and rows loaded by the seed script, have no stored file: 404.
+      parameters:
+        - name: invoice_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The PDF as uploaded, shown inline.
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
         '400':
           $ref: '#/components/responses/Problem'
         '404':

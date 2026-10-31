@@ -37,6 +37,13 @@ type DecisionSuccess {
   pendingAction: PendingAction!
 }
 
+"""Goods received against a purchase order."""
+type GoodsReceipt {
+  id: UUID!
+  receivedOn: Date!
+  lines: [ReceiptLine!]!
+}
+
 type Invoice {
   id: UUID!
   status: String!
@@ -51,14 +58,28 @@ type Invoice {
   tax: Money
   total: Money
   invalidFields: JSON
+  fieldConfidence: JSON
   errorCode: String
+  errorDetail: String
   model: String
+  promptVersion: String
+  llmMs: Int
+  repairAttempted: Boolean!
+  pages: [PageResult!]!
   match: MatchResult
   createdAt: DateTime!
   vendor: Vendor
   vendorName: String @deprecated(reason: "Use vendor.name.")
   vendorTaxId: String @deprecated(reason: "Use vendor.taxId.")
   lines: [InvoiceLine!]!
+
+  """
+  The purchase order the invoice cites, if it has been synced from the ERP.
+  """
+  purchaseOrder: PurchaseOrder
+
+  """Goods receipts for the purchase order the invoice cites, oldest first."""
+  goodsReceipts: [GoodsReceipt!]!
 
   """The agent's latest proposal for this invoice, decided or not."""
   pendingAction: PendingAction
@@ -144,6 +165,18 @@ type PageInfo {
   endCursor: String
 }
 
+type PageResult {
+  pageNo: Int!
+  status: String!
+
+  """
+  text: read from the PDF's text layer; image: rendered and read visually (a scan).
+  """
+  source: String!
+  errorCode: String
+  llmMs: Int
+}
+
 type PendingAction {
   id: UUID!
   invoiceId: UUID!
@@ -156,12 +189,33 @@ type PendingAction {
   decidedAt: DateTime
 }
 
+type PoLine {
+  lineNo: Int!
+  description: String!
+  quantity: String!
+  unitPrice: String!
+}
+
+"""A purchase order as last synced from the ERP."""
+type PurchaseOrder {
+  id: UUID!
+  poNumber: String!
+  status: String!
+  currency: String!
+  lines: [PoLine!]!
+}
+
 type Query {
   invoice(id: UUID!): Invoice
-  invoices(first: Int! = 25, after: String = null): InvoiceConnection!
+  invoices(first: Int! = 25, after: String = null, status: String = null): InvoiceConnection!
 
   """Invoices in `exception`, newest first: what a reviewer works through."""
   exceptionsQueue(first: Int! = 25, after: String = null): InvoiceConnection!
+}
+
+type ReceiptLine {
+  poLineNo: Int!
+  quantity: String!
 }
 
 scalar UUID
