@@ -16,6 +16,7 @@ if TYPE_CHECKING:
     from ..models.invoice_line import InvoiceLine
     from ..models.money import Money
     from ..models.page_result import PageResult
+    from ..models.vendor import Vendor
 
 
 T = TypeVar("T", bound="Invoice")
@@ -31,8 +32,11 @@ class Invoice:
             dead-lettered. Precedence when several apply: failed > partially_extracted > exception > extracted.
         original_filename (str):
         page_count (int | None):
-        vendor_name (None | str):
-        vendor_tax_id (None | str): Uppercase letters and digits only; country prefixes are kept (DE812345678).
+        vendor (None | Vendor): The vendor this invoice is from, recognized by its tax ID (or by its name when it prints
+            none).
+            Null until the invoice is extracted, or when it shows neither.
+        vendor_name (None | str): Same as vendor.name. Kept for existing clients; use vendor instead.
+        vendor_tax_id (None | str): Same as vendor.tax_id. Kept for existing clients; use vendor instead.
         invoice_number (None | str):
         invoice_date (datetime.date | None):
         due_date (datetime.date | None):
@@ -60,6 +64,7 @@ class Invoice:
     status: InvoiceStatus
     original_filename: str
     page_count: int | None
+    vendor: None | Vendor
     vendor_name: None | str
     vendor_tax_id: None | str
     invoice_number: None | str
@@ -88,6 +93,7 @@ class Invoice:
         from ..models.invoice_field_confidence_type_0 import InvoiceFieldConfidenceType0  # noqa: PLC0415
         from ..models.invoice_invalid_fields_type_0 import InvoiceInvalidFieldsType0  # noqa: PLC0415
         from ..models.money import Money  # noqa: PLC0415
+        from ..models.vendor import Vendor  # noqa: PLC0415
 
         id = str(self.id)
 
@@ -97,6 +103,12 @@ class Invoice:
 
         page_count: int | None
         page_count = self.page_count
+
+        vendor: dict[str, Any] | None
+        if isinstance(self.vendor, Vendor):
+            vendor = self.vendor.to_dict()
+        else:
+            vendor = self.vendor
 
         vendor_name: None | str
         vendor_name = self.vendor_name
@@ -195,6 +207,7 @@ class Invoice:
                 "status": status,
                 "original_filename": original_filename,
                 "page_count": page_count,
+                "vendor": vendor,
                 "vendor_name": vendor_name,
                 "vendor_tax_id": vendor_tax_id,
                 "invoice_number": invoice_number,
@@ -229,6 +242,7 @@ class Invoice:
         from ..models.invoice_line import InvoiceLine  # noqa: PLC0415
         from ..models.money import Money  # noqa: PLC0415
         from ..models.page_result import PageResult  # noqa: PLC0415
+        from ..models.vendor import Vendor  # noqa: PLC0415
 
         d = dict(src_dict)
         id = UUID(d.pop("id"))
@@ -243,6 +257,21 @@ class Invoice:
             return cast(int | None, data)
 
         page_count = _parse_page_count(d.pop("page_count"))
+
+        def _parse_vendor(data: object) -> None | Vendor:
+            if data is None:
+                return data
+            try:
+                if not isinstance(data, dict):
+                    raise TypeError()
+                vendor_type_0 = Vendor.from_dict(data)
+
+                return vendor_type_0
+            except (TypeError, ValueError, AttributeError, KeyError):
+                pass
+            return cast(None | Vendor, data)
+
+        vendor = _parse_vendor(d.pop("vendor"))
 
         def _parse_vendor_name(data: object) -> None | str:
             if data is None:
@@ -449,6 +478,7 @@ class Invoice:
             status=status,
             original_filename=original_filename,
             page_count=page_count,
+            vendor=vendor,
             vendor_name=vendor_name,
             vendor_tax_id=vendor_tax_id,
             invoice_number=invoice_number,

@@ -23,7 +23,7 @@ from ledgerline_api.schemas import (
     ProblemCode,
 )
 
-app = FastAPI(title="Ledgerline", version="0.2.0")
+app = FastAPI(title="Ledgerline", version="0.5.0")
 app.include_router(graphql_router, prefix="/graphql")
 
 PROBLEM_JSON = "application/problem+json"

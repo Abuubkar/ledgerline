@@ -83,7 +83,7 @@ class Invoice(Base):
     # Being replaced by vendor_id (expand/contract, docs/migrations.md): written alongside it until step 4.
     vendor_name: Mapped[str | None]
     vendor_tax_id: Mapped[str | None]
-    vendor_id: Mapped[uuid.UUID | None]
+    vendor_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("vendors.id"))
     invoice_number: Mapped[str | None]
     invoice_number_key: Mapped[str | None]
     invoice_date: Mapped[date | None]
@@ -107,7 +107,8 @@ class Invoice(Base):
 
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
-    # Loaded with the invoice: async sessions can't lazy-load, and the API always returns both.
+    # Loaded with the invoice: async sessions can't lazy-load, and the API always returns these.
+    vendor: Mapped["Vendor | None"] = relationship(lazy="selectin")
     pages: Mapped[list["InvoicePageResult"]] = relationship(
         lazy="selectin", order_by="InvoicePageResult.page_no", cascade="all, delete-orphan"
     )

@@ -109,13 +109,21 @@ class InvoiceLine(BaseModel):
     invalid_reason: str | None
 
 
+class Vendor(BaseModel):
+    id: uuid.UUID
+    name: str
+    tax_id: str | None
+
+
 class Invoice(BaseModel):
     id: uuid.UUID
     status: InvoiceStatus
     original_filename: str
     page_count: int | None
-    vendor_name: str | None
-    vendor_tax_id: str | None
+    vendor: Vendor | None
+    # Kept for clients from before vendors existed; both now come from the vendor.
+    vendor_name: str | None = Field(json_schema_extra={"deprecated": True})
+    vendor_tax_id: str | None = Field(json_schema_extra={"deprecated": True})
     invoice_number: str | None
     invoice_date: date | None
     due_date: date | None
@@ -144,10 +152,13 @@ class Invoice(BaseModel):
                 return None
             return Money(amount_minor=minor, currency=invoice.currency)
 
-        nested = ("subtotal", "tax", "total", "pages", "lines")
+        nested = ("vendor", "vendor_name", "vendor_tax_id", "subtotal", "tax", "total", "pages", "lines")
         plain = {name: getattr(invoice, name) for name in cls.model_fields if name not in nested}
+        vendor = invoice.vendor
         return cls(
             **plain,
+            vendor=Vendor(id=vendor.id, name=vendor.name, tax_id=vendor.tax_id) if vendor else None,
+            vendor_name=vendor.name if vendor else None, vendor_tax_id=vendor.tax_id if vendor else None,
             subtotal=money(invoice.subtotal_minor), tax=money(invoice.tax_minor), total=money(invoice.total_minor),
             pages=[
                 PageResult(page_no=p.page_no, status=p.status, source=p.source, error_code=p.error_code, llm_ms=p.llm_ms)

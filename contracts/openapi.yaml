@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Ledgerline
-  version: 0.4.0
+  version: 0.5.0
   description: |
     Accounts-payable automation. This file is the source of truth for the HTTP API: the app is checked
     against it with `make contract-check`, and the typed clients are generated from it with `make codegen`.
@@ -16,7 +16,8 @@ info:
     **Extraction is queued.** An upload stores the PDF and returns 202 with status `received`; a worker
     extracts it page by page and the status moves to `extracting`, then one of: `extracted`;
     `partially_extracted` (some pages failed, see `pages`); `exception` (the totals don't add up even after
-    one repair attempt, see `invalid_fields`); or `failed` (the job was dead-lettered). Poll
+    one repair attempt, or it's a second copy of an invoice we already have from the same vendor; see
+    `invalid_fields`); or `failed` (the job was dead-lettered). Poll
     `GET /v1/invoices/{invoice_id}`. When the queue is full, uploads get 429 with `Retry-After`.
 
     **Money** is always `{amount_minor, currency}`: an integer count of the currency's minor unit (cents,
@@ -328,6 +329,24 @@ components:
         currency:
           type: string
           pattern: '^[A-Z]{3}$'
+    Vendor:
+      type: object
+      required:
+        - id
+        - name
+        - tax_id
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          description: The name as first seen; individual invoices may spell it differently.
+          type: string
+        tax_id:
+          description: Uppercase letters and digits only; country prefixes are kept (DE812345678).
+          anyOf:
+            - type: string
+            - type: 'null'
     Invoice:
       type: object
       required:
@@ -335,6 +354,7 @@ components:
         - status
         - original_filename
         - page_count
+        - vendor
         - vendor_name
         - vendor_tax_id
         - invoice_number
@@ -369,12 +389,22 @@ components:
           anyOf:
             - type: integer
             - type: 'null'
+        vendor:
+          description: |
+            The vendor this invoice is from, recognized by its tax ID (or by its name when it prints none).
+            Null until the invoice is extracted, or when it shows neither.
+          anyOf:
+            - $ref: '#/components/schemas/Vendor'
+            - type: 'null'
         vendor_name:
+          description: Same as vendor.name. Kept for existing clients; use vendor instead.
+          deprecated: true
           anyOf:
             - type: string
             - type: 'null'
         vendor_tax_id:
-          description: Uppercase letters and digits only; country prefixes are kept (DE812345678).
+          description: Same as vendor.tax_id. Kept for existing clients; use vendor instead.
+          deprecated: true
           anyOf:
             - type: string
             - type: 'null'
