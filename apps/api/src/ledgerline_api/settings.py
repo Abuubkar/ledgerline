@@ -68,5 +68,10 @@ class Settings(BaseSettings):
     # 3-way match: an invoice unit price may differ from the PO price by this much.
     match_price_tolerance_pct: Decimal = Decimal("1")
 
+    # Exception agent: at most this many model responses that ask for tools, and this long per run (counted
+    # from when it gets the model, not while it waits for a slot). Over either, it proposes a hold.
+    agent_max_turns: int = 8
+    agent_wall_clock_s: float = 90.0
+
 
 settings = Settings()

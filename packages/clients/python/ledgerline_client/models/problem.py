@@ -24,6 +24,8 @@ class Problem:
         detail (None | str | Unset):
         duplicate_of (None | Unset | UUID): For `duplicate_invoice`, the id of the invoice already stored.
         duplicate_of_url (None | str | Unset): For `duplicate_invoice`, the path of the invoice already stored.
+        current_version (int | None | Unset): For `version_conflict` and `action_already_decided`, the proposal's
+            version now.
     """
 
     type_: str
@@ -33,6 +35,7 @@ class Problem:
     detail: None | str | Unset = UNSET
     duplicate_of: None | Unset | UUID = UNSET
     duplicate_of_url: None | str | Unset = UNSET
+    current_version: int | None | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -64,6 +67,12 @@ class Problem:
         else:
             duplicate_of_url = self.duplicate_of_url
 
+        current_version: int | None | Unset
+        if isinstance(self.current_version, Unset):
+            current_version = UNSET
+        else:
+            current_version = self.current_version
+
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update(
@@ -80,6 +89,8 @@ class Problem:
             field_dict["duplicate_of"] = duplicate_of
         if duplicate_of_url is not UNSET:
             field_dict["duplicate_of_url"] = duplicate_of_url
+        if current_version is not UNSET:
+            field_dict["current_version"] = current_version
 
         return field_dict
 
@@ -129,6 +140,15 @@ class Problem:
 
         duplicate_of_url = _parse_duplicate_of_url(d.pop("duplicate_of_url", UNSET))
 
+        def _parse_current_version(data: object) -> int | None | Unset:
+            if data is None:
+                return data
+            if isinstance(data, Unset):
+                return data
+            return cast(int | None | Unset, data)
+
+        current_version = _parse_current_version(d.pop("current_version", UNSET))
+
         problem = cls(
             type_=type_,
             title=title,
@@ -137,6 +157,7 @@ class Problem:
             detail=detail,
             duplicate_of=duplicate_of,
             duplicate_of_url=duplicate_of_url,
+            current_version=current_version,
         )
 
         problem.additional_properties = d

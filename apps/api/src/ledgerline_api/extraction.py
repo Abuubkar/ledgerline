@@ -1,7 +1,9 @@
-"""Read invoice PDFs page by page and ask the local model about each page."""
+"""Read invoice PDFs page by page and ask the local model about each page. Also home of call_model, the one
+way any part of Ledgerline calls the model."""
 
 import asyncio
 import io
+import json
 import threading
 import time
 from dataclasses import dataclass
@@ -93,9 +95,14 @@ def looks_truncated(text_chars: int, image_count: int, prompt_tokens: int, num_c
     return text_chars / prompt_tokens > TRUNCATED_CHARS_PER_TOKEN
 
 
-async def _chat(system: str, user: str, schema: type[BaseModel], images: list[bytes] | None = None) -> ModelCall:
-    """The one way Ledgerline calls the model."""
-    text_chars, image_count = len(system) + len(user), len(images or [])
+async def call_model(messages: list, *, schema: type[BaseModel] | None = None, tools: list[dict] | None = None,
+                     timeout_s: float | None = None):
+    """The one way Ledgerline calls the model: budget the prompt first (Ollama truncates silently), then check
+    it wasn't truncated anyway. Returns (response, prompt_tokens, output_tokens, llm_ms). `schema` constrains
+    the answer to JSON; `tools` offers tool calls (the agent)."""
+    text_chars = sum(len(m.get("content") or "") if isinstance(m, dict) else len(m.content or "") for m in messages)
+    text_chars += len(json.dumps(tools)) if tools else 0
+    image_count = sum(len(m.get("images") or []) for m in messages if isinstance(m, dict))
     if prompt_too_long(text_chars, image_count, settings.llm_num_ctx, settings.llm_output_reserve_tokens):
         raise ExtractionError(
             "prompt_too_long",
@@ -103,23 +110,23 @@ async def _chat(system: str, user: str, schema: type[BaseModel], images: list[by
             f"with {settings.llm_output_reserve_tokens} tokens left for the answer",
         )
     client = ollama.AsyncClient(host=settings.ollama_host)
-    message: dict = {"role": "user", "content": user}
-    if images:
-        message["images"] = images
+    timeout_s = settings.llm_timeout_s if timeout_s is None else timeout_s
     started = time.perf_counter()
     try:
-        async with asyncio.timeout(settings.llm_timeout_s):
+        async with asyncio.timeout(timeout_s):
             response = await client.chat(
                 model=settings.llm_model,
-                messages=[{"role": "system", "content": system}, message],
-                format=schema.model_json_schema(),
-                # gemma4 thinks by default; copying fields needs no reasoning trace, and it costs seconds.
+                messages=messages,
+                format=schema.model_json_schema() if schema else None,
+                tools=tools,
+                # gemma4 thinks by default; copying fields and picking a tool need no reasoning trace, and it
+                # costs seconds per call.
                 think=False,
                 options={"temperature": settings.llm_temperature, "num_ctx": settings.llm_num_ctx},
                 keep_alive=settings.llm_keep_alive,
             )
     except TimeoutError:
-        raise ExtractionError("model_timeout", f"no reply within {settings.llm_timeout_s}s") from None
+        raise ExtractionError("model_timeout", f"no reply within {timeout_s:.0f}s") from None
     except (ConnectionError, ollama.ResponseError) as exc:
         raise ExtractionError("model_unavailable", str(exc)) from exc
     llm_ms = int((time.perf_counter() - started) * 1000)
@@ -131,11 +138,21 @@ async def _chat(system: str, user: str, schema: type[BaseModel], images: list[by
         raise ExtractionError(
             "prompt_truncated", f"{text_chars} characters came back as only {prompt_tokens} prompt tokens"
         )
+    return response, prompt_tokens, response.eval_count or 0, llm_ms
+
+
+async def _chat(system: str, user: str, schema: type[BaseModel], images: list[bytes] | None = None) -> ModelCall:
+    message: dict = {"role": "user", "content": user}
+    if images:
+        message["images"] = images
+    response, prompt_tokens, output_tokens, llm_ms = await call_model(
+        [{"role": "system", "content": system}, message], schema=schema
+    )
     try:
         parsed = schema.model_validate_json(response.message.content or "")
     except ValidationError as exc:
         raise ExtractionError("invalid_model_output", str(exc)) from exc
-    return ModelCall(parsed, prompt_tokens, response.eval_count or 0, llm_ms)
+    return ModelCall(parsed, prompt_tokens, output_tokens, llm_ms)
 
 
 async def extract_page(page_no: int, page_count: int, text: str | None, image: bytes | None) -> ModelCall:

@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Ledgerline
-  version: 0.6.0
+  version: 0.7.0
   description: |
     Accounts-payable automation. This file is the source of truth for the HTTP API: the app is checked
     against it with `make contract-check`, and the typed clients are generated from it with `make codegen`.
@@ -217,8 +217,146 @@ paths:
           $ref: '#/components/responses/Problem'
         '409':
           $ref: '#/components/responses/Problem'
+  /v1/invoices/{invoice_id}/pending-actions:
+    get:
+      operationId: listPendingActions
+      summary: The agent's proposals for an invoice, newest first
+      parameters:
+        - name: invoice_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Every proposal for the invoice, decided or not.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PendingActionList'
+        '400':
+          $ref: '#/components/responses/Problem'
+        '404':
+          $ref: '#/components/responses/Problem'
+  /v1/pending-actions/{action_id}:
+    get:
+      operationId: getPendingAction
+      summary: One proposal, with its version as the ETag
+      parameters:
+        - $ref: '#/components/parameters/ActionId'
+      responses:
+        '200':
+          description: The proposal.
+          headers:
+            ETag:
+              $ref: '#/components/headers/ETag'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PendingAction'
+        '400':
+          $ref: '#/components/responses/Problem'
+        '404':
+          $ref: '#/components/responses/Problem'
+  /v1/pending-actions/{action_id}:approve:
+    post:
+      operationId: approvePendingAction
+      summary: Approve a proposal at the version you saw
+      description: |
+        Send the proposal's ETag in `If-Match`. If someone decided first, or the proposal changed, the
+        answer is 412 with `current_version`; reload and decide again. Missing `If-Match` → 428; deciding
+        an already decided proposal at its current version → 409. Recording the decision is all this does
+        for now: nothing is sent to the vendor or the ERP.
+      parameters:
+        - $ref: '#/components/parameters/ActionId'
+        - $ref: '#/components/parameters/IfMatch'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              anyOf:
+                - $ref: '#/components/schemas/Decision'
+                - type: 'null'
+      responses:
+        '200':
+          description: Approved.
+          headers:
+            ETag:
+              $ref: '#/components/headers/ETag'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PendingAction'
+        '400':
+          $ref: '#/components/responses/Problem'
+        '404':
+          $ref: '#/components/responses/Problem'
+        '409':
+          $ref: '#/components/responses/Problem'
+        '412':
+          $ref: '#/components/responses/Problem'
+        '428':
+          $ref: '#/components/responses/Problem'
+  /v1/pending-actions/{action_id}:reject:
+    post:
+      operationId: rejectPendingAction
+      summary: Reject a proposal at the version you saw
+      description: |
+        Send the proposal's ETag in `If-Match`. If someone decided first, or the proposal changed, the
+        answer is 412 with `current_version`; reload and decide again. Missing `If-Match` → 428; deciding
+        an already decided proposal at its current version → 409. Recording the decision is all this does
+        for now: nothing is sent to the vendor or the ERP.
+      parameters:
+        - $ref: '#/components/parameters/ActionId'
+        - $ref: '#/components/parameters/IfMatch'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              anyOf:
+                - $ref: '#/components/schemas/Decision'
+                - type: 'null'
+      responses:
+        '200':
+          description: Rejected.
+          headers:
+            ETag:
+              $ref: '#/components/headers/ETag'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PendingAction'
+        '400':
+          $ref: '#/components/responses/Problem'
+        '404':
+          $ref: '#/components/responses/Problem'
+        '409':
+          $ref: '#/components/responses/Problem'
+        '412':
+          $ref: '#/components/responses/Problem'
+        '428':
+          $ref: '#/components/responses/Problem'
 components:
   parameters:
+    ActionId:
+      name: action_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    IfMatch:
+      name: If-Match
+      in: header
+      required: false
+      description: The ETag from GET /v1/pending-actions/{action_id}, e.g. "1". Required; omitting it is 428.
+      schema:
+        anyOf:
+          - type: string
+          - type: 'null'
     IdempotencyKey:
       name: Idempotency-Key
       in: header
@@ -236,6 +374,10 @@ components:
       schema:
         type: string
         enum: ['true']
+    ETag:
+      description: The proposal's version, to send back in If-Match.
+      schema:
+        type: string
   responses:
     Problem:
       description: An RFC 9457 problem.
@@ -600,6 +742,68 @@ components:
         - invalid_cursor
         - not_found
         - queue_full
+        - precondition_required
+        - version_conflict
+        - action_already_decided
+    PendingAction:
+      type: object
+      description: |
+        What the exception agent proposes for an invoice, waiting for a person. `details` for
+        credit_memo_request: amount_minor, currency, lines, reason (the amount is computed in code from the PO
+        and receipts, never by the model). For hold: reason_code, explanation.
+      required: [id, invoice_id, agent_run_id, action_type, status, details, version, decision_note, created_at,
+                 decided_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        invoice_id:
+          type: string
+          format: uuid
+        agent_run_id:
+          type: string
+          format: uuid
+        action_type:
+          type: string
+          enum: [credit_memo_request, hold]
+        status:
+          type: string
+          enum: [pending, approved, rejected]
+        details:
+          type: object
+          additionalProperties: true
+        version:
+          type: integer
+          description: Goes up with every change; the ETag.
+        decision_note:
+          anyOf:
+            - type: string
+            - type: 'null'
+        created_at:
+          type: string
+          format: date-time
+        decided_at:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: 'null'
+    PendingActionList:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/PendingAction'
+    Decision:
+      type: object
+      properties:
+        note:
+          description: Why, for the record.
+          anyOf:
+            - type: string
+              maxLength: 500
+            - type: 'null'
     DeadLetter:
       type: object
       required: [id, task_name, invoice_id, error_code, exception_chain, attempts, created_at, replayed_at]
@@ -666,4 +870,9 @@ components:
           description: For `duplicate_invoice`, the path of the invoice already stored.
           anyOf:
             - type: string
+            - type: 'null'
+        current_version:
+          description: For `version_conflict` and `action_already_decided`, the proposal's version now.
+          anyOf:
+            - type: integer
             - type: 'null'

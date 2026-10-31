@@ -79,6 +79,24 @@
       "arguments": {
         "x-queue-type": "quorum"
       }
+    },
+    {
+      "name": "invoices.agent",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-queue-type": "quorum"
+      }
+    },
+    {
+      "name": "invoices.agent.dlq",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-queue-type": "quorum"
+      }
     }
   ],
   "bindings": [
@@ -96,6 +114,14 @@
       "destination": "invoices.match.dlq",
       "destination_type": "queue",
       "routing_key": "invoices.match.dlq",
+      "arguments": {}
+    },
+    {
+      "source": "ledgerline.dlx",
+      "vhost": "/",
+      "destination": "invoices.agent.dlq",
+      "destination_type": "queue",
+      "routing_key": "invoices.agent.dlq",
       "arguments": {}
     }
   ],
@@ -124,6 +150,21 @@
       "definition": {
         "dead-letter-exchange": "ledgerline.dlx",
         "dead-letter-routing-key": "invoices.match.dlq",
+        "delivery-limit": 6,
+        "dead-letter-strategy": "at-least-once",
+        "overflow": "reject-publish",
+        "max-length": 100000
+      }
+    },
+    {
+      "vhost": "/",
+      "name": "invoices-agent",
+      "pattern": "^invoices\\.agent$",
+      "apply-to": "quorum_queues",
+      "priority": 10,
+      "definition": {
+        "dead-letter-exchange": "ledgerline.dlx",
+        "dead-letter-routing-key": "invoices.agent.dlq",
         "delivery-limit": 6,
         "dead-letter-strategy": "at-least-once",
         "overflow": "reject-publish",

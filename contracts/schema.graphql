@@ -1,3 +1,28 @@
+type AgentRun {
+  id: UUID!
+  status: String!
+  stopReason: String
+  model: String!
+  promptVersion: String!
+  toolTurns: Int!
+  guardFires: Int!
+  llmMs: Int!
+  startedAt: DateTime!
+  finishedAt: DateTime
+  steps: [AgentStep!]!
+}
+
+type AgentStep {
+  stepNo: Int!
+  kind: String!
+  content: String
+  toolName: String
+  arguments: JSON
+  result: JSON
+  error: String
+  llmMs: Int
+}
+
 scalar BigInt
 
 """Date (isoformat)"""
@@ -6,14 +31,17 @@ scalar Date
 """Date with time (isoformat)"""
 scalar DateTime
 
+union DecisionResult = DecisionSuccess | VersionConflict | NotFound
+
+type DecisionSuccess {
+  pendingAction: PendingAction!
+}
+
 type Invoice {
   id: UUID!
   status: String!
   originalFilename: String!
   pageCount: Int
-  vendor: Vendor
-  vendorName: String @deprecated(reason: "Use vendor.name.")
-  vendorTaxId: String @deprecated(reason: "Use vendor.taxId.")
   invoiceNumber: String
   poNumber: String
   invoiceDate: Date
@@ -22,10 +50,21 @@ type Invoice {
   subtotal: Money
   tax: Money
   total: Money
+  invalidFields: JSON
   errorCode: String
   model: String
   match: MatchResult
   createdAt: DateTime!
+  vendor: Vendor
+  vendorName: String @deprecated(reason: "Use vendor.name.")
+  vendorTaxId: String @deprecated(reason: "Use vendor.taxId.")
+  lines: [InvoiceLine!]!
+
+  """The agent's latest proposal for this invoice, decided or not."""
+  pendingAction: PendingAction
+
+  """Agent runs on this invoice, newest first, each with its full trace."""
+  agentRuns: [AgentRun!]!
 }
 
 type InvoiceConnection {
@@ -45,6 +84,21 @@ type InvoiceEdge {
   node: Invoice!
 }
 
+type InvoiceLine {
+  pageNo: Int!
+  lineNo: Int!
+  description: String
+  quantity: String
+  unitPrice: String
+  amount: Money
+  invalidReason: String
+}
+
+"""
+The `JSON` scalar type represents JSON values as specified by [ECMA-404](https://ecma-international.org/wp-content/uploads/ECMA-404_2nd_edition_december_2017.pdf).
+"""
+scalar JSON @specifiedBy(url: "https://ecma-international.org/wp-content/uploads/ECMA-404_2nd_edition_december_2017.pdf")
+
 type MatchReason {
   code: String!
   detail: String!
@@ -63,6 +117,18 @@ type Money {
   currency: String!
 }
 
+type Mutation {
+  """Approve a pending action at the version the reviewer saw."""
+  approvePendingAction(id: UUID!, expectedVersion: Int!, note: String = null): DecisionResult!
+
+  """Reject a pending action at the version the reviewer saw."""
+  rejectPendingAction(id: UUID!, expectedVersion: Int!, note: String = null): DecisionResult!
+}
+
+type NotFound {
+  id: UUID!
+}
+
 """Information to aid in pagination."""
 type PageInfo {
   """When paginating forwards, are there more items?"""
@@ -78,9 +144,24 @@ type PageInfo {
   endCursor: String
 }
 
+type PendingAction {
+  id: UUID!
+  invoiceId: UUID!
+  actionType: String!
+  status: String!
+  details: JSON!
+  version: Int!
+  decisionNote: String
+  createdAt: DateTime!
+  decidedAt: DateTime
+}
+
 type Query {
   invoice(id: UUID!): Invoice
   invoices(first: Int! = 25, after: String = null): InvoiceConnection!
+
+  """Invoices in `exception`, newest first: what a reviewer works through."""
+  exceptionsQueue(first: Int! = 25, after: String = null): InvoiceConnection!
 }
 
 scalar UUID
@@ -89,4 +170,12 @@ type Vendor {
   id: UUID!
   name: String!
   taxId: String
+}
+
+"""
+Someone else decided first, or the version is stale: reload and decide again.
+"""
+type VersionConflict {
+  currentVersion: Int!
+  pendingAction: PendingAction!
 }

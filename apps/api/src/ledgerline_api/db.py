@@ -318,3 +318,80 @@ class ErpSyncState(Base):
     synced_through: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     last_success_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class AgentRun(Base):
+    """One run of the exception agent on one invoice: it gathers evidence with tools and ends with exactly one
+    proposal (a pending action), or fails. The full trace is in agent_steps."""
+
+    __tablename__ = "agent_runs"
+    __table_args__ = (
+        CheckConstraint("status IN ('running', 'proposed', 'failed')", name="agent_runs_status_check"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, server_default=text("uuidv7()"))
+    invoice_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("invoices.id", ondelete="CASCADE"), index=True)
+    status: Mapped[str] = mapped_column(String(20))
+    model: Mapped[str]
+    prompt_version: Mapped[str]
+    # Model responses that asked for tools; capped at agent_max_turns.
+    tool_turns: Mapped[int] = mapped_column(server_default=text("0"))
+    # Write tools refused by the code guard (e.g. a credit memo before the receipts were checked).
+    guard_fires: Mapped[int] = mapped_column(server_default=text("0"))
+    stop_reason: Mapped[str | None]  # proposed | no_proposal | agent_budget_exceeded | error code
+    prompt_tokens: Mapped[int] = mapped_column(server_default=text("0"))
+    output_tokens: Mapped[int] = mapped_column(server_default=text("0"))
+    llm_ms: Mapped[int] = mapped_column(server_default=text("0"))
+    started_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    finished_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+    steps: Mapped[list["AgentStep"]] = relationship(lazy="selectin", order_by="AgentStep.step_no", passive_deletes=True)
+
+
+class AgentStep(Base):
+    """One step of a run: a model response (its text and the tool calls it asked for) or one tool call with
+    its validated arguments and result."""
+
+    __tablename__ = "agent_steps"
+    __table_args__ = (
+        UniqueConstraint("run_id", "step_no"),
+        CheckConstraint("kind IN ('model', 'tool')", name="agent_steps_kind_check"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, server_default=text("uuidv7()"))
+    run_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("agent_runs.id", ondelete="CASCADE"))
+    step_no: Mapped[int]
+    kind: Mapped[str] = mapped_column(String(10))
+    content: Mapped[str | None]  # the model's text, if any
+    tool_name: Mapped[str | None]
+    arguments: Mapped[dict | None] = mapped_column(JSONB)
+    result: Mapped[dict | None] = mapped_column(JSONB)
+    error: Mapped[str | None]  # invalid arguments, a guard refusal or a tool failure, as sent back to the model
+    llm_ms: Mapped[int | None]
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class PendingAction(Base):
+    """What the agent proposes for an invoice, waiting for a person. Nothing is done until it's approved;
+    `version` is the ETag that makes two reviewers deciding at once safe."""
+
+    __tablename__ = "pending_actions"
+    __table_args__ = (
+        CheckConstraint("action_type IN ('credit_memo_request', 'hold')", name="pending_actions_type_check"),
+        CheckConstraint("status IN ('pending', 'approved', 'rejected')", name="pending_actions_status_check"),
+        # At most one proposal waiting per invoice.
+        Index("pending_actions_one_pending", "invoice_id", unique=True, postgresql_where=text("status = 'pending'")),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, server_default=text("uuidv7()"))
+    invoice_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("invoices.id", ondelete="CASCADE"), index=True)
+    agent_run_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("agent_runs.id", ondelete="CASCADE"))
+    action_type: Mapped[str] = mapped_column(String(30))
+    status: Mapped[str] = mapped_column(String(20), server_default=text("'pending'"))
+    # credit_memo_request: amount_minor, currency, reason, lines (computed in code, never by the model).
+    # hold: reason_code, explanation.
+    details: Mapped[dict] = mapped_column(JSONB)
+    version: Mapped[int] = mapped_column(server_default=text("1"))
+    decision_note: Mapped[str | None]
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    decided_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))

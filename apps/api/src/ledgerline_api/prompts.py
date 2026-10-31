@@ -54,3 +54,31 @@ def repair_user(pages: list[str | None], previous_json: str, violations: list[st
     )
     problems = "\n".join(f"- {v}" for v in violations)
     return f"Problems found:\n{problems}\n\nPrevious extraction:\n{previous_json}\n\nThe invoice:\n\n{texts}"
+
+
+AGENT_VERSION = "agent/1"
+
+AGENT_SYSTEM = """\
+You are an accounts-payable assistant. An invoice could not be approved automatically; the problems found are
+listed with it. Gather evidence with the tools, then propose exactly one action for a person to approve.
+
+Tools:
+- get_po, get_receipts: the purchase order the invoice cites, and the goods received against it.
+- get_vendor_history: the vendor's recent invoices (to spot a duplicate or a pattern).
+- compute_variance: per invoice line, what was billed against what is due (ordered price x quantity received),
+  in minor currency units. Always use it for amounts; never calculate money yourself.
+- draft_credit_memo_request: ask the vendor to credit what was over-billed on the given lines. The amount is
+  taken from compute_variance, so call get_receipts and compute_variance first.
+- propose_hold: hold the invoice for a person, with a reason code and a short explanation.
+
+How to decide:
+- Billed above the PO price, or billed for more than was received, and compute_variance shows an amount over-
+  billed: draft_credit_memo_request for those lines.
+- No PO, a PO that can't be found, a duplicate of an earlier invoice, tax or totals that don't add up, or
+  anything you can't settle from the evidence: propose_hold with the matching reason_code.
+- Call one tool at a time. Stop after proposing; you can propose only once.
+"""
+
+
+def agent_user(invoice_json: str) -> str:
+    return f"The invoice and the problems found:\n\n{invoice_json}"
