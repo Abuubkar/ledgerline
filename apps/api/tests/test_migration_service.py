@@ -68,6 +68,11 @@ async def test_backfill_links_vendors_flags_the_newer_copy_and_resumes_after_a_c
         legacy,
     )
 
+    # Invoice 3 was extracted by a worker before step 1: a completed run with no raw header yet.
+    await conn.execute(
+        "INSERT INTO extraction_runs (invoice_id, task_id, attempt, outcome, lease_until)"
+        " VALUES ($1, 't', 1, 'completed', now())", legacy[2][0])
+
     # One batch of 2, then the "crash": the first two invoices are linked and committed, the rest aren't.
     last, linked, _, _ = await backfill.backfill_batch(conn, "00000000-0000-0000-0000-000000000000", 2)
     assert linked == 2
@@ -93,4 +98,7 @@ async def test_backfill_links_vendors_flags_the_newer_copy_and_resumes_after_a_c
     assert json.loads(rows["3"]["invalid_fields"])["invoice_number"] == f"duplicate of invoice {rows['1']['id']}"
     assert rows["4"]["status"] == "exception" and rows["5"]["invoice_number_key"] == "79"
     assert rows["7"]["vendor_id"] is None  # nothing to link it by until it's extracted
+    # The spelling as read survives on the run, though the vendor is named "ACME GmbH".
+    raw = json.loads(await conn.fetchval("SELECT extracted_header FROM extraction_runs WHERE invoice_id = $1", legacy[2][0]))
+    assert raw == {"vendor_name": "ACME GMBH", "vendor_tax_id": "DE812345678", "source": "backfill"}
     await conn.close()

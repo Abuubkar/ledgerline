@@ -147,7 +147,7 @@ async def main() -> None:
                              number=number, invoice_date=invoice_date, created_at=created_at))
     originals = rng.sample([inv for inv in invoices if inv["status"] == "extracted"], NEAR_DUPLICATES)
     for n, original in enumerate(originals):
-        created_at = original["created_at"] + timedelta(days=rng.randint(1, 20))
+        created_at = min(original["created_at"] + timedelta(days=rng.randint(1, 20)), NOW - timedelta(hours=1))
         invoices.append(dict(original, id=uuid7(created_at, rng), index=invoice_count + n, created_at=created_at,
                              number=printed_variant(original["number"], rng), duplicate_of=original["id"]))
 
