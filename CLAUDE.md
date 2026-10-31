@@ -21,6 +21,7 @@ make test             # unit tests, offline
 make test-int         # service tests (testcontainers Postgres)
 make codegen          # regenerate client + schema.graphql after changing contracts or GraphQL types
 make contract-check   # oasdiff: code vs contracts/openapi.yaml
+make seed             # 200 vendors, 20k invoices, 30 near-duplicates into the dev DB (PROFILE=large: ~1M lines)
 make chaos            # 200 invoices, stub model failing 15%, one worker killed; checks nothing lost, then deletes its data (--keep to keep)
 docker compose build worker && docker compose up -d worker relay   # after changing worker code
 ```
@@ -42,3 +43,8 @@ docker compose build worker && docker compose up -d worker relay   # after chang
 - All model calls go through `extraction._chat`, which budgets the prompt first: Ollama truncates over-long
   prompts silently and `prompt_eval_count` is the only way to notice afterwards (ADR 0010).
 - Rendering pages uses PDFium via pdfplumber, which isn't thread-safe: keep it behind `_render_lock`.
+- Schema changes on big tables follow docs/migrations.md: additive first, `CREATE INDEX CONCURRENTLY` inside
+  `autocommit_block()`, foreign keys `NOT VALID` then `VALIDATE`, `lock_timeout` set, and columns dropped only
+  after the code that used them is gone. Migrations run one transaction per file.
+- An invoice's vendor comes from `vendors.link` (tax ID, else normalized name). What the model read is on the
+  completed `extraction_runs.extracted_header`, not on the invoice.

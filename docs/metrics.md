@@ -155,3 +155,16 @@ What this shows:
 
 When slice 3 measures these, it should report warm and cold calls separately and give call counts, the same
 way as above.
+
+## Slice 4a: seed, backfill, live migration, deep pages
+
+Dev database on the reference Mac, Postgres 18.6 in Docker. Full detail in [migrations.md](migrations.md).
+
+| Measure | Result |
+|---|---|
+| `make seed` (small): 200 vendors, 20,030 invoices, 81,935 lines via COPY | ~1.1 s total; invoices ~100k rows/sec, lines ~100k rows/sec |
+| `--profile large`: 100,030 invoices, 909,511 lines | 14.9 s end to end; lines 103k rows/sec |
+| Backfill, 18,767 legacy invoices in batches of 10,000 | 0.2–0.3 s per batch (~35k invoices/sec) |
+| Migrations under load (0005 / 0006 / 0007) | 0.67 s / 0.69 s / 0.55 s |
+| Upload loop across all 4 steps (0.4.0 client) | 339 uploads accepted, 339 extracted, 0 errors; 32 refused connections during API restarts, retried |
+| Invoice list, page 500 of 25: keyset vs `OFFSET` | **0.08 ms** (26 rows read) vs **9.4 ms** (12,501 rows walked) |
