@@ -8,6 +8,9 @@ from .invoice_invalid_fields_type_0 import InvoiceInvalidFieldsType0
 from .invoice_line import InvoiceLine
 from .invoice_page import InvoicePage
 from .invoice_status import InvoiceStatus
+from .match_reason import MatchReason
+from .match_result import MatchResult
+from .match_result_status import MatchResultStatus
 from .money import Money
 from .multi_status import MultiStatus
 from .page_result import PageResult
@@ -28,6 +31,9 @@ __all__ = (
     "InvoiceLine",
     "InvoicePage",
     "InvoiceStatus",
+    "MatchReason",
+    "MatchResult",
+    "MatchResultStatus",
     "Money",
     "MultiStatus",
     "PageResult",

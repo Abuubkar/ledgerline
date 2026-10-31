@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Ledgerline
-  version: 0.5.0
+  version: 0.6.0
   description: |
     Accounts-payable automation. This file is the source of truth for the HTTP API: the app is checked
     against it with `make contract-check`, and the typed clients are generated from it with `make codegen`.
@@ -262,7 +262,9 @@ components:
       description: |
         received → extracting → extracted | partially_extracted | exception, or failed when the job is
         dead-lettered. Precedence when several apply: failed > partially_extracted > exception > extracted.
-      enum: [received, extracting, extracted, partially_extracted, exception, failed]
+        An extracted invoice that cites a purchase order is then 3-way matched: matched, or exception with the
+        reasons in `match`. One without a PO number stays extracted.
+      enum: [received, extracting, extracted, partially_extracted, exception, failed, matched]
     PageStatus:
       type: string
       description: blank pages (e.g. the back of a scan) are skipped, not failed.
@@ -347,6 +349,45 @@ components:
           anyOf:
             - type: string
             - type: 'null'
+    MatchReason:
+      type: object
+      required: [code, detail, line]
+      properties:
+        code:
+          type: string
+          description: |
+            po_missing, po_not_found, vendor_mismatch, currency_mismatch, not_received, no_lines,
+            line_unreadable, line_not_on_po, price_variance, quantity_over_po, short_shipment,
+            quantity_mismatch. New codes may be added.
+        detail:
+          type: string
+          description: For a person, e.g. "unit price 92.00 vs PO 89.50 (+2.79%, tolerance 1%)".
+        line:
+          description: The invoice line it concerns ("page 1 line 2"), or null for the whole invoice.
+          anyOf:
+            - type: string
+            - type: 'null'
+    MatchResult:
+      type: object
+      required: [status, purchase_order_id, reasons, matched_at]
+      properties:
+        status:
+          type: string
+          enum: [matched, exception]
+        purchase_order_id:
+          description: The purchase order the invoice was matched against; null when it wasn't found.
+          anyOf:
+            - type: string
+              format: uuid
+            - type: 'null'
+        reasons:
+          description: Why it didn't match; empty when matched.
+          type: array
+          items:
+            $ref: '#/components/schemas/MatchReason'
+        matched_at:
+          type: string
+          format: date-time
     Invoice:
       type: object
       required:
@@ -358,6 +399,7 @@ components:
         - vendor_name
         - vendor_tax_id
         - invoice_number
+        - po_number
         - invoice_date
         - due_date
         - currency
@@ -376,6 +418,7 @@ components:
         - repair_attempted
         - pages
         - lines
+        - match
         - created_at
       properties:
         id:
@@ -409,6 +452,11 @@ components:
             - type: string
             - type: 'null'
         invoice_number:
+          anyOf:
+            - type: string
+            - type: 'null'
+        po_number:
+          description: The buyer's purchase order number, as printed on the invoice.
           anyOf:
             - type: string
             - type: 'null'
@@ -493,6 +541,11 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/InvoiceLine'
+        match:
+          description: The latest 3-way match against the purchase order and goods receipts; null until matched.
+          anyOf:
+            - $ref: '#/components/schemas/MatchResult'
+            - type: 'null'
         created_at:
           type: string
           format: date-time

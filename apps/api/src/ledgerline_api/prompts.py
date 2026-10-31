@@ -1,12 +1,13 @@
 """Every prompt Ledgerline sends to a model. Bump a version whenever its wording changes, so stored results
 can be traced to the exact prompt that produced them."""
 
-EXTRACT_PAGE_VERSION = "extract-page/1"
+EXTRACT_PAGE_VERSION = "extract-page/2"
 
 _FIELD_RULES = """\
 - Copy values exactly as printed. Never compute, convert or invent a value.
 - vendor_name: the company that issued the invoice (the seller), not the buyer.
 - vendor_tax_id: the seller's VAT or tax ID as printed.
+- po_number: the buyer's purchase order number (PO) the invoice refers to, as printed; null if none is printed.
 - invoice_date and due_date: format as YYYY-MM-DD. If the printed date is ambiguous (for example 03/09/2026
   with no other clue), use null.
 - currency: the 3-letter ISO code (EUR, USD, GBP, JPY, ...).
@@ -32,7 +33,7 @@ def extract_page_user(page_no: int, page_count: int, text: str | None) -> str:
     return f"{where} Its text:\n\n{text}"
 
 
-REPAIR_VERSION = "repair-totals/1"
+REPAIR_VERSION = "repair-totals/2"
 
 REPAIR_SYSTEM = f"""\
 You re-read a supplier invoice whose extracted numbers don't add up, and return a corrected extraction of the

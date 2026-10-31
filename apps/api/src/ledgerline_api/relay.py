@@ -3,7 +3,7 @@
     python -m ledgerline_api.relay
 
 Delivery is at-least-once: if the relay dies after publishing but before marking a row, the job is published
-again, which the extraction job tolerates (it's idempotent). A publish the broker refuses (queue full under
+again, which the jobs tolerate (extraction and matching are idempotent). A publish the broker refuses (queue full under
 `overflow: reject-publish`, or the broker down) leaves the row unpublished for the next pass.
 """
 
@@ -16,7 +16,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
 from ledgerline_api.db import OutboxMessage
-from ledgerline_api.service import EXTRACT_QUEUE
+from ledgerline_api.service import OUTBOX_QUEUES
 from ledgerline_api.settings import settings
 
 log = logging.getLogger("ledgerline.relay")
@@ -55,7 +55,7 @@ def celery_send(row: OutboxMessage) -> None:
     from ledgerline_api.worker import app
 
     # The outbox id doubles as the task id, so a republished job is recognisable in logs.
-    app.send_task(row.task_name, kwargs=row.payload, task_id=str(row.id), queue=EXTRACT_QUEUE)
+    app.send_task(row.task_name, kwargs=row.payload, task_id=str(row.id), queue=OUTBOX_QUEUES[row.task_name])
 
 
 async def run_forever() -> None:

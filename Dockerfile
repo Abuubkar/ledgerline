@@ -1,4 +1,4 @@
-# One image for the worker and the outbox relay (and later the API). Follows uv's Docker guide:
+# One image for the worker, the outbox relay, beat and the ERP mock (and later the API). Follows uv's Docker guide:
 # dependencies in their own layer, then the source.
 FROM python:3.13-slim-trixie
 
@@ -16,6 +16,7 @@ RUN --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=uv.lock,target=uv.lock \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
     --mount=type=bind,source=apps/api/pyproject.toml,target=apps/api/pyproject.toml \
+    --mount=type=bind,source=apps/erp_mock/pyproject.toml,target=apps/erp_mock/pyproject.toml \
     --mount=type=bind,source=packages/clients/python/pyproject.toml,target=packages/clients/python/pyproject.toml \
     uv sync --frozen --no-install-workspace
 

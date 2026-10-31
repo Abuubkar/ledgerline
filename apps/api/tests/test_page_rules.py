@@ -21,7 +21,7 @@ from ledgerline_api.normalize import (
 
 def page(**fields) -> ExtractedPage:
     base = dict(
-        vendor_name=None, vendor_tax_id=None, invoice_number=None, invoice_date=None, due_date=None,
+        vendor_name=None, vendor_tax_id=None, invoice_number=None, po_number=None, invoice_date=None, due_date=None,
         currency=None, subtotal=None, tax=None, total=None, field_confidence={}, line_items=[],
     )
     return ExtractedPage(**(base | fields))

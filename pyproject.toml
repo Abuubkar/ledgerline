@@ -3,7 +3,7 @@ name = "ledgerline"
 version = "0.1.0"
 description = "Workspace root: dev tooling and scripts. App code lives in apps/."
 requires-python = ">=3.13"
-dependencies = ["ledgerline-api"]
+dependencies = ["ledgerline-api", "ledgerline-erp-mock"]
 
 [dependency-groups]
 dev = [
@@ -20,10 +20,11 @@ dev = [
 package = false
 
 [tool.uv.workspace]
-members = ["apps/api", "packages/clients/python"]
+members = ["apps/api", "apps/erp_mock", "packages/clients/python"]
 
 [tool.uv.sources]
 ledgerline-api = { workspace = true }
+ledgerline-erp-mock = { workspace = true }
 ledgerline-client = { workspace = true }
 
 [tool.pytest.ini_options]

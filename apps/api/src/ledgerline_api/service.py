@@ -23,6 +23,12 @@ from ledgerline_api.settings import settings
 
 EXTRACT_TASK = "ledgerline.extract_invoice"
 EXTRACT_QUEUE = "invoices.extract"
+MATCH_TASK = "ledgerline.match_invoice"
+MATCH_QUEUE = "invoices.match"
+# Sent by Celery beat on a schedule, not through the outbox: it belongs to no transaction.
+SYNC_TASK = "ledgerline.sync_erp"
+SYNC_QUEUE = "erp.sync"
+OUTBOX_QUEUES = {EXTRACT_TASK: EXTRACT_QUEUE, MATCH_TASK: MATCH_QUEUE}
 
 
 @dataclass
@@ -51,6 +57,11 @@ def enqueue_extraction(session: AsyncSession, invoice_id: uuid.UUID) -> None:
     session.add(OutboxMessage(task_name=EXTRACT_TASK, payload={"invoice_id": str(invoice_id)}))
 
 
+def enqueue_match(session: AsyncSession, invoice_id: uuid.UUID) -> None:
+    """Queue a 3-way match of the invoice, through the outbox like extraction."""
+    session.add(OutboxMessage(task_name=MATCH_TASK, payload={"invoice_id": str(invoice_id)}))
+
+
 # --- backpressure ---------------------------------------------------------------------------------------
 
 _depth_cache: tuple[float, int] | None = None
@@ -72,8 +83,12 @@ async def queue_depth(session: AsyncSession) -> int | None:
         # Fail open: an unreachable management API shouldn't stop uploads; the broker's own max-length still
         # bounds the queue.
         return None
+    # Only extraction jobs count: match jobs are cheap and don't wait for the model.
     unpublished = (
-        await session.execute(select(func.count()).select_from(OutboxMessage).where(OutboxMessage.published_at.is_(None)))
+        await session.execute(
+            select(func.count()).select_from(OutboxMessage)
+            .where(OutboxMessage.published_at.is_(None), OutboxMessage.task_name == EXTRACT_TASK)
+        )
     ).scalar_one()
     _depth_cache = (now, ready + unpublished)
     return _depth_cache[1]

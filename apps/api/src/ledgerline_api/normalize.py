@@ -16,7 +16,7 @@ from pydantic import BaseModel
 from ledgerline_api.money import CURRENCY_EXPONENTS, MoneyError, format_minor, to_minor
 
 HEADER_FIELDS = (
-    "vendor_name", "vendor_tax_id", "invoice_number", "invoice_date", "due_date",
+    "vendor_name", "vendor_tax_id", "invoice_number", "po_number", "invoice_date", "due_date",
     "currency", "subtotal", "tax", "total",
 )
 # Allowed rounding slack between a total and the sum of its parts, in minor units.
@@ -27,6 +27,7 @@ class ExtractedHeader(BaseModel):
     vendor_name: str | None
     vendor_tax_id: str | None
     invoice_number: str | None
+    po_number: str | None
     invoice_date: str | None
     due_date: str | None
     currency: str | None
@@ -64,6 +65,7 @@ class InvoiceHeader:
     vendor_name: str | None = None
     vendor_tax_id: str | None = None
     invoice_number: str | None = None
+    po_number: str | None = None
     invoice_date: date | None = None
     due_date: date | None = None
     currency: str | None = None
@@ -92,19 +94,31 @@ def normalize_tax_id(raw: str) -> str:
 
 # Words vendors put in front of the number itself: "INV-0042", "Invoice No. 42", "Rechnung Nr. 42".
 _NUMBER_PREFIX_WORDS = {"INV", "INVOICE", "NO", "NR", "NUMBER", "RECHNUNG", "FACTURE", "FACTURA"}
+# And in front of the buyer's order number: "PO 4500012345", "P.O. No. 4500012345", "Bestellung Nr. ...".
+_PO_PREFIX_WORDS = {"PO", "P", "O", "NO", "NR", "NUMBER", "PURCHASE", "ORDER", "BESTELLUNG", "BESTELLNR"}
+
+
+def _number_key(raw: str | None, prefix_words: set[str]) -> str | None:
+    if raw is None:
+        return None
+    tokens = re.findall(r"[A-Z]+|[0-9]+", raw.upper())
+    while tokens and tokens[0] in prefix_words:
+        tokens.pop(0)
+    tokens = [str(int(t)) if t.isdigit() else t for t in tokens]
+    return "-".join(tokens) or None
 
 
 def invoice_number_key(raw: str | None) -> str | None:
     """The form of an invoice number used to spot duplicates: case, separators, prefix words and leading zeros
     don't count, so "INV-0042", "inv 42" and " 42 " are the same invoice. Letters inside the number still
     count ("RE-2026-0915" and "2026-915" differ)."""
-    if raw is None:
-        return None
-    tokens = re.findall(r"[A-Z]+|[0-9]+", raw.upper())
-    while tokens and tokens[0] in _NUMBER_PREFIX_WORDS:
-        tokens.pop(0)
-    tokens = [str(int(t)) if t.isdigit() else t for t in tokens]
-    return "-".join(tokens) or None
+    return _number_key(raw, _NUMBER_PREFIX_WORDS)
+
+
+def po_number_key(raw: str | None) -> str | None:
+    """The form of a purchase order number used to find the PO an invoice cites, by the same rules:
+    "PO 4500012345", "P.O. No. 4500012345" and "4500012345" are the same order."""
+    return _number_key(raw, _PO_PREFIX_WORDS)
 
 
 def vendor_name_key(name: str) -> str:
@@ -154,6 +168,7 @@ def normalize_header(extracted: ExtractedHeader, currency: str | None = None) ->
 
     header.vendor_name = _blank_to_none(extracted.vendor_name)
     header.invoice_number = _blank_to_none(extracted.invoice_number)
+    header.po_number = _blank_to_none(extracted.po_number)
 
     if tax_id := _blank_to_none(extracted.vendor_tax_id):
         header.vendor_tax_id = normalize_tax_id(tax_id) or None
