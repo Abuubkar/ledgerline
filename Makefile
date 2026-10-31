@@ -28,6 +28,7 @@ chaos:
 	docker compose build worker
 	uv run python scripts/chaos.py
 
-# Realistic volume in the dev database (deterministic). PROFILE=large loads ~1M invoice lines.
+# Realistic volume in the dev database plus the ERP mock's data (deterministic). PROFILE=large: ~1M invoice lines.
 seed:
 	uv run python scripts/seed.py --profile $(or $(PROFILE),small) --replace
+	docker compose restart erp_mock
