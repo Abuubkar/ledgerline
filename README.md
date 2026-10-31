@@ -9,9 +9,10 @@ Finance data punishes mistakes: a double-paid invoice costs real money. So the i
 unglamorous ones: idempotent ingestion, money that is never a float, failures that are recorded instead of
 guessed around, and a human approving every write.
 
-> **Status:** slice 4 of 8. Invoices are extracted page by page (scans and line items included), checked for
-> arithmetic and duplicates, and 3-way matched against purchase orders and goods receipts synced from an ERP,
-> on a queue that survives model outages, corrupt files and killed workers. See the [roadmap](#roadmap).
+> **Status:** slice 5a of 8. Invoices are extracted page by page (scans and line items included), checked for
+> arithmetic and duplicates, and 3-way matched against purchase orders and goods receipts synced from an ERP.
+> For exceptions, a local-model agent gathers evidence and proposes one action that a person approves or
+> rejects through the API. The reviewer UI is next. See the [roadmap](#roadmap).
 
 ## What works today
 
@@ -69,6 +70,11 @@ Around that:
   paginated, rate-limited ERP, saving its cursor with every page: killed mid-sync, it picks up on the next
   page; given an expired cursor, it restarts from how far it got. A row is overwritten only by a newer ERP
   version.
+- **An agent that proposes, never acts.** For an invoice in `exception`, `gemma4:12b` calls tools (PO,
+  receipts, vendor history, variance) and proposes a credit memo request or a hold. Code refuses a credit memo
+  before receipts and variance were checked, computes its amount itself, and caps each run at 8 tool turns
+  and 90 s. A person approves or rejects (`POST /v1/pending-actions/{id}:approve`, with `If-Match`), and of
+  two reviewers deciding at once exactly one wins.
 - **Errors** are RFC 9457 problem+json with stable codes, documented in [docs/problems.md](docs/problems.md).
 
 **Measured so far** (Apple M1 Pro, 16 GB): 27 of 27 header fields correct across the 3 sample invoices
@@ -100,6 +106,9 @@ Around that:
 - **The 3-way match is plain code, not the model.** Description, price (1% tolerance, compared as
   decimals) and quantity received, line by line, with every failed rule stored as a reason a person can read.
   ([ADR 0012](docs/adr/0012-erp-sync-and-three-way-match.md))
+- **The agent's limits are code, not prompt.** Tool arguments are validated, guards and budgets sit in the
+  loop, every step is stored, and every run ends in exactly one proposal.
+  ([ADR 0013](docs/adr/0013-exception-agent-proposes-a-person-decides.md))
 - **Leases, not long-held locks.** A worker owns an invoice through a lease it renews; a unique index allows
   only one completed extraction per invoice, so double extraction is impossible rather than unlikely.
   ([ADR 0009](docs/adr/0009-queued-extraction-with-leases-and-dead-letters.md))
@@ -131,6 +140,7 @@ make chaos                                # 200 invoices, stub model failing 15%
 make seed                                 # 200 vendors, 20k invoices, 30 near-duplicates, 5k POs for the ERP mock
 uv run python scripts/sync_erp.py         # one ERP sync now (beat runs it every 5 minutes anyway)
 uv run python scripts/match_pending.py    # match the seeded invoices that cite a PO
+uv run python scripts/agent_scenarios.py  # real model: the agent on 5 exception scenarios, with traces
 uv run python scripts/check_scenarios.py  # real model: failing page, blank page, misprinted total, scan
 ```
 
@@ -149,7 +159,8 @@ Each slice is one end-to-end change. The destination layout and stack are in [do
 | 3b | Per-page extraction, line items, scanned pages, arithmetic check with one repair call | Done |
 | 4a | Vendors table via a live expand/contract migration, duplicate-invoice guard, seed data | Done |
 | 4b | ERP mock, resumable ERP sync on Celery beat, 3-way match, `matched` status | Done |
-| 5 | Exception agent with tool calling; reviewer UI to approve or reject its proposals | Planned |
+| 5a | Exception agent (tool calling, guards, budgets), pending actions, ETag approval in REST and GraphQL | Done |
+| 5b | Reviewer UI (Next.js + urql), Jest tests | Planned |
 | 6 | Golden set of 60 invoices, eval script with gates, model sweep | Planned |
 | 7 | GitHub Actions: checks, offline eval, signed images to GHCR | Planned |
 | 8 | OpenTelemetry: one invoice traced from upload to approval; dashboards and alerts | Planned |

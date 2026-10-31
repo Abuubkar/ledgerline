@@ -194,3 +194,21 @@ Match result distribution for the 5,000 seeded invoices that cite a PO:
 | exception: `line_not_on_po` | 45 | 1% bill an extra line |
 
 1,147 exceptions in all; 35 of them have more than one reason, so the reason counts add up to more.
+
+## Slice 5a: exception agent
+
+gemma4:12b on the same machine, `think: false`, one run per scenario through the queue (`scripts/agent_scenarios.py`).
+
+| Scenario | Tool calls | Proposed | Expected | Model time |
+|---|---|---|---|---|
+| Price variance | get_po → get_receipts → compute_variance → draft_credit_memo_request | credit memo ¥376 | credit memo | 39.7 s |
+| Short shipment (1 unit not received) | get_po → get_receipts → compute_variance → draft_credit_memo_request | credit memo €385.89 | credit memo | 46.8 s |
+| Duplicate | get_vendor_history → propose_hold | hold: duplicate | hold: duplicate | 38.2 s |
+| Missing PO | get_po (not found) → propose_hold | hold: missing_po | hold: missing_po | 29.0 s |
+| Tax mismatch | propose_hold | hold: tax_mismatch | hold: tax_mismatch | 10.2 s |
+
+- **5 of 5** expected actions; 0 guard refusals, 0 invalid tool calls, no run hit a budget.
+- The first model call of a run takes 22–30 s (system prompt, tool schemas and invoice: the prompt to
+  evaluate); each later call 4–8 s, because Ollama reuses the cached prompt prefix.
+- Wall time per run including the wait for the model slot was 41–92 s (two workers, one model slot).
+- Five runs is a smoke test, not an accuracy number: slice 6 measures 25 scenarios.

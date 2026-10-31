@@ -251,11 +251,13 @@ async def main() -> None:
                              number=printed_variant(original["number"], rng), duplicate_of=original["id"]))
 
     if linked:
-        # Vendors the app already created (same tax ID) are reused, not duplicated.
-        known = {r["tax_id"]: r["id"] for r in await conn.fetch("SELECT id, tax_id FROM vendors WHERE tax_id IS NOT NULL")}
-        new_vendors = [v for v in vendors if v.tax_id not in known]
+        # Vendors already there (created by the app or the ERP sync) are reused, not duplicated: by tax ID, or by
+        # normalized name for one without, the same way vendors.find_or_create recognizes them.
+        known = {(r["tax_id"] or r["name_key"]): r["id"] for r in await conn.fetch("SELECT id, tax_id, name_key FROM vendors")}
+        identity = lambda v: v.tax_id or vendor_name_key(v.name)  # noqa: E731
+        new_vendors = [v for v in vendors if identity(v) not in known]
         for vendor in vendors:
-            vendor.id = known.get(vendor.tax_id, vendor.id)
+            vendor.id = known.get(identity(vendor), vendor.id)
 
     def invoice_rows():
         """(invoice row, how to regenerate its line items) for every invoice."""

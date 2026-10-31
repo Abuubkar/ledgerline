@@ -49,6 +49,11 @@ Both steps are additive, so this is migrate first, then deploy, with no backfill
 Not run under live upload traffic like the vendors move: both are catalog changes plus one validating scan
 of `invoices`, the same pattern as `0006`, and the test suite runs every migration up → down → up.
 
+## Agent tables (slice 5a)
+
+`0010` adds `agent_runs`, `agent_steps` and `pending_actions`: new tables only, so migrate, then deploy.
+Rollback: redeploy the slice 4b code, then `alembic downgrade 0009` (drops the agent's traces and proposals).
+
 ## Vendors move: live run, 2026-10-31
 
 All four steps against the dev database (20,030 seeded invoices in the old shape plus earlier dev data),

@@ -46,12 +46,26 @@ again from the first page.
 
 ## not_found
 
-404. No invoice (or dead letter) with that id.
+404. No invoice, dead letter or pending action with that id.
 
 ## queue_full
 
 429. Too many extraction jobs are waiting. Nothing was stored, and the `Idempotency-Key` was released, so retry
 the same request after the number of seconds in `Retry-After`.
+
+## precondition_required
+
+428. Approving or rejecting a pending action needs `If-Match` with the ETag from
+`GET /v1/pending-actions/{id}`, so a reviewer can't decide on a version they never saw.
+
+## version_conflict
+
+412. The pending action changed since you read it (usually: someone else decided it first). `current_version`
+says where it is now; reload it and decide again.
+
+## action_already_decided
+
+409. The pending action was already approved or rejected. `current_version` is its version now.
 
 ## Idempotency keys
 
