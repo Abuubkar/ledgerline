@@ -168,3 +168,29 @@ Dev database on the reference Mac, Postgres 18.6 in Docker. Full detail in [migr
 | Migrations under load (0005 / 0006 / 0007) | 0.67 s / 0.69 s / 0.55 s |
 | Upload loop across all 4 steps (0.4.0 client) | 339 uploads accepted, 339 extracted, 0 errors; 32 refused connections during API restarts, retried |
 | Invoice list, page 500 of 25: keyset vs `OFFSET` | **0.08 ms** (26 rows read) vs **9.4 ms** (12,501 rows walked) |
+
+## Slice 4b: ERP sync and 3-way match
+
+Same machine, everything in Docker except the API and Ollama. ERP mock with 5,000 POs and 5,386 goods
+receipts from `make seed`.
+
+| Measure | Result |
+|---|---|
+| Full sync, no faults (104 pages of 100) | 8.1 s |
+| Full sync, 20% 429s (`Retry-After: 1`) and up to 300 ms latency per request, worker killed after 23 PO pages | Resumed on page 24 from the saved cursor; finished with **5,000 / 17,432 / 5,386 / 18,630** POs / PO lines / receipts / receipt lines, the mock's exact counts. 126 requests, 20 answered 429, no page fetched twice |
+| Incremental sync (nothing changed) | 0.1 s, 2 requests, 0 rows written |
+| Matching 5,000 seeded invoices (2 worker processes) | 71 s (~70 invoices/s); 0 dead-lettered |
+| Real model, an invoice billing a PO (gemma4:12b) | PO number read from the PDF; matched. Same with line 1 priced 3% higher: exception, `price_variance` (+3.00%) |
+
+Match result distribution for the 5,000 seeded invoices that cite a PO:
+
+| Result | Invoices | What the seed planted |
+|---|---|---|
+| matched | 3,853 | clean invoices, plus 5% with a price 0.5% above the PO (inside the 1% tolerance) |
+| exception: `not_received` | 493 | 10% of POs have no goods receipt |
+| exception: `short_shipment` | 450 | 10% of received POs are short on one line |
+| exception: `price_variance` | 138 | 3% of invoices price one line 3% above the PO |
+| exception: `po_not_found` | 56 | 1% cite a PO number the ERP doesn't have |
+| exception: `line_not_on_po` | 45 | 1% bill an extra line |
+
+1,147 exceptions in all; 35 of them have more than one reason, so the reason counts add up to more.

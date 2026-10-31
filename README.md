@@ -9,22 +9,24 @@ Finance data punishes mistakes: a double-paid invoice costs real money. So the i
 unglamorous ones: idempotent ingestion, money that is never a float, failures that are recorded instead of
 guessed around, and a human approving every write.
 
-> **Status:** slice 3b of 8. Invoices are extracted page by page, including scanned pages and line items, and
-> code checks that the totals add up, on a queue that survives model outages, corrupt files and killed workers
-> (chaos-tested with 200 invoices). See the [roadmap](#roadmap) for what's next.
+> **Status:** slice 4 of 8. Invoices are extracted page by page (scans and line items included), checked for
+> arithmetic and duplicates, and 3-way matched against purchase orders and goods receipts synced from an ERP,
+> on a queue that survives model outages, corrupt files and killed workers. See the [roadmap](#roadmap).
 
 ## What works today
 
 Upload up to 50 invoice PDFs. The API stores them and answers **202** in well under a second; a queue worker
 then has a local model (`gemma4:12b` via Ollama) read each page, from its text or, for scans, from the page
-image, and extract the header (vendor, tax ID, invoice number, dates, currency, subtotal, tax, total) and the
-line items. Poll `GET /v1/invoices/{id}` until `status` is final:
+image, and extract the header (vendor, tax ID, invoice number, PO number, dates, currency, subtotal, tax,
+total) and the line items. An invoice that cites a purchase order is then checked against that PO and its
+goods receipts. Poll `GET /v1/invoices/{id}` until `status` is final:
 
 | Status | Meaning |
 |---|---|
-| `extracted` | Every page read and the numbers add up |
+| `matched` | Read, adds up, and every line matches its PO line (price within 1%) and the quantity received |
+| `extracted` | Every page read and the numbers add up; no PO number printed, so nothing to match against |
 | `partially_extracted` | Some pages couldn't be read (see `pages`); the rest are kept |
-| `exception` | The line amounts plus tax don't equal the total even after one repair attempt, or it's a second copy of an invoice we already have from that vendor (see `invalid_fields`) |
+| `exception` | A person needs to look: the totals don't add up even after one repair attempt, it's a second copy of an invoice we already have (both in `invalid_fields`), or it doesn't match its PO or receipts (reasons in `match`, e.g. `price_variance`, `short_shipment`) |
 | `failed` | The job gave up (see `error_code`); listed in the dead-letter queue and replayable |
 
 ```bash
@@ -63,6 +65,10 @@ Around that:
 - **Partial failures are reported per file.** A multi-file upload returns 207 with one result per file.
 - **Keyset pagination** with signed cursors (`GET /v1/invoices`), and the same list over GraphQL as a Relay
   connection (`POST /graphql`).
+- **ERP sync that resumes.** `sync_erp` (Celery beat, every 5 min) copies POs and goods receipts from a
+  paginated, rate-limited ERP, saving its cursor with every page: killed mid-sync, it picks up on the next
+  page; given an expired cursor, it restarts from how far it got. A row is overwritten only by a newer ERP
+  version.
 - **Errors** are RFC 9457 problem+json with stable codes, documented in [docs/problems.md](docs/problems.md).
 
 **Measured so far** (Apple M1 Pro, 16 GB): 27 of 27 header fields correct across the 3 sample invoices
@@ -91,6 +97,9 @@ Around that:
   is caught as a duplicate. The move from text columns to a vendors table ran as a 4-step expand/contract
   migration while uploads kept flowing. ([ADR 0011](docs/adr/0011-vendors-table-and-expand-contract-migration.md),
   [docs/migrations.md](docs/migrations.md))
+- **The 3-way match is plain code, not the model.** Description, price (1% tolerance, compared as
+  decimals) and quantity received, line by line, with every failed rule stored as a reason a person can read.
+  ([ADR 0012](docs/adr/0012-erp-sync-and-three-way-match.md))
 - **Leases, not long-held locks.** A worker owns an invoice through a lease it renews; a unique index allows
   only one completed extraction per invoice, so double extraction is impossible rather than unlikely.
   ([ADR 0009](docs/adr/0009-queued-extraction-with-leases-and-dead-letters.md))
@@ -104,7 +113,7 @@ macOS has no GPU access, so the model runs outside it).
 
 ```bash
 ollama pull gemma4:12b
-docker compose up -d --wait               # Postgres, RabbitMQ, Redis, SeaweedFS, worker, outbox relay
+docker compose up -d --wait               # Postgres, RabbitMQ, Redis, SeaweedFS, worker, relay, beat, ERP mock
 uv run alembic upgrade head
 uv run uvicorn ledgerline_api.main:app --port 8000
 ```
@@ -119,7 +128,9 @@ make test                                 # unit tests, offline
 make test-int                             # service tests against a throwaway Postgres (needs Docker)
 make contract-check                       # code vs. contracts/openapi.yaml (needs Docker)
 make chaos                                # 200 invoices, stub model failing 15%, a worker killed mid-run; cleans up after
-make seed                                 # 200 vendors, 20k invoices, 30 near-duplicates (PROFILE=large: ~1M lines)
+make seed                                 # 200 vendors, 20k invoices, 30 near-duplicates, 5k POs for the ERP mock
+uv run python scripts/sync_erp.py         # one ERP sync now (beat runs it every 5 minutes anyway)
+uv run python scripts/match_pending.py    # match the seeded invoices that cite a PO
 uv run python scripts/check_scenarios.py  # real model: failing page, blank page, misprinted total, scan
 ```
 
@@ -137,7 +148,7 @@ Each slice is one end-to-end change. The destination layout and stack are in [do
 | 3a | Queued extraction (Celery + RabbitMQ): retries, dead letters + replay, backpressure, outbox, chaos test | Done |
 | 3b | Per-page extraction, line items, scanned pages, arithmetic check with one repair call | Done |
 | 4a | Vendors table via a live expand/contract migration, duplicate-invoice guard, seed data | Done |
-| 4b | ERP sync with cursor pagination, 3-way match | Planned |
+| 4b | ERP mock, resumable ERP sync on Celery beat, 3-way match, `matched` status | Done |
 | 5 | Exception agent with tool calling; reviewer UI to approve or reject its proposals | Planned |
 | 6 | Golden set of 60 invoices, eval script with gates, model sweep | Planned |
 | 7 | GitHub Actions: checks, offline eval, signed images to GHCR | Planned |

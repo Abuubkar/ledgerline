@@ -36,7 +36,20 @@ The backfill (step 2) also copies each invoice's vendor name and tax ID as read 
 extraction run before step 4 drops them. Invoices from before extraction runs existed (slices 1–2) have no
 run, so only their vendor link survives.
 
-## Live run, 2026-10-31
+## ERP tables and the `matched` status (slice 4b)
+
+Both steps are additive, so this is migrate first, then deploy, with no backfill
+([ADR 0012](adr/0012-erp-sync-and-three-way-match.md)).
+
+| Step | Migration | Code deployed | Order | Rollback |
+|---|---|---|---|---|
+| 1 | `0008`: new tables `purchase_orders`, `po_lines`, `goods_receipts`, `receipt_lines`, `match_results`, `erp_sync_state`; nullable `invoices.po_number` | none yet (old code ignores them) | migrate | `alembic downgrade 0007` drops them |
+| 2 | `0009`: `invoices_status_check` replaced to allow `matched`, `NOT VALID` then `VALIDATE` (as `0006`) | extraction reads `po_number`; match job, `sync_erp`, beat, ERP mock | migrate, then deploy | Redeploy the slice 4a code, then `alembic downgrade 0008`, which first turns `matched` back into `extracted`: the invoices lose that status, their `match_results` stay until `0008` is downgraded too |
+
+Not run under live upload traffic like the vendors move: both are catalog changes plus one validating scan
+of `invoices`, the same pattern as `0006`, and the test suite runs every migration up → down → up.
+
+## Vendors move: live run, 2026-10-31
 
 All four steps against the dev database (20,030 seeded invoices in the old shape plus earlier dev data),
 while `scripts/upload_loop.py` uploaded an invoice every 0.5 s and listed the first page after each, using
