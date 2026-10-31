@@ -1,0 +1,5 @@
+# pnpm runs no dependency install scripts unless allowed here. Both of these are optional native speed-ups
+# (codegen's file watcher, Jest's resolver) with prebuilt or JavaScript fallbacks, so they stay off.
+allowBuilds:
+  "@parcel/watcher": false
+  unrs-resolver: false
