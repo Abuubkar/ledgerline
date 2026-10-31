@@ -21,7 +21,10 @@ make test             # unit tests, offline
 make test-int         # service tests (testcontainers Postgres)
 make codegen          # regenerate client + schema.graphql after changing contracts or GraphQL types
 make contract-check   # oasdiff: code vs contracts/openapi.yaml
-make seed             # 200 vendors, 20k invoices, 30 near-duplicates into the dev DB (PROFILE=large: ~1M lines)
+make seed             # 200 vendors, 20k invoices, 30 near-duplicates into the dev DB, plus data/erp/dataset.json
+                      # for the ERP mock (PROFILE=large: ~1M lines); restarts erp_mock
+uv run python scripts/sync_erp.py [--full]   # one ERP sync now; beat runs it every 5 min
+uv run python scripts/match_pending.py       # queue matches for extracted invoices with a PO and no match yet
 make chaos            # 200 invoices, stub model failing 15%, one worker killed; checks nothing lost, then deletes its data (--keep to keep)
 docker compose build worker && docker compose up -d worker relay   # after changing worker code
 ```
@@ -35,8 +38,11 @@ docker compose build worker && docker compose up -d worker relay   # after chang
 - `contracts/openapi.yaml` is the source of truth: change it first, then the code, then `make codegen`.
   `packages/clients/python` is generated; never edit it by hand.
 - REST and GraphQL both call `service.py`; business rules never live in a route or resolver.
-- Jobs are enqueued only through the outbox (`service.enqueue_extraction`) inside the same transaction as the
-  data; never publish to RabbitMQ from a request.
+- Jobs are enqueued only through the outbox (`service.enqueue_extraction` / `enqueue_match`) inside the same
+  transaction as the data; never publish to RabbitMQ from a request. The one exception is `sync_erp`, which
+  Celery beat sends on a schedule. Run exactly one beat.
+- A new task needs its queue in `service.OUTBOX_QUEUES` (if sent through the outbox), `worker.task_queues`, and
+  `infra/rabbitmq/definitions.json` (RabbitMQ only reads it at boot: restart it after a change).
 - New failure types go through `errors.classify`: transient is retried, permanent is dead-lettered. Error
   classes must stay picklable (Celery pickles exceptions).
 - The worker image doesn't reload code: rebuild it after changing anything under `apps/api/src`.
@@ -48,3 +54,7 @@ docker compose build worker && docker compose up -d worker relay   # after chang
   after the code that used them is gone. Migrations run one transaction per file.
 - An invoice's vendor comes from `vendors.link` (tax ID, else normalized name). What the model read is on the
   completed `extraction_runs.extracted_header`, not on the invoice.
+- `sync_erp` commits once per page, together with the ERP cursor and `synced_through`; never batch pages into
+  one transaction, or a crash re-reads (and an expired cursor loses) everything since the last commit.
+- Match rules live in `matching.py` as plain functions; `jobs.match` only loads rows and stores the result.
+  Only `extracted` invoices with a PO number are matched (plus re-matches of failed matches).
