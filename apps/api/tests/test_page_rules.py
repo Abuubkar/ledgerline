@@ -11,9 +11,11 @@ from ledgerline_api.normalize import (
     Line,
     check_totals,
     decide_status,
+    invoice_number_key,
     merge_pages,
     needs_repair,
     normalize_lines,
+    vendor_name_key,
 )
 
 
@@ -153,3 +155,34 @@ def test_truncation_is_detected_from_measured_ratios():
     assert looks_truncated(63_690, 0, 4_099, 8192)
     assert looks_truncated(10, 0, 8192, 8192)
     assert not looks_truncated(500, 1, 30, 8192)  # images: ratio meaningless
+
+
+# --- duplicate keys -------------------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    ("printed", "key"),
+    [
+        ("INV-0042", "42"),
+        (" 42 ", "42"),
+        ("inv 042", "42"),
+        ("Invoice No. 42", "42"),
+        ("RE-2026-0915", "RE-2026-915"),
+        ("2026/0915", "2026-915"),
+        ("NW-48213", "NW-48213"),
+        ("INV-", None),
+        (None, None),
+    ],
+)
+def test_invoice_number_key_ignores_formatting(printed, key):
+    assert invoice_number_key(printed) == key
+
+
+def test_letters_inside_the_number_still_count():
+    assert invoice_number_key("RE-2026-0915") != invoice_number_key("2026-0915")
+    assert invoice_number_key("A-100") != invoice_number_key("B-100")
+
+
+def test_vendor_name_key_ignores_case_and_punctuation():
+    assert vendor_name_key("Northwind Supplies, Inc.") == vendor_name_key("NORTHWIND  supplies inc") == "northwind supplies inc"
+    assert vendor_name_key("ACME GmbH") != vendor_name_key("ACME AG")

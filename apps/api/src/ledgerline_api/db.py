@@ -24,6 +24,23 @@ class Base(DeclarativeBase):
     pass
 
 
+class Vendor(Base):
+    """A company that bills us. Recognized by its tax ID; one without a tax ID by its normalized name."""
+
+    __tablename__ = "vendors"
+    __table_args__ = (
+        Index("vendors_tax_id_key", "tax_id", unique=True, postgresql_where=text("tax_id IS NOT NULL")),
+        Index("vendors_name_key_key", "name_key", unique=True, postgresql_where=text("tax_id IS NULL")),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, server_default=text("uuidv7()"))
+    tax_id: Mapped[str | None]
+    # The name as first seen; later invoices may spell it differently.
+    name: Mapped[str]
+    name_key: Mapped[str]
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
 class Invoice(Base):
     __tablename__ = "invoices"
     __table_args__ = (
@@ -42,6 +59,14 @@ class Invoice(Base):
         ),
         # Keyset pagination reads newest first: (created_at, id) descending, id breaking ties.
         Index("invoices_created_at_id_idx", text("created_at DESC"), text("id DESC")),
+        # One invoice per vendor and number. A later copy keeps a null key and is flagged (vendors.link).
+        Index(
+            "invoices_vendor_number_key",
+            "vendor_id",
+            "invoice_number_key",
+            unique=True,
+            postgresql_where=text("invoice_number_key IS NOT NULL"),
+        ),
     )
 
     # uuidv7() is built into Postgres 18: time-ordered ids keep the primary-key index append-only.
@@ -55,9 +80,12 @@ class Invoice(Base):
     content_sha256: Mapped[str | None] = mapped_column(String(64))
     page_count: Mapped[int | None]
 
+    # Being replaced by vendor_id (expand/contract, docs/migrations.md): written alongside it until step 4.
     vendor_name: Mapped[str | None]
     vendor_tax_id: Mapped[str | None]
+    vendor_id: Mapped[uuid.UUID | None]
     invoice_number: Mapped[str | None]
+    invoice_number_key: Mapped[str | None]
     invoice_date: Mapped[date | None]
     due_date: Mapped[date | None]
     currency: Mapped[str | None] = mapped_column(String(3))
@@ -175,6 +203,8 @@ class ExtractionRun(Base):
     lease_until: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     error_code: Mapped[str | None]
     error_detail: Mapped[str | None]
+    # What the model read, before vendors were linked or duplicates flagged. Set on the completed run.
+    extracted_header: Mapped[dict | None] = mapped_column(JSONB)
     started_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     finished_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 

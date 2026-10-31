@@ -89,6 +89,28 @@ def normalize_tax_id(raw: str) -> str:
     return re.sub(r"[^0-9A-Z]", "", raw.upper())
 
 
+# Words vendors put in front of the number itself: "INV-0042", "Invoice No. 42", "Rechnung Nr. 42".
+_NUMBER_PREFIX_WORDS = {"INV", "INVOICE", "NO", "NR", "NUMBER", "RECHNUNG", "FACTURE", "FACTURA"}
+
+
+def invoice_number_key(raw: str | None) -> str | None:
+    """The form of an invoice number used to spot duplicates: case, separators, prefix words and leading zeros
+    don't count, so "INV-0042", "inv 42" and " 42 " are the same invoice. Letters inside the number still
+    count ("RE-2026-0915" and "2026-915" differ)."""
+    if raw is None:
+        return None
+    tokens = re.findall(r"[A-Z]+|[0-9]+", raw.upper())
+    while tokens and tokens[0] in _NUMBER_PREFIX_WORDS:
+        tokens.pop(0)
+    tokens = [str(int(t)) if t.isdigit() else t for t in tokens]
+    return "-".join(tokens) or None
+
+
+def vendor_name_key(name: str) -> str:
+    """How a vendor without a tax ID is recognized again: case, punctuation and spacing don't count."""
+    return " ".join(re.findall(r"[0-9a-z]+", name.lower()))
+
+
 def _blank_to_none(value: str | None) -> str | None:
     if value is None:
         return None
