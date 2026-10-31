@@ -13,6 +13,7 @@ dev = [
     "openapi-python-client>=0.29.1",
     "pytest>=9.2.0",
     "testcontainers>=4.15.0",
+    "faker==40.44.0",
 ]
 
 [tool.uv]

@@ -6,6 +6,7 @@ checked here, in code; a number is never changed to make the arithmetic work.
 """
 
 import re
+import unicodedata
 from dataclasses import dataclass, field
 from datetime import date
 from decimal import Decimal, InvalidOperation
@@ -108,7 +109,14 @@ def invoice_number_key(raw: str | None) -> str | None:
 
 def vendor_name_key(name: str) -> str:
     """How a vendor without a tax ID is recognized again: case, punctuation and spacing don't count."""
-    return " ".join(re.findall(r"[0-9a-z]+", name.lower()))
+    # Accents on Latin letters don't count (Café = CAFE); other scripts are kept as they are, so a Japanese
+    # name has a key too and its voicing marks still distinguish names.
+    chars, previous = [], ""
+    for char in unicodedata.normalize("NFKD", name.casefold()):
+        if not (unicodedata.combining(char) and previous.isascii()):
+            chars.append(char)
+            previous = char
+    return " ".join(re.findall(r"[^\W_]+", unicodedata.normalize("NFC", "".join(chars))))
 
 
 def _blank_to_none(value: str | None) -> str | None:

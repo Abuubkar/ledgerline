@@ -1,6 +1,6 @@
 OASDIFF := docker run --rm -v $(CURDIR):/specs:ro tufin/oasdiff:v1.35.0
 
-.PHONY: codegen contract-check test test-int smoke chaos
+.PHONY: codegen contract-check test test-int smoke chaos seed
 
 # Regenerate everything derived from the contracts. Generated code is never edited by hand.
 codegen:
@@ -27,3 +27,7 @@ smoke:
 chaos:
 	docker compose build worker
 	uv run python scripts/chaos.py
+
+# Realistic volume in the dev database (deterministic). PROFILE=large loads ~1M invoice lines.
+seed:
+	uv run python scripts/seed.py --profile $(or $(PROFILE),small) --replace
