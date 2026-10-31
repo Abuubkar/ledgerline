@@ -33,10 +33,10 @@ async def find_or_create(session: AsyncSession, tax_id: str | None, name: str | 
     return vendor_id or (await session.execute(select(Vendor.id).where(match))).scalar_one()
 
 
-async def link(session: AsyncSession, invoice: Invoice) -> None:
-    """Set the invoice's vendor and duplicate key from its extracted fields. A copy of an invoice we already
-    hold keeps no key and goes to `exception`, pointing at the original."""
-    invoice.vendor_id = await find_or_create(session, invoice.vendor_tax_id, invoice.vendor_name)
+async def link(session: AsyncSession, invoice: Invoice, tax_id: str | None, name: str | None) -> None:
+    """Set the invoice's vendor and duplicate key from the extracted tax ID and name. A copy of an invoice we
+    already hold keeps no key and goes to `exception`, pointing at the original."""
+    invoice.vendor_id = await find_or_create(session, tax_id, name)
     key = invoice_number_key(invoice.invoice_number)
     invoice.invoice_number_key = None
     if invoice.vendor_id is None or key is None:
