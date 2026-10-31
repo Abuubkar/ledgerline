@@ -21,7 +21,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.pool import NullPool
 
-from ledgerline_api import prompts, storage
+from ledgerline_api import prompts, storage, vendors
 from ledgerline_api.db import DeadLetter, ExtractionRun, Invoice, InvoiceLine, InvoicePageResult
 from ledgerline_api.errors import PermanentError, TransientError, classify
 from ledgerline_api.extraction import ExtractionError, ModelCall, extract_page, read_pages, render_page, repair_invoice
@@ -244,13 +244,16 @@ async def extract(invoice_id: uuid.UUID, task_id: str, attempt: int) -> Outcome:
             heartbeat.cancel()
 
         async with sessions() as session:
-            if lost.is_set() or await _finish_run(session, run_id, "completed") is None:
+            if lost.is_set() or (run := await _finish_run(session, run_id, "completed")) is None:
                 await session.rollback()
                 return Outcome.LEASE_LOST
+            header = asdict(result.header)
+            run.extracted_header = json.loads(json.dumps(header, default=str))
             invoice = await session.get(Invoice, invoice_id)
-            for name, value in asdict(result.header).items():
+            for name, value in header.items():
                 setattr(invoice, name, value)
             invoice.status = result.status
+            await vendors.link(session, invoice)
             invoice.page_count = len(result.pages)
             invoice.model = settings.llm_model
             invoice.prompt_version = result.prompt_version

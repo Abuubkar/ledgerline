@@ -45,7 +45,7 @@ async def client(postgres_url) -> AsyncIterator:
     engine = create_async_engine(postgres_url)
     sessions = async_sessionmaker(engine, expire_on_commit=False)
     async with engine.begin() as conn:
-        await conn.execute(text("TRUNCATE invoices, idempotency_keys, outbox, extraction_runs, dead_letters CASCADE"))
+        await conn.execute(text("TRUNCATE invoices, vendors, idempotency_keys, outbox, extraction_runs, dead_letters CASCADE"))
 
     async def test_session():
         async with sessions() as session:

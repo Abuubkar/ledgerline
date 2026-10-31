@@ -82,10 +82,10 @@ async def relay(client, worker):
     await task
 
 
-def _page(page_no: int, total: str = "46.41") -> ExtractedPage:
+def _page(page_no: int, total: str = "46.41", invoice_number: str = "INV-1") -> ExtractedPage:
     """A consistent one-line page: 39.00 + 7.41 tax = 46.41 EUR."""
     return ExtractedPage(
-        vendor_name="ACME GmbH", vendor_tax_id=None, invoice_number="INV-1", invoice_date=None, due_date=None,
+        vendor_name="ACME GmbH", vendor_tax_id="DE812345678", invoice_number=invoice_number, invoice_date=None, due_date=None,
         currency="EUR", subtotal=None, tax="7.41", total=total, field_confidence={"total": 0.9},
         line_items=[ExtractedLine(description=f"Item on page {page_no}", quantity="1", unit_price="39.00", amount="39.00")],
     )
@@ -103,6 +103,7 @@ def model(monkeypatch):
             self.fail_pages: set[int] = set()
             self.printed_total = "46.41"
             self.repair_total: str | None = None
+            self.invoice_number = "INV-1"
             self.calls = 0
             self.repair_calls = 0
             self.lock = threading.Lock()  # the worker runs in another thread
@@ -117,7 +118,9 @@ def model(monkeypatch):
                 raise ExtractionError("invalid_model_output", "stubbed bad output")
             # Only the last page prints the totals, as on a real multi-page invoice.
             total = self.printed_total if page_no == page_count else None
-            result = _page(page_no, total=total) if total else _page(page_no).model_copy(update={"total": None, "tax": None})
+            result = _page(page_no, total=total or "0", invoice_number=self.invoice_number)
+            if not total:
+                result = result.model_copy(update={"total": None, "tax": None})
             return ModelCall(result, prompt_tokens=10, output_tokens=5, llm_ms=1)
 
         async def repair(self, texts, images, previous_json, problems):
@@ -126,7 +129,7 @@ def model(monkeypatch):
             pages = len(texts)
             total = self.repair_total or self.printed_total
             repaired = RepairedInvoice(
-                **_page(1, total=total).model_dump(exclude={"line_items"}),
+                **_page(1, total=total, invoice_number=self.invoice_number).model_dump(exclude={"line_items"}),
                 line_items=[RepairedLine(page=n, description=f"Item on page {n}", quantity="1", unit_price="39.00", amount="39.00")
                             for n in range(1, pages + 1)],
             )
@@ -277,6 +280,27 @@ async def test_a_repair_that_makes_the_totals_add_up_is_used(client, relay, mode
     assert model.repair_calls == 1 and done["repair_attempted"] is True
     assert done["total"]["amount_minor"] == 12441
     assert "total" not in (done["invalid_fields"] or {})
+
+
+async def test_a_second_copy_of_an_invoice_goes_to_exception_pointing_at_the_original(client, relay, model):
+    terminal = {"extracted", "partially_extracted", "exception", "failed"}
+    model.printed_total = "124.41"  # 3 pages of 39.00 + 7.41 tax: the totals add up
+    original = await wait_for_status(client, (await upload(client, "a.pdf", three_page_pdf("copy-a")))["id"], terminal)
+    model.invoice_number = "inv 0001"  # the same number, printed differently, on a different file
+    copy = await wait_for_status(client, (await upload(client, "b.pdf", three_page_pdf("copy-b")))["id"], terminal)
+    model.invoice_number = "INV-2"
+    other = await wait_for_status(client, (await upload(client, "c.pdf", three_page_pdf("copy-c")))["id"], terminal)
+
+    assert original["status"] == "extracted" and other["status"] == "extracted"
+    assert copy["status"] == "exception"
+    assert copy["invalid_fields"]["invoice_number"] == f"duplicate of invoice {original['id']}"
+    async with client.sessions() as session:
+        vendor_ids = set((await session.execute(select(Invoice.vendor_id))).scalars())
+        assert len(vendor_ids) == 1 and None not in vendor_ids  # one vendor, found again by its tax ID
+        raw = (await session.execute(
+            select(ExtractionRun.extracted_header).where(ExtractionRun.invoice_id == uuid.UUID(copy["id"]))
+        )).scalar_one()
+        assert raw["invoice_number"] == "inv 0001" and raw["vendor_tax_id"] == "DE812345678"
 
 
 async def test_running_out_of_retries_dead_letters_the_job(client, relay, model, monkeypatch):
