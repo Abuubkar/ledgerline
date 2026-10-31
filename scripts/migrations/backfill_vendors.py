@@ -8,6 +8,8 @@ depend on the ORM models of whatever code is deployed.
 - A vendor is found or created by tax ID, or by normalized name when there's no tax ID (vendors.py's rules).
 - When two invoices share a vendor and invoice number, the older keeps it; the newer is flagged as a
   duplicate, as the extraction job does for new uploads.
+- The vendor name and tax ID as read are copied onto the invoice's completed extraction run, so dropping the
+  columns in step 4 doesn't lose them.
 
 Usage: uv run python scripts/migrations/backfill_vendors.py [--batch 10000] [--stop-after N]
 """
@@ -44,6 +46,16 @@ TAKEN_KEYS = """
     SELECT i.vendor_id, i.invoice_number_key, i.id
     FROM invoices i JOIN unnest($1::uuid[], $2::text[]) AS k(vendor_id, key)
       ON i.vendor_id = k.vendor_id AND i.invoice_number_key = k.key
+"""
+# The name and tax ID as read live only in the columns step 4 drops; copy them onto the completed extraction
+# run, where the job now records the raw header. Invoices from before extraction runs existed have no run, so
+# only their vendor link survives.
+KEEP_AS_READ = """
+    UPDATE extraction_runs r
+    SET extracted_header = jsonb_build_object('vendor_name', i.vendor_name, 'vendor_tax_id', i.vendor_tax_id,
+                                              'source', 'backfill')
+    FROM invoices i
+    WHERE i.id = any($1::uuid[]) AND r.invoice_id = i.id AND r.outcome = 'completed' AND r.extracted_header IS NULL
 """
 APPLY = """
     UPDATE invoices i
@@ -91,6 +103,7 @@ async def backfill_batch(conn: asyncpg.Connection, after, size: int) -> tuple[ob
             elif vendor_id and key:
                 taken[(vendor_id, key)] = r["id"]  # later rows in this batch see it
             updates.append((r["id"], vendor_id, key, status, json.dumps(invalid) if invalid is not None else None))
+        await conn.execute(KEEP_AS_READ, [r["id"] for r in rows])
         await conn.execute(APPLY, *map(list, zip(*updates)))
         return rows[-1]["id"], sum(1 for u in updates if u[1]), created, duplicates
 
