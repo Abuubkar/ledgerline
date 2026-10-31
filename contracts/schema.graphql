@@ -15,6 +15,7 @@ type Invoice {
   vendorName: String @deprecated(reason: "Use vendor.name.")
   vendorTaxId: String @deprecated(reason: "Use vendor.taxId.")
   invoiceNumber: String
+  poNumber: String
   invoiceDate: Date
   dueDate: Date
   currency: String
@@ -23,6 +24,7 @@ type Invoice {
   total: Money
   errorCode: String
   model: String
+  match: MatchResult
   createdAt: DateTime!
 }
 
@@ -41,6 +43,19 @@ type InvoiceEdge {
 
   """The item at the end of the edge"""
   node: Invoice!
+}
+
+type MatchReason {
+  code: String!
+  detail: String!
+  line: String
+}
+
+type MatchResult {
+  status: String!
+  purchaseOrderId: UUID
+  reasons: [MatchReason!]!
+  matchedAt: DateTime!
 }
 
 type Money {

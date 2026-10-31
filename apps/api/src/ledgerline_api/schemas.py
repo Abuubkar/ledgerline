@@ -33,6 +33,7 @@ class InvoiceStatus(enum.StrEnum):
     PARTIALLY_EXTRACTED = "partially_extracted"
     EXCEPTION = "exception"
     FAILED = "failed"
+    MATCHED = "matched"
 
 
 class PageStatus(enum.StrEnum):
@@ -115,6 +116,19 @@ class Vendor(BaseModel):
     tax_id: str | None
 
 
+class MatchReason(BaseModel):
+    code: str
+    detail: str
+    line: str | None
+
+
+class MatchResult(BaseModel):
+    status: Literal["matched", "exception"]
+    purchase_order_id: uuid.UUID | None
+    reasons: list[MatchReason]
+    matched_at: datetime
+
+
 class Invoice(BaseModel):
     id: uuid.UUID
     status: InvoiceStatus
@@ -125,6 +139,7 @@ class Invoice(BaseModel):
     vendor_name: str | None = Field(json_schema_extra={"deprecated": True})
     vendor_tax_id: str | None = Field(json_schema_extra={"deprecated": True})
     invoice_number: str | None
+    po_number: str | None
     invoice_date: date | None
     due_date: date | None
     currency: Currency | None
@@ -143,6 +158,7 @@ class Invoice(BaseModel):
     repair_attempted: bool
     pages: list[PageResult]
     lines: list[InvoiceLine]
+    match: MatchResult | None
     created_at: datetime
 
     @classmethod
@@ -152,9 +168,9 @@ class Invoice(BaseModel):
                 return None
             return Money(amount_minor=minor, currency=invoice.currency)
 
-        nested = ("vendor", "vendor_name", "vendor_tax_id", "subtotal", "tax", "total", "pages", "lines")
+        nested = ("vendor", "vendor_name", "vendor_tax_id", "subtotal", "tax", "total", "pages", "lines", "match")
         plain = {name: getattr(invoice, name) for name in cls.model_fields if name not in nested}
-        vendor = invoice.vendor
+        vendor, match = invoice.vendor, invoice.match
         return cls(
             **plain,
             vendor=Vendor(id=vendor.id, name=vendor.name, tax_id=vendor.tax_id) if vendor else None,
@@ -172,6 +188,8 @@ class Invoice(BaseModel):
                 )
                 for line in invoice.lines
             ],
+            match=MatchResult(status=match.status, purchase_order_id=match.purchase_order_id,
+                              reasons=match.reasons, matched_at=match.matched_at) if match else None,
         )
 
 

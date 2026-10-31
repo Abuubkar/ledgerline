@@ -6,6 +6,7 @@ class InvoiceStatus(StrEnum):
     EXTRACTED = "extracted"
     EXTRACTING = "extracting"
     FAILED = "failed"
+    MATCHED = "matched"
     PARTIALLY_EXTRACTED = "partially_extracted"
     RECEIVED = "received"
 

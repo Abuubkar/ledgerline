@@ -53,7 +53,7 @@ services:
     volumes:
       - seaweeddata:/data
 
-  # The worker and relay run the app image; the API still runs on the host during development.
+  # The worker, relay, beat and ERP mock run the app image; the API still runs on the host during development.
   worker:
     build: .
     image: ledgerline:dev
@@ -67,6 +67,7 @@ services:
       # Ollama runs natively on the Mac (Docker on macOS has no GPU). The chaos test points this at a stub.
       OLLAMA_HOST: ${WORKER_OLLAMA_HOST:-http://host.docker.internal:11434}
       LLM_MAX_CONCURRENCY: ${LLM_MAX_CONCURRENCY:-1}
+      ERP_BASE_URL: http://erp_mock:8100
     extra_hosts:
       - "host.docker.internal:host-gateway"
     depends_on:
@@ -82,6 +83,28 @@ services:
     depends_on:
       postgres: {condition: service_healthy}
       rabbitmq: {condition: service_healthy}
+
+  # Exactly one beat: it sends sync_erp on schedule (two would send every sync twice). The schedule file
+  # lives in the container and is recreated on restart, which only means one sync runs straight away.
+  beat:
+    image: ledgerline:dev
+    command: ["celery", "-A", "ledgerline_api.worker", "beat", "--loglevel=INFO", "-s", "/tmp/celerybeat-schedule"]
+    environment: *app-env
+    depends_on:
+      rabbitmq: {condition: service_healthy}
+
+  # A stand-in for the company ERP (apps/erp_mock), serving the purchase orders scripts/seed.py wrote.
+  erp_mock:
+    image: ledgerline:dev
+    command: ["uvicorn", "ledgerline_erp_mock.main:app", "--host", "0.0.0.0", "--port", "8100"]
+    environment:
+      ERP_DATASET: /data/erp/dataset.json
+      ERP_ERROR_RATE: ${ERP_ERROR_RATE:-0}
+      ERP_LATENCY_MS: ${ERP_LATENCY_MS:-0}
+    ports:
+      - "8100:8100"
+    volumes:
+      - ./data/erp:/data/erp:ro
 
 volumes:
   pgdata:

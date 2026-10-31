@@ -49,6 +49,21 @@ class Vendor:
 
 
 @strawberry.type
+class MatchReason:
+    code: str
+    detail: str
+    line: str | None
+
+
+@strawberry.type
+class MatchResult:
+    status: str
+    purchase_order_id: uuid.UUID | None
+    reasons: list[MatchReason]
+    matched_at: datetime
+
+
+@strawberry.type
 class Invoice:
     id: uuid.UUID
     status: str
@@ -58,6 +73,7 @@ class Invoice:
     vendor_name: str | None = strawberry.field(deprecation_reason="Use vendor.name.")
     vendor_tax_id: str | None = strawberry.field(deprecation_reason="Use vendor.taxId.")
     invoice_number: str | None
+    po_number: str | None
     invoice_date: date | None
     due_date: date | None
     currency: str | None
@@ -66,6 +82,7 @@ class Invoice:
     total: Money | None
     error_code: str | None
     model: str | None
+    match: MatchResult | None
     created_at: datetime
 
     @classmethod
@@ -74,13 +91,17 @@ class Invoice:
             return Money(amount_minor=BigInt(minor), currency=row.currency) if minor is not None and row.currency else None
 
         vendor = Vendor(id=row.vendor.id, name=row.vendor.name, tax_id=row.vendor.tax_id) if row.vendor else None
+        match = MatchResult(
+            status=row.match.status, purchase_order_id=row.match.purchase_order_id, matched_at=row.match.matched_at,
+            reasons=[MatchReason(**reason) for reason in row.match.reasons],
+        ) if row.match else None
         return cls(
             id=row.id, status=row.status, original_filename=row.original_filename, page_count=row.page_count,
             vendor=vendor, vendor_name=vendor and vendor.name, vendor_tax_id=vendor and vendor.tax_id,
-            invoice_number=row.invoice_number,
+            invoice_number=row.invoice_number, po_number=row.po_number,
             invoice_date=row.invoice_date, due_date=row.due_date, currency=row.currency,
             subtotal=money(row.subtotal_minor), tax=money(row.tax_minor), total=money(row.total_minor),
-            error_code=row.error_code, model=row.model, created_at=row.created_at,
+            error_code=row.error_code, model=row.model, match=match, created_at=row.created_at,
         )
 
 

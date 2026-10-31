@@ -44,9 +44,10 @@ class Vendor(Base):
 class Invoice(Base):
     __tablename__ = "invoices"
     __table_args__ = (
-        # received → extracting → extracted | partially_extracted | exception, or failed (dead-lettered).
+        # received → extracting → extracted | partially_extracted | exception, or failed (dead-lettered);
+        # extracted → matched | exception once checked against its purchase order and goods receipts.
         CheckConstraint(
-            "status IN ('received', 'extracting', 'extracted', 'partially_extracted', 'exception', 'failed')",
+            "status IN ('received', 'extracting', 'extracted', 'partially_extracted', 'exception', 'failed', 'matched')",
             name="invoices_status_check",
         ),
         CheckConstraint("currency ~ '^[A-Z]{3}$'", name="invoices_currency_check"),
@@ -84,6 +85,8 @@ class Invoice(Base):
     vendor_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("vendors.id"))
     invoice_number: Mapped[str | None]
     invoice_number_key: Mapped[str | None]
+    # The buyer's purchase order number as printed; matching finds the PO by po_number_key.
+    po_number: Mapped[str | None]
     invoice_date: Mapped[date | None]
     due_date: Mapped[date | None]
     currency: Mapped[str | None] = mapped_column(String(3))
@@ -113,6 +116,7 @@ class Invoice(Base):
     lines: Mapped[list["InvoiceLine"]] = relationship(
         lazy="selectin", order_by="(InvoiceLine.page_no, InvoiceLine.line_no)", cascade="all, delete-orphan"
     )
+    match: Mapped["MatchResult | None"] = relationship(lazy="selectin", passive_deletes=True)
 
 
 class InvoicePageResult(Base):
@@ -222,3 +226,95 @@ class DeadLetter(Base):
     attempts: Mapped[int]
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     replayed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class PurchaseOrder(Base):
+    """A purchase order as the ERP last sent it (sync_erp). Updated only by a newer ERP version."""
+
+    __tablename__ = "purchase_orders"
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, server_default=text("uuidv7()"))
+    erp_id: Mapped[str] = mapped_column(unique=True)
+    po_number: Mapped[str]
+    po_number_key: Mapped[str] = mapped_column(unique=True)
+    vendor_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("vendors.id"))
+    currency: Mapped[str] = mapped_column(String(3))
+    status: Mapped[str]
+    erp_updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    synced_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+    lines: Mapped[list["PoLine"]] = relationship(lazy="selectin", order_by="PoLine.line_no", passive_deletes=True)
+
+
+class PoLine(Base):
+    __tablename__ = "po_lines"
+    __table_args__ = (UniqueConstraint("purchase_order_id", "line_no"),)
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, server_default=text("uuidv7()"))
+    purchase_order_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("purchase_orders.id", ondelete="CASCADE"))
+    line_no: Mapped[int]
+    description: Mapped[str]
+    quantity: Mapped[Decimal] = mapped_column(Numeric(18, 4))
+    unit_price: Mapped[Decimal] = mapped_column(Numeric(18, 6))
+
+
+class GoodsReceipt(Base):
+    """Goods received against a purchase order. Linked by PO number, not a foreign key: the ERP can send a
+    receipt before we have synced its PO."""
+
+    __tablename__ = "goods_receipts"
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, server_default=text("uuidv7()"))
+    erp_id: Mapped[str] = mapped_column(unique=True)
+    po_number_key: Mapped[str] = mapped_column(index=True)
+    received_on: Mapped[date]
+    erp_updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    synced_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+    lines: Mapped[list["ReceiptLine"]] = relationship(lazy="selectin", order_by="ReceiptLine.line_no", passive_deletes=True)
+
+
+class ReceiptLine(Base):
+    __tablename__ = "receipt_lines"
+    __table_args__ = (UniqueConstraint("goods_receipt_id", "line_no"),)
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, server_default=text("uuidv7()"))
+    goods_receipt_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("goods_receipts.id", ondelete="CASCADE"))
+    line_no: Mapped[int]
+    po_line_no: Mapped[int]
+    quantity: Mapped[Decimal] = mapped_column(Numeric(18, 4))
+
+
+class MatchResult(Base):
+    """The latest 3-way match of an invoice against its PO and receipts; a re-match replaces it."""
+
+    __tablename__ = "match_results"
+    __table_args__ = (
+        CheckConstraint("status IN ('matched', 'exception')", name="match_results_status_check"),
+        # A sync that brings a missing PO or receipt re-matches the invoices that were waiting for it.
+        Index("match_results_waiting_idx", "po_number_key", postgresql_where=text("status = 'exception'")),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, server_default=text("uuidv7()"))
+    invoice_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("invoices.id", ondelete="CASCADE"), unique=True)
+    status: Mapped[str] = mapped_column(String(20))
+    po_number_key: Mapped[str | None]
+    purchase_order_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("purchase_orders.id"))
+    # [{"code": ..., "line": "page 1 line 2" | None, "detail": ...}]; empty when matched.
+    reasons: Mapped[list] = mapped_column(JSONB)
+    matched_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class ErpSyncState(Base):
+    """Where sync_erp is in each ERP list. The cursor is saved with every page, so a crash resumes mid-walk."""
+
+    __tablename__ = "erp_sync_state"
+
+    resource: Mapped[str] = mapped_column(primary_key=True)  # purchase-orders | receipts
+    # The ERP's opaque cursor for the next page of the walk in progress; null between walks.
+    cursor: Mapped[str | None]
+    # Every ERP change older than this is stored: the newest updated_at committed so far. The next walk, or a
+    # restart after an expired cursor, asks for updated_since this.
+    synced_through: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    last_success_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())

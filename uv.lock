@@ -7,6 +7,7 @@ members = [
     "ledgerline",
     "ledgerline-api",
     "ledgerline-client",
+    "ledgerline-erp-mock",
 ]
 
 [[package]]
@@ -786,6 +787,7 @@ version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "ledgerline-api" },
+    { name = "ledgerline-erp-mock" },
 ]
 
 [package.dev-dependencies]
@@ -800,7 +802,10 @@ dev = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "ledgerline-api", editable = "apps/api" }]
+requires-dist = [
+    { name = "ledgerline-api", editable = "apps/api" },
+    { name = "ledgerline-erp-mock", editable = "apps/erp_mock" },
+]
 
 [package.metadata.requires-dev]
 dev = [
@@ -854,7 +859,7 @@ requires-dist = [
 
 [[package]]
 name = "ledgerline-client"
-version = "0.5.0"
+version = "0.6.0"
 source = { editable = "packages/clients/python" }
 dependencies = [
     { name = "attrs" },
@@ -865,6 +870,21 @@ dependencies = [
 requires-dist = [
     { name = "attrs", specifier = ">=22.2.0" },
     { name = "httpx", specifier = ">=0.23.1,<0.29.0" },
+]
+
+[[package]]
+name = "ledgerline-erp-mock"
+version = "0.1.0"
+source = { editable = "apps/erp_mock" }
+dependencies = [
+    { name = "fastapi" },
+    { name = "uvicorn" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "fastapi", specifier = ">=0.162.0" },
+    { name = "uvicorn", specifier = ">=0.54.0" },
 ]
 
 [[package]]

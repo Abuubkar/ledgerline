@@ -8,6 +8,7 @@ def extracted(**overrides) -> ExtractedHeader:
         vendor_name="ACME Tools GmbH",
         vendor_tax_id="DE 123.456.789",
         invoice_number="INV-2026-0042",
+        po_number="PO 4500012345",
         invoice_date="2026-09-03",
         due_date="2026-10-03",
         currency="eur",

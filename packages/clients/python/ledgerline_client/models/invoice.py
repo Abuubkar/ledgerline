@@ -14,6 +14,7 @@ if TYPE_CHECKING:
     from ..models.invoice_field_confidence_type_0 import InvoiceFieldConfidenceType0
     from ..models.invoice_invalid_fields_type_0 import InvoiceInvalidFieldsType0
     from ..models.invoice_line import InvoiceLine
+    from ..models.match_result import MatchResult
     from ..models.money import Money
     from ..models.page_result import PageResult
     from ..models.vendor import Vendor
@@ -30,6 +31,8 @@ class Invoice:
         status (InvoiceStatus): received → extracting → extracted | partially_extracted | exception, or failed when the
             job is
             dead-lettered. Precedence when several apply: failed > partially_extracted > exception > extracted.
+            An extracted invoice that cites a purchase order is then 3-way matched: matched, or exception with the
+            reasons in `match`. One without a PO number stays extracted.
         original_filename (str):
         page_count (int | None):
         vendor (None | Vendor): The vendor this invoice is from, recognized by its tax ID (or by its name when it prints
@@ -38,6 +41,7 @@ class Invoice:
         vendor_name (None | str): Same as vendor.name. Kept for existing clients; use vendor instead.
         vendor_tax_id (None | str): Same as vendor.tax_id. Kept for existing clients; use vendor instead.
         invoice_number (None | str):
+        po_number (None | str): The buyer's purchase order number, as printed on the invoice.
         invoice_date (datetime.date | None):
         due_date (datetime.date | None):
         currency (None | str):
@@ -57,6 +61,8 @@ class Invoice:
         repair_attempted (bool): True when the totals didn't add up and the model was asked once to re-read them.
         pages (list[PageResult]):
         lines (list[InvoiceLine]):
+        match (MatchResult | None): The latest 3-way match against the purchase order and goods receipts; null until
+            matched.
         created_at (datetime.datetime):
     """
 
@@ -68,6 +74,7 @@ class Invoice:
     vendor_name: None | str
     vendor_tax_id: None | str
     invoice_number: None | str
+    po_number: None | str
     invoice_date: datetime.date | None
     due_date: datetime.date | None
     currency: None | str
@@ -86,12 +93,14 @@ class Invoice:
     repair_attempted: bool
     pages: list[PageResult]
     lines: list[InvoiceLine]
+    match: MatchResult | None
     created_at: datetime.datetime
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
         from ..models.invoice_field_confidence_type_0 import InvoiceFieldConfidenceType0  # noqa: PLC0415
         from ..models.invoice_invalid_fields_type_0 import InvoiceInvalidFieldsType0  # noqa: PLC0415
+        from ..models.match_result import MatchResult  # noqa: PLC0415
         from ..models.money import Money  # noqa: PLC0415
         from ..models.vendor import Vendor  # noqa: PLC0415
 
@@ -118,6 +127,9 @@ class Invoice:
 
         invoice_number: None | str
         invoice_number = self.invoice_number
+
+        po_number: None | str
+        po_number = self.po_number
 
         invoice_date: None | str
         if isinstance(self.invoice_date, datetime.date):
@@ -197,6 +209,12 @@ class Invoice:
             lines_item = lines_item_data.to_dict()
             lines.append(lines_item)
 
+        match: dict[str, Any] | None
+        if isinstance(self.match, MatchResult):
+            match = self.match.to_dict()
+        else:
+            match = self.match
+
         created_at = self.created_at.isoformat()
 
         field_dict: dict[str, Any] = {}
@@ -211,6 +229,7 @@ class Invoice:
                 "vendor_name": vendor_name,
                 "vendor_tax_id": vendor_tax_id,
                 "invoice_number": invoice_number,
+                "po_number": po_number,
                 "invoice_date": invoice_date,
                 "due_date": due_date,
                 "currency": currency,
@@ -229,6 +248,7 @@ class Invoice:
                 "repair_attempted": repair_attempted,
                 "pages": pages,
                 "lines": lines,
+                "match": match,
                 "created_at": created_at,
             }
         )
@@ -240,6 +260,7 @@ class Invoice:
         from ..models.invoice_field_confidence_type_0 import InvoiceFieldConfidenceType0  # noqa: PLC0415
         from ..models.invoice_invalid_fields_type_0 import InvoiceInvalidFieldsType0  # noqa: PLC0415
         from ..models.invoice_line import InvoiceLine  # noqa: PLC0415
+        from ..models.match_result import MatchResult  # noqa: PLC0415
         from ..models.money import Money  # noqa: PLC0415
         from ..models.page_result import PageResult  # noqa: PLC0415
         from ..models.vendor import Vendor  # noqa: PLC0415
@@ -293,6 +314,13 @@ class Invoice:
             return cast(None | str, data)
 
         invoice_number = _parse_invoice_number(d.pop("invoice_number"))
+
+        def _parse_po_number(data: object) -> None | str:
+            if data is None:
+                return data
+            return cast(None | str, data)
+
+        po_number = _parse_po_number(d.pop("po_number"))
 
         def _parse_invoice_date(data: object) -> datetime.date | None:
             if data is None:
@@ -471,6 +499,21 @@ class Invoice:
 
             lines.append(lines_item)
 
+        def _parse_match(data: object) -> MatchResult | None:
+            if data is None:
+                return data
+            try:
+                if not isinstance(data, dict):
+                    raise TypeError()
+                match_type_0 = MatchResult.from_dict(data)
+
+                return match_type_0
+            except (TypeError, ValueError, AttributeError, KeyError):
+                pass
+            return cast(MatchResult | None, data)
+
+        match = _parse_match(d.pop("match"))
+
         created_at = datetime.datetime.fromisoformat(d.pop("created_at"))
 
         invoice = cls(
@@ -482,6 +525,7 @@ class Invoice:
             vendor_name=vendor_name,
             vendor_tax_id=vendor_tax_id,
             invoice_number=invoice_number,
+            po_number=po_number,
             invoice_date=invoice_date,
             due_date=due_date,
             currency=currency,
@@ -500,6 +544,7 @@ class Invoice:
             repair_attempted=repair_attempted,
             pages=pages,
             lines=lines,
+            match=match,
             created_at=created_at,
         )
 

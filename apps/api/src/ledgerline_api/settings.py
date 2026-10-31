@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -52,6 +54,19 @@ class Settings(BaseSettings):
     llm_output_reserve_tokens: int = 2048
     llm_keep_alive: str = "10m"
     llm_timeout_s: float = 180.0
+
+    # The ERP that purchase orders and goods receipts come from (apps/erp_mock locally). Beat runs sync_erp
+    # every interval; a run that finds the previous one still going skips.
+    erp_base_url: str = "http://localhost:8100"
+    erp_sync_interval_s: int = 300
+    erp_page_size: int = 100
+    erp_timeout_s: float = 30.0
+    # 429s in a row before a sync run gives up (the next run resumes from the saved cursor), and the longest
+    # Retry-After honoured.
+    erp_max_rate_limited: int = 10
+    erp_retry_after_cap_s: int = 60
+    # 3-way match: an invoice unit price may differ from the PO price by this much.
+    match_price_tolerance_pct: Decimal = Decimal("1")
 
 
 settings = Settings()

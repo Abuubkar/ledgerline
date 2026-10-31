@@ -85,7 +85,8 @@ async def relay(client, worker):
 def _page(page_no: int, total: str = "46.41", invoice_number: str = "INV-1") -> ExtractedPage:
     """A consistent one-line page: 39.00 + 7.41 tax = 46.41 EUR."""
     return ExtractedPage(
-        vendor_name="ACME GmbH", vendor_tax_id="DE812345678", invoice_number=invoice_number, invoice_date=None, due_date=None,
+        vendor_name="ACME GmbH", vendor_tax_id="DE812345678", invoice_number=invoice_number, po_number=None,
+        invoice_date=None, due_date=None,
         currency="EUR", subtotal=None, tax="7.41", total=total, field_confidence={"total": 0.9},
         line_items=[ExtractedLine(description=f"Item on page {page_no}", quantity="1", unit_price="39.00", amount="39.00")],
     )

@@ -16,17 +16,21 @@ from dataclasses import asdict, dataclass
 from datetime import UTC, datetime, timedelta
 
 import redis.asyncio as redis
-from sqlalchemy import select, update
+from sqlalchemy import func, select, update
+from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.pool import NullPool
 
-from ledgerline_api import prompts, storage, vendors
-from ledgerline_api.db import DeadLetter, ExtractionRun, Invoice, InvoiceLine, InvoicePageResult
+from ledgerline_api import matching, prompts, service, storage, vendors
+from ledgerline_api.db import (
+    DeadLetter, ExtractionRun, GoodsReceipt, Invoice, InvoiceLine, InvoicePageResult, MatchResult, PurchaseOrder,
+    ReceiptLine,
+)
 from ledgerline_api.errors import PermanentError, TransientError, classify
 from ledgerline_api.extraction import ExtractionError, ModelCall, extract_page, read_pages, render_page, repair_invoice
 from ledgerline_api.normalize import (
-    ExtractedPage, check_totals, decide_status, from_repair, merge_pages, needs_repair,
+    ExtractedPage, check_totals, decide_status, from_repair, merge_pages, needs_repair, po_number_key,
 )
 from ledgerline_api.semaphore import llm_slot
 from ledgerline_api.settings import settings
@@ -271,8 +275,63 @@ async def extract(invoice_id: uuid.UUID, task_id: str, attempt: int) -> Outcome:
                             invalid_reason=line.invalid_reason)
                 for line in result.lines
             ]
+            # Invoices without a PO number stay `extracted`: there is nothing to match them against (ADR 0012).
+            if invoice.status == "extracted" and invoice.po_number:
+                service.enqueue_match(session, invoice.id)
             await session.commit()
         return Outcome.COMPLETED
+
+
+async def match(invoice_id: uuid.UUID) -> str:
+    """3-way match one invoice and store the result: `extracted` → `matched` or `exception`. Also re-matches an
+    invoice whose earlier match failed (its PO or receipt may have arrived since). Returns the new status, or
+    `skipped` for an invoice in any other state; safe to run twice."""
+    async with job_resources() as (sessions, _):
+        async with sessions() as session:
+            invoice = (
+                await session.execute(select(Invoice).where(Invoice.id == invoice_id).with_for_update())
+            ).scalar_one_or_none()
+            if invoice is None:
+                return "skipped"
+            rematch = invoice.status == "exception" and invoice.match is not None and invoice.match.status == "exception"
+            if invoice.status != "extracted" and not rematch:
+                return "skipped"
+
+            key = po_number_key(invoice.po_number)
+            order = received = None
+            if key is not None:
+                order = (await session.execute(select(PurchaseOrder).where(PurchaseOrder.po_number_key == key))).scalar_one_or_none()
+                receipts = (await session.execute(
+                    select(ReceiptLine.po_line_no, func.sum(ReceiptLine.quantity))
+                    .join(GoodsReceipt).where(GoodsReceipt.po_number_key == key).group_by(ReceiptLine.po_line_no)
+                )).all()
+                has_receipt = (await session.execute(
+                    select(func.count()).select_from(GoodsReceipt).where(GoodsReceipt.po_number_key == key)
+                )).scalar_one() > 0
+                received = dict(receipts) if has_receipt else None
+            reasons = matching.match(
+                matching.Billed(invoice.po_number, invoice.vendor_id, invoice.currency, [
+                    matching.BilledLine(f"page {line.page_no} line {line.line_no}", line.description, line.quantity,
+                                        line.unit_price, line.invalid_reason)
+                    for line in invoice.lines
+                ]),
+                matching.Order(order.po_number, order.vendor_id, order.currency, [
+                    matching.OrderLine(line.line_no, line.description, line.quantity, line.unit_price) for line in order.lines
+                ]) if order else None,
+                received,
+                settings.match_price_tolerance_pct,
+            )
+            status = "exception" if reasons else "matched"
+            values = dict(invoice_id=invoice.id, status=status, po_number_key=key,
+                          purchase_order_id=order.id if order else None,
+                          reasons=[asdict(reason) for reason in reasons], matched_at=_now())
+            statement = insert(MatchResult).values(values)
+            await session.execute(statement.on_conflict_do_update(
+                index_elements=["invoice_id"], set_={name: statement.excluded[name] for name in values if name != "invoice_id"},
+            ))
+            invoice.status = status
+            await session.commit()
+            return status
 
 
 async def dead_letter(task_name: str, payload: dict, error: TransientError | PermanentError, chain: str, attempts: int) -> None:
