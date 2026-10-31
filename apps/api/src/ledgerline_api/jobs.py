@@ -250,10 +250,11 @@ async def extract(invoice_id: uuid.UUID, task_id: str, attempt: int) -> Outcome:
             header = asdict(result.header)
             run.extracted_header = json.loads(json.dumps(header, default=str))
             invoice = await session.get(Invoice, invoice_id)
+            vendor_tax_id, vendor_name = header.pop("vendor_tax_id"), header.pop("vendor_name")
             for name, value in header.items():
                 setattr(invoice, name, value)
             invoice.status = result.status
-            await vendors.link(session, invoice)
+            await vendors.link(session, invoice, vendor_tax_id, vendor_name)
             invoice.page_count = len(result.pages)
             invoice.model = settings.llm_model
             invoice.prompt_version = result.prompt_version

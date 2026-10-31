@@ -80,9 +80,7 @@ class Invoice(Base):
     content_sha256: Mapped[str | None] = mapped_column(String(64))
     page_count: Mapped[int | None]
 
-    # Being replaced by vendor_id (expand/contract, docs/migrations.md): written alongside it until step 4.
-    vendor_name: Mapped[str | None]
-    vendor_tax_id: Mapped[str | None]
+    # The vendor's name and tax ID as read are kept on the completed extraction run (extracted_header).
     vendor_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("vendors.id"))
     invoice_number: Mapped[str | None]
     invoice_number_key: Mapped[str | None]
