@@ -11,6 +11,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from ledgerline_api.db import DeadLetter as DeadLetterRow
 from ledgerline_api.db import Invoice as InvoiceRow
+from ledgerline_api.db import PendingAction as PendingActionRow
 
 
 class ProblemCode(enum.StrEnum):
@@ -24,6 +25,9 @@ class ProblemCode(enum.StrEnum):
     INVALID_CURSOR = "invalid_cursor"
     NOT_FOUND = "not_found"
     QUEUE_FULL = "queue_full"
+    PRECONDITION_REQUIRED = "precondition_required"
+    VERSION_CONFLICT = "version_conflict"
+    ACTION_ALREADY_DECIDED = "action_already_decided"
 
 
 class InvoiceStatus(enum.StrEnum):
@@ -54,6 +58,7 @@ class Problem(BaseModel):
     code: ProblemCode
     duplicate_of: uuid.UUID | None = None
     duplicate_of_url: str | None = None
+    current_version: int | None = None
 
 
 class ApiProblem(Exception):
@@ -229,3 +234,30 @@ class DeadLetter(BaseModel):
 class DeadLetterPage(BaseModel):
     data: list[DeadLetter]
     next_cursor: str | None
+
+
+class PendingAction(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: uuid.UUID
+    invoice_id: uuid.UUID
+    agent_run_id: uuid.UUID
+    action_type: Literal["credit_memo_request", "hold"]
+    status: Literal["pending", "approved", "rejected"]
+    details: dict
+    version: int
+    decision_note: str | None
+    created_at: datetime
+    decided_at: datetime | None
+
+    @classmethod
+    def from_row(cls, row: PendingActionRow) -> "PendingAction":
+        return cls.model_validate(row)
+
+
+class PendingActionList(BaseModel):
+    data: list[PendingAction]
+
+
+class Decision(BaseModel):
+    note: str | None = Field(None, max_length=500)

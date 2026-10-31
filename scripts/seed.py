@@ -29,7 +29,7 @@ from pathlib import Path
 import asyncpg
 from faker import Faker
 
-from ledgerline_api.money import CURRENCY_EXPONENTS
+from ledgerline_api.money import CURRENCY_EXPONENTS, format_minor
 from ledgerline_api.normalize import invoice_number_key, normalize_tax_id, vendor_name_key
 from ledgerline_api.settings import settings
 
@@ -270,7 +270,14 @@ async def main() -> None:
                 lines = []
             subtotal = sum(line[4] for line in lines)
             tax = subtotal * TAX_RATE_PERCENT[vendor.currency] // 100
-            invalid = {}
+            total, invalid = subtotal + tax, {}
+            if status == "exception" and not inv.get("po_lines") and not inv.get("duplicate_of") and lines:
+                # What sends an invoice to exception without a PO: tax printed at the wrong rate, so the lines
+                # plus tax don't make the total (the message is check_totals').
+                total, tax = subtotal + tax, subtotal * (TAX_RATE_PERCENT[vendor.currency] + 2) // 100
+                fmt = lambda minor: format_minor(minor, vendor.currency)  # noqa: E731
+                invalid["total"] = (f"line amounts sum to {fmt(subtotal)}, plus tax {fmt(tax)} makes "
+                                    f"{fmt(subtotal + tax)}, but the total is {fmt(total)}")
             key = invoice_number_key(inv["number"]) if read else None
             if linked and inv.get("duplicate_of"):  # what vendors.link does for a copy
                 invalid["invoice_number"], key, status = f"duplicate of invoice {inv['duplicate_of']}", None, "exception"
@@ -283,7 +290,7 @@ async def main() -> None:
                 "due_date": inv["invoice_date"] + timedelta(days=30) if read else None,
                 "currency": vendor.currency if read else None,
                 "subtotal_minor": subtotal if read else None, "tax_minor": tax if read else None,
-                "total_minor": subtotal + tax if read else None,
+                "total_minor": total if read else None,
                 "invalid_fields": json.dumps(invalid) if read else None,
                 "error_code": "no_page_extracted" if status == "failed" else None,
                 "model": "seed" if read else None, "created_at": inv["created_at"],

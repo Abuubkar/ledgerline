@@ -1,4 +1,4 @@
-"""Celery worker for invoice extraction, matching and the ERP sync. Run with:
+"""Celery worker for invoice extraction, matching, the exception agent and the ERP sync. Run with:
 
     celery -A ledgerline_api.worker worker --concurrency=2
     celery -A ledgerline_api.worker beat      # exactly one: it sends sync_erp every erp_sync_interval_s
@@ -10,8 +10,8 @@ Failure handling, end to end (ADR 0009):
 - Worker process or container dies mid-task: the message was never acked (acks_late), so RabbitMQ redelivers
   it. A message that keeps killing workers is dead-lettered by the queue's delivery limit (6).
 
-Matching and the ERP sync retry TransientError the same way. A match job that still fails is rejected to
-invoices.match.dlq; a failed sync is simply resumed by the next scheduled run.
+Matching, the agent and the ERP sync retry TransientError the same way. A match or agent job that still
+fails is rejected to its .dlq queue; a failed sync is simply resumed by the next scheduled run.
 
 Celery has no asyncio support, so each task runs the async job with asyncio.run.
 """
@@ -25,9 +25,11 @@ import uuid
 from celery import Celery, Task
 from kombu import Queue
 
-from ledgerline_api import erp_sync, jobs
+from ledgerline_api import agent, erp_sync, jobs
 from ledgerline_api.errors import TransientError, classify
-from ledgerline_api.service import EXTRACT_QUEUE, EXTRACT_TASK, MATCH_QUEUE, MATCH_TASK, SYNC_QUEUE, SYNC_TASK
+from ledgerline_api.service import (
+    AGENT_QUEUE, AGENT_TASK, EXTRACT_QUEUE, EXTRACT_TASK, MATCH_QUEUE, MATCH_TASK, SYNC_QUEUE, SYNC_TASK,
+)
 from ledgerline_api.settings import settings
 
 log = logging.getLogger("ledgerline.worker")
@@ -37,10 +39,10 @@ app.conf.update(
     # Must match infra/rabbitmq/definitions.json, which declares the queues at broker boot; the dead-letter
     # exchanges, delivery limits and overflow come from the broker policies, not from here.
     task_queues=[Queue(name, routing_key=name, queue_arguments={"x-queue-type": "quorum"})
-                 for name in (EXTRACT_QUEUE, MATCH_QUEUE, SYNC_QUEUE)],
+                 for name in (EXTRACT_QUEUE, MATCH_QUEUE, AGENT_QUEUE, SYNC_QUEUE)],
     task_default_queue=EXTRACT_QUEUE,
     task_routes={EXTRACT_TASK: {"queue": EXTRACT_QUEUE}, MATCH_TASK: {"queue": MATCH_QUEUE},
-                 SYNC_TASK: {"queue": SYNC_QUEUE}},
+                 AGENT_TASK: {"queue": AGENT_QUEUE}, SYNC_TASK: {"queue": SYNC_QUEUE}},
     beat_schedule={
         # A sync not picked up before the next one is due is dropped rather than piling up behind it.
         "sync-erp": {"task": SYNC_TASK, "schedule": settings.erp_sync_interval_s,
@@ -102,6 +104,15 @@ def match_invoice(self, invoice_id: str) -> str:
         _retry(self, exc)
     except (ConnectionError, TimeoutError) as exc:
         _retry(self, classify(exc))
+
+
+# The run itself is capped at agent_wall_clock_s, but it may first wait up to llm_slot_wait_s for the model.
+@app.task(bind=True, name=AGENT_TASK, time_limit=900, soft_time_limit=870)
+def run_agent(self, invoice_id: str) -> str:
+    try:
+        return asyncio.run(agent.run(uuid.UUID(invoice_id)))
+    except TransientError as exc:
+        _retry(self, exc)
 
 
 # A sync with 20% rate-limited pages and slow answers takes minutes, not seconds.

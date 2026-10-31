@@ -18,12 +18,15 @@ from ledgerline_api.schemas import (
     Invoice,
     InvoicePage,
     InvoiceStatus,
+    Decision,
     MultiStatus,
+    PendingAction,
+    PendingActionList,
     Problem,
     ProblemCode,
 )
 
-app = FastAPI(title="Ledgerline", version="0.6.0")
+app = FastAPI(title="Ledgerline", version="0.7.0")
 app.include_router(graphql_router, prefix="/graphql")
 
 PROBLEM_JSON = "application/problem+json"
@@ -155,3 +158,62 @@ async def list_dead_letters(
 async def replay_dead_letter(dead_letter_id: uuid.UUID, session: Session) -> JSONResponse:
     row, replayed_now = await service.replay_dead_letter(session, dead_letter_id)
     return JSONResponse(DeadLetter.from_row(row).model_dump(mode="json"), status_code=202 if replayed_now else 200)
+
+
+# --- pending actions: the agent proposes, a person decides ----------------------------------------------
+
+
+def _etag(version: int) -> str:
+    return f'"{version}"'
+
+
+def _expected_version(if_match: str | None) -> int:
+    if if_match is None:
+        raise ApiProblem(428, ProblemCode.PRECONDITION_REQUIRED, "If-Match required",
+                         "send the ETag you got with the pending action in If-Match, so two reviewers can't both decide")
+    tag = if_match.strip().removeprefix("W/").strip('"')
+    if not tag.isdigit():
+        raise ApiProblem(400, ProblemCode.INVALID_REQUEST, "Invalid If-Match", 'expected an ETag such as "1"')
+    return int(tag)
+
+
+def _with_etag(row) -> JSONResponse:
+    return JSONResponse(PendingAction.from_row(row).model_dump(mode="json"), headers={"ETag": _etag(row.version)})
+
+
+_ETAG_HEADER = {"ETag": {"description": "The version to send back in If-Match.", "schema": {"type": "string"}}}
+
+
+@app.get("/v1/invoices/{invoice_id}/pending-actions", operation_id="listPendingActions", responses=_problems(400, 404))
+async def list_pending_actions(invoice_id: uuid.UUID, session: Session) -> PendingActionList:
+    rows = await service.list_pending_actions(session, invoice_id)
+    return PendingActionList(data=[PendingAction.from_row(row) for row in rows])
+
+
+@app.get(
+    "/v1/pending-actions/{action_id}", operation_id="getPendingAction",
+    responses={200: {"model": PendingAction, "description": "The proposal.", "headers": _ETAG_HEADER},
+               **_problems(400, 404)},
+)
+async def get_pending_action(action_id: uuid.UUID, session: Session) -> JSONResponse:
+    return _with_etag(await service.get_pending_action(session, action_id))
+
+
+def _decision_route(decision: str, verb: str):
+    async def decide(
+        action_id: uuid.UUID, session: Session, body: Decision | None = None,
+        if_match: Annotated[str | None, Header(alias="If-Match")] = None,
+    ) -> JSONResponse:
+        expected = _expected_version(if_match)
+        note = body.note if body else None
+        return _with_etag(await service.decide_pending_action(session, action_id, decision, expected, note))
+
+    app.post(
+        f"/v1/pending-actions/{{action_id}}:{verb}", operation_id=f"{verb}PendingAction",
+        responses={200: {"model": PendingAction, "description": f"{decision.capitalize()}.", "headers": _ETAG_HEADER},
+                   **_problems(400, 404, 409, 412, 428)},
+    )(decide)
+
+
+_decision_route("approved", "approve")
+_decision_route("rejected", "reject")

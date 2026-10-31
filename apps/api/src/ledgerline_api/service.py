@@ -9,7 +9,8 @@ from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 
 import httpx
-from sqlalchemy import func, select, tuple_
+from sqlalchemy import func, select, tuple_, update
+from sqlalchemy.orm import raiseload
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -17,6 +18,7 @@ from ledgerline_api import cursor, idempotency, storage
 from ledgerline_api.db import DeadLetter as DeadLetterRow
 from ledgerline_api.db import Invoice as InvoiceRow
 from ledgerline_api.db import OutboxMessage
+from ledgerline_api.db import PendingAction as PendingActionRow
 from ledgerline_api.extraction import ExtractionError, read_pages
 from ledgerline_api.schemas import ApiProblem, Invoice, MultiStatus, ProblemCode, UploadResult
 from ledgerline_api.settings import settings
@@ -25,10 +27,12 @@ EXTRACT_TASK = "ledgerline.extract_invoice"
 EXTRACT_QUEUE = "invoices.extract"
 MATCH_TASK = "ledgerline.match_invoice"
 MATCH_QUEUE = "invoices.match"
+AGENT_TASK = "ledgerline.run_agent"
+AGENT_QUEUE = "invoices.agent"
 # Sent by Celery beat on a schedule, not through the outbox: it belongs to no transaction.
 SYNC_TASK = "ledgerline.sync_erp"
 SYNC_QUEUE = "erp.sync"
-OUTBOX_QUEUES = {EXTRACT_TASK: EXTRACT_QUEUE, MATCH_TASK: MATCH_QUEUE}
+OUTBOX_QUEUES = {EXTRACT_TASK: EXTRACT_QUEUE, MATCH_TASK: MATCH_QUEUE, AGENT_TASK: AGENT_QUEUE}
 
 
 @dataclass
@@ -60,6 +64,11 @@ def enqueue_extraction(session: AsyncSession, invoice_id: uuid.UUID) -> None:
 def enqueue_match(session: AsyncSession, invoice_id: uuid.UUID) -> None:
     """Queue a 3-way match of the invoice, through the outbox like extraction."""
     session.add(OutboxMessage(task_name=MATCH_TASK, payload={"invoice_id": str(invoice_id)}))
+
+
+def enqueue_agent(session: AsyncSession, invoice_id: uuid.UUID) -> None:
+    """Queue an exception-agent run for the invoice, through the outbox."""
+    session.add(OutboxMessage(task_name=AGENT_TASK, payload={"invoice_id": str(invoice_id)}))
 
 
 # --- backpressure ---------------------------------------------------------------------------------------
@@ -235,9 +244,14 @@ async def list_invoices(
     after: str | None = None,
     status: str | None = None,
     created_after: datetime | None = None,
+    lean: bool = False,
 ) -> Page:
+    """`lean` skips loading vendors, lines and pages with each page of invoices, for callers that batch those
+    themselves (GraphQL's DataLoaders)."""
     filters = {"status": status, "created_after": created_after.isoformat() if created_after else None}
     query = select(InvoiceRow)
+    if lean:
+        query = query.options(raiseload(InvoiceRow.vendor), raiseload(InvoiceRow.lines), raiseload(InvoiceRow.pages))
     if status is not None:
         query = query.where(InvoiceRow.status == status)
     if created_after is not None:
@@ -283,3 +297,47 @@ async def replay_dead_letter(session: AsyncSession, dead_letter_id: uuid.UUID) -
                          duplicate_of=original.id if original else None,
                          duplicate_of_url=f"/v1/invoices/{original.id}" if original else None) from None
     return row, True
+
+
+# --- pending actions (the agent's proposals) ------------------------------------------------------------
+
+
+async def get_pending_action(session: AsyncSession, action_id: uuid.UUID) -> PendingActionRow:
+    row = await session.get(PendingActionRow, action_id)
+    if row is None:
+        raise ApiProblem(404, ProblemCode.NOT_FOUND, "Pending action not found", f"no pending action with id {action_id}")
+    return row
+
+
+async def list_pending_actions(session: AsyncSession, invoice_id: uuid.UUID) -> list[PendingActionRow]:
+    if await session.get(InvoiceRow, invoice_id) is None:
+        raise ApiProblem(404, ProblemCode.NOT_FOUND, "Invoice not found", f"no invoice with id {invoice_id}")
+    return list((await session.execute(
+        select(PendingActionRow).where(PendingActionRow.invoice_id == invoice_id).order_by(PendingActionRow.id.desc())
+    )).scalars())
+
+
+async def decide_pending_action(session: AsyncSession, action_id: uuid.UUID, decision: str, expected_version: int,
+                                note: str | None = None) -> PendingActionRow:
+    """Approve or reject a proposal, if it's still pending at the version the reviewer saw. One conditional
+    UPDATE, so of two reviewers deciding at once exactly one wins; the other gets 412 with the current version.
+    Approving records the decision only: nothing is sent to the vendor or the ERP yet (ADR 0013)."""
+    row = (await session.execute(
+        update(PendingActionRow)
+        .where(PendingActionRow.id == action_id, PendingActionRow.version == expected_version,
+               PendingActionRow.status == "pending")
+        .values(status=decision, version=PendingActionRow.version + 1, decided_at=func.now(), decision_note=note)
+        .returning(PendingActionRow)
+        .execution_options(populate_existing=True)
+    )).scalar_one_or_none()
+    if row is not None:
+        await session.commit()
+        return row
+    await session.rollback()
+    current = await get_pending_action(session, action_id)
+    if current.version != expected_version:
+        raise ApiProblem(412, ProblemCode.VERSION_CONFLICT, "Version conflict",
+                         f"the pending action is at version {current.version}, not {expected_version}; "
+                         "reload it and decide again", current_version=current.version)
+    raise ApiProblem(409, ProblemCode.ACTION_ALREADY_DECIDED, "Already decided",
+                     f"the pending action was already {current.status}", current_version=current.version)
