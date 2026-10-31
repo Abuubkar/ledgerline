@@ -2,6 +2,7 @@
   "vendor_name": "Northwind Supplies Inc.",
   "vendor_tax_id": "943216549",
   "invoice_number": "NW-48213",
+  "po_number": null,
   "invoice_date": "2026-10-02",
   "due_date": "2026-11-01",
   "currency": "USD",
