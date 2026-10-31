@@ -294,6 +294,7 @@ async def test_a_second_copy_of_an_invoice_goes_to_exception_pointing_at_the_ori
     assert original["status"] == "extracted" and other["status"] == "extracted"
     assert copy["status"] == "exception"
     assert copy["invalid_fields"]["invoice_number"] == f"duplicate of invoice {original['id']}"
+    assert copy["vendor"]["tax_id"] == "DE812345678" and copy["vendor_name"] == copy["vendor"]["name"] == "ACME GmbH"
     async with client.sessions() as session:
         vendor_ids = set((await session.execute(select(Invoice.vendor_id))).scalars())
         assert len(vendor_ids) == 1 and None not in vendor_ids  # one vendor, found again by its tax ID

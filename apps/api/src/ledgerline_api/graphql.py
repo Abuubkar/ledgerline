@@ -42,13 +42,21 @@ class Money:
 
 
 @strawberry.type
+class Vendor:
+    id: uuid.UUID
+    name: str
+    tax_id: str | None
+
+
+@strawberry.type
 class Invoice:
     id: uuid.UUID
     status: str
     original_filename: str
     page_count: int | None
-    vendor_name: str | None
-    vendor_tax_id: str | None
+    vendor: Vendor | None
+    vendor_name: str | None = strawberry.field(deprecation_reason="Use vendor.name.")
+    vendor_tax_id: str | None = strawberry.field(deprecation_reason="Use vendor.taxId.")
     invoice_number: str | None
     invoice_date: date | None
     due_date: date | None
@@ -65,9 +73,11 @@ class Invoice:
         def money(minor: int | None) -> Money | None:
             return Money(amount_minor=BigInt(minor), currency=row.currency) if minor is not None and row.currency else None
 
+        vendor = Vendor(id=row.vendor.id, name=row.vendor.name, tax_id=row.vendor.tax_id) if row.vendor else None
         return cls(
             id=row.id, status=row.status, original_filename=row.original_filename, page_count=row.page_count,
-            vendor_name=row.vendor_name, vendor_tax_id=row.vendor_tax_id, invoice_number=row.invoice_number,
+            vendor=vendor, vendor_name=vendor and vendor.name, vendor_tax_id=vendor and vendor.tax_id,
+            invoice_number=row.invoice_number,
             invoice_date=row.invoice_date, due_date=row.due_date, currency=row.currency,
             subtotal=money(row.subtotal_minor), tax=money(row.tax_minor), total=money(row.total_minor),
             error_code=row.error_code, model=row.model, created_at=row.created_at,

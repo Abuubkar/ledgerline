@@ -17,6 +17,7 @@ from .problem import Problem
 from .problem_code import ProblemCode
 from .upload_invoices_body import UploadInvoicesBody
 from .upload_result import UploadResult
+from .vendor import Vendor
 
 __all__ = (
     "DeadLetter",
@@ -36,4 +37,5 @@ __all__ = (
     "ProblemCode",
     "UploadInvoicesBody",
     "UploadResult",
+    "Vendor",
 )

@@ -11,8 +11,9 @@ type Invoice {
   status: String!
   originalFilename: String!
   pageCount: Int
-  vendorName: String
-  vendorTaxId: String
+  vendor: Vendor
+  vendorName: String @deprecated(reason: "Use vendor.name.")
+  vendorTaxId: String @deprecated(reason: "Use vendor.taxId.")
   invoiceNumber: String
   invoiceDate: Date
   dueDate: Date
@@ -68,3 +69,9 @@ type Query {
 }
 
 scalar UUID
+
+type Vendor {
+  id: UUID!
+  name: String!
+  taxId: String
+}
