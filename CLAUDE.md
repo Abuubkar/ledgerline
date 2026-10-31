@@ -25,6 +25,7 @@ make seed             # 200 vendors, 20k invoices, 30 near-duplicates into the d
                       # for the ERP mock (PROFILE=large: ~1M lines); restarts erp_mock
 uv run python scripts/sync_erp.py [--full]   # one ERP sync now; beat runs it every 5 min
 uv run python scripts/match_pending.py       # queue matches for extracted invoices with a PO and no match yet
+uv run python scripts/agent_scenarios.py     # real model: agent on 5 seeded exception scenarios, prints traces
 make chaos            # 200 invoices, stub model failing 15%, one worker killed; checks nothing lost, then deletes its data (--keep to keep)
 docker compose build worker && docker compose up -d worker relay   # after changing worker code
 ```
@@ -46,8 +47,9 @@ docker compose build worker && docker compose up -d worker relay   # after chang
 - New failure types go through `errors.classify`: transient is retried, permanent is dead-lettered. Error
   classes must stay picklable (Celery pickles exceptions).
 - The worker image doesn't reload code: rebuild it after changing anything under `apps/api/src`.
-- All model calls go through `extraction._chat`, which budgets the prompt first: Ollama truncates over-long
-  prompts silently and `prompt_eval_count` is the only way to notice afterwards (ADR 0010).
+- All model calls go through `extraction.call_model`, which budgets the prompt first: Ollama truncates over-long
+  prompts silently and `prompt_eval_count` is the only way to notice afterwards (ADR 0010). Extraction wraps it
+  in `_chat` (JSON schema); the agent calls it with `tools=`.
 - Rendering pages uses PDFium via pdfplumber, which isn't thread-safe: keep it behind `_render_lock`.
 - Schema changes on big tables follow docs/migrations.md: additive first, `CREATE INDEX CONCURRENTLY` inside
   `autocommit_block()`, foreign keys `NOT VALID` then `VALIDATE`, `lock_timeout` set, and columns dropped only
@@ -58,3 +60,8 @@ docker compose build worker && docker compose up -d worker relay   # after chang
   one transaction, or a crash re-reads (and an expired cursor loses) everything since the last commit.
 - Match rules live in `matching.py` as plain functions; `jobs.match` only loads rows and stores the result.
   Only `extracted` invoices with a PO number are matched (plus re-matches of failed matches).
+- The agent only proposes: its write tools create `pending_actions` rows and nothing else. Money in a proposal
+  comes from `agent.compute_variance`, never from the model's arguments; tool argument models forbid extra
+  fields. Guards and budgets live in `agent.run_loop`, not in the prompt (ADR 0013).
+- Approve/reject goes through `service.decide_pending_action` (one conditional UPDATE on `version`), from REST
+  and GraphQL alike.
