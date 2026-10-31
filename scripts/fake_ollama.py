@@ -64,6 +64,7 @@ def read_header(text: str) -> dict:
         "vendor_name": first_line,
         "vendor_tax_id": _find(r"^(?:EIN|USt-IdNr\.|VAT No\.|Registration No\.|MWST-Nr\.):\s*(.+)$", text),
         "invoice_number": _find(r"^Invoice number\s+(.+)$", text),
+        "po_number": _find(r"^PO number\s+(.+)$", text),
         "invoice_date": _find(r"^Invoice date\s+(\d{4}-\d{2}-\d{2})", text),
         "due_date": _find(r"^Due date\s+(\d{4}-\d{2}-\d{2})", text),
         "currency": currency,

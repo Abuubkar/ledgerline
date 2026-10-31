@@ -5,6 +5,8 @@ Usage:
   uv run python scripts/make_invoice.py [out_dir]                      # the 3 fixed samples
   uv run python scripts/make_invoice.py --random 200 --seed 7 out_dir  # 200 varied, unique invoices
   uv run python scripts/make_invoice.py --scenarios out_dir            # slice 3b edge cases (see SCENARIOS)
+  uv run python scripts/make_invoice.py --from-po 4500000042 out_dir   # bills a PO from data/erp/dataset.json
+      [--price-change 3]                                               # ...with line 1 priced 3% above the PO
 """
 
 import argparse
@@ -47,6 +49,7 @@ class Sample:
     layout: str = "single"
     total_misprint_minor: int = 0  # printed total = true total + this, to test the arithmetic check
     scanned: bool = False  # image-only PDF of the rendered page, rotated 2 degrees, no text layer
+    po_number: str | None = None  # printed as "PO number" when set
 
 
 def fmt(minor: int, sample: Sample) -> str:
@@ -138,11 +141,14 @@ def _header(pdf: FPDF, sample: Sample) -> None:
     pdf.set_font("helvetica", style="B", size=12)
     pdf.cell(0, 7, "INVOICE", new_x="LMARGIN", new_y="NEXT")
     pdf.set_font("helvetica", size=10)
-    for label, value in [
+    rows = [
         ("Invoice number", sample.invoice_number),
         ("Invoice date", sample.invoice_date_printed),
         ("Due date", sample.due_date_printed),
-    ]:
+    ]
+    if sample.po_number:
+        rows.append(("PO number", sample.po_number))
+    for label, value in rows:
         pdf.cell(40, 6, label)
         pdf.cell(0, 6, value, new_x="LMARGIN", new_y="NEXT")
 
@@ -246,6 +252,7 @@ def gold(sample: Sample) -> dict:
         "vendor_name": sample.vendor_name,
         "vendor_tax_id": sample.vendor_tax_id,
         "invoice_number": sample.invoice_number,
+        "po_number": sample.po_number,
         "invoice_date": sample.invoice_date,
         "due_date": sample.due_date,
         "currency": sample.currency,
@@ -320,6 +327,26 @@ def scenarios() -> list[Sample]:
     ]
 
 
+def from_purchase_order(po_number: str, dataset: Path, tag: str, price_change_pct: int) -> Sample:
+    """An invoice billing the whole purchase order as the ERP mock serves it, at the PO's prices."""
+    from decimal import Decimal
+
+    order = next(o for o in json.loads(dataset.read_text())["purchase_orders"] if o["po_number"] == po_number)
+    exponent = 0 if order["currency"] == "JPY" else 2
+    lines = [Line(line["description"], int(line["quantity"]), int(Decimal(line["unit_price"]).scaleb(exponent)))
+             for line in order["lines"]]
+    lines[0].unit_price_minor = lines[0].unit_price_minor * (100 + price_change_pct) // 100
+    tax_id = order["vendor"]["tax_id"]
+    return Sample(
+        slug=f"{tag}-{po_number}", vendor_name=order["vendor"]["name"], vendor_address=["Generated from an ERP purchase order"],
+        vendor_tax_label="VAT No." if tax_id else "Ref.", vendor_tax_id_printed=tax_id or "-", vendor_tax_id=tax_id or "",
+        buyer=["Ledgerline Demo Corp", "88 Market Street", "San Francisco, CA 94105"],
+        invoice_number=f"{tag.upper()}-{po_number}", invoice_date="2026-10-28", invoice_date_printed="2026-10-28",
+        due_date="2026-11-27", due_date_printed="2026-11-27", currency=order["currency"], exponent=exponent,
+        tax_rate_pct=10, lines=lines, po_number=f"PO {po_number}",
+    )
+
+
 def write(sample: Sample, out: Path) -> None:
     render(sample, out / f"{sample.slug}.pdf")
     (out / f"{sample.slug}.json").write_text(json.dumps(gold(sample), indent=2) + "\n")
@@ -332,11 +359,16 @@ def main() -> None:
     parser.add_argument("--seed", default="1", help="any string; the same seed gives the same invoices")
     parser.add_argument("--tag", default="gen", help="prefix for file names and invoice numbers")
     parser.add_argument("--scenarios", action="store_true", help="write the slice 3b edge cases instead")
+    parser.add_argument("--from-po", help="write one invoice billing this purchase order instead")
+    parser.add_argument("--dataset", type=Path, default=Path("data/erp/dataset.json"))
+    parser.add_argument("--price-change", type=int, default=0, help="percent added to line 1's unit price")
     args = parser.parse_args()
 
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
-    if args.scenarios:
+    if args.from_po:
+        samples = [from_purchase_order(args.from_po, args.dataset, args.tag, args.price_change)]
+    elif args.scenarios:
         samples = scenarios()
     elif args.random:
         samples = [random_sample(random.Random(f"{args.seed}-{i}"), i, args.tag) for i in range(args.random)]
