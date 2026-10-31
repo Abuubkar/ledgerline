@@ -1,0 +1,75 @@
+{
+  "description": "format_minor(amount_minor, currency) in Python (ledgerline_api.money) and formatMinor in apps/web must give exactly these strings. Amounts stay within 2^53 so JavaScript numbers are exact.",
+  "cases": [
+    {
+      "amount_minor": 4641,
+      "currency": "EUR",
+      "formatted": "46.41"
+    },
+    {
+      "amount_minor": 0,
+      "currency": "EUR",
+      "formatted": "0.00"
+    },
+    {
+      "amount_minor": 5,
+      "currency": "USD",
+      "formatted": "0.05"
+    },
+    {
+      "amount_minor": -1,
+      "currency": "EUR",
+      "formatted": "-0.01"
+    },
+    {
+      "amount_minor": -100,
+      "currency": "GBP",
+      "formatted": "-1.00"
+    },
+    {
+      "amount_minor": 100000000,
+      "currency": "CHF",
+      "formatted": "1000000.00"
+    },
+    {
+      "amount_minor": 376,
+      "currency": "JPY",
+      "formatted": "376"
+    },
+    {
+      "amount_minor": 0,
+      "currency": "JPY",
+      "formatted": "0"
+    },
+    {
+      "amount_minor": -5,
+      "currency": "JPY",
+      "formatted": "-5"
+    },
+    {
+      "amount_minor": 1,
+      "currency": "KWD",
+      "formatted": "0.001"
+    },
+    {
+      "amount_minor": 1234567,
+      "currency": "KWD",
+      "formatted": "1234.567"
+    },
+    {
+      "amount_minor": -1001,
+      "currency": "KWD",
+      "formatted": "-1.001"
+    },
+    {
+      "amount_minor": 123456789012345,
+      "currency": "USD",
+      "formatted": "1234567890123.45"
+    },
+    {
+      "amount_minor": 9007199254740991,
+      "currency": "EUR",
+      "formatted": "90071992547409.91"
+    }
+  ]
+}

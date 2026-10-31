@@ -46,7 +46,7 @@ again from the first page.
 
 ## not_found
 
-404. No invoice, dead letter or pending action with that id.
+404. No invoice, dead letter or pending action with that id, or (for `/file`) no stored file for that invoice.
 
 ## queue_full
 

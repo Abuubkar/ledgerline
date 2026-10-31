@@ -9,6 +9,7 @@ from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 
 import httpx
+from botocore.exceptions import ClientError
 from sqlalchemy import func, select, tuple_, update
 from sqlalchemy.orm import raiseload
 from sqlalchemy.exc import IntegrityError
@@ -261,6 +262,24 @@ async def list_invoices(
 
 async def get_invoice(session: AsyncSession, invoice_id: uuid.UUID) -> InvoiceRow | None:
     return await session.get(InvoiceRow, invoice_id)
+
+
+async def invoice_file(session: AsyncSession, invoice_id: uuid.UUID) -> tuple[bytes, str]:
+    """The stored PDF and its original file name. Rows from slices 1–2 kept files on local disk, and seeded rows
+    point at files that were never stored: both are a 404, like a missing invoice."""
+    invoice = await session.get(InvoiceRow, invoice_id)
+    if invoice is None:
+        raise ApiProblem(404, ProblemCode.NOT_FOUND, "Invoice not found", f"no invoice with id {invoice_id}")
+    missing = ApiProblem(404, ProblemCode.NOT_FOUND, "File not found", f"the file for invoice {invoice_id} isn't stored")
+    if not invoice.file_path.startswith("s3://"):
+        raise missing
+    try:
+        content = await asyncio.to_thread(storage.get, invoice.file_path)
+    except ClientError as exc:
+        if exc.response.get("Error", {}).get("Code") in ("NoSuchKey", "404"):
+            raise missing from None
+        raise
+    return content, invoice.original_filename
 
 
 # --- dead letters ---------------------------------------------------------------------------------------

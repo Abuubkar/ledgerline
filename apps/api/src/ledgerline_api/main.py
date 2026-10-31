@@ -4,7 +4,8 @@ from typing import Annotated
 
 from fastapi import Depends, FastAPI, Header, Query, Request, UploadFile
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, Response
+from urllib.parse import quote
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
@@ -26,7 +27,7 @@ from ledgerline_api.schemas import (
     ProblemCode,
 )
 
-app = FastAPI(title="Ledgerline", version="0.7.0")
+app = FastAPI(title="Ledgerline", version="0.8.0")
 app.include_router(graphql_router, prefix="/graphql")
 
 PROBLEM_JSON = "application/problem+json"
@@ -135,6 +136,21 @@ async def get_invoice(invoice_id: uuid.UUID, session: Session) -> Invoice:
     if invoice is None:
         raise ApiProblem(404, ProblemCode.NOT_FOUND, "Invoice not found", f"no invoice with id {invoice_id}")
     return Invoice.from_row(invoice)
+
+
+@app.get(
+    "/v1/invoices/{invoice_id}/file",
+    operation_id="getInvoiceFile",
+    response_class=Response,
+    responses={200: {"content": {"application/pdf": {"schema": {"type": "string", "format": "binary"}}},
+                     "description": "The PDF as uploaded, shown inline."}, **_problems(400, 404)},
+)
+async def get_invoice_file(invoice_id: uuid.UUID, session: Session) -> Response:
+    content, filename = await service.invoice_file(session, invoice_id)
+    # RFC 6266: filename* carries non-ASCII names; inline so a browser tab shows the PDF instead of downloading it.
+    return Response(content, media_type="application/pdf", headers={
+        "Content-Disposition": f"inline; filename*=UTF-8''{quote(filename)}", "Cache-Control": "private, max-age=300",
+    })
 
 
 @app.get("/v1/admin/dead-letters", operation_id="listDeadLetters", responses=_problems(400))

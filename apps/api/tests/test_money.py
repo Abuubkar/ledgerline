@@ -50,3 +50,12 @@ def test_unknown_currency_and_garbage_fail():
 def test_format_is_the_inverse_of_parse(minor, currency, text):
     assert format_minor(minor, currency) == text
     assert to_minor(text, currency) == minor
+
+
+def test_format_minor_matches_the_fixtures_the_web_app_also_tests_against():
+    import json
+    from pathlib import Path
+
+    fixtures = json.loads((Path(__file__).resolve().parents[3] / "packages/clients/fixtures/money.json").read_text())
+    for case in fixtures["cases"]:
+        assert format_minor(case["amount_minor"], case["currency"]) == case["formatted"], case

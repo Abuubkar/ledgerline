@@ -21,11 +21,14 @@ from strawberry.schema.config import StrawberryConfig
 
 from ledgerline_api import service
 from ledgerline_api.db import AgentRun as AgentRunRow
+from ledgerline_api.db import GoodsReceipt as GoodsReceiptRow
+from ledgerline_api.db import PurchaseOrder as PurchaseOrderRow
 from ledgerline_api.db import Invoice as InvoiceRow
 from ledgerline_api.db import InvoiceLine as InvoiceLineRow
 from ledgerline_api.db import PendingAction as PendingActionRow
 from ledgerline_api.db import Vendor as VendorRow
 from ledgerline_api.db import get_session
+from ledgerline_api.normalize import po_number_key
 from ledgerline_api.schemas import ApiProblem, ProblemCode
 
 # GraphQL Int is 32-bit: 2^31 cents is only $21.4M, too small for invoice totals. BigInt is serialized as a
@@ -47,6 +50,8 @@ class Context(BaseContext):
         self.lines = DataLoader(load_fn=self._load_lines)
         self.pending_actions = DataLoader(load_fn=self._load_pending_actions)
         self.agent_runs = DataLoader(load_fn=self._load_agent_runs)
+        self.purchase_orders = DataLoader(load_fn=self._load_purchase_orders)
+        self.goods_receipts = DataLoader(load_fn=self._load_goods_receipts)
 
     async def _rows(self, query) -> list:
         async with self.lock:
@@ -70,6 +75,18 @@ class Context(BaseContext):
 
     async def _load_agent_runs(self, invoice_ids: list[uuid.UUID]) -> list[list[AgentRunRow]]:
         return await self._grouped(AgentRunRow, invoice_ids, AgentRunRow.id.desc())
+
+    # Purchase orders and receipts are found by the invoice's normalized PO number, as matching finds them.
+    async def _load_purchase_orders(self, keys: list[str]) -> list[PurchaseOrderRow | None]:
+        rows = {row.po_number_key: row for row in await self._rows(select(PurchaseOrderRow).where(PurchaseOrderRow.po_number_key.in_(keys)))}
+        return [rows.get(k) for k in keys]
+
+    async def _load_goods_receipts(self, keys: list[str]) -> list[list[GoodsReceiptRow]]:
+        groups = defaultdict(list)
+        query = select(GoodsReceiptRow).where(GoodsReceiptRow.po_number_key.in_(keys)).order_by(GoodsReceiptRow.received_on)
+        for row in await self._rows(query):
+            groups[row.po_number_key].append(row)
+        return [groups[k] for k in keys]
 
 
 async def get_context(session: AsyncSession = Depends(get_session)) -> Context:
@@ -117,6 +134,45 @@ class InvoiceLine:
     unit_price: str | None
     amount: Money | None
     invalid_reason: str | None
+
+
+@strawberry.type
+class PageResult:
+    page_no: int
+    status: str
+    source: str = strawberry.field(description="text: read from the PDF's text layer; image: rendered and read visually (a scan).")
+    error_code: str | None
+    llm_ms: int | None
+
+
+@strawberry.type
+class PoLine:
+    line_no: int
+    description: str
+    quantity: str
+    unit_price: str
+
+
+@strawberry.type(description="A purchase order as last synced from the ERP.")
+class PurchaseOrder:
+    id: uuid.UUID
+    po_number: str
+    status: str
+    currency: str
+    lines: list[PoLine]
+
+
+@strawberry.type
+class ReceiptLine:
+    po_line_no: int
+    quantity: str
+
+
+@strawberry.type(description="Goods received against a purchase order.")
+class GoodsReceipt:
+    id: uuid.UUID
+    received_on: date
+    lines: list[ReceiptLine]
 
 
 @strawberry.type
@@ -190,8 +246,14 @@ class Invoice:
     tax: Money | None
     total: Money | None
     invalid_fields: JSON | None
+    field_confidence: JSON | None
     error_code: str | None
+    error_detail: str | None
     model: str | None
+    prompt_version: str | None
+    llm_ms: int | None
+    repair_attempted: bool
+    pages: list[PageResult]
     match: MatchResult | None
     created_at: datetime
     vendor_id: strawberry.Private[uuid.UUID | None]
@@ -226,6 +288,25 @@ class Invoice:
             for line in await info.context.lines.load(self.id)
         ]
 
+    @strawberry.field(description="The purchase order the invoice cites, if it has been synced from the ERP.")
+    async def purchase_order(self, info: strawberry.Info[Context]) -> PurchaseOrder | None:
+        key = po_number_key(self.po_number)
+        row = await info.context.purchase_orders.load(key) if key else None
+        if row is None:
+            return None
+        return PurchaseOrder(id=row.id, po_number=row.po_number, status=row.status, currency=row.currency, lines=[
+            PoLine(line_no=l.line_no, description=l.description, quantity=_decimal(l.quantity), unit_price=_decimal(l.unit_price))
+            for l in row.lines
+        ])
+
+    @strawberry.field(description="Goods receipts for the purchase order the invoice cites, oldest first.")
+    async def goods_receipts(self, info: strawberry.Info[Context]) -> list[GoodsReceipt]:
+        key = po_number_key(self.po_number)
+        rows = await info.context.goods_receipts.load(key) if key else []
+        return [GoodsReceipt(id=r.id, received_on=r.received_on,
+                             lines=[ReceiptLine(po_line_no=l.po_line_no, quantity=_decimal(l.quantity)) for l in r.lines])
+                for r in rows]
+
     @strawberry.field(description="The agent's latest proposal for this invoice, decided or not.")
     async def pending_action(self, info: strawberry.Info[Context]) -> PendingAction | None:
         rows = await info.context.pending_actions.load(self.id)
@@ -249,8 +330,13 @@ class Invoice:
             invoice_number=row.invoice_number, po_number=row.po_number,
             invoice_date=row.invoice_date, due_date=row.due_date, currency=row.currency,
             subtotal=money(row.subtotal_minor), tax=money(row.tax_minor), total=money(row.total_minor),
-            invalid_fields=row.invalid_fields, error_code=row.error_code, model=row.model, match=match,
-            created_at=row.created_at, vendor_id=row.vendor_id,
+            invalid_fields=row.invalid_fields, field_confidence=row.field_confidence, error_code=row.error_code,
+            error_detail=row.error_detail, model=row.model, prompt_version=row.prompt_version, llm_ms=row.llm_ms,
+            repair_attempted=row.repair_attempted,
+            # Lean list queries don't load pages; the case file asks for one invoice, which does.
+            pages=[PageResult(page_no=p.page_no, status=p.status, source=p.source, error_code=p.error_code, llm_ms=p.llm_ms)
+                   for p in row.pages] if "pages" in row.__dict__ else [],
+            match=match, created_at=row.created_at, vendor_id=row.vendor_id,
         )
 
 
@@ -291,9 +377,9 @@ class Query:
 
     @strawberry.field
     async def invoices(
-        self, info: strawberry.Info[Context], first: int = 25, after: str | None = None
+        self, info: strawberry.Info[Context], first: int = 25, after: str | None = None, status: str | None = None
     ) -> InvoiceConnection:
-        return await _page(info, first, after)
+        return await _page(info, first, after, status=status)
 
     @strawberry.field(description="Invoices in `exception`, newest first: what a reviewer works through.")
     async def exceptions_queue(

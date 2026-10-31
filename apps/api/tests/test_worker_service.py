@@ -394,3 +394,21 @@ async def test_queue_depth_counts_rabbitmq_plus_unpublished_outbox_jobs(client, 
         await session.commit()
         service._depth_cache = None
         assert await service.queue_depth(session) >= 3
+
+
+async def test_the_stored_pdf_is_served_inline_and_a_missing_one_is_404(client, relay, model):
+    content = (SAMPLES / "inv-002.pdf").read_bytes()
+    invoice = await upload(client, "inv-002.pdf", content)
+    await wait_for_status(client, invoice["id"], {"extracted", "exception", "partially_extracted", "failed"})
+    response = await client.get(f"/v1/invoices/{invoice['id']}/file")
+    assert response.status_code == 200 and response.content == content
+    assert response.headers["content-type"] == "application/pdf"
+    assert response.headers["content-disposition"] == "inline; filename*=UTF-8''inv-002.pdf"
+
+    async with client.sessions() as session:
+        seeded = Invoice(status="extracted", original_filename="seed-000001.pdf", file_path="s3://invoices/seed/000001.pdf")
+        session.add(seeded)
+        await session.commit()
+    missing = await client.get(f"/v1/invoices/{seeded.id}/file")
+    assert missing.status_code == 404 and missing.json()["title"] == "File not found"
+    assert (await client.get(f"/v1/invoices/{uuid.uuid4()}/file")).json()["title"] == "Invoice not found"
