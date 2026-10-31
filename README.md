@@ -24,7 +24,7 @@ line items. Poll `GET /v1/invoices/{id}` until `status` is final:
 |---|---|
 | `extracted` | Every page read and the numbers add up |
 | `partially_extracted` | Some pages couldn't be read (see `pages`); the rest are kept |
-| `exception` | The line amounts plus tax don't equal the total, even after one repair attempt (see `invalid_fields`) |
+| `exception` | The line amounts plus tax don't equal the total even after one repair attempt, or it's a second copy of an invoice we already have from that vendor (see `invalid_fields`) |
 | `failed` | The job gave up (see `error_code`); listed in the dead-letter queue and replayable |
 
 ```bash
@@ -86,6 +86,11 @@ Around that:
 - **Code checks the numbers; the model never does arithmetic.** If the totals don't add up, the model gets one
   repair call naming the problem; a number is never changed to make the sum work.
   ([ADR 0010](docs/adr/0010-page-by-page-extraction-and-one-repair.md))
+- **Vendors are recognized, not just read.** Each invoice links to a vendor found by its tax ID (or its
+  normalized name when it prints none), so "ACME GmbH" and "ACME GMBH" are one company and a re-sent invoice
+  is caught as a duplicate. The move from text columns to a vendors table ran as a 4-step expand/contract
+  migration while uploads kept flowing. ([ADR 0011](docs/adr/0011-vendors-table-and-expand-contract-migration.md),
+  [docs/migrations.md](docs/migrations.md))
 - **Leases, not long-held locks.** A worker owns an invoice through a lease it renews; a unique index allows
   only one completed extraction per invoice, so double extraction is impossible rather than unlikely.
   ([ADR 0009](docs/adr/0009-queued-extraction-with-leases-and-dead-letters.md))
@@ -114,6 +119,7 @@ make test                                 # unit tests, offline
 make test-int                             # service tests against a throwaway Postgres (needs Docker)
 make contract-check                       # code vs. contracts/openapi.yaml (needs Docker)
 make chaos                                # 200 invoices, stub model failing 15%, a worker killed mid-run; cleans up after
+make seed                                 # 200 vendors, 20k invoices, 30 near-duplicates (PROFILE=large: ~1M lines)
 uv run python scripts/check_scenarios.py  # real model: failing page, blank page, misprinted total, scan
 ```
 
@@ -130,7 +136,8 @@ Each slice is one end-to-end change. The destination layout and stack are in [do
 | 2 | Spec-first REST API, idempotent bulk upload, keyset pagination, typed Python client, GraphQL reads | Done |
 | 3a | Queued extraction (Celery + RabbitMQ): retries, dead letters + replay, backpressure, outbox, chaos test | Done |
 | 3b | Per-page extraction, line items, scanned pages, arithmetic check with one repair call | Done |
-| 4 | ERP sync with cursor pagination, 3-way match, seed data, a live expand/contract migration | Planned |
+| 4a | Vendors table via a live expand/contract migration, duplicate-invoice guard, seed data | Done |
+| 4b | ERP sync with cursor pagination, 3-way match | Planned |
 | 5 | Exception agent with tool calling; reviewer UI to approve or reject its proposals | Planned |
 | 6 | Golden set of 60 invoices, eval script with gates, model sweep | Planned |
 | 7 | GitHub Actions: checks, offline eval, signed images to GHCR | Planned |
