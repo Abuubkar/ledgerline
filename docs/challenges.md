@@ -203,3 +203,32 @@ releases (four images, two architectures each, every merge).
 **Next rewrites are fixed at build time,** so the web image can't read the API address from its environment when it
 starts. `API_URL` is a build argument instead (default `http://api:8000`), recorded in ADR 0019.
 
+## Slice 8a: tracing
+
+**The SQLAlchemy instrumentation switched itself off without a word.** Release 0.66b0 declares `sqlalchemy < 2.1`;
+on our 2.1.6 the instrumentor's dependency check skipped it, so the first traces had no database spans at all.
+- *Did:* `skip_dep_check=True` with a comment (the engine events it uses are unchanged in 2.1), then checked that
+  INSERT/SELECT spans appear in the demo trace.
+- *Alternatives:* wait for an instrumentation release that declares 2.1; downgrade SQLAlchemy (no).
+
+**Pinned OpenTelemetry versions didn't resolve.** SDK 1.45.1 requires semantic-conventions 0.66b1, while every
+0.66b0 instrumentation pins 0.66b0. The SDK and the contrib instrumentations release in matched pairs.
+- *Did:* SDK 1.45.0 with instrumentations 0.66b0 (released together).
+
+**Trace context had to cross the outbox,** where a job is published later by another process. Celery's
+instrumentation only propagates from the process that publishes.
+- *Did:* the request's `traceparent` rides in the outbox row's JSON payload; the relay publishes inside it
+  (ADR 0020). No migration.
+- *Alternatives:* a column on the outbox table (schema change); separate traces with links (harder to follow).
+
+**Engines created at import time aren't instrumented** (the instrumentation wraps `create_async_engine` when
+telemetry starts, after modules imported it).
+- *Did:* the global engine is passed in; per-job engines come from `db.new_engine()`, which looks the function up at
+  call time.
+
+**Jaeger 2.22 dropped the old `/api/traces` endpoints;** only the v3 API (OTLP JSON) answers.
+`scripts/trace_tree.py` reads that.
+
+**The GenAI conventions moved repositories mid-2026** (to `open-telemetry/semantic-conventions-genai`) and renamed
+`gen_ai.system` to `gen_ai.provider.name`. The spans follow the new repo, at a recorded commit (ADR 0020).
+

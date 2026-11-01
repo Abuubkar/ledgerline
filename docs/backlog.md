@@ -61,3 +61,21 @@ archived first.
 - **Why it waits:** the user chose to leave it (2026-11-01). Real stamps are usually scanned images or annotations,
   which don't touch the text layer, so our generated stamp is harsher than most real PDFs.
 - **Found:** slice 6b/6c, 2026-11-01.
+
+## Observability
+
+### Langfuse as a second destination for the model and agent spans
+
+- **What:** Langfuse (open source, self-hostable) shows LLM calls and agent runs as conversations, with prompt
+  versions, scores and feedback. LangSmith is the hosted equivalent.
+- **Why it might help:** reading individual agent runs (which tool, which answer) in a UI built for it, alongside
+  Jaeger's view of the whole pipeline.
+- **Fix:** Langfuse accepts OTLP, and the spans already follow the GenAI conventions (ADR 0020), so it's mostly an
+  extra exporter in `ledgerline_telemetry`. The catch is content: Langfuse is most useful with prompt and answer
+  text, which Ledgerline's telemetry drops on purpose (invoice data). It would need either metadata only or a
+  decision that text may be kept in a local, access-controlled Langfuse.
+- **Cost:** self-hosted Langfuse v3 needs Postgres, ClickHouse, Redis and S3 (several GB of memory).
+- **Why it waits:** prompts are versioned in code and quality is measured by the eval harness; the user asked about
+  it as a question, not a requirement (2026-11-01).
+- **Found:** slice 8a, 2026-11-01.
+

@@ -27,6 +27,9 @@ make codegen          # regenerate client + schema.graphql after changing contra
 make contract-check   # oasdiff: code vs contracts/openapi.yaml
 make lint             # ruff, mypy, tsc, eslint: the CI lint job (actionlint aside)
 make migrations-lint  # squawk on the SQL of migrations added since origin/main
+TRACING=1 docker compose --profile observability up -d --wait     # stack plus Jaeger (UI on :16686)
+OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318 uv run uvicorn ledgerline_api.main:app --port 8000   # traced API
+uv run python scripts/trace_tree.py [--invoice <id>]               # print an invoice's trace from Jaeger
 make seed             # 200 vendors, 20k invoices, 30 near-duplicates into the dev DB, plus data/erp/dataset.json
                       # for the ERP mock (PROFILE=large: ~1M lines); restarts erp_mock
 uv run python scripts/sync_erp.py [--full]   # one ERP sync now; beat runs it every 5 min
@@ -98,5 +101,9 @@ uv run python evals/sweep.py [--live]     # every model in evals/sweep.py MODELS
   to a full commit SHA with the version in a comment; bump the SHA and the comment together.
 - A new migration must pass squawk (`make migrations-lint`): `CREATE INDEX CONCURRENTLY`, `NOT VALID` then
   `VALIDATE`, and `SET lock_timeout` first. Deliberate exceptions need the `breaking-change-approved` label.
+- Tracing (ADR 0020): every service calls `ledgerline_telemetry.setup_telemetry` once; it's a no-op unless
+  `OTEL_EXPORTER_OTLP_ENDPOINT` is set. A new database engine comes from `db.new_engine()` (so it's traced); a new
+  outbox job goes through `service.job_payload` (so it joins the caller's trace). Never put invoice content, prompt
+  or answer text in a span attribute; the denylist in `ledgerline_telemetry` drops known keys, but don't rely on it.
 - Golden gold files come from the generator (`make golden`); don't edit them by hand. Agent scenarios
   (`evals/golden/agent/*.yaml`) are hand-maintained.
