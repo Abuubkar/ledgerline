@@ -1,0 +1,27 @@
+{
+ "model": "gemma4:12b",
+ "created_at": "2026-11-01T01:04:44.179251Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 4486759875,
+ "load_duration": 7107250,
+ "prompt_eval_count": 1196,
+ "prompt_eval_duration": 722592000,
+ "eval_count": 52,
+ "eval_duration": 3717461000,
+ "message": {
+  "role": "assistant",
+  "content": "",
+  "tool_calls": [
+   {
+    "function": {
+     "name": "propose_hold",
+     "arguments": {
+      "explanation": "The purchase order 4500999999 could not be found in the ERP system.",
+      "reason_code": "missing_po"
+     }
+    }
+   }
+  ]
+ }
+}

@@ -1,0 +1,16 @@
+{
+ "model": "gemma4:12b",
+ "created_at": "2026-11-01T00:41:19.232551Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 30750673208,
+ "load_duration": 24825542,
+ "prompt_eval_count": 543,
+ "prompt_eval_duration": 3554130000,
+ "eval_count": 343,
+ "eval_duration": 24143766000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"Harbourside Catering Ltd\",\n  \"vendor_tax_id\": \"GB 482 1937 56\",\n  \"invoice_number\": \"NW-2026-1224\",\n  \"po_number\": \"4500100032\",\n  \"invoice_date\": \"2026-05-08\",\n  \"due_date\": \"2026-06-08\",\n  \"currency\": \"GBP\",\n  \"subtotal\": null,\n  \"tax\": null,\n  \"total\": null,\n  \"field_confidence\": {\n    \"vendor_name\": 1.0,\n    \"vendor_tax_id\": 1.0,\n    \"invoice_number\": 1.0,\n    \"po_number\": 1.0,\n    \"invoice_date\": 1.0,\n    \"due_date\": 1.0,\n    \"currency\": 1.0,\n    \"subtotal\": 0.5,\n    \"tax\": 0.5,\n    \"total\": 0.5\n  },\n  \"line_items\": [\n    {\n      \"description\": \"USB-C docking station\",\n      \"quantity\": \"7\",\n      \"unit_price\": \"16.60\",\n      \"amount\": \"116.20\"\n    }\n  ]\n}"
+ }
+}

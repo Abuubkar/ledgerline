@@ -1,0 +1,28 @@
+{
+ "model": "gemma4:12b",
+ "created_at": "2026-11-01T01:02:39.243781Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 9091174083,
+ "load_duration": 6182708,
+ "prompt_eval_count": 1451,
+ "prompt_eval_duration": 7319825000,
+ "eval_count": 24,
+ "eval_duration": 1723467000,
+ "message": {
+  "role": "assistant",
+  "content": "",
+  "tool_calls": [
+   {
+    "function": {
+     "name": "compute_variance",
+     "arguments": {
+      "lines": [
+       "page 1 line 1"
+      ]
+     }
+    }
+   }
+  ]
+ }
+}

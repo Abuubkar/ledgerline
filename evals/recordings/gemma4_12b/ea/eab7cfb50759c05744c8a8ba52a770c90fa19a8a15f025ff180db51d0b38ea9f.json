@@ -1,0 +1,26 @@
+{
+ "model": "gemma4:12b",
+ "created_at": "2026-11-01T01:04:39.529332Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 5155120208,
+ "load_duration": 4816500,
+ "prompt_eval_count": 1140,
+ "prompt_eval_duration": 3289925000,
+ "eval_count": 26,
+ "eval_duration": 1827919000,
+ "message": {
+  "role": "assistant",
+  "content": "",
+  "tool_calls": [
+   {
+    "function": {
+     "name": "get_po",
+     "arguments": {
+      "po_number": "4500999999"
+     }
+    }
+   }
+  ]
+ }
+}

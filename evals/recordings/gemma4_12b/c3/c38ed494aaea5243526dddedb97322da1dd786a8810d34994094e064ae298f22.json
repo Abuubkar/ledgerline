@@ -1,0 +1,16 @@
+{
+ "model": "gemma4:12b",
+ "created_at": "2026-11-01T00:52:25.072169Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 59795042167,
+ "load_duration": 4428084,
+ "prompt_eval_count": 1833,
+ "prompt_eval_duration": 14534648000,
+ "eval_count": 603,
+ "eval_duration": 42493095000,
+ "message": {
+  "role": "assistant",
+  "content": "{\"vendor_name\": \"Nordwerk Industrietechnik GmbH\", \"vendor_tax_id\": \"DE 274 918 365\", \"invoice_number\": \"RE-2026-1343\", \"po_number\": \"4500100049\", \"invoice_date\": \"2026-05-21\", \"due_date\": \"2026-06-21\", \"currency\": \"EUR\", \"subtotal\": \"16204.65\", \"tax\": \"3078.88\", \"total\": \"19283.53\", \"field_confidence\": {\"vendor_name\": 1.0, \"vendor_tax_id\": 1.0, \"invoice_number\": 1.0, \"po_number\": 1.0, \"invoice_date\": 1.0, \"due_date\": 1.0, \"currency\": 1.0, \"subtotal\": 1.0, \"tax\": 1.0, \"total\": 1.0}, \"line_items\": [{\"description\": \"Hand truck, folding\", \"quantity\": \"2\", \"unit_price\": \"207.50\", \"amount\": \"415.00\", \"page\": 1}, {\"description\": \"Pallet wrap film, 500 m\", \"quantity\": \"10\", \"unit_price\": \"50.30\", \"amount\": \"503.00\", \"page\": 1}, {\"description\": \"Cable ties, pack of 1000\", \"quantity\": \"39\", \"unit_price\": \"48.10\", \"amount\": \"1875.90\", \"page\": 1}, {\"description\": \"Ergonomic office chair\", \"quantity\": \"29\", \"unit_price\": \"206.00\", \"amount\": \"5974.00\", \"page\": 2}, {\"description\": \"Thermal labels 100x150\", \"quantity\": \"31\", \"unit_price\": \"172.00\", \"amount\": \"5332.00\", \"page\": 2}, {\"description\": \"Thermal labels 100x150\", \"quantity\": \"23\", \"unit_price\": \"89.00\", \"amount\": \"2047.00\", \"page\": 2}, {\"description\": \"Ergonomic office chair\", \"quantity\": \"15\", \"unit_price\": \"3.85\", \"amount\": \"57.75\", \"page\": 3}]}"
+ }
+}
