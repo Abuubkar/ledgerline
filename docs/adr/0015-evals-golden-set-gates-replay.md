@@ -34,9 +34,12 @@ Whether a prompt or model change helps has to be answered with numbers, not by e
   scenario id, so the tool results (and therefore the requests) are identical run to run.
 - **Results cached per (model, prompt version, case)** in `evals/cache/` (not committed): an interrupted live run
   resumes, and a rerun is instant. `--fresh` ignores the cache after a code change that keeps the prompt versions.
-- **Gates** as planned (header macro ≥ 95%, each field ≥ 93%, line F1 ≥ 88%, schema validity ≥ 98%, calibration
-  error ≤ 3%, agent action accuracy ≥ 75%, p95 ≤ 45 s); a baseline file adds "no drop of more than 1.5 points".
-  They're the original targets; the first baseline run proposes recalibrated ones, and the user decides.
+- **Gates on quality only**, set from the first baseline (gemma4:12b scored 98.8% header, 97.8% line F1, 100%
+  schema validity, 0.3% calibration error, 15/15 agent): header macro ≥ 97%, each field ≥ 93%, line F1 ≥ 95%,
+  schema validity ≥ 98%, calibration error ≤ 2%, agent action accuracy ≥ 85%. A baseline file adds "no drop of more
+  than 1.5 points". **Speed is reported, not gated** (the user's call): on a 16 GB laptop it depends on the machine,
+  and the eval's job is comparing models and runs, not policing the hardware. The original per-invoice limit
+  (p95 ≤ 45 s) also measured the wrong thing: time grows with pages, so it's now also reported per page.
 
 ## Alternatives considered
 
