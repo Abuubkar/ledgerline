@@ -1,0 +1,16 @@
+{
+ "model": "qwen2.5:7b-instruct",
+ "created_at": "2026-11-01T02:12:39.158955Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 15360356916,
+ "load_duration": 565541,
+ "prompt_eval_count": 832,
+ "prompt_eval_duration": 2201298000,
+ "eval_count": 332,
+ "eval_duration": 13146522000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"Brightline Office Supply LLC\",\n  \"vendor_tax_id\": \"84-1937465\",\n  \"invoice_number\": \"INV-2026-1294\",\n  \"po_number\": \"4500100042\",\n  \"invoice_date\": \"2026-02-22\",\n  \"due_date\": \"2026-03-22\",\n  \"currency\": \"USD\",\n  \"subtotal\": null,\n  \"tax\": null,\n  \"total\": null,\n  \"field_confidence\": {\n    \"vendor_name\": 1.0,\n    \"vendor_tax_id\": 1.0,\n    \"invoice_number\": 1.0,\n    \"po_number\": 1.0,\n    \"invoice_date\": 1.0,\n    \"due_date\": 1.0,\n    \"currency\": 1.0,\n    \"subtotal\": 0.0,\n    \"tax\": 0.0,\n    \"total\": 0.0\n  },\n  \"line_items\": [\n    {\n      \"description\": \"Cable ties, pack of 1000\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"amount\": null,\n      \"page\": 1\n    },\n    {\n      \"description\": \"USB-C docking station\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"amount\": null,\n      \"page\": 1\n    }\n  ]\n}"
+ }
+}

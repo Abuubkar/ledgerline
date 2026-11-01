@@ -1,0 +1,27 @@
+{
+ "model": "qwen2.5:7b-instruct",
+ "created_at": "2026-11-01T02:45:51.209276Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 2319829792,
+ "load_duration": 1309625,
+ "prompt_eval_count": 1190,
+ "prompt_eval_duration": 447535000,
+ "eval_count": 48,
+ "eval_duration": 1864256000,
+ "message": {
+  "role": "assistant",
+  "content": "",
+  "tool_calls": [
+   {
+    "function": {
+     "name": "propose_hold",
+     "arguments": {
+      "reason_code": "duplicate",
+      "explanation": "The invoice A24-2026-124 is a duplicate of itself."
+     }
+    }
+   }
+  ]
+ }
+}

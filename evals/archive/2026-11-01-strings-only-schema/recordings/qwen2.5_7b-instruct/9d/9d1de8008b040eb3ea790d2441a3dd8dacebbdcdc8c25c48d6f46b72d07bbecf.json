@@ -1,0 +1,16 @@
+{
+ "model": "qwen2.5:7b-instruct",
+ "created_at": "2026-11-01T02:34:06.838891Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 13243106625,
+ "load_duration": 1158209,
+ "prompt_eval_count": 600,
+ "prompt_eval_duration": 1242935000,
+ "eval_count": 301,
+ "eval_duration": 11948290000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"Kawasemi Electronics K.K.\",\n  \"vendor_tax_id\": \"T9876543210987\",\n  \"invoice_number\": \"SK-2026-1357\",\n  \"po_number\": \"4500100051\",\n  \"invoice_date\": \"2026-08-17\",\n  \"due_date\": \"2026-09-17\",\n  \"currency\": \"JPY\",\n  \"subtotal\": null,\n  \"tax\": null,\n  \"total\": null,\n  \"field_confidence\": {\n    \"vendor_name\": 1,\n    \"vendor_tax_id\": 1,\n    \"invoice_number\": 1,\n    \"po_number\": 1,\n    \"invoice_date\": 1,\n    \"due_date\": 1,\n    \"currency\": 1,\n    \"subtotal\": 0,\n    \"tax\": 0,\n    \"total\": 0\n  },\n  \"line_items\": [\n    {\n      \"description\": \"Ergonomic office chair\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"amount\": null\n    },\n    {\n      \"description\": \"Ergonomic office chair\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"amount\": null\n    }\n  ]\n}"
+ }
+}

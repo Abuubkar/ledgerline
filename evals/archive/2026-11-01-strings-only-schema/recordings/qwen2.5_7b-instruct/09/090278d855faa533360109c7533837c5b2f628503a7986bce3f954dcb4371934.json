@@ -1,0 +1,16 @@
+{
+ "model": "qwen2.5:7b-instruct",
+ "created_at": "2026-11-01T01:55:46.496055Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 19456477542,
+ "load_duration": 1260625,
+ "prompt_eval_count": 893,
+ "prompt_eval_duration": 3932796000,
+ "eval_count": 379,
+ "eval_duration": 15505794000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"Alpenblick Logistik AG\",\n  \"vendor_tax_id\": \"CHE-123.456.789\",\n  \"invoice_number\": \"AB-2026-1028\",\n  \"po_number\": \"4500100004\",\n  \"invoice_date\": \"2026-08-18\",\n  \"due_date\": \"2026-09-18\",\n  \"currency\": \"EUR\",\n  \"subtotal\": null,\n  \"tax\": null,\n  \"total\": null,\n  \"field_confidence\": {\n    \"vendor_name\": 1.0,\n    \"vendor_tax_id\": 1.0,\n    \"invoice_number\": 1.0,\n    \"po_number\": 1.0,\n    \"invoice_date\": 1.0,\n    \"due_date\": 1.0,\n    \"currency\": 1.0,\n    \"subtotal\": 0.0,\n    \"tax\": 0.0,\n    \"total\": 0.0\n  },\n  \"line_items\": [\n    {\n      \"description\": \"Cable ties, pack of 1000\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"amount\": null,\n      \"page\": 1\n    },\n    {\n      \"description\": \"Laser printer toner, black\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"amount\": null,\n      \"page\": 1\n    },\n    {\n      \"description\": \"Hand truck, folding\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"amount\": null,\n      \"page\": 1\n    }\n  ]\n}"
+ }
+}

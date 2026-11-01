@@ -1,0 +1,16 @@
+{
+ "model": "qwen2.5:7b-instruct",
+ "created_at": "2026-11-01T02:03:54.147966Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 20951872834,
+ "load_duration": 820375,
+ "prompt_eval_count": 938,
+ "prompt_eval_duration": 4397192000,
+ "eval_count": 398,
+ "eval_duration": 16534483000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"Harbourside Catering Ltd\",\n  \"vendor_tax_id\": \"GB 482 1937 56\",\n  \"invoice_number\": \"NW-2026-1140\",\n  \"po_number\": \"4500100020\",\n  \"invoice_date\": \"2026-09-26\",\n  \"due_date\": \"2026-10-26\",\n  \"currency\": \"GBP\",\n  \"subtotal\": null,\n  \"tax\": null,\n  \"total\": null,\n  \"field_confidence\": {\n    \"vendor_name\": 1.0,\n    \"vendor_tax_id\": 1.0,\n    \"invoice_number\": 1.0,\n    \"po_number\": 1.0,\n    \"invoice_date\": 1.0,\n    \"due_date\": 1.0,\n    \"currency\": 1.0\n  },\n  \"line_items\": [\n    {\n      \"description\": \"Cable ties, pack of 1000\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"amount\": null,\n      \"page\": 1\n    },\n    {\n      \"description\": \"LED panel light 60x60\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"amount\": null,\n      \"page\": 1\n    },\n    {\n      \"description\": \"Safety goggles, anti-fog\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"amount\": null,\n      \"page\": 1\n    },\n    {\n      \"description\": \"USB-C docking station\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"amount\": null,\n      \"page\": 1\n    }\n  ]\n}"
+ }
+}

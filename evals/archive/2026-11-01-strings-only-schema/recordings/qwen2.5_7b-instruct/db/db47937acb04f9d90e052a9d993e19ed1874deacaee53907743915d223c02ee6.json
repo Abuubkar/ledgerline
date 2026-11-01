@@ -1,0 +1,16 @@
+{
+ "model": "qwen2.5:7b-instruct",
+ "created_at": "2026-11-01T02:13:14.05482Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 19123773250,
+ "load_duration": 570833,
+ "prompt_eval_count": 948,
+ "prompt_eval_duration": 2694001000,
+ "eval_count": 410,
+ "eval_duration": 16418497000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"Nordwerk Industrietechnik GmbH\",\n  \"vendor_tax_id\": \"DE 274 918 365\",\n  \"invoice_number\": \"RE-2026-1301\",\n  \"po_number\": null,\n  \"invoice_date\": \"2026-03-18\",\n  \"due_date\": \"2026-04-18\",\n  \"currency\": \"EUR\",\n  \"subtotal\": null,\n  \"tax\": null,\n  \"total\": null,\n  \"field_confidence\": {\n    \"vendor_name\": 1.0,\n    \"vendor_tax_id\": 1.0,\n    \"invoice_number\": 1.0,\n    \"po_number\": 0.0,\n    \"invoice_date\": 1.0,\n    \"due_date\": 1.0,\n    \"currency\": 1.0,\n    \"subtotal\": 0.0,\n    \"tax\": 0.0,\n    \"total\": 0.0\n  },\n  \"line_items\": [\n    {\n      \"description\": \"Ergonomic office chair\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"amount\": null,\n      \"page\": 1\n    },\n    {\n      \"description\": \"USB-C docking station\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"amount\": null,\n      \"page\": 1\n    },\n    {\n      \"description\": \"Pallet wrap film, 500 m\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"amount\": null,\n      \"page\": 1\n    },\n    {\n      \"description\": \"Laser printer toner, black\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"amount\": null,\n      \"page\": 1\n    }\n  ]\n}"
+ }
+}

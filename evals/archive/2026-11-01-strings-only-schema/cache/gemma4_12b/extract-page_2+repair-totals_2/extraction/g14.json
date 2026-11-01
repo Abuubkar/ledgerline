@@ -1,0 +1,67 @@
+{
+ "status": "extracted",
+ "repair_attempted": false,
+ "prompt_version": "extract-page/2",
+ "header": {
+  "vendor_name": "Harbourside Catering Ltd",
+  "vendor_tax_id": "GB482193756",
+  "invoice_number": "NW-2026-1098",
+  "po_number": "4500100014",
+  "invoice_date": "2026-09-14",
+  "due_date": "2026-10-14",
+  "currency": "GBP",
+  "subtotal_minor": 593694,
+  "tax_minor": 118738,
+  "total_minor": 712432
+ },
+ "confidence": {
+  "vendor_name": 1.0,
+  "vendor_tax_id": 1.0,
+  "invoice_number": 1.0,
+  "po_number": 1.0,
+  "invoice_date": 1.0,
+  "due_date": 1.0,
+  "currency": 1.0,
+  "subtotal": 1.0,
+  "tax": 1.0,
+  "total": 1.0
+ },
+ "invalid_fields": {},
+ "lines": [
+  {
+   "description": "Server rack screws, M6",
+   "quantity": "3",
+   "unit_price": "2.62",
+   "amount_minor": 786
+  },
+  {
+   "description": "Pallet wrap film, 500 m",
+   "quantity": "22",
+   "unit_price": "2.64",
+   "amount_minor": 5808
+  },
+  {
+   "description": "Cable ties, pack of 1000",
+   "quantity": "38",
+   "unit_price": "154.50",
+   "amount_minor": 587100
+  }
+ ],
+ "pages": [
+  {
+   "page_no": 1,
+   "status": "extracted",
+   "source": "text",
+   "error_code": null
+  }
+ ],
+ "calls": [
+  {
+   "ms": 38364.939125,
+   "prompt_tokens": 604,
+   "output_tokens": 479,
+   "output_ms": 33692.413999
+  }
+ ],
+ "wall_s": 0.02
+}

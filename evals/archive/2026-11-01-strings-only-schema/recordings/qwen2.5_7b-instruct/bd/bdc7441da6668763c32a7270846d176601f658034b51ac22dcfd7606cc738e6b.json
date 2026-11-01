@@ -1,0 +1,16 @@
+{
+ "model": "qwen2.5:7b-instruct",
+ "created_at": "2026-11-01T02:11:38.227576Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 24548855708,
+ "load_duration": 896125,
+ "prompt_eval_count": 1025,
+ "prompt_eval_duration": 4503683000,
+ "eval_count": 501,
+ "eval_duration": 20025906000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"Alpenblick Logistik AG\",\n  \"vendor_tax_id\": \"CHE-123.456.789\",\n  \"invoice_number\": \"AB-2026-1280\",\n  \"po_number\": null,\n  \"invoice_date\": \"2026-04-12\",\n  \"due_date\": \"2026-05-12\",\n  \"currency\": \"EUR\",\n  \"subtotal\": null, \"tax\": null,\n  \"total\": null,\n  \"field_confidence\": {\n    \"vendor_name\": 1.0,\n    \"vendor_tax_id\": 1.0,\n    \"invoice_number\": 1.0,\n    \"po_number\": 0.0,\n    \"invoice_date\": 1.0,\n    \"due_date\": 1.0,\n    \"currency\": 1.0,\n    \"subtotal\": 0.0,\n    \"tax\": 0.0,\n    \"total\": 0.0\n  },\n  \"line_items\": [\n    {\n      \"description\": \"Laser printer toner, black\",\n      \"quantity\": \"id: 13\",\n      \"unit_price\": \"id: 164.75\",\n      \"amount\": \"id: 2,141.75\",\n      \"page\": 1\n    },\n    {\n      \"description\": \"Ergonomic office chair\",\n      \"quantity\": \"id: 22\",\n      \"unit_price\": \"id: 54.50\",\n      \"amount\": \"id: 1,199.00\",\n      \"page\": 1\n    },\n    {\n      \"description\": \"Cable ties, pack of 1000\",\n      \"quantity\": \"id: 33\",\n      \"unit_price\": \"id: 9.70\",\n      \"amount\": \"id: 320.10\",\n      \"page\": 1\n    },\n    {\n      \"description\": \"USB-C docking station\",\n      \"quantity\": \"id: 39\",\n      \"unit_price\": \"id: 26.30\",\n      \"amount\": \"id: 1,025.70\",\n      \"page\": 1\n    }\n  ]\n}"
+ }
+}

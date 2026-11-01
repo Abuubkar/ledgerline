@@ -1,0 +1,16 @@
+{
+ "model": "qwen2.5:7b-instruct",
+ "created_at": "2026-11-01T01:54:18.056703Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 14292271750,
+ "load_duration": 2625125,
+ "prompt_eval_count": 519,
+ "prompt_eval_duration": 1484551000,
+ "eval_count": 280,
+ "eval_duration": 12676596000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"Harbourside Catering Ltd\",\n  \"vendor_tax_id\": \"GB 482 1937 56\",\n  \"invoice_number\": \"NW-2026-1014\",\n  \"po_number\": \"4500100002\",\n  \"invoice_date\": \"2026-02-10\",\n  \"due_date\": \"2026-03-10\",\n  \"currency\": \"GBP\",\n  \"subtotal\": null,\n  \"tax\": null,\n  \"total\": null,\n  \"field_confidence\": {\n    \"vendor_name\": 1,\n    \"vendor_tax_id\": 1,\n    \"invoice_number\": 1,\n    \"po_number\": 1,\n    \"invoice_date\": 1,\n    \"due_date\": 1,\n    \"currency\": 1\n  },\n  \"line_items\": [\n    {\n      \"description\": \"Industrial shelving bracket\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"amount\": null\n    },\n    {\n      \"description\": \"Industrial shelving bracket\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"amount\": null\n    }\n  ]\n}"
+ }
+}

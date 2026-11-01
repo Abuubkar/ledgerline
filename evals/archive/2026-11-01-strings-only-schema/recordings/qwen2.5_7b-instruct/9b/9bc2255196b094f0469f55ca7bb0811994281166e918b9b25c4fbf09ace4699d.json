@@ -1,0 +1,16 @@
+{
+ "model": "qwen2.5:7b-instruct",
+ "created_at": "2026-11-01T02:33:53.57007Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 33312737125,
+ "load_duration": 560959,
+ "prompt_eval_count": 1699,
+ "prompt_eval_duration": 7555118000,
+ "eval_count": 640,
+ "eval_duration": 25747016000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"Nordwerk Industrietechnik GmbH\",\n  \"vendor_tax_id\": \"DE 274 918 365\",\n  \"invoice_number\": \"RE-2026-1343\",\n  \"po_number\": \"4500100049\",\n  \"invoice_date\": \"2026-05-21\",\n  \"due_date\": \"2026-06-21\",\n  \"currency\": \"EUR\",\n  \"subtotal\": null,\n  \"tax\": null,\n  \"total\": null,\n  \"field_confidence\": {\n    \"vendor_name\": 1.0,\n    \"vendor_tax_id\": 1.0,\n    \"invoice_number\": 1.0,\n    \"po_number\": 1.0,\n    \"invoice_date\": 1.0,\n    \"due_date\": 1.0,\n    \"currency\": 1.0\n  },\n  \"line_items\": [\n    {\n      \"description\": \"Hand truck, folding\",\n      \"quantity\": \"strconv(2)\",\n      \"unit_price\": \"207.50\",\n      \"amount\": \"415.00\",\n      \"page\": 1\n    },\n    {\n      \"description\": \"Pallet wrap film, 500 m\",\n      \"quantity\": \"strconv(10)\",\n      \"unit_price\": \"50.30\",\n      \"amount\": \"503.00\",\n      \"page\": 1\n    },\n    {\n      \"description\": \"Cable ties, pack of 1000\",\n      \"quantity\": \"strconv(39)\",\n      \"unit_price\": \"48.10\",\n      \"amount\": \"1875.90\",\n      \"page\": 1\n    },\n    {\n      \"description\": \"Ergonomic office chair\",\n      \"quantity\": \"strconv(29)\",\n      \"unit_price\": \"206.00\",\n      \"amount\": \"5974.00\",\n      \"page\": 2\n    },\n    {\n      \"description\": \"Thermal labels 100x150\",\n      \"quantity\": \"strconv(31)\",\n      \"unit_price\": \"172.00\",\n      \"amount\": \"5332.00\",\n      \"page\": 2\n    },\n    {\n      \"description\": \"Thermal labels 100x150\",\n      \"quantity\": \"strconv(23)\",\n      \"unit_price\": \"89.00\",\n      \"amount\": \"2047.00\",\n      \"page\": 2\n    },\n    {\n      \"description\": \"Ergonomic office chair\",\n      \"quantity\": \"strconv(15)\",\n      \"unit_price\": \"3.85\",\n      \"amount\": \"57.75\",\n      \"page\": 3\n    }\n  ]\n}"
+ }
+}

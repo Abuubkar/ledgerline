@@ -1,0 +1,16 @@
+{
+ "model": "qwen2.5:7b-instruct",
+ "created_at": "2026-11-01T02:08:09.974195Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 19610802875,
+ "load_duration": 692000,
+ "prompt_eval_count": 935,
+ "prompt_eval_duration": 4187259000,
+ "eval_count": 374,
+ "eval_duration": 15402368000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"Nordwerk Industrietechnik GmbH\",\n  \"vendor_tax_id\": \"DE 274 918 365\",\n  \"invoice_number\": \"RE-2026-1217\",\n  \"po_number\": \"4500100031\",\n  \"invoice_date\": \"2026-05-12\",\n  \"due_date\": \"2026-06-12\",\n  \"currency\": \"EUR\",\n  \"subtotal\": null,\n  \"tax\": null,\n  \"total\": null,\n  \"field_confidence\": {\n    \"vendor_name\": 1.0,\n    \"vendor_tax_id\": 1.0,\n    \"invoice_number\": 1.0,\n    \"po_number\": 1.0,\n    \"invoice_date\": 0.5,\n    \"due_date\": 0.5\n  },\n  \"line_items\": [\n    {\n      \"description\": \"USB-C docking station\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"amount\": null,\n      \"page\": 1\n    },\n    {\n      \"description\": \"Industrial shelving bracket\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"amount\": null,\n      \"page\": 1\n    },\n    {\n      \"description\": \"Hand truck, folding\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"amount\": null,\n      \"page\": 1\n    },\n    {\n      \"description\": \"Industrial shelving bracket\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"amount\": null,\n      \"page\": 1\n    }\n  ]\n}"
+ }
+}

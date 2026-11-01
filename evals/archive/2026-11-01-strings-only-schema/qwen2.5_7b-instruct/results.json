@@ -1,0 +1,3389 @@
+{
+  "run": {
+    "model": "qwen2.5:7b-instruct",
+    "extraction_prompt": "extract-page/2+repair-totals/2",
+    "agent_prompt": "agent/1",
+    "split": "dev",
+    "mode": "live",
+    "date": "2026-11-01",
+    "extraction_cases": 40,
+    "agent_cases": 15,
+    "concurrency": 1,
+    "recorded": 69,
+    "replayed": 0
+  },
+  "metrics": {
+    "header_macro_accuracy": 0.6649999999999999,
+    "header_min_field_accuracy": 0.025,
+    "field_accuracy": {
+      "vendor_name": 0.875,
+      "vendor_tax_id": 0.95,
+      "invoice_number": 0.95,
+      "po_number": 0.95,
+      "invoice_date": 0.95,
+      "due_date": 0.95,
+      "currency": 0.95,
+      "subtotal_minor": 0.025,
+      "tax_minor": 0.025,
+      "total_minor": 0.025
+    },
+    "line_precision": 0.02857142857142857,
+    "line_recall": 0.02877697841726619,
+    "line_f1": 0.028673835125448032,
+    "line_counts": {
+      "correct": 4,
+      "predicted": 140,
+      "gold": 139
+    },
+    "schema_validity": 1.0,
+    "calibration_error": 0.0,
+    "calibration_n": 254,
+    "status_accuracy": 0.05,
+    "extraction_p50_s": 32.895655458,
+    "extraction_p95_s": 70.975369,
+    "page_p50_s": 14.058675291,
+    "page_p95_s": 18.584718083,
+    "output_tokens_per_s": 23.901786436147656,
+    "invoices_per_hour": 94.19605962996489,
+    "agent_action_accuracy": 0.6666666666666666,
+    "agent_hold_reason_accuracy": 0.5,
+    "agent_evidence_complete": 0.8,
+    "agent_guard_fires": 0,
+    "agent_p95_s": 20.4
+  },
+  "failures": [
+    {
+      "case": "g01",
+      "style": "german",
+      "pages": 1,
+      "status": "exception",
+      "expected_status": "extracted",
+      "fields": {
+        "subtotal_minor": {
+          "gold": 29710,
+          "got": null
+        },
+        "tax_minor": {
+          "gold": 5644,
+          "got": null
+        },
+        "total_minor": {
+          "gold": 35354,
+          "got": null
+        }
+      },
+      "lines": [
+        {
+          "gold": {
+            "description": "Laser printer toner, black",
+            "quantity": "5",
+            "unit_price": "1.50",
+            "amount_minor": 750
+          },
+          "got": {
+            "description": "Laser printer toner, black",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Hand truck, folding",
+            "quantity": "30",
+            "unit_price": "8.65",
+            "amount_minor": 25950
+          },
+          "got": {
+            "description": "Hand truck, folding",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Cable ties, pack of 1000",
+            "quantity": "35",
+            "unit_price": "0.86",
+            "amount_minor": 3010
+          },
+          "got": {
+            "description": "Cable ties, pack of 1000",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        }
+      ],
+      "line_counts": [
+        3,
+        3
+      ],
+      "error": null
+    },
+    {
+      "case": "g02",
+      "style": "right",
+      "pages": 1,
+      "status": "exception",
+      "expected_status": "extracted",
+      "fields": {
+        "subtotal_minor": {
+          "gold": 357200,
+          "got": null
+        },
+        "tax_minor": {
+          "gold": 71440,
+          "got": null
+        },
+        "total_minor": {
+          "gold": 428640,
+          "got": null
+        }
+      },
+      "lines": [
+        {
+          "gold": {
+            "description": "Industrial shelving bracket",
+            "quantity": "16",
+            "unit_price": "223.25",
+            "amount_minor": 357200
+          },
+          "got": {
+            "description": "Industrial shelving bracket",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        }
+      ],
+      "line_counts": [
+        1,
+        2
+      ],
+      "error": null
+    },
+    {
+      "case": "g03",
+      "style": "seikyu",
+      "pages": 1,
+      "status": "exception",
+      "expected_status": "extracted",
+      "fields": {
+        "subtotal_minor": {
+          "gold": 6218130,
+          "got": null
+        },
+        "tax_minor": {
+          "gold": 621813,
+          "got": null
+        },
+        "total_minor": {
+          "gold": 6839943,
+          "got": null
+        }
+      },
+      "lines": [
+        {
+          "gold": {
+            "description": "Pallet wrap film, 500 m",
+            "quantity": "32",
+            "unit_price": "71930",
+            "amount_minor": 2301760
+          },
+          "got": {
+            "description": "Pallet wrap film, 500 m",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Ergonomic office chair",
+            "quantity": "3",
+            "unit_price": "5970",
+            "amount_minor": 17910
+          },
+          "got": {
+            "description": "Ergonomic office chair",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Safety goggles, anti-fog",
+            "quantity": "35",
+            "unit_price": "51540",
+            "amount_minor": 1803900
+          },
+          "got": {
+            "description": "Safety goggles, anti-fog",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Industrial shelving bracket",
+            "quantity": "26",
+            "unit_price": "80560",
+            "amount_minor": 2094560
+          },
+          "got": {
+            "description": "Industrial shelving bracket",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        }
+      ],
+      "line_counts": [
+        4,
+        4
+      ],
+      "error": null
+    },
+    {
+      "case": "g04",
+      "style": "boxed",
+      "pages": 1,
+      "status": "exception",
+      "expected_status": "extracted",
+      "fields": {
+        "subtotal_minor": {
+          "gold": 52202,
+          "got": null
+        },
+        "tax_minor": {
+          "gold": 4176,
+          "got": null
+        },
+        "total_minor": {
+          "gold": 56378,
+          "got": null
+        }
+      },
+      "lines": [
+        {
+          "gold": {
+            "description": "Cable ties, pack of 1000",
+            "quantity": "29",
+            "unit_price": "7.58",
+            "amount_minor": 21982
+          },
+          "got": {
+            "description": "Cable ties, pack of 1000",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Laser printer toner, black",
+            "quantity": "15",
+            "unit_price": "0.98",
+            "amount_minor": 1470
+          },
+          "got": {
+            "description": "Laser printer toner, black",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Hand truck, folding",
+            "quantity": "25",
+            "unit_price": "11.50",
+            "amount_minor": 28750
+          },
+          "got": {
+            "description": "Hand truck, folding",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        }
+      ],
+      "line_counts": [
+        3,
+        3
+      ],
+      "error": null
+    },
+    {
+      "case": "g05",
+      "style": "compact",
+      "pages": 1,
+      "status": "exception",
+      "expected_status": "exception",
+      "fields": {
+        "subtotal_minor": {
+          "gold": 124050,
+          "got": null
+        },
+        "tax_minor": {
+          "gold": 9924,
+          "got": null
+        },
+        "total_minor": {
+          "gold": 134974,
+          "got": null
+        }
+      },
+      "lines": [
+        {
+          "gold": {
+            "description": "LED panel light 60x60",
+            "quantity": "15",
+            "unit_price": "82.70",
+            "amount_minor": 124050
+          },
+          "got": {
+            "description": "LED panel light 60x60",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        }
+      ],
+      "line_counts": [
+        1,
+        1
+      ],
+      "error": null
+    },
+    {
+      "case": "g06",
+      "style": "classic",
+      "pages": 1,
+      "status": "exception",
+      "expected_status": "extracted",
+      "fields": {
+        "subtotal_minor": {
+          "gold": 113520,
+          "got": null
+        },
+        "tax_minor": {
+          "gold": 9081,
+          "got": null
+        },
+        "total_minor": {
+          "gold": 122601,
+          "got": null
+        }
+      },
+      "lines": [
+        {
+          "gold": {
+            "description": "Hand truck, folding",
+            "quantity": "22",
+            "unit_price": "51.60",
+            "amount_minor": 113520
+          },
+          "got": {
+            "description": "Hand truck, folding",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        }
+      ],
+      "line_counts": [
+        1,
+        2
+      ],
+      "error": null
+    },
+    {
+      "case": "g07",
+      "style": "german",
+      "pages": 2,
+      "status": "exception",
+      "expected_status": "extracted",
+      "fields": {
+        "subtotal_minor": {
+          "gold": 195723,
+          "got": null
+        },
+        "tax_minor": {
+          "gold": 37187,
+          "got": null
+        },
+        "total_minor": {
+          "gold": 232910,
+          "got": null
+        }
+      },
+      "lines": [
+        {
+          "gold": {
+            "description": "Ergonomic office chair",
+            "quantity": "20",
+            "unit_price": "93.75",
+            "amount_minor": 187500
+          },
+          "got": {
+            "description": "Ergonomic office chair",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Hand truck, folding",
+            "quantity": "5",
+            "unit_price": "0.03",
+            "amount_minor": 15
+          },
+          "got": {
+            "description": "Hand truck, folding",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Industrial shelving bracket",
+            "quantity": "3",
+            "unit_price": "5.56",
+            "amount_minor": 1668
+          },
+          "got": {
+            "description": "Industrial shelving bracket",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Ergonomic office chair",
+            "quantity": "6",
+            "unit_price": "10.90",
+            "amount_minor": 6540
+          },
+          "got": {
+            "description": "Ergonomic office chair",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        }
+      ],
+      "line_counts": [
+        4,
+        4
+      ],
+      "error": null
+    },
+    {
+      "case": "g08",
+      "style": "right",
+      "pages": 2,
+      "status": "exception",
+      "expected_status": "extracted",
+      "fields": {
+        "subtotal_minor": {
+          "gold": 453758,
+          "got": null
+        },
+        "tax_minor": {
+          "gold": 90751,
+          "got": null
+        },
+        "total_minor": {
+          "gold": 544509,
+          "got": null
+        }
+      },
+      "lines": [
+        {
+          "gold": {
+            "description": "Cable ties, pack of 1000",
+            "quantity": "32",
+            "unit_price": "58.60",
+            "amount_minor": 187520
+          },
+          "got": {
+            "description": "Cable ties, pack of 1000",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Server rack screws, M6",
+            "quantity": "39",
+            "unit_price": "49.20",
+            "amount_minor": 191880
+          },
+          "got": {
+            "description": "Server rack screws, M6",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "USB-C docking station",
+            "quantity": "18",
+            "unit_price": "35.75",
+            "amount_minor": 64350
+          },
+          "got": {
+            "description": "USB-C docking station",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Ergonomic office chair",
+            "quantity": "11",
+            "unit_price": "5.70",
+            "amount_minor": 6270
+          },
+          "got": {
+            "description": "Ergonomic office chair",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Server rack screws, M6",
+            "quantity": "6",
+            "unit_price": "6.23",
+            "amount_minor": 3738
+          },
+          "got": {
+            "description": "Server rack screws, M6",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        }
+      ],
+      "line_counts": [
+        5,
+        5
+      ],
+      "error": null
+    },
+    {
+      "case": "g09",
+      "style": "seikyu",
+      "pages": 3,
+      "status": "exception",
+      "expected_status": "extracted",
+      "fields": {
+        "vendor_name": {
+          "gold": "Kawasemi Electronics K.K.",
+          "got": null
+        },
+        "subtotal_minor": {
+          "gold": 5781401,
+          "got": null
+        },
+        "tax_minor": {
+          "gold": 578140,
+          "got": null
+        },
+        "total_minor": {
+          "gold": 6359541,
+          "got": null
+        }
+      },
+      "lines": [
+        {
+          "gold": {
+            "description": "Hand truck, folding",
+            "quantity": "15",
+            "unit_price": "5508",
+            "amount_minor": 82620
+          },
+          "got": {
+            "description": "Hand truck, folding",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Thermal labels 100x150",
+            "quantity": "23",
+            "unit_price": "64720",
+            "amount_minor": 1488560
+          },
+          "got": {
+            "description": "Thermal labels 100x150",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Safety goggles, anti-fog",
+            "quantity": "24",
+            "unit_price": "5084",
+            "amount_minor": 122016
+          },
+          "got": {
+            "description": "Safety goggles, anti-fog",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Safety goggles, anti-fog",
+            "quantity": "14",
+            "unit_price": "8563",
+            "amount_minor": 119882
+          },
+          "got": {
+            "description": "Safety goggles, anti-fog",
+            "quantity": null,
+            "unit_price": "8563",
+            "amount_minor": 119882
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Industrial shelving bracket",
+            "quantity": "40",
+            "unit_price": "3960",
+            "amount_minor": 158400
+          },
+          "got": {
+            "description": "Industrial shelving bracket",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Thermal labels 100x150",
+            "quantity": "14",
+            "unit_price": "27750",
+            "amount_minor": 388500
+          },
+          "got": {
+            "description": "Thermal labels 100x150",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Thermal labels 100x150",
+            "quantity": "27",
+            "unit_price": "8807",
+            "amount_minor": 237789
+          },
+          "got": {
+            "description": "Thermal labels 100x150",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        }
+      ],
+      "line_counts": [
+        9,
+        9
+      ],
+      "error": null
+    },
+    {
+      "case": "g10",
+      "style": "boxed",
+      "pages": 1,
+      "status": "exception",
+      "expected_status": "extracted",
+      "fields": {
+        "subtotal_minor": {
+          "gold": 188883,
+          "got": null
+        },
+        "tax_minor": {
+          "gold": 15110,
+          "got": null
+        },
+        "total_minor": {
+          "gold": 203993,
+          "got": null
+        }
+      },
+      "lines": [
+        {
+          "gold": {
+            "description": "Pallet wrap film, 500 m",
+            "quantity": "36",
+            "unit_price": "0.57",
+            "amount_minor": 2052
+          },
+          "got": {
+            "description": "Pallet wrap film, 500 m",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Pallet wrap film, 500 m",
+            "quantity": "27",
+            "unit_price": "0.53",
+            "amount_minor": 1431
+          },
+          "got": {
+            "description": "Pallet wrap film, 500 m",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Hand truck, folding",
+            "quantity": "17",
+            "unit_price": "82.00",
+            "amount_minor": 139400
+          },
+          "got": {
+            "description": "Hand truck, folding",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Hand truck, folding",
+            "quantity": "5",
+            "unit_price": "92.00",
+            "amount_minor": 46000
+          },
+          "got": {
+            "description": "Hand truck, folding",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        }
+      ],
+      "line_counts": [
+        4,
+        4
+      ],
+      "error": null
+    },
+    {
+      "case": "g11",
+      "style": "compact",
+      "pages": 1,
+      "status": "exception",
+      "expected_status": "extracted",
+      "fields": {
+        "subtotal_minor": {
+          "gold": 270850,
+          "got": null
+        },
+        "tax_minor": {
+          "gold": 21668,
+          "got": null
+        },
+        "total_minor": {
+          "gold": 292518,
+          "got": null
+        }
+      },
+      "lines": [
+        {
+          "gold": {
+            "description": "Industrial shelving bracket",
+            "quantity": "13",
+            "unit_price": "81.70",
+            "amount_minor": 106210
+          },
+          "got": {
+            "description": "Industrial shelving bracket",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Safety goggles, anti-fog",
+            "quantity": "28",
+            "unit_price": "58.80",
+            "amount_minor": 164640
+          },
+          "got": {
+            "description": "Safety goggles, anti-fog",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        }
+      ],
+      "line_counts": [
+        2,
+        2
+      ],
+      "error": null
+    },
+    {
+      "case": "g14",
+      "style": "right",
+      "pages": 1,
+      "status": "exception",
+      "expected_status": "extracted",
+      "fields": {
+        "subtotal_minor": {
+          "gold": 593694,
+          "got": null
+        },
+        "tax_minor": {
+          "gold": 118738,
+          "got": null
+        },
+        "total_minor": {
+          "gold": 712432,
+          "got": null
+        }
+      },
+      "lines": [
+        {
+          "gold": {
+            "description": "Server rack screws, M6",
+            "quantity": "3",
+            "unit_price": "2.62",
+            "amount_minor": 786
+          },
+          "got": {
+            "description": "Server rack screws, M6",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Pallet wrap film, 500 m",
+            "quantity": "22",
+            "unit_price": "2.64",
+            "amount_minor": 5808
+          },
+          "got": {
+            "description": "Pallet wrap film, 500 m",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Cable ties, pack of 1000",
+            "quantity": "38",
+            "unit_price": "154.50",
+            "amount_minor": 587100
+          },
+          "got": {
+            "description": "Cable ties, pack of 1000",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        }
+      ],
+      "line_counts": [
+        3,
+        3
+      ],
+      "error": null
+    },
+    {
+      "case": "g17",
+      "style": "compact",
+      "pages": 2,
+      "status": "exception",
+      "expected_status": "extracted",
+      "fields": {
+        "subtotal_minor": {
+          "gold": 788338,
+          "got": null
+        },
+        "tax_minor": {
+          "gold": 63067,
+          "got": null
+        },
+        "total_minor": {
+          "gold": 851405,
+          "got": null
+        }
+      },
+      "lines": [
+        {
+          "gold": {
+            "description": "LED panel light 60x60",
+            "quantity": "1",
+            "unit_price": "3.64",
+            "amount_minor": 364
+          },
+          "got": {
+            "description": "LED panel light 60x60",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "A4 copy paper, 5 reams",
+            "quantity": "7",
+            "unit_price": "69.50",
+            "amount_minor": 48650
+          },
+          "got": {
+            "description": "A4 copy paper, 5 reams",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Laser printer toner, black",
+            "quantity": "24",
+            "unit_price": "142.00",
+            "amount_minor": 340800
+          },
+          "got": {
+            "description": "Laser printer toner, black",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Safety goggles, anti-fog",
+            "quantity": "40",
+            "unit_price": "27.60",
+            "amount_minor": 110400
+          },
+          "got": {
+            "description": "Safety goggles, anti-fog",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Safety goggles, anti-fog",
+            "quantity": "16",
+            "unit_price": "4.39",
+            "amount_minor": 7024
+          },
+          "got": {
+            "description": "Safety goggles, anti-fog",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "A4 copy paper, 5 reams",
+            "quantity": "2",
+            "unit_price": "149.75",
+            "amount_minor": 29950
+          },
+          "got": {
+            "description": "A4 copy paper, 5 reams",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Laser printer toner, black",
+            "quantity": "12",
+            "unit_price": "187.00",
+            "amount_minor": 224400
+          },
+          "got": {
+            "description": "Laser printer toner, black",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Cable ties, pack of 1000",
+            "quantity": "5",
+            "unit_price": "53.50",
+            "amount_minor": 26750
+          },
+          "got": {
+            "description": "Cable ties, pack of 1000",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        }
+      ],
+      "line_counts": [
+        8,
+        8
+      ],
+      "error": null
+    },
+    {
+      "case": "g20",
+      "style": "right",
+      "pages": 1,
+      "status": "exception",
+      "expected_status": "extracted",
+      "fields": {
+        "subtotal_minor": {
+          "gold": 380900,
+          "got": null
+        },
+        "tax_minor": {
+          "gold": 76180,
+          "got": null
+        },
+        "total_minor": {
+          "gold": 457080,
+          "got": null
+        }
+      },
+      "lines": [
+        {
+          "gold": {
+            "description": "Cable ties, pack of 1000",
+            "quantity": "12",
+            "unit_price": "57.60",
+            "amount_minor": 69120
+          },
+          "got": {
+            "description": "Cable ties, pack of 1000",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "LED panel light 60x60",
+            "quantity": "14",
+            "unit_price": "45.90",
+            "amount_minor": 64260
+          },
+          "got": {
+            "description": "LED panel light 60x60",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Safety goggles, anti-fog",
+            "quantity": "27",
+            "unit_price": "84.10",
+            "amount_minor": 227070
+          },
+          "got": {
+            "description": "Safety goggles, anti-fog",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "USB-C docking station",
+            "quantity": "5",
+            "unit_price": "40.90",
+            "amount_minor": 20450
+          },
+          "got": {
+            "description": "USB-C docking station",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        }
+      ],
+      "line_counts": [
+        4,
+        4
+      ],
+      "error": null
+    },
+    {
+      "case": "g23",
+      "style": "compact",
+      "pages": 1,
+      "status": "exception",
+      "expected_status": "extracted",
+      "fields": {
+        "subtotal_minor": {
+          "gold": 356613,
+          "got": null
+        },
+        "tax_minor": {
+          "gold": 28529,
+          "got": null
+        },
+        "total_minor": {
+          "gold": 385142,
+          "got": null
+        }
+      },
+      "lines": [
+        {
+          "gold": {
+            "description": "Server rack screws, M6",
+            "quantity": "39",
+            "unit_price": "2.57",
+            "amount_minor": 10023
+          },
+          "got": {
+            "description": "Server rack screws, M6",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "A4 copy paper, 5 reams",
+            "quantity": "21",
+            "unit_price": "135.50",
+            "amount_minor": 284550
+          },
+          "got": {
+            "description": "A4 copy paper, 5 reams",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Hand truck, folding",
+            "quantity": "12",
+            "unit_price": "51.70",
+            "amount_minor": 62040
+          },
+          "got": {
+            "description": "Hand truck, folding",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        }
+      ],
+      "line_counts": [
+        3,
+        3
+      ],
+      "error": null
+    },
+    {
+      "case": "g25",
+      "style": "german",
+      "pages": 1,
+      "status": "exception",
+      "expected_status": "extracted",
+      "fields": {
+        "subtotal_minor": {
+          "gold": 2442,
+          "got": null
+        },
+        "tax_minor": {
+          "gold": 463,
+          "got": null
+        },
+        "total_minor": {
+          "gold": 2905,
+          "got": null
+        }
+      },
+      "lines": [
+        {
+          "gold": {
+            "description": "LED panel light 60x60",
+            "quantity": "37",
+            "unit_price": "0.66",
+            "amount_minor": 2442
+          },
+          "got": {
+            "description": "LED panel light 60x60",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        }
+      ],
+      "line_counts": [
+        1,
+        1
+      ],
+      "error": null
+    },
+    {
+      "case": "g26",
+      "style": "right",
+      "pages": 1,
+      "status": "exception",
+      "expected_status": "extracted",
+      "fields": {
+        "subtotal_minor": {
+          "gold": 138561,
+          "got": null
+        },
+        "tax_minor": {
+          "gold": 27712,
+          "got": null
+        },
+        "total_minor": {
+          "gold": 166273,
+          "got": null
+        }
+      },
+      "lines": [
+        {
+          "gold": {
+            "description": "Cable ties, pack of 1000",
+            "quantity": "35",
+            "unit_price": "8.50",
+            "amount_minor": 29750
+          },
+          "got": {
+            "description": "Cable ties, pack of 1000",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "USB-C docking station",
+            "quantity": "5",
+            "unit_price": "216.75",
+            "amount_minor": 108375
+          },
+          "got": {
+            "description": "USB-C docking station",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Laser printer toner, black",
+            "quantity": "2",
+            "unit_price": "2.18",
+            "amount_minor": 436
+          },
+          "got": {
+            "description": "Laser printer toner, black",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        }
+      ],
+      "line_counts": [
+        3,
+        3
+      ],
+      "error": null
+    },
+    {
+      "case": "g27",
+      "style": "seikyu",
+      "pages": 2,
+      "status": "exception",
+      "expected_status": "extracted",
+      "fields": {
+        "vendor_name": {
+          "gold": "Kawasemi Electronics K.K.",
+          "got": null
+        },
+        "subtotal_minor": {
+          "gold": 2181210,
+          "got": null
+        },
+        "tax_minor": {
+          "gold": 218121,
+          "got": null
+        },
+        "total_minor": {
+          "gold": 2399331,
+          "got": null
+        }
+      },
+      "lines": [
+        {
+          "gold": {
+            "description": "Industrial shelving bracket",
+            "quantity": "13",
+            "unit_price": "9510",
+            "amount_minor": 123630
+          },
+          "got": {
+            "description": "Industrial shelving bracket",
+            "quantity": null,
+            "unit_price": "13",
+            "amount_minor": 123630
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "LED panel light 60x60",
+            "quantity": "6",
+            "unit_price": "32930",
+            "amount_minor": 197580
+          },
+          "got": {
+            "description": "LED panel light 60x60",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Server rack screws, M6",
+            "quantity": "24",
+            "unit_price": "4115",
+            "amount_minor": 98760
+          },
+          "got": {
+            "description": "Server rack screws, M6",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Pallet wrap film, 500 m",
+            "quantity": "11",
+            "unit_price": "24190",
+            "amount_minor": 266090
+          },
+          "got": {
+            "description": "Pallet wrap film, 500 m",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Thermal labels 100x150",
+            "quantity": "8",
+            "unit_price": "31490",
+            "amount_minor": 251920
+          },
+          "got": {
+            "description": "Thermal labels 100x150",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        }
+      ],
+      "line_counts": [
+        8,
+        6
+      ],
+      "error": null
+    },
+    {
+      "case": "g29",
+      "style": "compact",
+      "pages": 3,
+      "status": "exception",
+      "expected_status": "extracted",
+      "fields": {
+        "subtotal_minor": {
+          "gold": 984677,
+          "got": null
+        },
+        "tax_minor": {
+          "gold": 78774,
+          "got": null
+        },
+        "total_minor": {
+          "gold": 1063451,
+          "got": null
+        }
+      },
+      "lines": [
+        {
+          "gold": {
+            "description": "Server rack screws, M6",
+            "quantity": "1",
+            "unit_price": "6.89",
+            "amount_minor": 689
+          },
+          "got": {
+            "description": "Server rack screws, M6",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Pallet wrap film, 500 m",
+            "quantity": "7",
+            "unit_price": "59.50",
+            "amount_minor": 41650
+          },
+          "got": {
+            "description": "Pallet wrap film, 500 m",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Ergonomic office chair",
+            "quantity": "8",
+            "unit_price": "2.68",
+            "amount_minor": 2144
+          },
+          "got": {
+            "description": "Ergonomic office chair",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Hand truck, folding",
+            "quantity": "36",
+            "unit_price": "7.36",
+            "amount_minor": 26496
+          },
+          "got": {
+            "description": "Hand truck, folding",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Pallet wrap film, 500 m",
+            "quantity": "37",
+            "unit_price": "70.10",
+            "amount_minor": 259370
+          },
+          "got": {
+            "description": "Pallet wrap film, 500 m",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Laser printer toner, black",
+            "quantity": "38",
+            "unit_price": "54.00",
+            "amount_minor": 205200
+          },
+          "got": {
+            "description": "Laser printer toner, black",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Hand truck, folding",
+            "quantity": "40",
+            "unit_price": "74.80",
+            "amount_minor": 299200
+          },
+          "got": {
+            "description": "Hand truck, folding",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Laser printer toner, black",
+            "quantity": "10",
+            "unit_price": "141.00",
+            "amount_minor": 141000
+          },
+          "got": {
+            "description": "Laser printer toner, black",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Safety goggles, anti-fog",
+            "quantity": "12",
+            "unit_price": "7.44",
+            "amount_minor": 8928
+          },
+          "got": {
+            "description": "Safety goggles, anti-fog",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        }
+      ],
+      "line_counts": [
+        9,
+        9
+      ],
+      "error": null
+    },
+    {
+      "case": "g31",
+      "style": "german",
+      "pages": 1,
+      "status": "exception",
+      "expected_status": "extracted",
+      "fields": {
+        "subtotal_minor": {
+          "gold": 362311,
+          "got": null
+        },
+        "tax_minor": {
+          "gold": 68839,
+          "got": null
+        },
+        "total_minor": {
+          "gold": 431150,
+          "got": null
+        }
+      },
+      "lines": [
+        {
+          "gold": {
+            "description": "USB-C docking station",
+            "quantity": "20",
+            "unit_price": "152.50",
+            "amount_minor": 305000
+          },
+          "got": {
+            "description": "USB-C docking station",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Industrial shelving bracket",
+            "quantity": "31",
+            "unit_price": "6.11",
+            "amount_minor": 18941
+          },
+          "got": {
+            "description": "Industrial shelving bracket",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Hand truck, folding",
+            "quantity": "22",
+            "unit_price": "15.00",
+            "amount_minor": 33000
+          },
+          "got": {
+            "description": "Hand truck, folding",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Industrial shelving bracket",
+            "quantity": "1",
+            "unit_price": "53.70",
+            "amount_minor": 5370
+          },
+          "got": {
+            "description": "Industrial shelving bracket",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        }
+      ],
+      "line_counts": [
+        4,
+        4
+      ],
+      "error": null
+    },
+    {
+      "case": "g32",
+      "style": "right",
+      "pages": 1,
+      "status": "exception",
+      "expected_status": "extracted",
+      "fields": {
+        "subtotal_minor": {
+          "gold": 11620,
+          "got": null
+        },
+        "tax_minor": {
+          "gold": 2324,
+          "got": null
+        },
+        "total_minor": {
+          "gold": 13944,
+          "got": null
+        }
+      },
+      "lines": [
+        {
+          "gold": {
+            "description": "USB-C docking station",
+            "quantity": "7",
+            "unit_price": "16.60",
+            "amount_minor": 11620
+          },
+          "got": {
+            "description": "USB-C docking station",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        }
+      ],
+      "line_counts": [
+        1,
+        2
+      ],
+      "error": null
+    },
+    {
+      "case": "g34",
+      "style": "boxed",
+      "pages": 1,
+      "status": "exception",
+      "expected_status": "extracted",
+      "fields": {
+        "subtotal_minor": {
+          "gold": 262123,
+          "got": null
+        },
+        "tax_minor": {
+          "gold": 20969,
+          "got": null
+        },
+        "total_minor": {
+          "gold": 283092,
+          "got": null
+        }
+      },
+      "lines": [
+        {
+          "gold": {
+            "description": "LED panel light 60x60",
+            "quantity": "15",
+            "unit_price": "151.75",
+            "amount_minor": 227625
+          },
+          "got": {
+            "description": "LED panel light 60x60",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Safety goggles, anti-fog",
+            "quantity": "6",
+            "unit_price": "8.31",
+            "amount_minor": 4986
+          },
+          "got": {
+            "description": "Safety goggles, anti-fog",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Laser printer toner, black",
+            "quantity": "34",
+            "unit_price": "8.68",
+            "amount_minor": 29512
+          },
+          "got": {
+            "description": "Laser printer toner, black",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        }
+      ],
+      "line_counts": [
+        3,
+        3
+      ],
+      "error": null
+    },
+    {
+      "case": "g35",
+      "style": "compact",
+      "pages": 1,
+      "status": "exception",
+      "expected_status": "extracted",
+      "fields": {
+        "subtotal_minor": {
+          "gold": 190750,
+          "got": null
+        },
+        "tax_minor": {
+          "gold": 15260,
+          "got": null
+        },
+        "total_minor": {
+          "gold": 206010,
+          "got": null
+        }
+      },
+      "lines": [
+        {
+          "gold": {
+            "description": "Industrial shelving bracket",
+            "quantity": "20",
+            "unit_price": "78.70",
+            "amount_minor": 157400
+          },
+          "got": {
+            "description": "Industrial shelving bracket",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Laser printer toner, black",
+            "quantity": "29",
+            "unit_price": "11.50",
+            "amount_minor": 33350
+          },
+          "got": {
+            "description": "Laser printer toner, black",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        }
+      ],
+      "line_counts": [
+        2,
+        2
+      ],
+      "error": null
+    },
+    {
+      "case": "g36",
+      "style": "classic",
+      "pages": 1,
+      "status": "exception",
+      "expected_status": "extracted",
+      "fields": {
+        "subtotal_minor": {
+          "gold": 257210,
+          "got": null
+        },
+        "tax_minor": {
+          "gold": 20576,
+          "got": null
+        },
+        "total_minor": {
+          "gold": 277786,
+          "got": null
+        }
+      },
+      "lines": [
+        {
+          "gold": {
+            "description": "Safety goggles, anti-fog",
+            "quantity": "2",
+            "unit_price": "212.25",
+            "amount_minor": 42450
+          },
+          "got": {
+            "description": "Safety goggles, anti-fog",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "LED panel light 60x60",
+            "quantity": "28",
+            "unit_price": "76.70",
+            "amount_minor": 214760
+          },
+          "got": {
+            "description": "LED panel light 60x60",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        }
+      ],
+      "line_counts": [
+        2,
+        2
+      ],
+      "error": null
+    },
+    {
+      "case": "g37",
+      "style": "german",
+      "pages": 2,
+      "status": "exception",
+      "expected_status": "extracted",
+      "fields": {
+        "subtotal_minor": {
+          "gold": 100400,
+          "got": null
+        },
+        "tax_minor": {
+          "gold": 19076,
+          "got": null
+        },
+        "total_minor": {
+          "gold": 119476,
+          "got": null
+        }
+      },
+      "lines": [
+        {
+          "gold": {
+            "description": "A4 copy paper, 5 reams",
+            "quantity": "21",
+            "unit_price": "41.40",
+            "amount_minor": 86940
+          },
+          "got": {
+            "description": "A4 copy paper, 5 reams",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Industrial shelving bracket",
+            "quantity": "4",
+            "unit_price": "31.25",
+            "amount_minor": 12500
+          },
+          "got": {
+            "description": "Industrial shelving bracket",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "LED panel light 60x60",
+            "quantity": "3",
+            "unit_price": "3.20",
+            "amount_minor": 960
+          },
+          "got": {
+            "description": "LED panel light 60x60",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        }
+      ],
+      "line_counts": [
+        3,
+        5
+      ],
+      "error": null
+    },
+    {
+      "case": "g40",
+      "style": "boxed",
+      "pages": 1,
+      "status": "exception",
+      "expected_status": "extracted",
+      "fields": {
+        "subtotal_minor": {
+          "gold": 468655,
+          "got": null
+        },
+        "tax_minor": {
+          "gold": 37492,
+          "got": null
+        },
+        "total_minor": {
+          "gold": 506147,
+          "got": null
+        }
+      },
+      "lines": [
+        {
+          "gold": {
+            "description": "Laser printer toner, black",
+            "quantity": "13",
+            "unit_price": "164.75",
+            "amount_minor": 214175
+          },
+          "got": {
+            "description": "Laser printer toner, black",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Ergonomic office chair",
+            "quantity": "22",
+            "unit_price": "54.50",
+            "amount_minor": 119900
+          },
+          "got": {
+            "description": "Ergonomic office chair",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Cable ties, pack of 1000",
+            "quantity": "33",
+            "unit_price": "9.70",
+            "amount_minor": 32010
+          },
+          "got": {
+            "description": "Cable ties, pack of 1000",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "USB-C docking station",
+            "quantity": "39",
+            "unit_price": "26.30",
+            "amount_minor": 102570
+          },
+          "got": {
+            "description": "USB-C docking station",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        }
+      ],
+      "line_counts": [
+        4,
+        4
+      ],
+      "error": null
+    },
+    {
+      "case": "g41",
+      "style": "compact",
+      "pages": 1,
+      "status": "exception",
+      "expected_status": "extracted",
+      "fields": {
+        "subtotal_minor": {
+          "gold": 639492,
+          "got": null
+        },
+        "tax_minor": {
+          "gold": 51159,
+          "got": null
+        },
+        "total_minor": {
+          "gold": 690651,
+          "got": null
+        }
+      },
+      "lines": [
+        {
+          "gold": {
+            "description": "Thermal labels 100x150",
+            "quantity": "25",
+            "unit_price": "200.75",
+            "amount_minor": 501875
+          },
+          "got": {
+            "description": "Thermal labels 100x150",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Laser printer toner, black",
+            "quantity": "35",
+            "unit_price": "33.75",
+            "amount_minor": 118125
+          },
+          "got": {
+            "description": "Laser printer toner, black",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Ergonomic office chair",
+            "quantity": "22",
+            "unit_price": "8.86",
+            "amount_minor": 19492
+          },
+          "got": {
+            "description": "Ergonomic office chair",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        }
+      ],
+      "line_counts": [
+        3,
+        3
+      ],
+      "error": null
+    },
+    {
+      "case": "g42",
+      "style": "classic",
+      "pages": 1,
+      "status": "exception",
+      "expected_status": "extracted",
+      "fields": {
+        "subtotal_minor": {
+          "gold": 18823,
+          "got": null
+        },
+        "tax_minor": {
+          "gold": 1505,
+          "got": null
+        },
+        "total_minor": {
+          "gold": 20328,
+          "got": null
+        }
+      },
+      "lines": [
+        {
+          "gold": {
+            "description": "Cable ties, pack of 1000",
+            "quantity": "23",
+            "unit_price": "4.01",
+            "amount_minor": 9223
+          },
+          "got": {
+            "description": "Cable ties, pack of 1000",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "USB-C docking station",
+            "quantity": "40",
+            "unit_price": "2.40",
+            "amount_minor": 9600
+          },
+          "got": {
+            "description": "USB-C docking station",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        }
+      ],
+      "line_counts": [
+        2,
+        2
+      ],
+      "error": null
+    },
+    {
+      "case": "g43",
+      "style": "german",
+      "pages": 1,
+      "status": "exception",
+      "expected_status": "extracted",
+      "fields": {
+        "subtotal_minor": {
+          "gold": 23311,
+          "got": null
+        },
+        "tax_minor": {
+          "gold": 4429,
+          "got": null
+        },
+        "total_minor": {
+          "gold": 27740,
+          "got": null
+        }
+      },
+      "lines": [
+        {
+          "gold": {
+            "description": "Ergonomic office chair",
+            "quantity": "11",
+            "unit_price": "4.22",
+            "amount_minor": 4642
+          },
+          "got": {
+            "description": "Ergonomic office chair",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "USB-C docking station",
+            "quantity": "21",
+            "unit_price": "0.09",
+            "amount_minor": 189
+          },
+          "got": {
+            "description": "USB-C docking station",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Pallet wrap film, 500 m",
+            "quantity": "16",
+            "unit_price": "5.46",
+            "amount_minor": 8736
+          },
+          "got": {
+            "description": "Pallet wrap film, 500 m",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Laser printer toner, black",
+            "quantity": "21",
+            "unit_price": "4.64",
+            "amount_minor": 9744
+          },
+          "got": {
+            "description": "Laser printer toner, black",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        }
+      ],
+      "line_counts": [
+        4,
+        4
+      ],
+      "error": null
+    },
+    {
+      "case": "g47",
+      "style": "compact",
+      "pages": 2,
+      "status": "failed",
+      "expected_status": "extracted",
+      "fields": {
+        "vendor_name": {
+          "gold": "Pacific Rim Packaging Inc.",
+          "got": null
+        },
+        "vendor_tax_id": {
+          "gold": "912846573",
+          "got": null
+        },
+        "invoice_number": {
+          "gold": "PR-2026-1329",
+          "got": null
+        },
+        "po_number": {
+          "gold": "4500100047",
+          "got": null
+        },
+        "invoice_date": {
+          "gold": "2026-09-28",
+          "got": null
+        },
+        "due_date": {
+          "gold": "2026-10-28",
+          "got": null
+        },
+        "currency": {
+          "gold": "USD",
+          "got": null
+        },
+        "subtotal_minor": {
+          "gold": 107024,
+          "got": null
+        },
+        "tax_minor": {
+          "gold": 8561,
+          "got": null
+        },
+        "total_minor": {
+          "gold": 115585,
+          "got": null
+        }
+      },
+      "lines": [],
+      "line_counts": [
+        2,
+        0
+      ],
+      "error": "model_timeout"
+    },
+    {
+      "case": "g48",
+      "style": "classic",
+      "pages": 2,
+      "status": "exception",
+      "expected_status": "extracted",
+      "fields": {
+        "subtotal_minor": {
+          "gold": 303683,
+          "got": null
+        },
+        "tax_minor": {
+          "gold": 24294,
+          "got": null
+        },
+        "total_minor": {
+          "gold": 327977,
+          "got": null
+        }
+      },
+      "lines": [
+        {
+          "gold": {
+            "description": "Safety goggles, anti-fog",
+            "quantity": "23",
+            "unit_price": "0.17",
+            "amount_minor": 391
+          },
+          "got": {
+            "description": "Safety goggles, anti-fog",
+            "quantity": null,
+            "unit_price": "0.17",
+            "amount_minor": 391
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Server rack screws, M6",
+            "quantity": "23",
+            "unit_price": "1.84",
+            "amount_minor": 4232
+          },
+          "got": {
+            "description": "Server rack screws, M6",
+            "quantity": null,
+            "unit_price": "1.84",
+            "amount_minor": 4232
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Thermal labels 100x150",
+            "quantity": "38",
+            "unit_price": "59.00",
+            "amount_minor": 224200
+          },
+          "got": {
+            "description": "Thermal labels 100x150",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Hand truck, folding",
+            "quantity": "19",
+            "unit_price": "39.40",
+            "amount_minor": 74860
+          },
+          "got": {
+            "description": "Hand truck, folding",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        }
+      ],
+      "line_counts": [
+        4,
+        4
+      ],
+      "error": null
+    },
+    {
+      "case": "g49",
+      "style": "german",
+      "pages": 3,
+      "status": "exception",
+      "expected_status": "extracted",
+      "fields": {
+        "subtotal_minor": {
+          "gold": 1620465,
+          "got": null
+        },
+        "tax_minor": {
+          "gold": 307888,
+          "got": null
+        },
+        "total_minor": {
+          "gold": 1928353,
+          "got": null
+        }
+      },
+      "lines": [
+        {
+          "gold": {
+            "description": "Hand truck, folding",
+            "quantity": "2",
+            "unit_price": "207.50",
+            "amount_minor": 41500
+          },
+          "got": {
+            "description": "Hand truck, folding",
+            "quantity": null,
+            "unit_price": "207.50",
+            "amount_minor": 41500
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Pallet wrap film, 500 m",
+            "quantity": "10",
+            "unit_price": "50.30",
+            "amount_minor": 50300
+          },
+          "got": {
+            "description": "Pallet wrap film, 500 m",
+            "quantity": null,
+            "unit_price": "50.30",
+            "amount_minor": 50300
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Cable ties, pack of 1000",
+            "quantity": "39",
+            "unit_price": "48.10",
+            "amount_minor": 187590
+          },
+          "got": {
+            "description": "Cable ties, pack of 1000",
+            "quantity": null,
+            "unit_price": "48.10",
+            "amount_minor": 187590
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Ergonomic office chair",
+            "quantity": "29",
+            "unit_price": "206.00",
+            "amount_minor": 597400
+          },
+          "got": {
+            "description": "Ergonomic office chair",
+            "quantity": null,
+            "unit_price": "206.00",
+            "amount_minor": 597400
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Thermal labels 100x150",
+            "quantity": "31",
+            "unit_price": "172.00",
+            "amount_minor": 533200
+          },
+          "got": {
+            "description": "Thermal labels 100x150",
+            "quantity": null,
+            "unit_price": "172.00",
+            "amount_minor": 533200
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Thermal labels 100x150",
+            "quantity": "23",
+            "unit_price": "89.00",
+            "amount_minor": 204700
+          },
+          "got": {
+            "description": "Thermal labels 100x150",
+            "quantity": null,
+            "unit_price": "89.00",
+            "amount_minor": 204700
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Ergonomic office chair",
+            "quantity": "15",
+            "unit_price": "3.85",
+            "amount_minor": 5775
+          },
+          "got": {
+            "description": "Ergonomic office chair",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        }
+      ],
+      "line_counts": [
+        7,
+        8
+      ],
+      "error": null
+    },
+    {
+      "case": "g51",
+      "style": "seikyu",
+      "pages": 1,
+      "status": "exception",
+      "expected_status": "extracted",
+      "fields": {
+        "subtotal_minor": {
+          "gold": 1652170,
+          "got": null
+        },
+        "tax_minor": {
+          "gold": 165217,
+          "got": null
+        },
+        "total_minor": {
+          "gold": 1817387,
+          "got": null
+        }
+      },
+      "lines": [
+        {
+          "gold": {
+            "description": "Ergonomic office chair",
+            "quantity": "27",
+            "unit_price": "39520",
+            "amount_minor": 1067040
+          },
+          "got": {
+            "description": "Ergonomic office chair",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Ergonomic office chair",
+            "quantity": "13",
+            "unit_price": "45010",
+            "amount_minor": 585130
+          },
+          "got": {
+            "description": "Ergonomic office chair",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        }
+      ],
+      "line_counts": [
+        2,
+        2
+      ],
+      "error": null
+    },
+    {
+      "case": "g52",
+      "style": "boxed",
+      "pages": 1,
+      "status": "exception",
+      "expected_status": "extracted",
+      "fields": {
+        "subtotal_minor": {
+          "gold": 187550,
+          "got": null
+        },
+        "tax_minor": {
+          "gold": 15004,
+          "got": null
+        },
+        "total_minor": {
+          "gold": 202554,
+          "got": null
+        }
+      },
+      "lines": [
+        {
+          "gold": {
+            "description": "A4 copy paper, 5 reams",
+            "quantity": "31",
+            "unit_price": "60.50",
+            "amount_minor": 187550
+          },
+          "got": {
+            "description": "A4 copy paper, 5 reams",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        }
+      ],
+      "line_counts": [
+        1,
+        1
+      ],
+      "error": null
+    },
+    {
+      "case": "g53",
+      "style": "compact",
+      "pages": 1,
+      "status": "exception",
+      "expected_status": "extracted",
+      "fields": {
+        "subtotal_minor": {
+          "gold": 715845,
+          "got": null
+        },
+        "tax_minor": {
+          "gold": 57267,
+          "got": null
+        },
+        "total_minor": {
+          "gold": 773112,
+          "got": null
+        }
+      },
+      "lines": [
+        {
+          "gold": {
+            "description": "Hand truck, folding",
+            "quantity": "14",
+            "unit_price": "201.75",
+            "amount_minor": 282450
+          },
+          "got": {
+            "description": "Hand truck, folding",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Hand truck, folding",
+            "quantity": "27",
+            "unit_price": "152.75",
+            "amount_minor": 412425
+          },
+          "got": {
+            "description": "Hand truck, folding",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Safety goggles, anti-fog",
+            "quantity": "38",
+            "unit_price": "4.91",
+            "amount_minor": 18658
+          },
+          "got": {
+            "description": "Safety goggles, anti-fog",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Laser printer toner, black",
+            "quantity": "34",
+            "unit_price": "0.68",
+            "amount_minor": 2312
+          },
+          "got": {
+            "description": "Laser printer toner, black",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        }
+      ],
+      "line_counts": [
+        4,
+        4
+      ],
+      "error": null
+    },
+    {
+      "case": "g55",
+      "style": "german",
+      "pages": 1,
+      "status": "exception",
+      "expected_status": "extracted",
+      "fields": {
+        "subtotal_minor": {
+          "gold": 259900,
+          "got": null
+        },
+        "tax_minor": {
+          "gold": 49381,
+          "got": null
+        },
+        "total_minor": {
+          "gold": 309281,
+          "got": null
+        }
+      },
+      "lines": [
+        {
+          "gold": {
+            "description": "Pallet wrap film, 500 m",
+            "quantity": "32",
+            "unit_price": "7.60",
+            "amount_minor": 24320
+          },
+          "got": {
+            "description": "Pallet wrap film, 500 m",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Server rack screws, M6",
+            "quantity": "21",
+            "unit_price": "11.00",
+            "amount_minor": 23100
+          },
+          "got": {
+            "description": "Server rack screws, M6",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "USB-C docking station",
+            "quantity": "32",
+            "unit_price": "66.40",
+            "amount_minor": 212480
+          },
+          "got": {
+            "description": "USB-C docking station",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        }
+      ],
+      "line_counts": [
+        3,
+        3
+      ],
+      "error": null
+    },
+    {
+      "case": "g56",
+      "style": "right",
+      "pages": 1,
+      "status": "failed",
+      "expected_status": "extracted",
+      "fields": {
+        "vendor_name": {
+          "gold": "Harbourside Catering Ltd",
+          "got": null
+        },
+        "vendor_tax_id": {
+          "gold": "GB482193756",
+          "got": null
+        },
+        "invoice_number": {
+          "gold": "NW-2026-1392",
+          "got": null
+        },
+        "po_number": {
+          "gold": "4500100056",
+          "got": null
+        },
+        "invoice_date": {
+          "gold": "2026-07-12",
+          "got": null
+        },
+        "due_date": {
+          "gold": "2026-08-12",
+          "got": null
+        },
+        "currency": {
+          "gold": "GBP",
+          "got": null
+        },
+        "subtotal_minor": {
+          "gold": 166130,
+          "got": null
+        },
+        "tax_minor": {
+          "gold": 33226,
+          "got": null
+        },
+        "total_minor": {
+          "gold": 199356,
+          "got": null
+        }
+      },
+      "lines": [],
+      "line_counts": [
+        1,
+        0
+      ],
+      "error": "model_timeout"
+    },
+    {
+      "case": "g57",
+      "style": "seikyu",
+      "pages": 2,
+      "status": "exception",
+      "expected_status": "extracted",
+      "fields": {
+        "vendor_name": {
+          "gold": "Kawasemi Electronics K.K.",
+          "got": null
+        },
+        "subtotal_minor": {
+          "gold": 3117253,
+          "got": null
+        },
+        "tax_minor": {
+          "gold": 311725,
+          "got": null
+        },
+        "total_minor": {
+          "gold": 3428978,
+          "got": null
+        }
+      },
+      "lines": [
+        {
+          "gold": {
+            "description": "Laser printer toner, black",
+            "quantity": "26",
+            "unit_price": "79650",
+            "amount_minor": 2070900
+          },
+          "got": {
+            "description": "Laser printer toner, black",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "USB-C docking station",
+            "quantity": "26",
+            "unit_price": "24530",
+            "amount_minor": 637780
+          },
+          "got": {
+            "description": "USB-C docking station",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Cable ties, pack of 1000",
+            "quantity": "35",
+            "unit_price": "1739",
+            "amount_minor": 60865
+          },
+          "got": {
+            "description": "Cable ties, pack of 1000",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "LED panel light 60x60",
+            "quantity": "25",
+            "unit_price": "6174",
+            "amount_minor": 154350
+          },
+          "got": {
+            "description": "LED panel light 60x60",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Cable ties, pack of 1000",
+            "quantity": "22",
+            "unit_price": "8789",
+            "amount_minor": 193358
+          },
+          "got": {
+            "description": "Cable ties, pack of 1000",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        }
+      ],
+      "line_counts": [
+        5,
+        5
+      ],
+      "error": null
+    },
+    {
+      "case": "g58",
+      "style": "boxed",
+      "pages": 2,
+      "status": "exception",
+      "expected_status": "extracted",
+      "fields": {
+        "subtotal_minor": {
+          "gold": 319934,
+          "got": null
+        },
+        "tax_minor": {
+          "gold": 25594,
+          "got": null
+        },
+        "total_minor": {
+          "gold": 345528,
+          "got": null
+        }
+      },
+      "lines": [
+        {
+          "gold": {
+            "description": "Server rack screws, M6",
+            "quantity": "12",
+            "unit_price": "47.00",
+            "amount_minor": 56400
+          },
+          "got": {
+            "description": "Server rack screws, M6",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Pallet wrap film, 500 m",
+            "quantity": "40",
+            "unit_price": "3.77",
+            "amount_minor": 15080
+          },
+          "got": {
+            "description": "Pallet wrap film, 500 m",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Cable ties, pack of 1000",
+            "quantity": "21",
+            "unit_price": "4.38",
+            "amount_minor": 9198
+          },
+          "got": {
+            "description": "Cable ties, pack of 1000",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Server rack screws, M6",
+            "quantity": "8",
+            "unit_price": "7.47",
+            "amount_minor": 5976
+          },
+          "got": {
+            "description": "Server rack screws, M6",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Pallet wrap film, 500 m",
+            "quantity": "32",
+            "unit_price": "72.90",
+            "amount_minor": 233280
+          },
+          "got": {
+            "description": "Pallet wrap film, 500 m",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        }
+      ],
+      "line_counts": [
+        5,
+        5
+      ],
+      "error": null
+    }
+  ],
+  "agent": [
+    {
+      "id": "a04-price-gbp",
+      "gold": "credit_memo_request",
+      "got": "hold",
+      "correct": false,
+      "evidence": true,
+      "tools": [
+        "get_po",
+        "get_receipts",
+        "compute_variance"
+      ],
+      "guard_fires": 0,
+      "stop": "no_proposal",
+      "model_s": 12.9
+    },
+    {
+      "id": "a05-price-two-lines",
+      "gold": "credit_memo_request",
+      "got": "credit_memo_request",
+      "correct": true,
+      "evidence": true,
+      "tools": [
+        "get_po",
+        "get_receipts",
+        "compute_variance",
+        "draft_credit_memo_request"
+      ],
+      "guard_fires": 0,
+      "stop": "proposed",
+      "model_s": 15.2
+    },
+    {
+      "id": "a06-short-one",
+      "gold": "credit_memo_request",
+      "got": "hold",
+      "correct": false,
+      "evidence": true,
+      "tools": [
+        "get_po",
+        "get_receipts",
+        "compute_variance"
+      ],
+      "guard_fires": 0,
+      "stop": "no_proposal",
+      "model_s": 20.4
+    },
+    {
+      "id": "a07-short-usd",
+      "gold": "credit_memo_request",
+      "got": "hold",
+      "correct": false,
+      "evidence": true,
+      "tools": [
+        "get_po",
+        "get_receipts",
+        "compute_variance"
+      ],
+      "guard_fires": 0,
+      "stop": "no_proposal",
+      "model_s": 15.4
+    },
+    {
+      "id": "a10-short-and-price",
+      "gold": "credit_memo_request",
+      "got": "hold",
+      "correct": false,
+      "evidence": true,
+      "tools": [
+        "get_po",
+        "get_receipts",
+        "compute_variance"
+      ],
+      "guard_fires": 0,
+      "stop": "no_proposal",
+      "model_s": 16.6
+    },
+    {
+      "id": "a11-short-and-price-usd",
+      "gold": "credit_memo_request",
+      "got": "hold",
+      "correct": false,
+      "evidence": true,
+      "tools": [
+        "get_po",
+        "get_receipts",
+        "compute_variance",
+        "propose_hold"
+      ],
+      "guard_fires": 0,
+      "stop": "proposed",
+      "model_s": 13.4
+    },
+    {
+      "id": "a13-not-received-gbp",
+      "gold": "hold (short_shipment)",
+      "got": "hold (missing_po)",
+      "correct": true,
+      "evidence": true,
+      "tools": [
+        "get_po",
+        "get_receipts",
+        "get_vendor_history",
+        "compute_variance",
+        "propose_hold"
+      ],
+      "guard_fires": 0,
+      "stop": "proposed",
+      "model_s": 18.1
+    },
+    {
+      "id": "a14-duplicate",
+      "gold": "hold (duplicate)",
+      "got": "hold (duplicate)",
+      "correct": true,
+      "evidence": true,
+      "tools": [
+        "get_vendor_history",
+        "propose_hold"
+      ],
+      "guard_fires": 0,
+      "stop": "proposed",
+      "model_s": 4.5
+    },
+    {
+      "id": "a15-duplicate",
+      "gold": "hold (duplicate)",
+      "got": "hold (duplicate)",
+      "correct": true,
+      "evidence": true,
+      "tools": [
+        "get_vendor_history",
+        "propose_hold"
+      ],
+      "guard_fires": 0,
+      "stop": "proposed",
+      "model_s": 4.4
+    },
+    {
+      "id": "a17-po-not-found",
+      "gold": "hold (missing_po)",
+      "got": "hold (missing_po)",
+      "correct": true,
+      "evidence": false,
+      "tools": [
+        "propose_hold"
+      ],
+      "guard_fires": 0,
+      "stop": "proposed",
+      "model_s": 3.0
+    },
+    {
+      "id": "a18-po-not-found",
+      "gold": "hold (missing_po)",
+      "got": "hold (missing_po)",
+      "correct": true,
+      "evidence": false,
+      "tools": [
+        "propose_hold"
+      ],
+      "guard_fires": 0,
+      "stop": "proposed",
+      "model_s": 3.0
+    },
+    {
+      "id": "a20-tax-mismatch",
+      "gold": "hold (tax_mismatch)",
+      "got": "hold (other)",
+      "correct": true,
+      "evidence": true,
+      "tools": [
+        "get_vendor_history",
+        "get_vendor_history",
+        "propose_hold"
+      ],
+      "guard_fires": 0,
+      "stop": "proposed",
+      "model_s": 8.6
+    },
+    {
+      "id": "a22-tax-mismatch",
+      "gold": "hold (tax_mismatch)",
+      "got": "hold (other)",
+      "correct": true,
+      "evidence": true,
+      "tools": [
+        "get_vendor_history",
+        "get_vendor_history",
+        "propose_hold"
+      ],
+      "guard_fires": 0,
+      "stop": "proposed",
+      "model_s": 8.4
+    },
+    {
+      "id": "a24-vendor-mismatch",
+      "gold": "hold (other)",
+      "got": "hold (duplicate)",
+      "correct": true,
+      "evidence": false,
+      "tools": [
+        "get_vendor_history",
+        "propose_hold"
+      ],
+      "guard_fires": 0,
+      "stop": "proposed",
+      "model_s": 4.4
+    },
+    {
+      "id": "a25-over-po-quantity",
+      "gold": "credit_memo_request",
+      "got": "credit_memo_request",
+      "correct": true,
+      "evidence": true,
+      "tools": [
+        "get_po",
+        "get_receipts",
+        "compute_variance",
+        "draft_credit_memo_request"
+      ],
+      "guard_fires": 0,
+      "stop": "proposed",
+      "model_s": 13.7
+    }
+  ]
+}

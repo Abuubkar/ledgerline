@@ -1,0 +1,108 @@
+{
+ "status": "extracted",
+ "repair_attempted": false,
+ "prompt_version": "extract-page/2",
+ "header": {
+  "vendor_name": "Pacific Rim Packaging Inc.",
+  "vendor_tax_id": "912846573",
+  "invoice_number": "PR-2026-1119",
+  "po_number": null,
+  "invoice_date": "2026-03-24",
+  "due_date": "2026-04-24",
+  "currency": "USD",
+  "subtotal_minor": 788338,
+  "tax_minor": 63067,
+  "total_minor": 851405
+ },
+ "confidence": {
+  "vendor_name": 1.0,
+  "vendor_tax_id": 1.0,
+  "invoice_number": 1.0,
+  "invoice_date": 1.0,
+  "due_date": 1.0,
+  "currency": 1.0,
+  "subtotal": 1.0,
+  "tax": 1.0,
+  "total": 1.0
+ },
+ "invalid_fields": {},
+ "lines": [
+  {
+   "description": "LED panel light 60x60",
+   "quantity": null,
+   "unit_price": "3.64",
+   "amount_minor": 364
+  },
+  {
+   "description": "A4 copy paper, 5 reams",
+   "quantity": "7",
+   "unit_price": "69.50",
+   "amount_minor": 48650
+  },
+  {
+   "description": "Laser printer toner, black",
+   "quantity": "24",
+   "unit_price": "142.00",
+   "amount_minor": 340800
+  },
+  {
+   "description": "Safety goggles, anti-fog",
+   "quantity": "40",
+   "unit_price": "27.60",
+   "amount_minor": 110400
+  },
+  {
+   "description": "Safety goggles, anti-fog",
+   "quantity": "16",
+   "unit_price": "4.39",
+   "amount_minor": 7024
+  },
+  {
+   "description": "A4 copy paper, 5 reams",
+   "quantity": "2",
+   "unit_price": "149.75",
+   "amount_minor": 29950
+  },
+  {
+   "description": "Laser printer toner, black",
+   "quantity": "12",
+   "unit_price": "187.00",
+   "amount_minor": 224400
+  },
+  {
+   "description": "Cable ties, pack of 1000",
+   "quantity": "5",
+   "unit_price": "53.50",
+   "amount_minor": 26750
+  }
+ ],
+ "pages": [
+  {
+   "page_no": 1,
+   "status": "extracted",
+   "source": "text",
+   "error_code": null
+  },
+  {
+   "page_no": 2,
+   "status": "extracted",
+   "source": "text",
+   "error_code": null
+  }
+ ],
+ "calls": [
+  {
+   "ms": 41657.828375,
+   "prompt_tokens": 565,
+   "output_tokens": 499,
+   "output_ms": 34993.196
+  },
+  {
+   "ms": 40062.8555,
+   "prompt_tokens": 531,
+   "output_tokens": 491,
+   "output_ms": 34307.907
+  }
+ ],
+ "wall_s": 0.03
+}

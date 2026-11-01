@@ -1,0 +1,66 @@
+{
+ "status": "extracted",
+ "repair_attempted": false,
+ "prompt_version": "extract-page/2",
+ "header": {
+  "vendor_name": "Nordwerk Industrietechnik GmbH",
+  "vendor_tax_id": "DE274918365",
+  "invoice_number": "RE-2026-1007",
+  "po_number": null,
+  "invoice_date": "2026-06-03",
+  "due_date": "2026-07-03",
+  "currency": "EUR",
+  "subtotal_minor": 29710,
+  "tax_minor": 5644,
+  "total_minor": 35354
+ },
+ "confidence": {
+  "vendor_name": 1.0,
+  "vendor_tax_id": 1.0,
+  "invoice_number": 1.0,
+  "invoice_date": 1.0,
+  "due_date": 1.0,
+  "currency": 1.0,
+  "subtotal": 1.0,
+  "tax": 1.0,
+  "total": 1.0
+ },
+ "invalid_fields": {},
+ "lines": [
+  {
+   "description": "Laser printer toner, black",
+   "quantity": "5",
+   "unit_price": "1.50",
+   "amount_minor": 750
+  },
+  {
+   "description": "Hand truck, folding",
+   "quantity": "30",
+   "unit_price": "8.65",
+   "amount_minor": 25950
+  },
+  {
+   "description": "Cable ties, pack of 1000",
+   "quantity": "35",
+   "unit_price": "0.86",
+   "amount_minor": 3010
+  }
+ ],
+ "pages": [
+  {
+   "page_no": 1,
+   "status": "extracted",
+   "source": "text",
+   "error_code": null
+  }
+ ],
+ "calls": [
+  {
+   "ms": 33529.356125,
+   "prompt_tokens": 590,
+   "output_tokens": 455,
+   "output_ms": 33059.853
+  }
+ ],
+ "wall_s": 0.03
+}

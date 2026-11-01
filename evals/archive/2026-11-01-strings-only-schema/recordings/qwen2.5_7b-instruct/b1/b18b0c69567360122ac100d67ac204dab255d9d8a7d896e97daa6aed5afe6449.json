@@ -1,0 +1,16 @@
+{
+ "model": "qwen2.5:7b-instruct",
+ "created_at": "2026-11-01T02:00:52.940784Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 12517065125,
+ "load_duration": 889750,
+ "prompt_eval_count": 518,
+ "prompt_eval_duration": 970557000,
+ "eval_count": 282,
+ "eval_duration": 11501637000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"Pacific Rim Packaging Inc.\",\n  \"vendor_tax_id\": \"91-2846573\",\n  \"invoice_number\": \"PR-2026-1077\",\n  \"po_number\": null,\n  \"invoice_date\": \"2026-02-07\",\n  \"due_date\": \"2026-03-07\",\n  \"currency\": \"USD\",\n  \"subtotal\": null,\n  \"tax\": null,\n  \"total\": null,\n  \"field_confidence\": {\n    \"vendor_name\": 1,\n    \"vendor_tax_id\": 1,\n    \"invoice_number\": 1,\n    \"po_number\": 0,\n    \"invoice_date\": 1,\n    \"due_date\": 1,\n    \"currency\": 1,\n    \"subtotal\": 0,\n    \"tax\": 0,\n    \"total\": 0\n  },\n  \"line_items\": [\n    {\n      \"description\": \"Industrial shelving bracket\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"amount\": null\n    },\n    {\n      \"description\": \"Safety goggles, anti-fog\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"amount\": null\n    }\n  ]\n}"
+ }
+}

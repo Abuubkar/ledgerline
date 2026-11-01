@@ -1,0 +1,72 @@
+{
+ "status": "exception",
+ "repair_attempted": true,
+ "prompt_version": "extract-page/2+repair-totals/2",
+ "header": {
+  "vendor_name": "Nordwerk Industrietechnik GmbH",
+  "vendor_tax_id": "DE274918365",
+  "invoice_number": "RE-2026-1385",
+  "po_number": "4500100055",
+  "invoice_date": "2026-08-17",
+  "due_date": "2026-09-17",
+  "currency": "EUR",
+  "subtotal_minor": null,
+  "tax_minor": null,
+  "total_minor": null
+ },
+ "confidence": {
+  "vendor_name": 1.0,
+  "vendor_tax_id": 1.0,
+  "invoice_number": 1.0,
+  "po_number": 1.0,
+  "invoice_date": 1.0,
+  "due_date": 1.0,
+  "currency": 1.0
+ },
+ "invalid_fields": {
+  "total": "no total extracted"
+ },
+ "lines": [
+  {
+   "description": "Pallet wrap film, 500 m",
+   "quantity": null,
+   "unit_price": null,
+   "amount_minor": null
+  },
+  {
+   "description": "Server rack screws, M6",
+   "quantity": null,
+   "unit_price": null,
+   "amount_minor": null
+  },
+  {
+   "description": "USB-C docking station",
+   "quantity": null,
+   "unit_price": null,
+   "amount_minor": null
+  }
+ ],
+ "pages": [
+  {
+   "page_no": 1,
+   "status": "extracted",
+   "source": "text",
+   "error_code": null
+  }
+ ],
+ "calls": [
+  {
+   "ms": 13846.412208,
+   "prompt_tokens": 599,
+   "output_tokens": 319,
+   "output_ms": 12588.417
+  },
+  {
+   "ms": 16418.137958,
+   "prompt_tokens": 914,
+   "output_tokens": 351,
+   "output_ms": 13858.618
+  }
+ ],
+ "wall_s": 30.31
+}

@@ -1,0 +1,78 @@
+{
+ "status": "exception",
+ "repair_attempted": true,
+ "prompt_version": "extract-page/2+repair-totals/2",
+ "header": {
+  "vendor_name": "Pacific Rim Packaging Inc.",
+  "vendor_tax_id": "912846573",
+  "invoice_number": "PR-2026-1371",
+  "po_number": "4500100053",
+  "invoice_date": "2026-02-15",
+  "due_date": "2026-03-15",
+  "currency": "USD",
+  "subtotal_minor": null,
+  "tax_minor": null,
+  "total_minor": null
+ },
+ "confidence": {
+  "vendor_name": 1.0,
+  "vendor_tax_id": 1.0,
+  "invoice_number": 1.0,
+  "po_number": 1.0,
+  "invoice_date": 1.0,
+  "due_date": 1.0,
+  "currency": 1.0
+ },
+ "invalid_fields": {
+  "total": "no total extracted"
+ },
+ "lines": [
+  {
+   "description": "Hand truck, folding",
+   "quantity": null,
+   "unit_price": null,
+   "amount_minor": null
+  },
+  {
+   "description": "Hand truck, folding",
+   "quantity": null,
+   "unit_price": null,
+   "amount_minor": null
+  },
+  {
+   "description": "Safety goggles, anti-fog",
+   "quantity": null,
+   "unit_price": null,
+   "amount_minor": null
+  },
+  {
+   "description": "Laser printer toner, black",
+   "quantity": null,
+   "unit_price": null,
+   "amount_minor": null
+  }
+ ],
+ "pages": [
+  {
+   "page_no": 1,
+   "status": "extracted",
+   "source": "text",
+   "error_code": null
+  }
+ ],
+ "calls": [
+  {
+   "ms": 15519.580917,
+   "prompt_tokens": 574,
+   "output_tokens": 361,
+   "output_ms": 14278.593
+  },
+  {
+   "ms": 18697.848125,
+   "prompt_tokens": 927,
+   "output_tokens": 408,
+   "output_ms": 16132.774
+  }
+ ],
+ "wall_s": 34.26
+}

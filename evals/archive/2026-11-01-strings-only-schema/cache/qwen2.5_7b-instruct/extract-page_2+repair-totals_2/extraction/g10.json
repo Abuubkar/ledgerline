@@ -1,0 +1,78 @@
+{
+ "status": "exception",
+ "repair_attempted": true,
+ "prompt_version": "extract-page/2+repair-totals/2",
+ "header": {
+  "vendor_name": "Alpenblick Logistik AG",
+  "vendor_tax_id": "CHE123456789",
+  "invoice_number": "AB-2026-1070",
+  "po_number": "4500100010",
+  "invoice_date": "2026-09-08",
+  "due_date": "2026-10-08",
+  "currency": "EUR",
+  "subtotal_minor": null,
+  "tax_minor": null,
+  "total_minor": null
+ },
+ "confidence": {
+  "vendor_name": 1.0,
+  "vendor_tax_id": 1.0,
+  "invoice_number": 1.0,
+  "po_number": 1.0,
+  "invoice_date": 1.0,
+  "due_date": 1.0,
+  "currency": 1.0
+ },
+ "invalid_fields": {
+  "total": "no total extracted"
+ },
+ "lines": [
+  {
+   "description": "Pallet wrap film, 500 m",
+   "quantity": null,
+   "unit_price": null,
+   "amount_minor": null
+  },
+  {
+   "description": "Pallet wrap film, 500 m",
+   "quantity": null,
+   "unit_price": null,
+   "amount_minor": null
+  },
+  {
+   "description": "Hand truck, folding",
+   "quantity": null,
+   "unit_price": null,
+   "amount_minor": null
+  },
+  {
+   "description": "Hand truck, folding",
+   "quantity": null,
+   "unit_price": null,
+   "amount_minor": null
+  }
+ ],
+ "pages": [
+  {
+   "page_no": 1,
+   "status": "extracted",
+   "source": "text",
+   "error_code": null
+  }
+ ],
+ "calls": [
+  {
+   "ms": 18381.124541,
+   "prompt_tokens": 583,
+   "output_tokens": 373,
+   "output_ms": 17072.856
+  },
+  {
+   "ms": 24571.72775,
+   "prompt_tokens": 948,
+   "output_tokens": 418,
+   "output_ms": 19627.372
+  }
+ ],
+ "wall_s": 43.03
+}
