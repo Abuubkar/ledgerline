@@ -2,7 +2,8 @@
 
 Each model runs the same eval (`evals/run.py`) with LLM_MODEL set; its report goes to evals/sweep/<model>/. A model
 whose answers are already recorded is replayed; --live reruns them against Ollama. Memory is the resident size
-of Ollama's model server process (weights plus the 8k-token context) right after its run. Ollama's own /api/ps figure
+of Ollama's model server process (weights plus the 8k-token context) on a fresh load of the model; --memory remeasures
+it without rerunning the eval. Ollama's own /api/ps figure
 isn't used: for gemma4:12b it reported 1.0 GB, leaving out the weights. The default model is not changed:
 choosing is a decision for a person (see evals/SWEEP.md).
 
@@ -19,6 +20,8 @@ from pathlib import Path
 
 import httpx
 
+from ledgerline_api.settings import settings
+
 EVALS = Path(__file__).resolve().parent
 # llama3.1:8b and qwen2.5:14b-instruct were planned and skipped (the user's call: download size and heat on a 16 GB laptop).
 # qwen3.5 pinned to its q4_K_M build: the bare tag downloads different builds on different machines.
@@ -30,10 +33,21 @@ def folder(model: str) -> Path:
 
 
 def loaded_memory_gb(model: str, ollama: str) -> float | None:
-    """Resident memory of the model server process. Only one model is loaded at a time during a sweep."""
+    """Resident memory of Ollama's model server with `model` freshly loaded at the eval's context size.
+
+    Measured on a fresh load (unload, one tiny call, read, unload), not right after a run: after a long run macOS has
+    compressed or paged out part of the weights, and the reading wandered by 1.5 GB between runs of the same model.
+    """
+    def unload() -> None:
+        httpx.post(f"{ollama}/api/chat", json={"model": model, "messages": [], "keep_alive": 0}, timeout=60)
+
     try:
-        httpx.get(f"{ollama}/api/ps", timeout=5).raise_for_status()  # Ollama is up; the model loaded for the run
+        unload()
+        httpx.post(f"{ollama}/api/chat", timeout=300, json={
+            "model": model, "messages": [{"role": "user", "content": "hi"}], "stream": False, "think": False,
+            "keep_alive": "1m", "options": {"num_ctx": settings.llm_num_ctx, "num_predict": 1}}).raise_for_status()
         ps = subprocess.run(["ps", "-axo", "rss=,command="], capture_output=True, text=True, check=True).stdout
+        unload()
     except (httpx.HTTPError, subprocess.CalledProcessError):
         return None
     sizes = [int(line.split(None, 1)[0]) for line in ps.splitlines() if "llama-server" in line or "ollama runner" in line]
@@ -44,6 +58,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--live", action="store_true", help="run every model against Ollama, recording answers")
     parser.add_argument("--models", default=",".join(MODELS))
+    parser.add_argument("--memory", action="store_true", help="measure each model's memory again (a fresh load each)")
     args = parser.parse_args()
     ollama = os.environ.get("OLLAMA_HOST", "http://localhost:11434")
     rows = []
@@ -64,11 +79,13 @@ def main() -> None:
             subprocess.run([sys.executable, str(EVALS / "run.py"), "--out", str(out), "--live"],
                            env={**os.environ, "LLM_MODEL": model}, check=False)
         results = json.loads((out / "results.json").read_text())
-        memory = loaded_memory_gb(model, ollama) if live else None
+        memory = loaded_memory_gb(model, ollama) if live or args.memory else None
         meta_path = out / "sweep.json"
         meta = json.loads(meta_path.read_text()) if meta_path.exists() else {}
         if memory is not None:
-            meta |= {"memory_gb": memory, "wall_minutes": round((time.monotonic() - started) / 60, 1)}
+            meta |= {"memory_gb": memory}
+        if live:
+            meta |= {"wall_minutes": round((time.monotonic() - started) / 60, 1)}
         meta_path.write_text(json.dumps(meta, indent=2) + "\n")
         rows.append((model, results["metrics"], meta))
 
