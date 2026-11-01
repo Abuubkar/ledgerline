@@ -4,10 +4,10 @@ way any part of Ledgerline calls the model."""
 import asyncio
 import io
 import json
-from decimal import Decimal
 import threading
 import time
 from dataclasses import dataclass
+from decimal import Decimal
 
 import ollama
 import pdfplumber
@@ -43,8 +43,8 @@ class ExtractionError(Exception):
 
 
 @dataclass
-class ModelCall:
-    parsed: BaseModel
+class ModelCall[T: BaseModel]:
+    parsed: T
     prompt_tokens: int
     output_tokens: int
     llm_ms: int
@@ -73,7 +73,7 @@ def render_page(content: bytes, page_index: int) -> bytes | None:
     with _render_lock, pdfplumber.open(io.BytesIO(content)) as pdf:
         image = pdf.pages[page_index].to_image(resolution=RENDER_DPI)
         # getextrema gives (min, max); an all-near-white page has nothing to read.
-        if image.original.convert("L").getextrema()[0] >= 250:
+        if image.original.convert("L").getextrema()[0] >= 250:  # type: ignore[operator]  # one band: (min, max) of ints
             return None
         buffer = io.BytesIO()
         image.save(buffer, format="PNG")
@@ -142,7 +142,7 @@ async def call_model(messages: list, *, schema: type[BaseModel] | None = None, t
     return response, prompt_tokens, response.eval_count or 0, llm_ms
 
 
-async def _chat(system: str, user: str, schema: type[BaseModel], images: list[bytes] | None = None) -> ModelCall:
+async def _chat[T: BaseModel](system: str, user: str, schema: type[T], images: list[bytes] | None = None) -> ModelCall[T]:
     message: dict = {"role": "user", "content": user}
     if images:
         message["images"] = images
@@ -152,7 +152,7 @@ async def _chat(system: str, user: str, schema: type[BaseModel], images: list[by
     return ModelCall(parse_answer(response.message.content or "", schema), prompt_tokens, output_tokens, llm_ms)
 
 
-def parse_answer(content: str, schema: type[BaseModel]) -> BaseModel:
+def parse_answer[T: BaseModel](content: str, schema: type[T]) -> T:
     """The model's JSON as `schema`. Bare numbers are read as Decimal, so 3572.00 arrives as "3572.00" and no amount
     ever passes through a float (ADR 0003, ADR 0016)."""
     try:
@@ -161,7 +161,7 @@ def parse_answer(content: str, schema: type[BaseModel]) -> BaseModel:
         raise ExtractionError("invalid_model_output", str(exc)) from exc
 
 
-async def extract_page(page_no: int, page_count: int, text: str | None, image: bytes | None) -> ModelCall:
+async def extract_page(page_no: int, page_count: int, text: str | None, image: bytes | None) -> ModelCall[ExtractedPage]:
     """One page, from its text or, when it has none, from its rendered image."""
     user = prompts.extract_page_user(page_no, page_count, text if image is None else None)
     return await _chat(prompts.EXTRACT_PAGE_SYSTEM, user, ExtractedPage, [image] if image else None)
@@ -169,7 +169,7 @@ async def extract_page(page_no: int, page_count: int, text: str | None, image: b
 
 async def repair_invoice(
     texts: list[str | None], images: list[bytes], previous_json: str, problems: list[str]
-) -> ModelCall:
+) -> ModelCall[RepairedInvoice]:
     """The single second look when the totals don't add up."""
     return await _chat(
         prompts.REPAIR_SYSTEM, prompts.repair_user(texts, previous_json, problems), RepairedInvoice, images or None

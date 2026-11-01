@@ -11,9 +11,9 @@ from datetime import UTC, datetime, timedelta
 import httpx
 from botocore.exceptions import ClientError
 from sqlalchemy import func, select, tuple_, update
-from sqlalchemy.orm import raiseload
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import raiseload
 
 from ledgerline_api import cursor, idempotency, storage
 from ledgerline_api.db import DeadLetter as DeadLetterRow
@@ -50,7 +50,7 @@ class UploadResponse:
     replayed: bool
 
 
-def content_fingerprint(pages: list[str] | None, content: bytes) -> str:
+def content_fingerprint(pages: list[str | None] | None, content: bytes) -> str:
     """Same invoice, same fingerprint, even if the PDF was re-rendered: hash the text with whitespace collapsed.
     PDFs without a text layer (scans) all have empty text, so they fall back to the raw bytes."""
     text = re.sub(r"\s+", " ", " ".join(page or "" for page in pages or [])).strip()
@@ -134,7 +134,7 @@ async def _store_one(session: AsyncSession, file: IncomingFile) -> UploadResult:
     # Text is read here only to fingerprint the file. An unreadable PDF is still accepted: the worker records
     # why it can't be extracted, so the client sees the reason on the invoice rather than a bare 4xx.
     try:
-        pages: list[str] | None = await asyncio.to_thread(read_pages, file.content)
+        pages: list[str | None] | None = await asyncio.to_thread(read_pages, file.content)
     except ExtractionError:
         pages = None
 
@@ -184,6 +184,8 @@ async def upload_invoices(session: AsyncSession, files: list[IncomingFile], key:
         raise ApiProblem(409, ProblemCode.REQUEST_IN_PROGRESS, "Request in progress",
                          "a request with this Idempotency-Key is still being processed; retry later")
     if decision is idempotency.Decision.REPLAY:
+        # A replay is a completed request, so its response was stored.
+        assert row is not None and row.response_status is not None and row.response_body is not None
         return UploadResponse(status=row.response_status, body=row.response_body, replayed=True)
 
     # Checked after the idempotency claim so a retry of a request that already went through is still
@@ -204,7 +206,9 @@ async def upload_invoices(session: AsyncSession, files: list[IncomingFile], key:
     if len(results) == 1:
         only = results[0]
         status = only.status
-        body = (only.invoice or only.problem).model_dump(mode="json")
+        outcome = only.invoice or only.problem
+        assert outcome is not None  # every result carries one or the other
+        body = outcome.model_dump(mode="json")
     else:
         status, body = 207, MultiStatus(results=results).model_dump(mode="json")
     await idempotency.complete(session, key, status, body)
@@ -302,6 +306,7 @@ async def replay_dead_letter(session: AsyncSession, dead_letter_id: uuid.UUID) -
         return row, False
 
     invoice = await session.get(InvoiceRow, row.invoice_id, with_for_update=True)
+    assert invoice is not None  # dead_letters.invoice_id is a foreign key
     invoice.status, invoice.error_code, invoice.error_detail = "received", None, None
     row.replayed_at = datetime.now(UTC)
     enqueue_extraction(session, invoice.id)
@@ -310,6 +315,7 @@ async def replay_dead_letter(session: AsyncSession, dead_letter_id: uuid.UUID) -
     except IntegrityError:
         # The same content was uploaded again (and stored) while this one sat in the dead-letter queue.
         await session.rollback()
+        assert invoice.content_sha256 is not None  # only the content hash's unique index can fail here
         original = await _find_duplicate(session, invoice.content_sha256)
         raise ApiProblem(409, ProblemCode.DUPLICATE_INVOICE, "Duplicate invoice",
                          "an invoice with the same content has been stored since; replay would duplicate it",

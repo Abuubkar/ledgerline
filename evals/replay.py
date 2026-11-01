@@ -59,11 +59,11 @@ class Recorder:
         async def chat(client, model="", messages=None, **kwargs):
             return await recorder._chat(client, model=model, messages=messages, **kwargs)
 
-        ollama.AsyncClient.chat = chat
+        ollama.AsyncClient.chat = chat  # type: ignore[method-assign,assignment]  # the record/replay patch point
         return self
 
     def uninstall(self) -> None:
-        ollama.AsyncClient.chat = self._original
+        ollama.AsyncClient.chat = self._original  # type: ignore[method-assign]
 
     def _path(self, model: str, key: str) -> Path:
         return self.root / model.replace(":", "_").replace("/", "_") / key[:2] / f"{key}.json"

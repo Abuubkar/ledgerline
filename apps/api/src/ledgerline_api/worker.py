@@ -21,14 +21,22 @@ import logging
 import random
 import traceback
 import uuid
+from typing import NoReturn
 
 from celery import Celery, Task
 from kombu import Queue
 
 from ledgerline_api import agent, erp_sync, jobs
-from ledgerline_api.errors import TransientError, classify
+from ledgerline_api.errors import PermanentError, TransientError, classify
 from ledgerline_api.service import (
-    AGENT_QUEUE, AGENT_TASK, EXTRACT_QUEUE, EXTRACT_TASK, MATCH_QUEUE, MATCH_TASK, SYNC_QUEUE, SYNC_TASK,
+    AGENT_QUEUE,
+    AGENT_TASK,
+    EXTRACT_QUEUE,
+    EXTRACT_TASK,
+    MATCH_QUEUE,
+    MATCH_TASK,
+    SYNC_QUEUE,
+    SYNC_TASK,
 )
 from ledgerline_api.settings import settings
 
@@ -72,7 +80,7 @@ def backoff_seconds(retries: int, base: float | None = None, cap: float | None =
     return random.uniform(0, min(cap, base * 2**retries))
 
 
-def _retry(task: Task, exc: TransientError):
+def _retry(task: Task, exc: TransientError | PermanentError) -> NoReturn:
     """Retry later with backoff, or re-raise once the retries are used up."""
     if task.request.retries >= settings.extraction_max_retries:
         raise exc

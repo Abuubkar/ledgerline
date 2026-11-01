@@ -72,11 +72,11 @@ async def extract_case(case: str, recorder: Recorder) -> dict:
     try:
         content = (GOLDEN / "extraction" / f"{case}.pdf").read_bytes()
         try:
-            result = await jobs._extract_document(content, redis_client=None)
+            result = await jobs._extract_document(content, redis_client=None)  # type: ignore[arg-type]  # no Redis: llm_slot is swapped for no_slot
         except TransientError:
             # A model timeout, as the worker would see under memory pressure: one retry, like the job queue's.
             recorder.stats.pop(case, None)
-            result = await jobs._extract_document(content, redis_client=None)
+            result = await jobs._extract_document(content, redis_client=None)  # type: ignore[arg-type]  # no Redis: llm_slot is swapped for no_slot
         header = asdict(result.header)
         out = {
             "status": result.status, "repair_attempted": result.repair_attempted, "prompt_version": result.prompt_version,
@@ -164,7 +164,7 @@ async def run_all(cases: list[str], scenarios: list[dict], recorder: Recorder, f
 # --- scoring -----------------------------------------------------------------------------------------------
 
 def score(golds: dict[str, dict], results: dict[str, dict], scenarios: list[dict], agent_results: dict[str, dict], concurrency: int) -> dict:
-    per_field = {f: [] for f in metrics.HEADER_FIELDS}
+    per_field: dict[str, list[bool]] = {f: [] for f in metrics.HEADER_FIELDS}
     observations, tp, predicted, gold_lines, failures = [], 0, 0, 0, []
     pages_attempted = pages_invalid = 0
     latencies, page_latencies, out_tokens, out_ms, statuses_ok = [], [], 0, 0.0, 0
@@ -240,9 +240,10 @@ def check_gates(m: dict, baseline: dict | None) -> list[str]:
         value = m[name]
         if (op == ">=" and value < threshold) or (op == "<=" and value > threshold):
             missed.append(f"{name} = {value:.3f} (gate {op} {threshold})")
-    for name in BASELINE_METRICS if baseline else []:
-        if name in baseline and m[name] < baseline[name] - 0.015:
-            missed.append(f"{name} dropped from {baseline[name]:.3f} to {m[name]:.3f} (more than 1.5 points)")
+    base = baseline or {}
+    for name in BASELINE_METRICS:
+        if name in base and m[name] < base[name] - 0.015:
+            missed.append(f"{name} dropped from {base[name]:.3f} to {m[name]:.3f} (more than 1.5 points)")
     return missed
 
 
@@ -347,7 +348,7 @@ def main() -> None:
         golds = {c: g for c, g in golds.items() if c in wanted}
         cases, scenarios = list(golds), [s for s in scenarios if s["id"] in wanted]
 
-    jobs.llm_slot = agent.llm_slot = no_slot  # no Redis: the eval's own semaphore caps concurrency
+    jobs.llm_slot = agent.llm_slot = no_slot  # type: ignore[assignment]  # no Redis: the eval's own semaphore caps concurrency
     recorder = Recorder(live=args.live).install()
     print(f"{'live' if args.live else 'replay'}: {len(cases)} invoices, {len(scenarios)} agent scenarios, model {settings.llm_model}", flush=True)
     # The agent's database is started outside the event loop: migrating it runs Alembic, which starts its own loop.

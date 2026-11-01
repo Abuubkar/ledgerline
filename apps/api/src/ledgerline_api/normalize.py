@@ -10,7 +10,6 @@ import unicodedata
 from dataclasses import dataclass, field
 from datetime import date
 from decimal import Decimal, InvalidOperation
-
 from typing import Annotated
 
 from pydantic import BaseModel, ConfigDict, WithJsonSchema
@@ -306,7 +305,7 @@ def check_totals(header: InvoiceHeader, lines: list[Line]) -> list[str]:
         return [f"lines without a usable amount: {', '.join(unusable)}"]
 
     problems = []
-    lines_sum = sum(line.amount_minor for line in lines)
+    lines_sum = sum(line.amount_minor or 0 for line in lines)  # every amount is set: checked just above
     tax = header.tax_minor or 0
     if abs(lines_sum + tax - header.total_minor) > TOLERANCE_MINOR:
         problems.append(

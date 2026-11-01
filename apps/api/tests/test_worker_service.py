@@ -10,7 +10,7 @@ from pathlib import Path
 
 import httpx
 import pytest
-from sqlalchemy import func, select
+from sqlalchemy import select
 
 from ledgerline_api import jobs, semaphore, storage
 from ledgerline_api.db import DeadLetter, ExtractionRun, Invoice

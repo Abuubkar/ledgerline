@@ -5,8 +5,9 @@ with a tax ID is never matched by name: two companies can share a name, and gues
 """
 
 import uuid
+from typing import Any
 
-from sqlalchemy import func, select
+from sqlalchemy import ColumnElement, func, select
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -18,15 +19,18 @@ async def find_or_create(session: AsyncSession, tax_id: str | None, name: str | 
     """The vendor's id, creating the vendor on first sight. None when there's nothing to recognize it by."""
     if tax_id is None and not (name and vendor_name_key(name)):
         return None
+    match: ColumnElement[bool]
+    conflict: dict[str, Any]
     if tax_id is not None:
         match, conflict = Vendor.tax_id == tax_id, dict(index_elements=["tax_id"], index_where=Vendor.tax_id.is_not(None))
     else:
+        assert name is not None  # no tax ID means a name was checked above
         match = (Vendor.name_key == vendor_name_key(name)) & Vendor.tax_id.is_(None)
         conflict = dict(index_elements=["name_key"], index_where=Vendor.tax_id.is_(None))
     # Insert-or-ignore then read: safe when two workers see a new vendor at the same moment.
     vendor_id = (await session.execute(
         insert(Vendor)
-        .values(tax_id=tax_id, name=name or tax_id, name_key=vendor_name_key(name or tax_id))
+        .values(tax_id=tax_id, name=name or tax_id, name_key=vendor_name_key(name or tax_id or ""))
         .on_conflict_do_nothing(**conflict)
         .returning(Vendor.id)
     )).scalar_one_or_none()
