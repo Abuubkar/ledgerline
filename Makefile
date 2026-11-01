@@ -1,6 +1,6 @@
 OASDIFF := docker run --rm -v $(CURDIR):/specs:ro tufin/oasdiff:v1.35.0
 
-.PHONY: codegen contract-check test test-int test-web web smoke chaos seed eval eval-test golden
+.PHONY: codegen contract-check lint migrations-lint test test-int test-web web smoke chaos seed eval eval-test golden
 
 # Regenerate everything derived from the contracts. Generated code is never edited by hand.
 codegen:
@@ -14,6 +14,18 @@ contract-check:
 	@mkdir -p build
 	uv run python -c "import json; from ledgerline_api.main import app; print(json.dumps(app.openapi(), indent=2))" > build/openapi.emitted.json
 	$(OASDIFF) breaking --fail-on ERR /specs/contracts/openapi.yaml /specs/build/openapi.emitted.json
+
+# The same checks CI runs in its lint job (actionlint aside).
+lint:
+	uv run ruff check .
+	uv run mypy
+	pnpm --dir apps/web typecheck
+	pnpm --dir apps/web lint
+
+# Squawk on the SQL of migrations added since main (CI runs this on every PR).
+migrations-lint:
+	@uv run python scripts/migration_sql.py origin/main > build/new_migrations.sql
+	@if [ -s build/new_migrations.sql ]; then uvx --from squawk-cli==2.70.0 squawk build/new_migrations.sql; else echo "No new migrations."; fi
 
 test:
 	uv run pytest -m "not integration"

@@ -18,6 +18,7 @@ from collections import Counter
 from pathlib import Path
 
 import httpx
+
 from ledgerline_client import Client
 from ledgerline_client.api.default import get_invoice, list_invoices, upload_invoices
 from ledgerline_client.models import UploadInvoicesBody
