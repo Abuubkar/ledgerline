@@ -9,7 +9,7 @@ from fastapi.responses import JSONResponse, Response
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
-from ledgerline_api import service
+from ledgerline_api import metrics, service
 from ledgerline_api.db import engine, get_session
 from ledgerline_api.graphql import graphql_router
 from ledgerline_api.schemas import (
@@ -30,7 +30,8 @@ from ledgerline_telemetry import setup_telemetry
 
 app = FastAPI(title="Ledgerline", version="0.8.0")
 app.include_router(graphql_router, prefix="/graphql")
-setup_telemetry("api", fastapi_app=app, sqlalchemy_engines=[engine])
+if setup_telemetry("api", fastapi_app=app, sqlalchemy_engines=[engine]):
+    metrics.prime_counters()
 
 PROBLEM_JSON = "application/problem+json"
 Session = Annotated[AsyncSession, Depends(get_session)]

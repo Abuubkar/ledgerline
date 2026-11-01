@@ -24,7 +24,7 @@ import uuid
 from typing import NoReturn
 
 from celery import Celery, Task
-from celery.signals import worker_process_init
+from celery.signals import worker_process_init, worker_process_shutdown
 from kombu import Queue
 
 from ledgerline_api import agent, erp_sync, jobs
@@ -40,7 +40,7 @@ from ledgerline_api.service import (
     SYNC_TASK,
 )
 from ledgerline_api.settings import settings
-from ledgerline_telemetry import setup_telemetry
+from ledgerline_telemetry import flush_telemetry, setup_telemetry
 
 log = logging.getLogger("ledgerline.worker")
 
@@ -50,7 +50,16 @@ def _start_tracing(**_) -> None:
     # Per worker process, after the fork: a tracer's export thread doesn't survive one.
     from ledgerline_api.db import engine
 
-    setup_telemetry("worker", sqlalchemy_engines=[engine], celery=True)
+    if setup_telemetry("worker", sqlalchemy_engines=[engine], celery=True):
+        from ledgerline_api import metrics
+
+        metrics.prime_counters([EXTRACT_TASK, MATCH_TASK, AGENT_TASK, SYNC_TASK])
+
+
+@worker_process_shutdown.connect(weak=False)
+def _flush_tracing(**_) -> None:
+    # Pool children exit without atexit hooks; without this their last 15 s of metrics and spans would be lost.
+    flush_telemetry()
 
 app = Celery("ledgerline", broker=settings.broker_url)
 app.conf.update(

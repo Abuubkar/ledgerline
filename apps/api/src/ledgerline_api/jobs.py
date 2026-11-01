@@ -9,6 +9,7 @@ only if the lease is still its own. A worker killed mid-job stops renewing; its 
 import asyncio
 import enum
 import json
+import time
 import uuid
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
@@ -23,7 +24,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 from sqlalchemy.pool import NullPool
 
-from ledgerline_api import db, matching, prompts, service, storage, vendors
+from ledgerline_api import db, matching, metrics, prompts, service, storage, vendors
 from ledgerline_api.db import (
     DeadLetter,
     ExtractionRun,
@@ -248,6 +249,7 @@ async def extract(invoice_id: uuid.UUID, task_id: str, attempt: int) -> Outcome:
 
         lost = asyncio.Event()
         heartbeat = asyncio.create_task(_heartbeat(sessions, run_id, lost))
+        started = time.perf_counter()
         try:
             async with sessions() as session:
                 file_uri = (await session.get(Invoice, invoice_id)).file_path
@@ -261,6 +263,7 @@ async def extract(invoice_id: uuid.UUID, task_id: str, attempt: int) -> Outcome:
                     # Visible as queued again until the retry runs.
                     await session.execute(update(Invoice).where(Invoice.id == invoice_id).values(status="received"))
                 await session.commit()
+            metrics.extraction_duration.record(time.perf_counter() - started, {"outcome": outcome})
             raise error from exc
         finally:
             heartbeat.cancel()
@@ -297,6 +300,9 @@ async def extract(invoice_id: uuid.UUID, task_id: str, attempt: int) -> Outcome:
             if invoice.status == "extracted" and invoice.po_number:
                 service.enqueue_match(session, invoice.id)
             await session.commit()
+        metrics.extraction_duration.record(time.perf_counter() - started, {"outcome": "completed"})
+        if not (invoice.status == "extracted" and invoice.po_number):
+            metrics.record_terminal(invoice.created_at, invoice.status)
         return Outcome.COMPLETED
 
 
@@ -341,6 +347,7 @@ async def match(invoice_id: uuid.UUID) -> str:
                 settings.match_price_tolerance_pct,
             )
             status = "exception" if reasons else "matched"
+            first_match = invoice.status == "extracted"  # a re-match of a failed match doesn't end the pipeline twice
             values = dict(invoice_id=invoice.id, status=status, po_number_key=key,
                           purchase_order_id=order.id if order else None,
                           reasons=[asdict(reason) for reason in reasons], matched_at=_now())
@@ -350,6 +357,8 @@ async def match(invoice_id: uuid.UUID) -> str:
             ))
             invoice.status = status
             await session.commit()
+            if first_match:
+                metrics.record_terminal(invoice.created_at, status)
             return status
 
 
@@ -367,3 +376,7 @@ async def dead_letter(task_name: str, payload: dict, error: TransientError | Per
                 error_code=error.code, exception_chain=chain, attempts=attempts,
             ))
             await session.commit()
+            metrics.dead_letters.add(1, {"task": task_name})
+            metrics.record_terminal(invoice.created_at, "failed")
+            # The collector keeps every trace with a dead letter (tail sampling, ADR 0021).
+            trace.get_current_span().set_attribute("ledgerline.dead_letter", True)

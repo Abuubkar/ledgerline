@@ -16,7 +16,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import raiseload
 
-from ledgerline_api import cursor, idempotency, storage
+from ledgerline_api import cursor, idempotency, metrics, storage
 from ledgerline_api.db import DeadLetter as DeadLetterRow
 from ledgerline_api.db import Invoice as InvoiceRow
 from ledgerline_api.db import OutboxMessage
@@ -205,6 +205,7 @@ async def upload_invoices(session: AsyncSession, files: list[IncomingFile], key:
     depth = await queue_depth(session)
     if depth is not None and depth >= settings.max_queue_depth:
         await idempotency.release(session, key)
+        metrics.backpressure_rejections.add(1)
         raise ApiProblem(429, ProblemCode.QUEUE_FULL, "Extraction queue full",
                          f"{depth} extraction jobs are waiting; retry later",
                          headers={"Retry-After": str(settings.upload_retry_after_s)})

@@ -16,6 +16,7 @@ from opentelemetry import context, propagate
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import async_sessionmaker
 
+from ledgerline_api import metrics
 from ledgerline_api.db import OutboxMessage, new_engine
 from ledgerline_api.service import OUTBOX_QUEUES
 from ledgerline_telemetry import setup_telemetry
@@ -67,7 +68,8 @@ def celery_send(row: OutboxMessage) -> None:
 
 
 async def run_forever() -> None:
-    setup_telemetry("relay", celery=True)
+    if setup_telemetry("relay", celery=True):
+        metrics.register_gauges()
     engine = new_engine()
     sessions = async_sessionmaker(engine, expire_on_commit=False)
     log.info("outbox relay started")

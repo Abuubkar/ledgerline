@@ -14,7 +14,7 @@ import pdfplumber
 from opentelemetry import trace
 from pydantic import BaseModel, ValidationError
 
-from ledgerline_api import prompts
+from ledgerline_api import metrics, prompts
 from ledgerline_api.normalize import ExtractedPage, RepairedInvoice
 from ledgerline_api.settings import settings
 
@@ -118,6 +118,8 @@ async def call_model(messages: list, *, schema: type[BaseModel] | None = None, t
             span.set_status(trace.StatusCode.ERROR, exc.code)
             span.set_attribute("error.type", exc.code)
             raise
+        metrics.record_model_call(settings.llm_model, "chat", prompt_tokens, output_tokens, llm_ms / 1000,
+                                  (response.eval_duration or 0) / 1e9)
         span.set_attributes({
             "gen_ai.response.model": response.model or settings.llm_model,
             "gen_ai.usage.input_tokens": prompt_tokens, "gen_ai.usage.output_tokens": output_tokens,
