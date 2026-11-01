@@ -10,6 +10,7 @@ Timing comes from Ollama's own durations in the recorded answer, not the clock, 
 latency and tokens/sec of the live run.
 """
 
+import asyncio
 import contextvars
 import hashlib
 import json
@@ -71,15 +72,24 @@ class Recorder:
         key = request_key(kwargs)
         path = self._path(kwargs["model"], key)
         if self.live:
-            response = await self._original(client, **kwargs)
             path.parent.mkdir(parents=True, exist_ok=True)
+            try:
+                response = await self._original(client, **kwargs)
+            except asyncio.CancelledError:
+                # call_model's deadline cancelled the call. Record that, so a replay times out at the same place
+                # (a retry that succeeds overwrites this with the answer).
+                path.write_text(json.dumps({"timed_out": True}))
+                raise
             path.write_text(response.model_dump_json(exclude_none=True, indent=1))
             self.recorded += 1
         else:
             if not path.exists():
                 raise MissingRecording(f"no recorded answer for this request ({path.relative_to(self.root.parent)}); "
                                        "the prompt or code changed since the last live run: run `make eval LIVE=1`")
-            response = ollama.ChatResponse.model_validate_json(path.read_text())
+            recorded = json.loads(path.read_text())
+            if recorded.get("timed_out"):
+                raise TimeoutError("timed out in the recorded live run")  # call_model turns this into model_timeout
+            response = ollama.ChatResponse.model_validate(recorded)
             self.replayed += 1
         self.stats[current_case.get()].append({
             "ms": ((response.total_duration or 0) - (response.load_duration or 0)) / 1e6,
