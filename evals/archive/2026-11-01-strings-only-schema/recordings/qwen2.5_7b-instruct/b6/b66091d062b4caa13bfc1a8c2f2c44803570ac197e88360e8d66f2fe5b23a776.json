@@ -1,0 +1,16 @@
+{
+ "model": "qwen2.5:7b-instruct",
+ "created_at": "2026-11-01T02:03:16.625299Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 33922912459,
+ "load_duration": 908709,
+ "prompt_eval_count": 1408,
+ "prompt_eval_duration": 5570188000,
+ "eval_count": 660,
+ "eval_duration": 28321466000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"Pacific Rim Packaging Inc.\",\n  \"vendor_tax_id\": \"91-2846573\",\n  \"invoice_number\": \"PR-2026-1119\",\n  \"po_number\": null,\n  \"invoice_date\": \"2026-03-24\",\n  \"due_date\": \"2026-04-24\",\n  \"currency\": \"USD\",\n  \"subtotal\": null,\n  \"tax\": null,\n  \"total\": null,\n  \"field_confidence\": {\n    \"vendor_name\": 1.0,\n    \"vendor_tax_id\": 1.0,\n    \"invoice_number\": 1.0,\n    \"po_number\": 0.0,\n    \"invoice_date\": 1.0,\n    \"due_date\": 1.0,\n    \"currency\": 1.0,\n    \"subtotal\": 0.0,\n    \"tax\": 0.0,\n    \"total\": 0.0\n  },\n  \"line_items\": [\n    {\n      \"description\": \"LED panel light 60x60\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"amount\": null,\n      \"page\": 1\n    },\n    {\n      \"description\": \"A4 copy paper, 5 reams\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"amount\": null,\n      \"page\": 1\n    },\n    {\n      \"description\": \"Laser printer toner, black\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"amount\": null,\n      \"page\": 1\n    },\n    {\n      \"description\": \"Safety goggles, anti-fog\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"amount\": null,\n      \"page\": 1\n    },\n    {\n      \"description\": \"Safety goggles, anti-fog\",\n      \"quantity\": \"id=16\",\n      \"unit_price\": \"id=4.39\",\n      \"amount\": \"id=70.24\",\n      \"page\": 2\n    },\n    {\n      \"description\": \"A4 copy paper, 5 reams\",\n      \"quantity\": \"id=2\",\n      \"unit_price\": \"id=149.75\",\n      \"amount\": \"id=299.50\",\n      \"page\": 2\n    },\n    {\n      \"description\": \"Laser printer toner, black\",\n      \"quantity\": \"id=12\",\n      \"unit_price\": \"id=187.00\",\n      \"amount\": \"id=2244.00\",\n      \"page\": 2\n    },\n    {\n      \"description\": \"Cable ties, pack of 1000\",\n      \"quantity\": \"id=5\",\n      \"unit_price\": \"id=53.50\",\n      \"amount\": \"id=267.50\",\n      \"page\": 2\n    }\n  ]\n}"
+ }
+}

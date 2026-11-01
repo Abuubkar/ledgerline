@@ -1,0 +1,16 @@
+{
+ "model": "qwen2.5:7b-instruct",
+ "created_at": "2026-11-01T02:08:34.658883Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 12499499750,
+ "load_duration": 806917,
+ "prompt_eval_count": 789,
+ "prompt_eval_duration": 1997430000,
+ "eval_count": 262,
+ "eval_duration": 10483795000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"Harbourside Catering Ltd\",\n  \"vendor_tax_id\": \"GB 482 1937 56\",\n  \"invoice_number\": \"NW-2026-1224\",\n  \"po_number\": \"4500100032\",\n  \"invoice_date\": \"2026-05-08\",\n  \"due_date\": \"2026-06-08\",\n  \"currency\": \"GBP\",\n  \"subtotal\": null,\n  \"tax\": null,\n  \"total\": null,\n  \"field_confidence\": {\n    \"vendor_name\": 1.0,\n    \"vendor_tax_id\": 1.0,\n    \"invoice_number\": 1.0,\n    \"po_number\": 1.0,\n    \"invoice_date\": 1.0,\n    \"due_date\": 1.0,\n    \"currency\": 1.0\n  },\n  \"line_items\": [\n    {\n      \"description\": \"USB-C docking station\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"amount\": null,\n      \"page\": 1\n    }\n  ]\n}"
+ }
+}

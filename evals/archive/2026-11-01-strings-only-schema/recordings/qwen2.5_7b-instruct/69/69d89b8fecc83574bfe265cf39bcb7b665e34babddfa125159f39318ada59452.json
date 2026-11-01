@@ -1,0 +1,16 @@
+{
+ "model": "qwen2.5:7b-instruct",
+ "created_at": "2026-11-01T02:42:10.162364Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 16365746417,
+ "load_duration": 789125,
+ "prompt_eval_count": 548,
+ "prompt_eval_duration": 1103043000,
+ "eval_count": 383,
+ "eval_duration": 15147909000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"Kawasemi Electronics K.K.\",\n  \"vendor_tax_id\": \"T9876543210987\",\n  \"invoice_number\": \"SK-2026-1399\",\n  \"po_number\": null,\n  \"invoice_date\": \"2026-07-25\",\n  \"due_date\": \"2026-08-25\",\n  \"currency\": \"JPY\",\n  \"subtotal\": null,\n  \"tax\": null,\n  \"total\": null,\n  \"field_confidence\": {\n    \"vendor_name\": 1,\n    \"vendor_tax_id\": 1,\n    \"invoice_number\": 1,\n    \"po_number\": 0,\n    \"invoice_date\": 1,\n    \"due_date\": 1,\n    \"currency\": 1,\n    \"subtotal\": 0,\n    \"tax\": 0,\n    \"total\": 0\n  },\n  \"line_items\": [\n    {\n      \"description\": \"Laser printer toner, black\",\n      \"quantity\": \"strconv(26)\",\n      \"unit_price\": \"strconv(79650)\",\n      \"amount\": \"strconv(2070900)\"\n    },\n    {\n      \"description\": \"USB-C docking station\",\n      \"quantity\": \"strconv(26)\",\n      \"unit_price\": \"strconv(24530)\",\n      \"amount\": \"strconv(637780)\"\n    },\n    {\n      \"description\": \"Cable ties, pack of 1000\",\n      \"quantity\": \"strconv(35)\",\n      \"unit_price\": \"strconv(1739)\",\n      \"amount\": \"strconv(60865)\"\n    }\n  ]\n}"
+ }
+}

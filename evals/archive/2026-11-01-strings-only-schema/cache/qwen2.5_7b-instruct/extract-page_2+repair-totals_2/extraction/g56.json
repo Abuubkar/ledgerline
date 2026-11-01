@@ -1,0 +1,11 @@
+{
+ "status": "failed",
+ "error": "model_timeout",
+ "detail": "no reply within 180s",
+ "header": {},
+ "confidence": {},
+ "lines": [],
+ "pages": [],
+ "calls": [],
+ "wall_s": 360.05
+}

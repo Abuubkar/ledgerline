@@ -1,0 +1,16 @@
+{
+ "model": "qwen2.5:7b-instruct",
+ "created_at": "2026-11-01T02:08:49.410523Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 14724821875,
+ "load_duration": 678708,
+ "prompt_eval_count": 562,
+ "prompt_eval_duration": 1092958000,
+ "eval_count": 341,
+ "eval_duration": 13624052000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"Alpenblick Logistik AG\",\n  \"vendor_tax_id\": \"CHE-123.456.789\",\n  \"invoice_number\": \"AB-2026-1238\",\n  \"po_number\": \"4500100034\",\n  \"invoice_date\": \"2026-04-26\",\n  \"due_date\": \"2026-05-26\",\n  \"currency\": \"EUR\",\n  \"subtotal\": null,\n  \"tax\": null,\n  \"total\": null,\n  \"field_confidence\": {\n    \"vendor_name\": 1,\n    \"vendor_tax_id\": 1,\n    \"invoice_number\": 1,\n    \"po_number\": 1,\n    \"invoice_date\": 1,\n    \"due_date\": 1,\n    \"currency\": 1,\n    \"subtotal\": 0,\n    \"tax\": 0,\n    \"total\": 0\n  },\n  \"line_items\": [\n    {\n      \"description\": \"LED panel light 60x60\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"amount\": null\n    },\n    {\n      \"description\": \"Safety goggles, anti-fog\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"amount\": null\n    },\n    {\n      \"description\": \"Laser printer toner, black\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"amount\": null\n    }\n  ]\n}"
+ }
+}

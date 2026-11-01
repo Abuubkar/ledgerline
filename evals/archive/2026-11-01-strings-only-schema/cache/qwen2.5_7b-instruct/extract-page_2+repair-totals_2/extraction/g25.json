@@ -1,0 +1,60 @@
+{
+ "status": "exception",
+ "repair_attempted": true,
+ "prompt_version": "extract-page/2+repair-totals/2",
+ "header": {
+  "vendor_name": "Nordwerk Industrietechnik GmbH",
+  "vendor_tax_id": "DE274918365",
+  "invoice_number": "RE-2026-1175",
+  "po_number": "4500100025",
+  "invoice_date": "2026-03-01",
+  "due_date": "2026-04-01",
+  "currency": "EUR",
+  "subtotal_minor": null,
+  "tax_minor": null,
+  "total_minor": null
+ },
+ "confidence": {
+  "vendor_name": 1.0,
+  "vendor_tax_id": 1.0,
+  "invoice_number": 1.0,
+  "po_number": 1.0,
+  "invoice_date": 1.0,
+  "due_date": 1.0,
+  "currency": 1.0
+ },
+ "invalid_fields": {
+  "total": "no total extracted"
+ },
+ "lines": [
+  {
+   "description": "LED panel light 60x60",
+   "quantity": null,
+   "unit_price": null,
+   "amount_minor": null
+  }
+ ],
+ "pages": [
+  {
+   "page_no": 1,
+   "status": "extracted",
+   "source": "text",
+   "error_code": null
+  }
+ ],
+ "calls": [
+  {
+   "ms": 12179.873125,
+   "prompt_tokens": 543,
+   "output_tokens": 251,
+   "output_ms": 10932.642
+  },
+  {
+   "ms": 12841.545292,
+   "prompt_tokens": 805,
+   "output_tokens": 268,
+   "output_ms": 10733.943
+  }
+ ],
+ "wall_s": 25.08
+}

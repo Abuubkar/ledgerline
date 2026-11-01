@@ -1,0 +1,16 @@
+{
+ "model": "qwen2.5:7b-instruct",
+ "created_at": "2026-11-01T02:02:42.685155Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 18586799458,
+ "load_duration": 2081375,
+ "prompt_eval_count": 497,
+ "prompt_eval_duration": 1009567000,
+ "eval_count": 386,
+ "eval_duration": 17564350000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"Pacific Rim Packaging Inc.\",\n  \"vendor_tax_id\": null,\n  \"invoice_number\": \"PR-2026-1119\",\n  \"po_number\": null,\n  \"invoice_date\": null,\n  \"due_date\": null,\n  \"currency\": \"USD\",\n  \"subtotal\": null,\n  \"tax\": null,\n  \"total\": null,\n  \"field_confidence\": {\n    \"vendor_name\": 1,\n    \"vendor_tax_id\": 0,\n    \"invoice_number\": 1,\n    \"po_number\": 0,\n    \"invoice_date\": 0,\n    \"due_date\": 0,\n    \"currency\": 1\n  },\n  \"line_items\": [\n    {\n      \"description\": \"Safety goggles, anti-fog\",\n      \"quantity\": \"id=16\",\n      \"unit_price\": \"id=4.39\",\n      \"amount\": \"id=70.24\"\n    },\n    {\n      \"description\": \"A4 copy paper, 5 reams\",\n      \"quantity\": \"id=2\",\n      \"unit_price\": \"id=149.75\",\n      \"amount\": \"id=299.50\"\n    },\n    {\n      \"description\": \"Laser printer toner, black\",\n      \"quantity\": \"id=12\",\n      \"unit_price\": \"id=187.00\",\n      \"amount\": \"id=2244.00\"\n    },\n    {\n      \"description\": \"Cable ties, pack of 1000\",\n      \"quantity\": \"id=5\",\n      \"unit_price\": \"id=53.50\",\n      \"amount\": \"id=267.50\"\n    }\n  ]\n}"
+ }
+}

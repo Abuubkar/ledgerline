@@ -1,0 +1,66 @@
+{
+ "status": "exception",
+ "repair_attempted": true,
+ "prompt_version": "extract-page/2+repair-totals/2",
+ "header": {
+  "vendor_name": "Harbourside Catering Ltd",
+  "vendor_tax_id": "GB482193756",
+  "invoice_number": "NW-2026-1224",
+  "po_number": "4500100032",
+  "invoice_date": "2026-05-08",
+  "due_date": "2026-06-08",
+  "currency": "GBP",
+  "subtotal_minor": null,
+  "tax_minor": null,
+  "total_minor": null
+ },
+ "confidence": {
+  "vendor_name": 1.0,
+  "vendor_tax_id": 1.0,
+  "invoice_number": 1.0,
+  "po_number": 1.0,
+  "invoice_date": 1.0,
+  "due_date": 1.0,
+  "currency": 1.0
+ },
+ "invalid_fields": {
+  "total": "no total extracted"
+ },
+ "lines": [
+  {
+   "description": "USB-C docking station",
+   "quantity": null,
+   "unit_price": null,
+   "amount_minor": null
+  },
+  {
+   "description": "USB-C docking station",
+   "quantity": null,
+   "unit_price": null,
+   "amount_minor": null
+  }
+ ],
+ "pages": [
+  {
+   "page_no": 1,
+   "status": "extracted",
+   "source": "text",
+   "error_code": null
+  }
+ ],
+ "calls": [
+  {
+   "ms": 12132.791833,
+   "prompt_tokens": 509,
+   "output_tokens": 279,
+   "output_ms": 11261.488
+  },
+  {
+   "ms": 12498.692833,
+   "prompt_tokens": 789,
+   "output_tokens": 262,
+   "output_ms": 10483.795
+  }
+ ],
+ "wall_s": 24.67
+}

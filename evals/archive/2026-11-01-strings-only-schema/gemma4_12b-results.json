@@ -1,0 +1,420 @@
+{
+  "run": {
+    "model": "gemma4:12b",
+    "extraction_prompt": "extract-page/2+repair-totals/2",
+    "agent_prompt": "agent/1",
+    "split": "dev",
+    "mode": "replayed",
+    "date": "2026-11-01",
+    "extraction_cases": 40,
+    "agent_cases": 15,
+    "concurrency": 1,
+    "recorded": 0,
+    "replayed": 0
+  },
+  "metrics": {
+    "header_macro_accuracy": 0.9875,
+    "header_min_field_accuracy": 0.95,
+    "field_accuracy": {
+      "vendor_name": 0.95,
+      "vendor_tax_id": 1.0,
+      "invoice_number": 1.0,
+      "po_number": 1.0,
+      "invoice_date": 1.0,
+      "due_date": 1.0,
+      "currency": 1.0,
+      "subtotal_minor": 0.975,
+      "tax_minor": 0.975,
+      "total_minor": 0.975
+    },
+    "line_precision": 0.9854014598540146,
+    "line_recall": 0.9712230215827338,
+    "line_f1": 0.9782608695652174,
+    "line_counts": {
+      "correct": 135,
+      "predicted": 137,
+      "gold": 139
+    },
+    "schema_validity": 1.0,
+    "calibration_error": 0.0025974025974025974,
+    "calibration_n": 385,
+    "status_accuracy": 0.95,
+    "extraction_p50_s": 42.928204958,
+    "extraction_p95_s": 147.861778917,
+    "page_p50_s": 35.511289958,
+    "page_p95_s": 46.2240645,
+    "output_tokens_per_s": 14.183685297308626,
+    "invoices_per_hour": 62.31301813136968,
+    "agent_action_accuracy": 1.0,
+    "agent_hold_reason_accuracy": 1.0,
+    "agent_evidence_complete": 0.9333333333333333,
+    "agent_guard_fires": 0,
+    "agent_p95_s": 66.0
+  },
+  "failures": [
+    {
+      "case": "g04",
+      "style": "boxed",
+      "pages": 1,
+      "status": "extracted",
+      "expected_status": "extracted",
+      "fields": {
+        "vendor_name": {
+          "gold": "Alpenblick Logistik AG",
+          "got": "Alpenblick Logistik_AG"
+        }
+      },
+      "lines": [],
+      "line_counts": [
+        3,
+        3
+      ],
+      "error": null
+    },
+    {
+      "case": "g17",
+      "style": "compact",
+      "pages": 2,
+      "status": "extracted",
+      "expected_status": "extracted",
+      "fields": {},
+      "lines": [
+        {
+          "gold": {
+            "description": "LED panel light 60x60",
+            "quantity": "1",
+            "unit_price": "3.64",
+            "amount_minor": 364
+          },
+          "got": {
+            "description": "LED panel light 60x60",
+            "quantity": null,
+            "unit_price": "3.64",
+            "amount_minor": 364
+          },
+          "similarity": 100
+        }
+      ],
+      "line_counts": [
+        8,
+        8
+      ],
+      "error": null
+    },
+    {
+      "case": "g27",
+      "style": "seikyu",
+      "pages": 2,
+      "status": "exception",
+      "expected_status": "extracted",
+      "fields": {},
+      "lines": [],
+      "line_counts": [
+        8,
+        6
+      ],
+      "error": null
+    },
+    {
+      "case": "g32",
+      "style": "right",
+      "pages": 1,
+      "status": "exception",
+      "expected_status": "extracted",
+      "fields": {
+        "subtotal_minor": {
+          "gold": 11620,
+          "got": null
+        },
+        "tax_minor": {
+          "gold": 2324,
+          "got": null
+        },
+        "total_minor": {
+          "gold": 13944,
+          "got": null
+        }
+      },
+      "lines": [],
+      "line_counts": [
+        1,
+        1
+      ],
+      "error": null
+    },
+    {
+      "case": "g47",
+      "style": "compact",
+      "pages": 2,
+      "status": "extracted",
+      "expected_status": "extracted",
+      "fields": {},
+      "lines": [
+        {
+          "gold": {
+            "description": "A4 copy paper, 5 reams",
+            "quantity": "20",
+            "unit_price": "51.80",
+            "amount_minor": 103600
+          },
+          "got": {
+            "description": "A4 copy paper, 5 reams",
+            "quantity": null,
+            "unit_price": "20",
+            "amount_minor": 103600
+          },
+          "similarity": 100
+        }
+      ],
+      "line_counts": [
+        2,
+        2
+      ],
+      "error": null
+    },
+    {
+      "case": "g58",
+      "style": "boxed",
+      "pages": 2,
+      "status": "extracted",
+      "expected_status": "extracted",
+      "fields": {
+        "vendor_name": {
+          "gold": "Alpenblick Logistik AG",
+          "got": null
+        }
+      },
+      "lines": [],
+      "line_counts": [
+        5,
+        5
+      ],
+      "error": null
+    }
+  ],
+  "agent": [
+    {
+      "id": "a04-price-gbp",
+      "gold": "credit_memo_request",
+      "got": "credit_memo_request",
+      "correct": true,
+      "evidence": true,
+      "tools": [
+        "get_po",
+        "get_receipts",
+        "compute_variance",
+        "draft_credit_memo_request"
+      ],
+      "guard_fires": 0,
+      "stop": "proposed",
+      "model_s": 25.3
+    },
+    {
+      "id": "a05-price-two-lines",
+      "gold": "credit_memo_request",
+      "got": "credit_memo_request",
+      "correct": true,
+      "evidence": true,
+      "tools": [
+        "get_po",
+        "get_receipts",
+        "compute_variance",
+        "draft_credit_memo_request"
+      ],
+      "guard_fires": 0,
+      "stop": "proposed",
+      "model_s": 26.6
+    },
+    {
+      "id": "a06-short-one",
+      "gold": "credit_memo_request",
+      "got": "credit_memo_request",
+      "correct": true,
+      "evidence": true,
+      "tools": [
+        "get_po",
+        "get_receipts",
+        "compute_variance",
+        "draft_credit_memo_request"
+      ],
+      "guard_fires": 0,
+      "stop": "proposed",
+      "model_s": 29.2
+    },
+    {
+      "id": "a07-short-usd",
+      "gold": "credit_memo_request",
+      "got": "credit_memo_request",
+      "correct": true,
+      "evidence": true,
+      "tools": [
+        "get_po",
+        "get_receipts",
+        "compute_variance",
+        "draft_credit_memo_request"
+      ],
+      "guard_fires": 0,
+      "stop": "proposed",
+      "model_s": 61.7
+    },
+    {
+      "id": "a10-short-and-price",
+      "gold": "credit_memo_request",
+      "got": "credit_memo_request",
+      "correct": true,
+      "evidence": true,
+      "tools": [
+        "get_po",
+        "get_receipts",
+        "compute_variance",
+        "draft_credit_memo_request"
+      ],
+      "guard_fires": 0,
+      "stop": "proposed",
+      "model_s": 57.4
+    },
+    {
+      "id": "a11-short-and-price-usd",
+      "gold": "credit_memo_request",
+      "got": "credit_memo_request",
+      "correct": true,
+      "evidence": true,
+      "tools": [
+        "get_po",
+        "get_receipts",
+        "compute_variance",
+        "draft_credit_memo_request"
+      ],
+      "guard_fires": 0,
+      "stop": "proposed",
+      "model_s": 66.0
+    },
+    {
+      "id": "a13-not-received-gbp",
+      "gold": "hold (short_shipment)",
+      "got": "hold (short_shipment)",
+      "correct": true,
+      "evidence": true,
+      "tools": [
+        "get_receipts",
+        "propose_hold"
+      ],
+      "guard_fires": 0,
+      "stop": "proposed",
+      "model_s": 64.2
+    },
+    {
+      "id": "a14-duplicate",
+      "gold": "hold (duplicate)",
+      "got": "hold (duplicate)",
+      "correct": true,
+      "evidence": true,
+      "tools": [
+        "get_vendor_history",
+        "propose_hold"
+      ],
+      "guard_fires": 0,
+      "stop": "proposed",
+      "model_s": 12.6
+    },
+    {
+      "id": "a15-duplicate",
+      "gold": "hold (duplicate)",
+      "got": "hold (duplicate)",
+      "correct": true,
+      "evidence": true,
+      "tools": [
+        "get_vendor_history",
+        "propose_hold"
+      ],
+      "guard_fires": 0,
+      "stop": "proposed",
+      "model_s": 12.5
+    },
+    {
+      "id": "a17-po-not-found",
+      "gold": "hold (missing_po)",
+      "got": "hold (missing_po)",
+      "correct": true,
+      "evidence": true,
+      "tools": [
+        "get_po",
+        "propose_hold"
+      ],
+      "guard_fires": 0,
+      "stop": "proposed",
+      "model_s": 9.7
+    },
+    {
+      "id": "a18-po-not-found",
+      "gold": "hold (missing_po)",
+      "got": "hold (missing_po)",
+      "correct": true,
+      "evidence": true,
+      "tools": [
+        "get_po",
+        "propose_hold"
+      ],
+      "guard_fires": 0,
+      "stop": "proposed",
+      "model_s": 9.6
+    },
+    {
+      "id": "a20-tax-mismatch",
+      "gold": "hold (tax_mismatch)",
+      "got": "hold (tax_mismatch)",
+      "correct": true,
+      "evidence": true,
+      "tools": [
+        "propose_hold"
+      ],
+      "guard_fires": 0,
+      "stop": "proposed",
+      "model_s": 7.9
+    },
+    {
+      "id": "a22-tax-mismatch",
+      "gold": "hold (tax_mismatch)",
+      "got": "hold (tax_mismatch)",
+      "correct": true,
+      "evidence": true,
+      "tools": [
+        "get_vendor_history",
+        "propose_hold"
+      ],
+      "guard_fires": 0,
+      "stop": "proposed",
+      "model_s": 10.4
+    },
+    {
+      "id": "a24-vendor-mismatch",
+      "gold": "hold (other)",
+      "got": "hold (other)",
+      "correct": true,
+      "evidence": false,
+      "tools": [
+        "get_vendor_history",
+        "propose_hold"
+      ],
+      "guard_fires": 0,
+      "stop": "proposed",
+      "model_s": 10.0
+    },
+    {
+      "id": "a25-over-po-quantity",
+      "gold": "credit_memo_request",
+      "got": "credit_memo_request",
+      "correct": true,
+      "evidence": true,
+      "tools": [
+        "get_po",
+        "get_receipts",
+        "compute_variance",
+        "draft_credit_memo_request"
+      ],
+      "guard_fires": 0,
+      "stop": "proposed",
+      "model_s": 20.0
+    }
+  ]
+}

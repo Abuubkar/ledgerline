@@ -1,0 +1,16 @@
+{
+ "model": "qwen2.5:7b-instruct",
+ "created_at": "2026-11-01T02:43:04.472874Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 16086662958,
+ "load_duration": 573333,
+ "prompt_eval_count": 526,
+ "prompt_eval_duration": 972682000,
+ "eval_count": 381,
+ "eval_duration": 15094711000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"Alpenblick Logistik AG\",\n  \"vendor_tax_id\": \"CHE-123.456.789\",\n  \"invoice_number\": \"AB-2026-1406\",\n  \"po_number\": \"4500100058\",\n  \"invoice_date\": \"2026-08-06\",\n  \"due_date\": \"2026-09-06\",\n  \"currency\": \"EUR\",\n  \"subtotal\": null,\n  \"tax\": null,\n  \"total\": null,\n  \"field_confidence\": {\n    \"vendor_name\": 1,\n    \"vendor_tax_id\": 1,\n    \"invoice_number\": 1,\n    \"po_number\": 1,\n    \"invoice_date\": 1,\n    \"due_date\": 1,\n    \"currency\": 1\n  },\n  \"line_items\": [\n    {\n      \"description\": \"Server rack screws, M6\",\n      \"quantity\": \"logistic_ag12\",\n      \"unit_price\": \"logistic_ag47.00\",\n      \"amount\": \"logistic_ag564.00\"\n    },\n    {\n      \"description\": \"Pallet wrap film, 500 m\",\n      \"quantity\": \"logistic_ag40\",\n      \"unit_price\": \"logistic_ag3.77\",\n      \"amount\": \"logistic_ag150.80\"\n    },\n    {\n      \"description\": \"Cable ties, pack of 1000\",\n      \"quantity\": \"logistic_ag21\",\n      \"unit_price\": \"logistic_ag4.38\",\n      \"amount\": \"logistic_ag91.98\"\n    }\n  ]\n}"
+ }
+}

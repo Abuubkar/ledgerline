@@ -1,0 +1,16 @@
+{
+ "model": "qwen2.5:7b-instruct",
+ "created_at": "2026-11-01T02:06:51.290589Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 13072505708,
+ "load_duration": 768292,
+ "prompt_eval_count": 432,
+ "prompt_eval_duration": 562692000,
+ "eval_count": 308,
+ "eval_duration": 12499620000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"Pacific Rim Packaging Inc.\",\n  \"vendor_tax_id\": null,\n  \"invoice_number\": \"PR-2026-1203\",\n  \"po_number\": null,\n  \"invoice_date\": null,\n  \"due_date\": null,\n  \"currency\": \"USD\",\n  \"subtotal\": null,\n  \"tax\": null,\n  \"total\": null,\n  \"field_confidence\": {\n    \"vendor_name\": 1,\n    \"vendor_tax_id\": 0,\n    \"po_number\": 0,\n    \"invoice_date\": 0,\n    \"due_date\": 0,\n    \"currency\": 1\n  },\n  \"line_items\": [\n    {\n      \"description\": \"Hand truck, folding\",\n      \"quantity\": \"os36\",\n      \"unit_price\": \"os7.36\",\n      \"amount\": \"os264.96\"\n    },\n    {\n      \"description\": \"Pallet wrap film, 500 m\",\n      \"quantity\": \"os37\",\n      \"unit_price\": \"os70.10\",\n      \"amount\": \"os2593.70\"\n    },\n    {\n      \"description\": \"Laser printer toner, black\",\n      \"quantity\": \"os38\",\n      \"unit_price\": \"os54.00\",\n      \"amount\": \"os2052.00\"\n    }\n  ]\n}"
+ }
+}

@@ -1,0 +1,16 @@
+{
+ "model": "qwen2.5:7b-instruct",
+ "created_at": "2026-11-01T02:43:14.782282Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 10294397375,
+ "load_duration": 609708,
+ "prompt_eval_count": 448,
+ "prompt_eval_duration": 695682000,
+ "eval_count": 242,
+ "eval_duration": 9590776000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"Alpenblick Logistik AG\",\n  \"vendor_tax_id\": null,\n  \"invoice_number\": \"AB-2026-1406\",\n  \"po_number\": null,\n  \"invoice_date\": null,\n  \"due_date\": null,\n  \"currency\": \"EUR\",\n  \"subtotal\": null,\n  \"tax\": null,\n  \"total\": null,\n  \"field_confidence\": {\n    \"vendor_name\": 1,\n    \"vendor_tax_id\": 0,\n    \"invoice_number\": 1,\n    \"po_number\": 0,\n    \"invoice_date\": 0,\n    \"due_date\": 0,\n    \"currency\": 1\n  },\n  \"line_items\": [\n    {\n      \"description\": \"Server rack screws, M6\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"amount\": null\n    },\n    {\n      \"description\": \"Pallet wrap film, 500 m\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"amount\": null\n    }\n  ]\n}"
+ }
+}

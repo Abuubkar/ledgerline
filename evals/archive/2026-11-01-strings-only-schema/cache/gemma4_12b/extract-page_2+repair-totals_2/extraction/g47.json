@@ -1,0 +1,73 @@
+{
+ "status": "extracted",
+ "repair_attempted": false,
+ "prompt_version": "extract-page/2",
+ "header": {
+  "vendor_name": "Pacific Rim Packaging Inc.",
+  "vendor_tax_id": "912846573",
+  "invoice_number": "PR-2026-1329",
+  "po_number": "4500100047",
+  "invoice_date": "2026-09-28",
+  "due_date": "2026-10-28",
+  "currency": "USD",
+  "subtotal_minor": 107024,
+  "tax_minor": 8561,
+  "total_minor": 115585
+ },
+ "confidence": {
+  "vendor_name": 1.0,
+  "vendor_tax_id": 1.0,
+  "invoice_number": 1.0,
+  "po_number": 1.0,
+  "invoice_date": 1.0,
+  "due_date": 1.0,
+  "currency": 1.0,
+  "subtotal": 1.0,
+  "tax": 1.0,
+  "total": 1.0
+ },
+ "invalid_fields": {},
+ "lines": [
+  {
+   "description": "A4 copy paper, 5 reams",
+   "quantity": null,
+   "unit_price": "20",
+   "amount_minor": 103600
+  },
+  {
+   "description": "Laser printer toner, black",
+   "quantity": "16",
+   "unit_price": "2.14",
+   "amount_minor": 3424
+  }
+ ],
+ "pages": [
+  {
+   "page_no": 1,
+   "status": "extracted",
+   "source": "text",
+   "error_code": null
+  },
+  {
+   "page_no": 2,
+   "status": "extracted",
+   "source": "text",
+   "error_code": null
+  }
+ ],
+ "calls": [
+  {
+   "ms": 28869.088583,
+   "prompt_tokens": 509,
+   "output_tokens": 340,
+   "output_ms": 23607.518
+  },
+  {
+   "ms": 23579.997125,
+   "prompt_tokens": 452,
+   "output_tokens": 248,
+   "output_ms": 17209.117
+  }
+ ],
+ "wall_s": 0.02
+}

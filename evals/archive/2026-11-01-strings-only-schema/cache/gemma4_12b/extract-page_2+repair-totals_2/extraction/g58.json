@@ -1,0 +1,92 @@
+{
+ "status": "extracted",
+ "repair_attempted": false,
+ "prompt_version": "extract-page/2",
+ "header": {
+  "vendor_name": null,
+  "vendor_tax_id": "CHE123456789",
+  "invoice_number": "AB-2026-1406",
+  "po_number": "4500100058",
+  "invoice_date": "2026-08-06",
+  "due_date": "2026-09-06",
+  "currency": "EUR",
+  "subtotal_minor": 319934,
+  "tax_minor": 25594,
+  "total_minor": 345528
+ },
+ "confidence": {
+  "vendor_tax_id": 1.0,
+  "invoice_number": 1.0,
+  "po_number": 1.0,
+  "invoice_date": 1.0,
+  "due_date": 1.0,
+  "currency": 1.0,
+  "subtotal": 1.0,
+  "tax": 1.0,
+  "total": 1.0
+ },
+ "invalid_fields": {
+  "vendor_name": "pages disagree: page 1 says Alpenblick Logistik_AG; page 2 says Alpenblick Logistik AG"
+ },
+ "lines": [
+  {
+   "description": "Server rack screws, M6",
+   "quantity": "12",
+   "unit_price": "47.00",
+   "amount_minor": 56400
+  },
+  {
+   "description": "Pallet wrap film, 500 m",
+   "quantity": "40",
+   "unit_price": "3.77",
+   "amount_minor": 15080
+  },
+  {
+   "description": "Cable ties, pack of 1000",
+   "quantity": "21",
+   "unit_price": "4.38",
+   "amount_minor": 9198
+  },
+  {
+   "description": "Server rack screws, M6",
+   "quantity": "8",
+   "unit_price": "7.47",
+   "amount_minor": 5976
+  },
+  {
+   "description": "Pallet wrap film, 500 m",
+   "quantity": "32",
+   "unit_price": "72.90",
+   "amount_minor": 233280
+  }
+ ],
+ "pages": [
+  {
+   "page_no": 1,
+   "status": "extracted",
+   "source": "text",
+   "error_code": null
+  },
+  {
+   "page_no": 2,
+   "status": "extracted",
+   "source": "text",
+   "error_code": null
+  }
+ ],
+ "calls": [
+  {
+   "ms": 39506.225834,
+   "prompt_tokens": 561,
+   "output_tokens": 460,
+   "output_ms": 31950.768
+  },
+  {
+   "ms": 32654.831292,
+   "prompt_tokens": 485,
+   "output_tokens": 379,
+   "output_ms": 26133.672
+  }
+ ],
+ "wall_s": 0.02
+}

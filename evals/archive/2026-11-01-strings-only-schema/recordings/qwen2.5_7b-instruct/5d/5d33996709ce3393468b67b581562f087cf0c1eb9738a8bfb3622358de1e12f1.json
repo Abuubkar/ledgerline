@@ -1,0 +1,16 @@
+{
+ "model": "qwen2.5:7b-instruct",
+ "created_at": "2026-11-01T01:58:52.004579Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 17093666875,
+ "load_duration": 730500,
+ "prompt_eval_count": 566,
+ "prompt_eval_duration": 1336167000,
+ "eval_count": 336,
+ "eval_duration": 15710480000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"Kawasemi Electronics K.K.\",\n  \"vendor_tax_id\": \"T9876543210987\",\n  \"invoice_number\": \"SK-2026-1063\",\n  \"po_number\": \"4500100009\",\n  \"invoice_date\": \"2026-05-05\",\n  \"due_date\": \"2026-06-05\",\n  \"currency\": \"JPY\",\n  \"subtotal\": null,\n  \"tax\": null,\n  \"total\": null,\n  \"field_confidence\": {\n    \"vendor_name\": 1,\n    \"vendor_tax_id\": 1,\n    \"invoice_number\": 1,\n    \"po_number\": 1,\n    \"invoice_date\": 1,\n    \"due_date\": 1,\n    \"currency\": 1\n  },\n  \"line_items\": [\n    {\n      \"description\": \"Hand truck, folding\",\n      \"quantity\": \"use quantity\",\n      \"unit_price\": \"use unit_price\",\n      \"amount\": \"use amount\"\n    },\n    {\n      \"description\": \"Thermal labels 100x150\",\n      \"quantity\": \"use quantity\",\n      \"unit_price\": \"use unit_price\",\n      \"amount\": \"use amount\"\n    },\n    {\n      \"description\": \"Safety goggles, anti-fog\",\n      \"quantity\": \"use quantity\",\n      \"unit_price\": \"use unit_price\",\n      \"amount\": \"use amount\"\n    }\n  ]\n}"
+ }
+}

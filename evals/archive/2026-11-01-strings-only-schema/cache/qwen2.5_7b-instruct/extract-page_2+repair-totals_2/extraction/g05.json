@@ -1,0 +1,60 @@
+{
+ "status": "exception",
+ "repair_attempted": true,
+ "prompt_version": "extract-page/2+repair-totals/2",
+ "header": {
+  "vendor_name": "Pacific Rim Packaging Inc.",
+  "vendor_tax_id": "912846573",
+  "invoice_number": "PR-2026-1035",
+  "po_number": "4500100005",
+  "invoice_date": "2026-02-25",
+  "due_date": "2026-03-25",
+  "currency": "USD",
+  "subtotal_minor": null,
+  "tax_minor": null,
+  "total_minor": null
+ },
+ "confidence": {
+  "vendor_name": 1.0,
+  "vendor_tax_id": 1.0,
+  "invoice_number": 1.0,
+  "po_number": 1.0,
+  "invoice_date": 1.0,
+  "due_date": 1.0,
+  "currency": 1.0
+ },
+ "invalid_fields": {
+  "total": "no total extracted"
+ },
+ "lines": [
+  {
+   "description": "LED panel light 60x60",
+   "quantity": null,
+   "unit_price": null,
+   "amount_minor": null
+  }
+ ],
+ "pages": [
+  {
+   "page_no": 1,
+   "status": "extracted",
+   "source": "text",
+   "error_code": null
+  }
+ ],
+ "calls": [
+  {
+   "ms": 13399.212458,
+   "prompt_tokens": 510,
+   "output_tokens": 263,
+   "output_ms": 12361.828
+  },
+  {
+   "ms": 16204.59475,
+   "prompt_tokens": 788,
+   "output_tokens": 288,
+   "output_ms": 13883.305
+  }
+ ],
+ "wall_s": 29.65
+}
