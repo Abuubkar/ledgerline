@@ -11,7 +11,9 @@ from dataclasses import dataclass, field
 from datetime import date
 from decimal import Decimal, InvalidOperation
 
-from pydantic import BaseModel
+from typing import Annotated
+
+from pydantic import BaseModel, ConfigDict, WithJsonSchema
 
 from ledgerline_api.money import CURRENCY_EXPONENTS, MoneyError, format_minor, to_minor
 
@@ -23,7 +25,15 @@ HEADER_FIELDS = (
 TOLERANCE_MINOR = 1
 
 
+# A number the model may write as text ("1234.50") or as a bare JSON number (1234.50). Some models (Qwen) only write
+# bare numbers, and a strings-only schema left them answering null (ADR 0016). Either way the code gets the exact
+# digits written: bare numbers are parsed as Decimal, never float (extraction.parse_answer), then kept as text.
+Amount = Annotated[str | None, WithJsonSchema({"anyOf": [{"type": "string"}, {"type": "number"}, {"type": "null"}]})]
+
+
 class ExtractedHeader(BaseModel):
+    model_config = ConfigDict(coerce_numbers_to_str=True)
+
     vendor_name: str | None
     vendor_tax_id: str | None
     invoice_number: str | None
@@ -31,17 +41,19 @@ class ExtractedHeader(BaseModel):
     invoice_date: str | None
     due_date: str | None
     currency: str | None
-    subtotal: str | None
-    tax: str | None
-    total: str | None
+    subtotal: Amount
+    tax: Amount
+    total: Amount
     field_confidence: dict[str, float]
 
 
 class ExtractedLine(BaseModel):
+    model_config = ConfigDict(coerce_numbers_to_str=True)
+
     description: str | None
-    quantity: str | None
-    unit_price: str | None
-    amount: str | None
+    quantity: Amount
+    unit_price: Amount
+    amount: Amount
 
 
 class ExtractedPage(ExtractedHeader):

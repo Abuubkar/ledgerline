@@ -189,3 +189,25 @@ def test_vendor_name_key_ignores_case_and_punctuation():
     assert vendor_name_key("株式会社サクラ") == "株式会社サクラ"  # not every name is Latin
     assert vendor_name_key("Café Lumière") == vendor_name_key("CAFE LUMIERE")
     assert vendor_name_key("ザクラ") != vendor_name_key("サクラ")
+
+
+# --- reading the model's JSON -------------------------------------------------------------------------
+
+
+def test_bare_numbers_and_quoted_numbers_both_arrive_as_exact_text():
+    from ledgerline_api.extraction import parse_answer
+
+    answer = ('{"vendor_name": "ACME", "vendor_tax_id": null, "invoice_number": "1", "po_number": null, "invoice_date": null,'
+              ' "due_date": null, "currency": "EUR", "subtotal": 3572.00, "tax": "678.68", "total": 12345678901234.56,'
+              ' "field_confidence": {"total": 0.9}, "line_items": [{"description": "Bracket", "quantity": 16,'
+              ' "unit_price": 0.125, "amount": "2.00"}]}')
+    page = parse_answer(answer, ExtractedPage)
+    assert (page.subtotal, page.tax, page.total) == ("3572.00", "678.68", "12345678901234.56")  # trailing zeros kept, nothing rounded
+    line = page.line_items[0]
+    assert (line.quantity, line.unit_price, line.amount) == ("16", "0.125", "2.00")
+    assert page.field_confidence == {"total": 0.9}
+
+
+def test_the_schema_sent_to_the_model_allows_both_forms():
+    amount = ExtractedPage.model_json_schema()["properties"]["total"]
+    assert {"type": "number"} in amount["anyOf"] and {"type": "string"} in amount["anyOf"]
