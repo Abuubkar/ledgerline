@@ -1,0 +1,11 @@
+# Squawk lints the SQL of new migrations in CI (scripts/migration_sql.py | squawk). Every other rule stays on, so a
+# non-concurrent index, a table rewrite, a NOT NULL without a default or a missing lock_timeout fails the PR.
+pg_version = "18.0"
+excluded_rules = [
+    # Small counts (page_count, attempts, line_no) are int on purpose; ids are UUIDs, not serials.
+    "prefer-bigint-over-int",
+    # Bounded codes (currency, status) use varchar(n) on purpose; we never widen them in place.
+    "prefer-text-field",
+    # Index builds run CONCURRENTLY and may legitimately take long; lock_timeout is our guard (docs/migrations.md).
+    "require-statement-timeout",
+]
