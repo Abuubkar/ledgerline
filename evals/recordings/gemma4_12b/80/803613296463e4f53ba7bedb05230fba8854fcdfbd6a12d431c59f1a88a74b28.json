@@ -1,0 +1,16 @@
+{
+ "model": "gemma4:12b",
+ "created_at": "2026-11-01T16:01:31.861771Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 34909981375,
+ "load_duration": 5703750,
+ "prompt_eval_count": 939,
+ "prompt_eval_duration": 8348106000,
+ "eval_count": 355,
+ "eval_duration": 24878013000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"Harbourside Catering Ltd\",\n  \"vendor_tax_id\": \"GB 492 1937 59\",\n  \"invoice_number\": \"NW-2026-1056\",\n  \"po_number\": \"4500100008\",\n  \"invoice_date\": \"2026-02-04\",\n  \"due_date\": \"2026-03-04\",\n  \"currency\": \"GBP\",\n  \"subtotal\": 162.00,\n  \"tax\": 32.40,\n  \"total\": 194.40,\n  \"field_confidence\": {\n    \"vendor_name\": 1.0,\n    \"vendor_tax_id\": 1.0,\n    \"invoice_number\": 1.0,\n    \"po_number\": 1.0,\n    \"invoice_date\": 1.0,\n    \"due_date\": 1.0,\n    \"currency\": 1.0,\n    \"subtotal\": 1.0,\n    \"tax\": 1.0,\n    \"total\": 1.0\n  },\n  \"line_items\": [\n    {\n      \"description\": \"Server rack screws, M6\",\n      \"quantity\": 5,\n      \"unit_price\": 32.40,\n      \"amount\": 162.00\n    }\n  ]\n}"
+ }
+}

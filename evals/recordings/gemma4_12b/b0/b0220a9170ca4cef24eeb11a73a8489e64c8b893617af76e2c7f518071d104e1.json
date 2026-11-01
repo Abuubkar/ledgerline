@@ -1,0 +1,16 @@
+{
+ "model": "gemma4:12b",
+ "created_at": "2026-11-01T17:03:49.043387Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 115459075292,
+ "load_duration": 13623750,
+ "prompt_eval_count": 5004,
+ "prompt_eval_duration": 43840601000,
+ "eval_count": 928,
+ "eval_duration": 66946782999,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"MEDIA EXCELLENCE\",\n  \"vendor_tax_id\": null,\n  \"invoice_number\": \"6282550\",\n  \"po_number\": null,\n  \"invoice_date\": \"2012-08-12\",\n  \"due_date\": null,\n  \"currency\": null,\n  \"subtotal\": null,\n  \"tax\": null,\n  \"total\": 17.42,\n  \"field_confidence\": {\n    \"vendor_name\": 0.9,\n    \"vendor_tax_id\": 0.0,\n    \"invoice_number\": 0.9,\n    \"po_number\": 0.0,\n    \"invoice_date\": 0.9,\n    \"due_date\": 0.0,\n    \"currency\": 0.0,\n    \"subtotal\": 0.0,\n    \"tax\": 0.0,\n    \"total\": 0.9\n  },\n  \"line_items\": [\n    {\n      \"description\": \"PROGRAM: J KEMMEL-ABC>\\nCON COM: J KEMMEL-ABC\\nRATE: $425.00\",\n      \"quantity\": 30,\n      \"unit_price\": 14.17,\n      \"amount\": 425.00,\n      \"page\": 1\n    },\n    {\n      \"description\": \"PROGRAM: 900A-1000A\\nCOM_ID: DOCTORS\\nORD_COM1: A\\nRATE: $600.00\",\n      \"quantity\": 30,\n      \"unit_price\": 20.0,\n      \"amount\": 600.0,\n      \"page\": 2\n    },\n    {\n      \"description\": \"PROGRAM: 120A-105A\\nCOM_ID: ME_TIM_ABC\\nORD_COM1: F\\nRATE: $425.00\",\n      \"quantity\": 30,\n      \"unit_price\": 14.17,\n      \"amount\": 425.0,\n      \"page\": 2\n    },\n    {\n      \"description\": \"PROGRAM: 120A-105A\\nCOM_ID: EL_TIMEL\\nORD_COM1: F\\nRATE: $600.00\",\n      \"quantity\": 30,\n      \"unit_price\": 20.0,\n      \"amount\": 600.0,\n      \"page\": 2\n    },\n    {\n      \"description\": \"PROGRAM: 900A-1000A\\nCOM_ID: DOCTORS\\nORD_COM1: A\\nRATE: $600.00\",\n      \"quantity\": 30,\n      \"unit_price\": 20.0,\n      \"amount\": 600.0,\n      \"page\": 2\n    },\n    {\n      \"description\": \"PROGRAM: 900A-1000A\\nCOM_ID: DOCTORS\\nORD_COM1: A\\nRATE: $600.00\",\n      \"quantity\": 30,\n      \"unit_price\": 20.0,\n      \"amount\": 600.0,\n      \"page\": 2\n    },\n    {\n      \"description\": \"30S\",\n      \"quantity\": 30,\n      \"unit_price\": 20.0,\n      \"amount\": 600.0,\n      \"page\": 3\n    },\n    {\n      \"description\": \"30S\",\n      \"quantity\": 30,\n      \"unit_price\": 20.0,\n      \"amount\": 600.0,\n      \"page\": 3\n    }\n  ]\n}"
+ }
+}

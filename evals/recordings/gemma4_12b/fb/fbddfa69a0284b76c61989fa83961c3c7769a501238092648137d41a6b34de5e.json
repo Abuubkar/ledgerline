@@ -1,0 +1,16 @@
+{
+ "model": "gemma4:12b",
+ "created_at": "2026-11-01T16:08:31.440852Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 46823904292,
+ "load_duration": 21288959,
+ "prompt_eval_count": 939,
+ "prompt_eval_duration": 9821722000,
+ "eval_count": 460,
+ "eval_duration": 34098032000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"Brightline Office Supply LLC\",\n  \"vendor_tax_id\": \"84-1937465\",\n  \"invoice_number\": \"INV-2026-1042\",\n  \"po_number\": \"4500100006\",\n  \"invoice_date\": \"2026-07-25\",\n  \"due_date\": \"2026-08-25\",\n  \"currency\": \"USD\",\n  \"subtotal\": 2305.06,\n  \"tax\": 184.40,\n  \"total\": 2489.46,\n  \"field_confidence\": {\n    \"vendor_name\": 1.0,\n    \"vendor_tax_id\": 1.0,\n    \"invoice_number\": 1.0,\n    \"po_number\": 1.0,\n    \"invoice_date\": 1.0,\n    \"due_date\": 1.0,\n    \"currency\": 1.0,\n    \"subtotal\": 1.0,\n    \"tax\": 1.0,\n    \"total\": 1.0\n  },\n  \"line_items\": [\n    {\n      \"description\": \"Laser printer toner, black\",\n      \"quantity\": 11,\n      \"unit_price\": 6.24,\n      \"amount\": 68.64\n    },\n    {\n      \"description\": \"USB-C docking station\",\n      \"quantity\": 28,\n      \"unit_price\": 79.75,\n      \"amount\": 2233.00\n    },\n    {\n      \"description\": \"A4 copy paper, 5 reams\",\n      \"quantity\": 9,\n      \"unit_price\": 0.38,\n      \"amount\": 3.42\n    }\n  ]\n}"
+ }
+}

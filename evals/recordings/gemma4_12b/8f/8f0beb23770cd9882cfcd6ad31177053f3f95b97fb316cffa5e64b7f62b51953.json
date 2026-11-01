@@ -1,0 +1,16 @@
+{
+ "model": "gemma4:12b",
+ "created_at": "2026-11-01T16:39:18.570302Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 49678276625,
+ "load_duration": 5014292,
+ "prompt_eval_count": 1073,
+ "prompt_eval_duration": 8909030000,
+ "eval_count": 554,
+ "eval_duration": 38703036000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"WYOU\",\n  \"vendor_tax_id\": null,\n  \"invoice_number\": \"2485647-1\",\n  \"po_number\": null,\n  \"invoice_date\": \"2020-04-26\",\n  \"due_date\": null,\n  \"currency\": \"USD\",\n  \"subtotal\": null,\n  \"tax\": null,\n  \"total\": 2851.75,\n  \"field_confidence\": {\n    \"vendor_name\": 0.9,\n    \"vendor_tax_id\": 0.0,\n    \"invoice_number\": 0.9,\n    \"po_number\": 0.0,\n    \"invoice_date\": 0.9,\n    \"due_date\": 0.0,\n    \"currency\": 0.8,\n    \"subtotal\": 0.0,\n    \"tax\": 0.0,\n    \"total\": 0.9\n  },\n  \"line_items\": [\n    {\n      \"description\": \"WYOU Th 04/23/20 :30 11:10 PM ABPT2001H\",\n      \"quantity\": 2,\n      \"unit_price\": 125.0,\n      \"amount\": 250.0\n    },\n    {\n      \"description\": \"WYOU F 04/24/20 :30 11:23 PM ABPT2001H\",\n      \"quantity\": 3,\n      \"unit_price\": 125.0,\n      \"amount\": 375.0\n    },\n    {\n      \"description\": \"WYOU Sa 04/25/20 :30 11:24 PM ABPT2001H\",\n      \"quantity\": 1,\n      \"unit_price\": 125.0,\n      \"amount\": 125.0\n    },\n    {\n      \"description\": \"WYOU Su 04/26/20 :30 11:20 PM ABPT2001H\",\n      \"quantity\": 1,\n      \"unit_price\": 125.0,\n      \"amount\": 125.0\n    }\n  ]\n}"
+ }
+}

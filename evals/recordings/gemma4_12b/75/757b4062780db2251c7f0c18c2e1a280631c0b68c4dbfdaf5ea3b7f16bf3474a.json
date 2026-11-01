@@ -1,0 +1,16 @@
+{
+ "model": "gemma4:12b",
+ "created_at": "2026-11-01T16:22:20.834483Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 42768203250,
+ "load_duration": 4041583,
+ "prompt_eval_count": 1471,
+ "prompt_eval_duration": 11722224000,
+ "eval_count": 438,
+ "eval_duration": 30652318000,
+ "message": {
+  "role": "assistant",
+  "content": "{\"vendor_name\": \"WXXA\", \"vendor_tax_id\": null, \"invoice_number\": \"2436316-1\", \"po_number\": \"2436316\", \"invoice_date\": \"2020-03-29\", \"due_date\": null, \"currency\": \"USD\", \"subtotal\": 290.00, \"tax\": null, \"total\": 246.50, \"field_confidence\": {\"vendor_name\": 0.9, \"vendor_tax_id\": 0.0, \"invoice_number\": 0.9, \"po_number\": 0.9, \"invoice_date\": 0.9, \"due_date\": 0.0, \"currency\": 0.8, \"subtotal\": 0.9, \"tax\": 0.0, \"total\": 0.9}, \"line_items\": [{\"description\": \"WXXA EM (M-F) 4-9a\\n03/23/20to03/29/20 1x ----F--\\nWXXA F 03/27/20 1:00 6:17 AM FWD0120H\", \"quantity\": 1, \"unit_price\": 90.00, \"amount\": 90.00, \"page\": 1}, {\"description\": \"WXXA News10 at 6a News10 at 6a\\n03/23/20to03/29/20 1x ----F--\\nWXXA F 03/27/20 1:00 6:54 AM FWD0120H\", \"quantity\": 1, \"unit_price\": 200.00, \"amount\": 200.00, \"page\": 1}]}"
+ }
+}

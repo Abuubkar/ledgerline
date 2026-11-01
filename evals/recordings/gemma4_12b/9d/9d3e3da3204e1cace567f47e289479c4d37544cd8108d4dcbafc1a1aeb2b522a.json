@@ -1,0 +1,16 @@
+{
+ "model": "gemma4:12b",
+ "created_at": "2026-11-01T17:09:29.184893Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 76761171792,
+ "load_duration": 22976167,
+ "prompt_eval_count": 1363,
+ "prompt_eval_duration": 2600310000,
+ "eval_count": 1004,
+ "eval_duration": 70531676000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"Fox Television Stations, Inc.\",\n  \"vendor_tax_id\": null,\n  \"invoice_number\": \"4055032-1\",\n  \"po_number\": null,\n  \"invoice_date\": \"2012-08-01\",\n  \"due_date\": null,\n  \"currency\": null,\n  \"subtotal\": null,\n  \"tax\": null,\n  \"total\": null,\n  \"field_confidence\": {\n    \"vendor_name\": 0.95,\n    \"vendor_tax_id\": 0.0,\n    \"invoice_number\": 0.95,\n    \"po_number\": 0.0,\n    \"invoice_date\": 0.9,\n    \"due_date\": 0.0,\n    \"currency\": 0.0,\n    \"subtotal\": 0.0,\n    \"tax\": 0.0,\n    \"total\": 0.0\n  },\n  \"line_items\": [\n    {\n      \"description\": \"Good Day 6a\",\n      \"quantity\": 2,\n      \"unit_price\": 375.0,\n      \"amount\": 750.0\n    },\n    {\n      \"description\": \"Good Day 7a\",\n      \"quantity\": 2,\n      \"unit_price\": 100.0,\n      \"amount\": 200.0\n    },\n    {\n      \"description\": \"Good Day 7a\",\n      \"quantity\": 1,\n      \"unit_price\": 100.0,\n      \"amount\": 100.0\n    },\n    {\n      \"description\": \"Good Day 7a\",\n      \"quantity\": 1,\n      \"unit_price\": 100.0,\n      \"amount\": 100.0\n    },\n    {\n      \"description\": \"Fox 29 News at 5p\",\n      \"quantity\": 3,\n      \"unit_price\": 166.67,\n      \"amount\": 500.00\n    },\n    {\n      \"description\": \"Fox 29 News at 5p\",\n      \"quantity\": 4,\n      \"unit_price\": 125.0,\n      \"amount\": 500.00\n    },\n    {\n      \"description\": \"Fox 29 News at 5p\",\n      \"quantity\": 2,\n      \"unit_price\": 250.0,\n      \"amount\": 500.00\n    },\n    {\n      \"description\": \"Fox 29 Late News Rotator\",\n      \"quantity\": 3,\n      \"unit_price\": 166.67,\n      \"amount\": 500.00\n    },\n    {\n      \"description\": \"Fox 29 Late News Rotator\",\n      \"quantity\": 4,\n      \"unit_price\": 125.0,\n      \"amount\": 500.00\n    },\n    {\n      \"description\": \"Fox 29 Late News Rotator\",\n      \"quantity\": 6,\n      \"unit_price\": 83.33,\n      \"amount\": 500.00\n    },\n    {\n      \"description\": \"Fox 29 Late News Rotator\",\n      \"quantity\": 5,\n      \"unit_price\": 100.0,\n      \"amount\": 500.00\n    },\n    {\n      \"description\": \"Fox 29 Late News Rotator\",\n      \"quantity\": 2,\n      \"unit_price\": 250.0,\n      \"amount\": 500.00\n    },\n    {\n      \"description\": \"Good Day 9a\",\n      \"quantity\": 2,\n      \"unit_price\": 375.0,\n      \"amount\": 750.00\n    },\n    {\n      \"description\": \"Good Day 9a\",\n      \"quantity\": 1,\n      \"unit_price\": 750.0,\n      \"amount\": 750.00\n    }\n  ]\n}"
+ }
+}

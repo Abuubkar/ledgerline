@@ -1,0 +1,16 @@
+{
+ "model": "gemma4:12b",
+ "created_at": "2026-11-01T17:16:38.462345Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 30915781042,
+ "load_duration": 19437375,
+ "prompt_eval_count": 906,
+ "prompt_eval_duration": 4716986000,
+ "eval_count": 307,
+ "eval_duration": 21365529000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"WRAZ\",\n  \"vendor_tax_id\": null,\n  \"invoice_number\": \"117698-1\",\n  \"po_number\": null,\n  \"invoice_date\": \"2012-09-30\",\n  \"due_date\": null,\n  \"currency\": null,\n  \"subtotal\": null,\n  \"tax\": null,\n  \"total\": 9400.00,\n  \"field_confidence\": {\n    \"vendor_name\": 0.9,\n    \"vendor_tax_id\": 0.0,\n    \"invoice_number\": 0.9,\n    \"po_number\": 0.0,\n    \"invoice_date\": 1.0,\n    \"due_date\": 0.0,\n    \"currency\": 0.0,\n    \"subtotal\": 0.0,\n    \"tax\": 0.0,\n    \"total\": 0.9\n  },\n  \"line_items\": [\n    {\n      \"description\": \"Aired Spots 27\",\n      \"quantity\": 1,\n      \"unit_price\": 150.00,\n      \"amount\": 150.00\n    }\n  ]\n}"
+ }
+}

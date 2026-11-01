@@ -1,0 +1,16 @@
+{
+ "model": "gemma4:12b",
+ "created_at": "2026-11-01T16:02:11.251027Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 39328198125,
+ "load_duration": 4502833,
+ "prompt_eval_count": 939,
+ "prompt_eval_duration": 7546650000,
+ "eval_count": 408,
+ "eval_duration": 31390232000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"Kawasemi Electronics K.K.\",\n  \"vendor_tax_id\": \"T9876543210987\",\n  \"invoice_number\": \"SK-2026-1063\",\n  \"po_number\": \"4500100009\",\n  \"invoice_date\": \"2026-06-11\",\n  \"due_date\": \"2026-07-11\",\n  \"currency\": \"JPY\",\n  \"subtotal\": null,\n  \"tax\": null,\n  \"total\": null,\n  \"field_confidence\": {\n    \"vendor_name\": 1.0,\n    \"vendor_tax_id\": 1.0,\n    \"invoice_number\": 1.0,\n    \"po_number\": 1.0,\n    \"invoice_date\": 1.0,\n    \"due_date\": 1.0,\n    \"currency\": 1.0,\n    \"subtotal\": 0.0,\n    \"tax\": 0.0,\n    \"total\": 0.0\n  },\n  \"line_items\": [\n    {\n      \"description\": \"A4 copy paper, 5 reams\",\n      \"quantity\": 7,\n      \"unit_price\": 7000.0,\n      \"amount\": 49994.0\n    },\n    {\n      \"description\": \"Pallet wrap film, 500 m\",\n      \"quantity\": 27,\n      \"unit_price\": 4633.33,\n      \"amount\": 125037.0\n    }\n  ]\n}"
+ }
+}

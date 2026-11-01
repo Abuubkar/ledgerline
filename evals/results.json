@@ -1,5 +1,6 @@
 {
   "run": {
+    "set": "golden",
     "model": "gemma4:12b",
     "extraction_prompt": "extract-page/4+repair-totals/4",
     "agent_prompt": "agent/1",
@@ -39,6 +40,11 @@
     "calibration_error": 0.0,
     "calibration_n": 389,
     "status_accuracy": 0.975,
+    "statuses": {
+      "exception": 2,
+      "extracted": 38
+    },
+    "non_invoices": [],
     "extraction_p50_s": 38.6727815,
     "extraction_p95_s": 97.73809291600001,
     "page_p50_s": 34.485731832999996,

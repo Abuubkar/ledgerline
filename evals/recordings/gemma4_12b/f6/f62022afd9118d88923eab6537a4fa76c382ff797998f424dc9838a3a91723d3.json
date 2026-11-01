@@ -1,0 +1,16 @@
+{
+ "model": "gemma4:12b",
+ "created_at": "2026-11-01T17:23:34.113327Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 82084163083,
+ "load_duration": 8799625,
+ "prompt_eval_count": 2560,
+ "prompt_eval_duration": 18526034000,
+ "eval_count": 833,
+ "eval_duration": 58936284000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"KCRA\",\n  \"vendor_tax_id\": null,\n  \"invoice_number\": \"963706-1\",\n  \"po_number\": null,\n  \"invoice_date\": \"2012-10-21\",\n  \"due_date\": null,\n  \"currency\": null,\n  \"subtotal\": null,\n  \"tax\": null,\n  \"total\": null,\n  \"field_confidence\": {\n    \"vendor_name\": 0.9,\n    \"vendor_tax_id\": 0.0,\n    \"invoice_number\": 0.9,\n    \"po_number\": 0.0,\n    \"invoice_date\": 0.9,\n    \"due_date\": 0.0,\n    \"currency\": 0.0,\n    \"subtotal\": 0.0,\n    \"tax\": 0.0,\n    \"total\": 0.0\n  },\n  \"line_items\": [\n    {\n      \"description\": \"M-F 4-5p 4-5p -TWTF-- :30\",\n      \"quantity\": 3,\n      \"unit_price\": 900.0,\n      \"amount\": 900.0\n    },\n    {\n      \"description\": \"KCRA-TV News at 5pm 4:58pm-5:30pm -TWTF-- :30\",\n      \"quantity\": 1,\n      \"unit_price\": 3000.0,\n      \"amount\": 3000.0\n    },\n    {\n      \"description\": \"KCRA 3 OTO Newscast 530P-6P -----S- :30\",\n      \"quantity\": 1,\n      \"unit_price\": 1800.0,\n      \"amount\": 1800.0\n    },\n    {\n      \"description\": \"ACESS HOLLYWOOD AC7:01pm-7:30pm/7:30p-m-WTF-- :30\",\n      \"quantity\": 1,\n      \"unit_price\": 1500.0,\n      \"amount\": 1500.0\n    },\n    {\n      \"description\": \"M-F 730pm-8pm 7:31pm-7:57pm --WTF-- :30\",\n      \"quantity\": 3,\n      \"unit_price\": 1500.0,\n      \"amount\": 1500.0\n    },\n    {\n      \"description\": \"LAW & ORDER SVU 9:01pm-10pm --W---- :30\",\n      \"quantity\": 1,\n      \"unit_price\": 4000.0,\n      \"amount\": 4000.0\n    },\n    {\n      \"description\": \"NBC Tonight Show 11:36pm-12:35am -TWTF-- :30\",\n      \"quantity\": 3,\n      \"unit_price\": 1000.0,\n      \"amount\": 1000.0\n    },\n    {\n      \"description\": \"Late Night w/Jimmy F 12:36am-1:36am -TWTF-- :30\",\n      \"quantity\": 4,\n      \"unit_price\": 600.0,\n      \"amount\": 600.0\n    }\n  ]\n}"
+ }
+}

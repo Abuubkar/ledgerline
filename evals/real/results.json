@@ -1,0 +1,2941 @@
+{
+  "run": {
+    "set": "real",
+    "model": "gemma4:12b",
+    "extraction_prompt": "extract-page/4+repair-totals/4",
+    "agent_prompt": "agent/1",
+    "split": "dev",
+    "mode": "replayed",
+    "date": "2026-11-01",
+    "extraction_cases": 25,
+    "agent_cases": 0,
+    "concurrency": 1,
+    "recorded": 0,
+    "replayed": 0
+  },
+  "metrics": {
+    "header_macro_accuracy": 0.7246376811594203,
+    "header_min_field_accuracy": 0.34782608695652173,
+    "field_accuracy": {
+      "invoice_number": 0.9130434782608695,
+      "invoice_date": 0.9130434782608695,
+      "total_minor": 0.34782608695652173
+    },
+    "line_precision": 0.3525423728813559,
+    "line_recall": 0.3895131086142322,
+    "line_f1": 0.3701067615658362,
+    "line_counts": {
+      "correct": "104",
+      "predicted": 295,
+      "gold": 267
+    },
+    "schema_validity": 1.0,
+    "calibration_error": 0.02040816326530612,
+    "calibration_n": 49,
+    "status_accuracy": 0,
+    "statuses": {
+      "exception": 23,
+      "extracted": 1,
+      "failed": 1
+    },
+    "non_invoices": [
+      {
+        "case": "r10",
+        "type": "other",
+        "status": "extracted",
+        "invoice_number": null,
+        "total_minor": 110500,
+        "lines": 1,
+        "invented_invoice_number": false
+      },
+      {
+        "case": "r11",
+        "type": "order",
+        "status": "exception",
+        "invoice_number": "6282550",
+        "total_minor": null,
+        "lines": 9,
+        "invented_invoice_number": true
+      }
+    ],
+    "extraction_p50_s": 279.435625125,
+    "extraction_p95_s": 326.394829958,
+    "page_p50_s": 80.446932958,
+    "page_p95_s": 146.95110125,
+    "output_tokens_per_s": 13.76098063465726,
+    "invoices_per_hour": 14.939288588670493,
+    "agent_action_accuracy": 0,
+    "agent_hold_reason_accuracy": 0,
+    "agent_evidence_complete": 0,
+    "agent_guard_fires": 0,
+    "agent_p95_s": 0.0
+  },
+  "failures": [
+    {
+      "case": "r01",
+      "style": null,
+      "pages": null,
+      "status": "exception",
+      "expected_status": null,
+      "fields": {
+        "total_minor": {
+          "gold": [
+            478125,
+            562500
+          ],
+          "got": null
+        }
+      },
+      "lines": [
+        {
+          "gold": {
+            "page": 1,
+            "description": "Fox 9 AM News at 6am Political Candidate LUR Rate 6a-7a",
+            "quantity": "2",
+            "unit_price": "550.00",
+            "amount_minor": null
+          },
+          "got": {
+            "description": "9 W 02/19/20 :30 6:27 AM MRBPBA3037EH",
+            "quantity": "2",
+            "unit_price": "550.0",
+            "amount_minor": null
+          },
+          "similarity": 33
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "Fox 9 AM News at 6am Political Candidate LUR Rate 6a-7a",
+            "quantity": "3",
+            "unit_price": "575.00",
+            "amount_minor": null
+          },
+          "got": {
+            "description": "9 F 02/21/20 :30 6:57 AM MRBPBA3043EH",
+            "quantity": "3",
+            "unit_price": "575.0",
+            "amount_minor": null
+          },
+          "similarity": 35
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "Fox 9 AM News at 7am Political Candidate LUR Rate 7a-8a",
+            "quantity": "1",
+            "unit_price": "650.00",
+            "amount_minor": null
+          },
+          "got": {
+            "description": "9 W 02/19/20 :30 7:14 AM MRBPSS325EH",
+            "quantity": "1",
+            "unit_price": "650.0",
+            "amount_minor": null
+          },
+          "similarity": 31
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "M-F 12p-1p Political Candidate CDR Rate 12p-1p",
+            "quantity": "5",
+            "unit_price": "125.00",
+            "amount_minor": null
+          },
+          "got": {
+            "description": "9 F 02/21/20 :30 12:59 PM MRBPSS325EH",
+            "quantity": "5",
+            "unit_price": "125.0",
+            "amount_minor": null
+          },
+          "similarity": 32
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "M-F 1p-2p Political Candidate CDR Rate 1p-2p",
+            "quantity": "5",
+            "unit_price": "125.00",
+            "amount_minor": null
+          },
+          "got": {
+            "description": "Political Candidate CDR Rate 9 Th 02/20/20 :30 1:20 PM MRBPBA3043EH",
+            "quantity": "5",
+            "unit_price": "125.0",
+            "amount_minor": null
+          },
+          "similarity": 85
+        },
+        {
+          "gold": {
+            "page": 2,
+            "description": ".M-F 4p-430p EF 3 Political Candidate LUR Rate M-F 4p-430p",
+            "quantity": "1",
+            "unit_price": "450.00",
+            "amount_minor": null
+          },
+          "got": {
+            "description": "Political Candidate LUR Rate 02/17/20to02/23/20 1x ----F-- 9 F 02/21/20 :30 4:17 PM MRBPSS325EH",
+            "quantity": "1",
+            "unit_price": "450.0",
+            "amount_minor": null
+          },
+          "similarity": 80
+        },
+        {
+          "gold": {
+            "page": 2,
+            "description": ".M-F 4p-430p EF 3 Political Candidate LUR Rate M-F 4p-430p",
+            "quantity": "1",
+            "unit_price": "450.00",
+            "amount_minor": null
+          },
+          "got": {
+            "description": "Political Candidate LUR Rate 02/17/20to02/23/20 1x --WTF-- 9 Th 02/20/20 :30 4:28 PM MRBPBK3036EH",
+            "quantity": "1",
+            "unit_price": "450.0",
+            "amount_minor": null
+          },
+          "similarity": 77
+        }
+      ],
+      "line_counts": [
+        7,
+        18
+      ],
+      "error": null
+    },
+    {
+      "case": "r03",
+      "style": null,
+      "pages": null,
+      "status": "exception",
+      "expected_status": null,
+      "fields": {
+        "total_minor": {
+          "gold": [
+            3400,
+            4000
+          ],
+          "got": null
+        }
+      },
+      "lines": [],
+      "line_counts": [
+        1,
+        1
+      ],
+      "error": null
+    },
+    {
+      "case": "r05",
+      "style": null,
+      "pages": null,
+      "status": "exception",
+      "expected_status": null,
+      "fields": {},
+      "lines": [
+        {
+          "gold": {
+            "page": 2,
+            "description": "Late News M-F 11:00 PM-11:35 PM",
+            "quantity": "1",
+            "unit_price": "150.00",
+            "amount_minor": null
+          },
+          "got": {
+            "description": "WVII F 04/03/20 :30 11:12 PM SGTV2008H",
+            "quantity": "1",
+            "unit_price": "150.00",
+            "amount_minor": 15000
+          },
+          "similarity": 52
+        },
+        {
+          "gold": {
+            "page": 2,
+            "description": "Late News M-F 11:00 PM-11:35 PM",
+            "quantity": "1",
+            "unit_price": "150.00",
+            "amount_minor": null
+          },
+          "got": {
+            "description": "WVII Tu 03/31/20 :30 11:22 PM SGTV2008H",
+            "quantity": "1",
+            "unit_price": "150.00",
+            "amount_minor": 15000
+          },
+          "similarity": 51
+        },
+        {
+          "gold": {
+            "page": 2,
+            "description": "Late News M-F 11:00 PM-11:35 PM",
+            "quantity": "1",
+            "unit_price": "150.00",
+            "amount_minor": null
+          },
+          "got": {
+            "description": "WVII W 04/01/20 :30 11:19 PM SGTV2008H",
+            "quantity": "1",
+            "unit_price": "150.00",
+            "amount_minor": 15000
+          },
+          "similarity": 48
+        }
+      ],
+      "line_counts": [
+        12,
+        12
+      ],
+      "error": null
+    },
+    {
+      "case": "r06",
+      "style": null,
+      "pages": null,
+      "status": "exception",
+      "expected_status": null,
+      "fields": {
+        "total_minor": {
+          "gold": [
+            1965625,
+            2312500
+          ],
+          "got": null
+        }
+      },
+      "lines": [],
+      "line_counts": [
+        7,
+        8
+      ],
+      "error": null
+    },
+    {
+      "case": "r07",
+      "style": null,
+      "pages": null,
+      "status": "exception",
+      "expected_status": null,
+      "fields": {},
+      "lines": [
+        {
+          "gold": {
+            "page": 1,
+            "description": "CBS This Morning 7a-9a",
+            "quantity": "3",
+            "unit_price": "60.00",
+            "amount_minor": null
+          },
+          "got": {
+            "description": "WYOU F 04/24/20 :30 8:59 AM ABPT2001H",
+            "quantity": "3",
+            "unit_price": "60.0",
+            "amount_minor": 18000
+          },
+          "similarity": 24
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "CBS Sunday Morning 9a-1030a",
+            "quantity": "1",
+            "unit_price": "250.00",
+            "amount_minor": null
+          },
+          "got": {
+            "description": "WYOU Su 04/26/20 :30 9:05 AM ABPT2001H",
+            "quantity": "1",
+            "unit_price": "250.0",
+            "amount_minor": 25000
+          },
+          "similarity": 41
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "Face the Nation 1030a-11a",
+            "quantity": "1",
+            "unit_price": "250.00",
+            "amount_minor": null
+          },
+          "got": {
+            "description": "WYOU Su 04/26/20 :30 11:21 AM ABPT2001H",
+            "quantity": "1",
+            "unit_price": "250.0",
+            "amount_minor": 25000
+          },
+          "similarity": 32
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "Eyewitness News @ 6p 6p-630p",
+            "quantity": "3",
+            "unit_price": "150.00",
+            "amount_minor": null
+          },
+          "got": {
+            "description": "WYOU F 04/24/20 :30 6:10 PM ABPT2001H",
+            "quantity": "3",
+            "unit_price": "150.0",
+            "amount_minor": 45000
+          },
+          "similarity": 27
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "Eyewitness News @ 6 Sat 6p-630p",
+            "quantity": "1",
+            "unit_price": "150.00",
+            "amount_minor": null
+          },
+          "got": {
+            "description": "WYOU W 04/22/20 :30 6:27 PM ABPT2001H",
+            "quantity": "1",
+            "unit_price": "150.0",
+            "amount_minor": 15000
+          },
+          "similarity": 34
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "Fri Prime Hour 3 10p-11p",
+            "quantity": "1",
+            "unit_price": "650.00",
+            "amount_minor": null
+          },
+          "got": {
+            "description": "WYOU F 04/24/20 :30 10:31 PM ABPT2001H",
+            "quantity": "1",
+            "unit_price": "650.0",
+            "amount_minor": 65000
+          },
+          "similarity": 36
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "Sun Prime Hour 1 7p-8p",
+            "quantity": "1",
+            "unit_price": "800.00",
+            "amount_minor": null
+          },
+          "got": {
+            "description": "WYOU Su 04/26/20 :30 7:39 PM ABPT2001H",
+            "quantity": "1",
+            "unit_price": "800.0",
+            "amount_minor": 80000
+          },
+          "similarity": 37
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "Eyewitness News at 11 M-F 11p-1135p",
+            "quantity": "3",
+            "unit_price": "125.00",
+            "amount_minor": null
+          },
+          "got": {
+            "description": "WYOU F 04/24/20 :30 11:23 PM ABPT2001H",
+            "quantity": "3",
+            "unit_price": "125.0",
+            "amount_minor": 37500
+          },
+          "similarity": 39
+        },
+        {
+          "gold": {
+            "page": 2,
+            "description": "Saturday Late News 11p-1130p",
+            "quantity": "1",
+            "unit_price": "125.00",
+            "amount_minor": null
+          },
+          "got": {
+            "description": "WYOU Tu 04/21/20 :30 11:11 PM ABPT2001H",
+            "quantity": "1",
+            "unit_price": "125.0",
+            "amount_minor": 12500
+          },
+          "similarity": 41
+        },
+        {
+          "gold": {
+            "page": 2,
+            "description": "Eyewitness News @11p 11p-1130p",
+            "quantity": "1",
+            "unit_price": "125.00",
+            "amount_minor": null
+          },
+          "got": {
+            "description": "WYOU Su 04/26/20 :30 11:20 PM ABPT2001H",
+            "quantity": "1",
+            "unit_price": "125.0",
+            "amount_minor": 12500
+          },
+          "similarity": 37
+        }
+      ],
+      "line_counts": [
+        10,
+        16
+      ],
+      "error": null
+    },
+    {
+      "case": "r09",
+      "style": null,
+      "pages": null,
+      "status": "exception",
+      "expected_status": null,
+      "fields": {
+        "total_minor": {
+          "gold": [
+            139400,
+            164000
+          ],
+          "got": null
+        }
+      },
+      "lines": [
+        {
+          "gold": {
+            "page": 1,
+            "description": "SPOT 2606-TODAY SHOW Day,Th-1",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 11000
+          },
+          "got": {
+            "description": "SPOT 2606-TODAY SHOW Day,Th-1 04/23/20 07:27 am (Th) 00:30 JJWVG0410H",
+            "quantity": "1.0",
+            "unit_price": "110.00",
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "SPOT 2606-TODAY SHOW Day,F-1",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 8500
+          },
+          "got": {
+            "description": "SPOT 2606-TODAY SHOW Day,F-1 04/24/20 08:27 am (Fr) 00:30 JJWVG0410H",
+            "quantity": "5.0",
+            "unit_price": "85.00",
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "SPOT 61130-WVVA News Day,Th-1",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 5000
+          },
+          "got": {
+            "description": "SPOT 61130-WVVA News Day,Th-1 04/23/20 12:23 pm (Th) 00:30 JJWVG0410H",
+            "quantity": "7.0",
+            "unit_price": "50.00",
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "SPOT 61130-WVVA News Day,F-1",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 5000
+          },
+          "got": {
+            "description": "SPOT 61130-WVVA News Day,F-1 04/24/20 12:12 pm (Fr) 00:30 JJWVG0410H",
+            "quantity": "8.0",
+            "unit_price": "50.00",
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "SPOT 26153-Inside Edition Day,Th-1",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 8500
+          },
+          "got": {
+            "description": "SPOT 26153-Inside Edition Day,Th-1 04/23/20 05:47 pm (Th) 00:30 JJWVG0410H",
+            "quantity": "11.0",
+            "unit_price": "85.00",
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "SPOT 26153-Inside Edition Day,F-1",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 8500
+          },
+          "got": {
+            "description": "SPOT 26153-Inside Edition Day,F-1 04/24/20 05:45 pm (Fr) 00:30 JJWVG0410H",
+            "quantity": "12.0",
+            "unit_price": "85.00",
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "SPOT 61135-WVVA News Day,F-1",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 11000
+          },
+          "got": {
+            "description": "SPOT 61135-WVVA News Day,F-1 04/24/20 05:20 pm (Fr) 00:30 JJWVG0410H",
+            "quantity": "15.0",
+            "unit_price": "110.00",
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "SPOT 61137-WVVA News Day,Th-1",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 27500
+          },
+          "got": {
+            "description": "SPOT 61137-WVVA News Day,Th-1 04/23/20 06:15 pm (Th) 00:30 JJWVG0410H",
+            "quantity": "18.0",
+            "unit_price": "275.00",
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "SPOT 65733-NIGHTLY NE Day,Th-1",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 35000
+          },
+          "got": {
+            "description": "SPOT 65733-NIGHTLY NE Day,Th-1 04/23/20 06:53 pm (Th) 00:30 JJWVG0410H",
+            "quantity": "21.0",
+            "unit_price": "350.00",
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "SPOT 71868-Entertainment Day,Th-1",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 9000
+          },
+          "got": {
+            "description": "SPOT 71868-Entertainment Day,Th-1 04/23/20 07:26 pm (Th) 00:30 JJWVG0410H",
+            "quantity": "24.0",
+            "unit_price": "90.00",
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "SPOT 61139-WVVA News Day,Th-1",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 17500
+          },
+          "got": {
+            "description": "SPOT 61139-WVVA News Day,Th-1 04/23/20 11:12 pm (Th) 00:30 JJWVG0410H",
+            "quantity": "26.0",
+            "unit_price": "175.00",
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "SPOT 61139-WVVA News Day,F-1",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 17500
+          },
+          "got": {
+            "description": "SPOT 61139-WVVA News Day,F-1 04/24/20 11:27 pm (Fr) 00:30 JJWVG0410H",
+            "quantity": "27.0",
+            "unit_price": "175.00",
+            "amount_minor": null
+          },
+          "similarity": 100
+        }
+      ],
+      "line_counts": [
+        12,
+        12
+      ],
+      "error": null
+    },
+    {
+      "case": "r12",
+      "style": null,
+      "pages": null,
+      "status": "failed",
+      "expected_status": null,
+      "fields": {
+        "invoice_number": {
+          "gold": "4055032-1",
+          "got": null
+        },
+        "invoice_date": {
+          "gold": "2012-08-26",
+          "got": null
+        },
+        "total_minor": {
+          "gold": [
+            2839000,
+            3340000
+          ],
+          "got": null
+        }
+      },
+      "lines": [],
+      "line_counts": [
+        9,
+        0
+      ],
+      "error": "model_timeout"
+    },
+    {
+      "case": "r13",
+      "style": null,
+      "pages": null,
+      "status": "exception",
+      "expected_status": null,
+      "fields": {
+        "total_minor": {
+          "gold": [
+            799000,
+            940000
+          ],
+          "got": null
+        }
+      },
+      "lines": [
+        {
+          "gold": {
+            "page": 1,
+            "description": "8-9a M-F",
+            "quantity": "2",
+            "unit_price": "165.00",
+            "amount_minor": null
+          },
+          "got": {
+            "description": "WRAZ W 09/12/12 :30 8:54 AM 2012MRFP094H",
+            "quantity": "2",
+            "unit_price": "165.0",
+            "amount_minor": null
+          },
+          "similarity": 32
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "8-9a M-F",
+            "quantity": "3",
+            "unit_price": "165.00",
+            "amount_minor": null
+          },
+          "got": {
+            "description": "WRAZ Th 09/13/12 :30 8:29 AM 2012MRFP094H",
+            "quantity": "3",
+            "unit_price": "165.0",
+            "amount_minor": null
+          },
+          "similarity": 29
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "9-10a M-F",
+            "quantity": "3",
+            "unit_price": "100.00",
+            "amount_minor": null
+          },
+          "got": {
+            "description": "WRAZ Th 09/13/12 :30 9:51 AM 2012MRFP094H",
+            "quantity": "3",
+            "unit_price": "100.0",
+            "amount_minor": null
+          },
+          "similarity": 29
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "9-10a M-F",
+            "quantity": "2",
+            "unit_price": "100.00",
+            "amount_minor": null
+          },
+          "got": {
+            "description": "WRAZ F 09/14/12 :30 9:45 AM 2012MRFP110H",
+            "quantity": "2",
+            "unit_price": "100.0",
+            "amount_minor": null
+          },
+          "similarity": 50
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "7-730p M-F",
+            "quantity": "2",
+            "unit_price": "580.00",
+            "amount_minor": null
+          },
+          "got": {
+            "description": "WRAZ M 09/17/12 :30 7:14 PM 2012MRFP110H",
+            "quantity": "2",
+            "unit_price": "580.0",
+            "amount_minor": null
+          },
+          "similarity": 46
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "7-730p M-F",
+            "quantity": "3",
+            "unit_price": "580.00",
+            "amount_minor": null
+          },
+          "got": {
+            "description": "WRAZ F 09/14/12 :30 7:46 PM 2012MRFP110H",
+            "quantity": "3",
+            "unit_price": "580.0",
+            "amount_minor": null
+          },
+          "similarity": 46
+        },
+        {
+          "gold": {
+            "page": 2,
+            "description": "730-8p M-F",
+            "quantity": "3",
+            "unit_price": "580.00",
+            "amount_minor": null
+          },
+          "got": {
+            "description": "WRAZ Th 09/13/12 :30 7:27 PM 2012MRFP094H",
+            "quantity": "3",
+            "unit_price": "580.0",
+            "amount_minor": null
+          },
+          "similarity": 28
+        },
+        {
+          "gold": {
+            "page": 2,
+            "description": "730-8p M-F",
+            "quantity": "2",
+            "unit_price": "580.00",
+            "amount_minor": null
+          },
+          "got": {
+            "description": "WRAZ F 09/14/12 :30 7:27 PM 2012MRFP110H",
+            "quantity": "2",
+            "unit_price": "580.0",
+            "amount_minor": null
+          },
+          "similarity": 33
+        },
+        {
+          "gold": {
+            "page": 2,
+            "description": "WRAL's 10p News On Fox 50",
+            "quantity": "2",
+            "unit_price": "400.00",
+            "amount_minor": null
+          },
+          "got": {
+            "description": "WRAZ M 09/17/12 :30 10:58 PM 2012MRFP110H",
+            "quantity": "2",
+            "unit_price": "400.0",
+            "amount_minor": null
+          },
+          "similarity": 37
+        },
+        {
+          "gold": {
+            "page": 2,
+            "description": "WRAL's 10p News On Fox 50",
+            "quantity": "3",
+            "unit_price": "400.00",
+            "amount_minor": null
+          },
+          "got": {
+            "description": "WRAZ F 09/14/12 :30 10:23 PM 2012MRFP110H",
+            "quantity": "3",
+            "unit_price": "400.0",
+            "amount_minor": null
+          },
+          "similarity": 37
+        },
+        {
+          "gold": {
+            "page": 2,
+            "description": "9-10a Sun",
+            "quantity": "1",
+            "unit_price": "125.00",
+            "amount_minor": null
+          },
+          "got": {
+            "description": "WRAZ Su 09/16/12 :30 9:31 AM 2012MRFP110H",
+            "quantity": "1",
+            "unit_price": "125.0",
+            "amount_minor": null
+          },
+          "similarity": 33
+        },
+        {
+          "gold": {
+            "page": 2,
+            "description": "11:35p-12:05x Sun",
+            "quantity": "1",
+            "unit_price": "150.00",
+            "amount_minor": null
+          },
+          "got": {
+            "description": "Aired Spots 27",
+            "quantity": "1",
+            "unit_price": "150.00",
+            "amount_minor": null
+          },
+          "similarity": 26
+        }
+      ],
+      "line_counts": [
+        12,
+        27
+      ],
+      "error": null
+    },
+    {
+      "case": "r14",
+      "style": null,
+      "pages": null,
+      "status": "exception",
+      "expected_status": null,
+      "fields": {
+        "invoice_number": {
+          "gold": "4073029-1",
+          "got": "4010263-1"
+        },
+        "invoice_date": {
+          "gold": "2012-09-30",
+          "got": "2012-09-24"
+        },
+        "total_minor": {
+          "gold": [
+            126225,
+            148500
+          ],
+          "got": null
+        }
+      },
+      "lines": [
+        {
+          "gold": {
+            "page": 1,
+            "description": "Fox 35 5p News",
+            "quantity": "1",
+            "unit_price": "630.00",
+            "amount_minor": null
+          },
+          "got": {
+            "description": "Fox: 35 Sp News",
+            "quantity": "1",
+            "unit_price": "30.0",
+            "amount_minor": null
+          },
+          "similarity": 93
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "Fox 35 5p News",
+            "quantity": "1",
+            "unit_price": "630.00",
+            "amount_minor": null
+          },
+          "got": {
+            "description": "Fox: 35 Sp News",
+            "quantity": "30",
+            "unit_price": "1.0",
+            "amount_minor": null
+          },
+          "similarity": 93
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "Fox News Sunday",
+            "quantity": "1",
+            "unit_price": "225.00",
+            "amount_minor": null
+          },
+          "got": {
+            "description": "For 3 Weeks Sunday",
+            "quantity": "30",
+            "unit_price": "1.0",
+            "amount_minor": null
+          },
+          "similarity": 73
+        }
+      ],
+      "line_counts": [
+        3,
+        3
+      ],
+      "error": null
+    },
+    {
+      "case": "r15",
+      "style": null,
+      "pages": null,
+      "status": "exception",
+      "expected_status": null,
+      "fields": {
+        "total_minor": {
+          "gold": [
+            3400000,
+            4000000
+          ],
+          "got": null
+        }
+      },
+      "lines": [
+        {
+          "gold": {
+            "page": 1,
+            "description": "DR PHIL",
+            "quantity": "5",
+            "unit_price": "500.00",
+            "amount_minor": null
+          },
+          "got": {
+            "description": "DR PHIL 09/25/2012-09/28/2012",
+            "quantity": "30",
+            "unit_price": "500.0",
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "JUDGE JUDY SA/SU",
+            "quantity": "1",
+            "unit_price": "125.00",
+            "amount_minor": null
+          },
+          "got": {
+            "description": "JUDGE JUDY SA/SU 09/29/2012-10/06/2012",
+            "quantity": "30",
+            "unit_price": "125.0",
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "CBS13 NEWS @ 5",
+            "quantity": "5",
+            "unit_price": "1500.00",
+            "amount_minor": null
+          },
+          "got": {
+            "description": "CBS13 NEWS @ 5 09/25/2012-09/28/2012",
+            "quantity": "30",
+            "unit_price": "1500.0",
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "page": 4,
+            "description": "THE CLOSER",
+            "quantity": "1",
+            "unit_price": "250.00",
+            "amount_minor": null
+          },
+          "got": {
+            "description": "09/24/2012-09/30/2012",
+            "quantity": "1",
+            "unit_price": "250.00",
+            "amount_minor": null
+          },
+          "similarity": 9
+        }
+      ],
+      "line_counts": [
+        11,
+        13
+      ],
+      "error": null
+    },
+    {
+      "case": "r16",
+      "style": null,
+      "pages": null,
+      "status": "exception",
+      "expected_status": null,
+      "fields": {
+        "total_minor": {
+          "gold": [
+            3920625,
+            4612500
+          ],
+          "got": null
+        }
+      },
+      "lines": [],
+      "line_counts": [
+        19,
+        22
+      ],
+      "error": null
+    },
+    {
+      "case": "r17",
+      "style": null,
+      "pages": null,
+      "status": "exception",
+      "expected_status": null,
+      "fields": {
+        "total_minor": {
+          "gold": [
+            1774375,
+            2087500
+          ],
+          "got": null
+        }
+      },
+      "lines": [
+        {
+          "gold": {
+            "page": 1,
+            "description": "Today Show",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 62500
+          },
+          "got": {
+            "description": "TODAY 7-8A/1",
+            "quantity": null,
+            "unit_price": "625.0",
+            "amount_minor": null
+          },
+          "similarity": 67
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "Today Show",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 62500
+          },
+          "got": {
+            "description": "TODAY 7-8A/1",
+            "quantity": null,
+            "unit_price": "625.0",
+            "amount_minor": null
+          },
+          "similarity": 67
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "Today Show",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 62500
+          },
+          "got": {
+            "description": "TODAY 7-8A/1",
+            "quantity": null,
+            "unit_price": "625.0",
+            "amount_minor": null
+          },
+          "similarity": 67
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "Today Show",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 62500
+          },
+          "got": {
+            "description": "TODAY 7-8A/1",
+            "quantity": null,
+            "unit_price": "625.0",
+            "amount_minor": null
+          },
+          "similarity": 67
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "Today Show",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 62500
+          },
+          "got": {
+            "description": "TODAY 7-8A/1",
+            "quantity": null,
+            "unit_price": "625.0",
+            "amount_minor": null
+          },
+          "similarity": 67
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "CHANNEL 11 NEWS-FIRST AT FIVE",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 80000
+          },
+          "got": {
+            "description": "NEWS 6-300P/4",
+            "quantity": null,
+            "unit_price": "1000.0",
+            "amount_minor": null
+          },
+          "similarity": 47
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "CHANNEL 11 NEWS-FIRST AT FIVE",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 80000
+          },
+          "got": {
+            "description": "NEWS 5-30P/2",
+            "quantity": null,
+            "unit_price": "800.0",
+            "amount_minor": null
+          },
+          "similarity": 50
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "CHANNEL 11 NEWS-FIRST AT FIVE",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 80000
+          },
+          "got": {
+            "description": "NEWS 5-30P/2",
+            "quantity": null,
+            "unit_price": "800.0",
+            "amount_minor": null
+          },
+          "similarity": 50
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "CHANNEL 11 NEWS-FIRST AT FIVE",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 80000
+          },
+          "got": {
+            "description": "NEWS 5-30P/2",
+            "quantity": null,
+            "unit_price": "800.0",
+            "amount_minor": null
+          },
+          "similarity": 50
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "CHANNEL 11 SATURDAY MORN NEWS",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 25000
+          },
+          "got": {
+            "description": "SAT NEWS 8-1030A/6",
+            "quantity": null,
+            "unit_price": "275.0",
+            "amount_minor": null
+          },
+          "similarity": 51
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "CHANNEL 11 SATURDAY MORN NEWS",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 27500
+          },
+          "got": {
+            "description": "NEWS 5-30P/2",
+            "quantity": null,
+            "unit_price": "800.0",
+            "amount_minor": null
+          },
+          "similarity": 50
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "CHANNEL 11 NEWS",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 62500
+          },
+          "got": {
+            "description": "LATE NEWS/8",
+            "quantity": null,
+            "unit_price": "2100.0",
+            "amount_minor": null
+          },
+          "similarity": 62
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "CHANNEL 11 NEWS AT 11P",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 210000
+          },
+          "got": {
+            "description": "SAT NEWS 6-8A/3",
+            "quantity": null,
+            "unit_price": "250.0",
+            "amount_minor": null
+          },
+          "similarity": 54
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "CHANNEL 11 SUNDAY MORN NEWS",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 25000
+          },
+          "got": {
+            "description": "SUN NEWS 8-9A/10",
+            "quantity": null,
+            "unit_price": "275.0",
+            "amount_minor": null
+          },
+          "similarity": 56
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "CHANNEL 11 SUNDAY MORN NEWS",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 27500
+          },
+          "got": {
+            "description": "SUN NEWS 530A-8A/8",
+            "quantity": null,
+            "unit_price": "250.0",
+            "amount_minor": null
+          },
+          "similarity": 49
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "Parenthood 10-11P",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 200000
+          },
+          "got": {
+            "description": "PARENTHOOD 10-11P/12",
+            "quantity": null,
+            "unit_price": "2000.0",
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "Channel 11 News 5am",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 30000
+          },
+          "got": {
+            "description": "NEWS 5-300A/13",
+            "quantity": null,
+            "unit_price": "300.0",
+            "amount_minor": null
+          },
+          "similarity": 55
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "Channel 11 News 5am",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 30000
+          },
+          "got": {
+            "description": "NEWS 5-300A/13",
+            "quantity": null,
+            "unit_price": "300.0",
+            "amount_minor": null
+          },
+          "similarity": 55
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "CHANNEL 11 NEWS-FIRST AT FIVE",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 80000
+          },
+          "got": {
+            "description": "NEWS 6-30P/2",
+            "quantity": null,
+            "unit_price": "625.0",
+            "amount_minor": null
+          },
+          "similarity": 50
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "CHANNEL 11 NEWS-FIRST AT FIVE",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 80000
+          },
+          "got": {
+            "description": "NEWS 6-300P/4",
+            "quantity": null,
+            "unit_price": "1000.0",
+            "amount_minor": null
+          },
+          "similarity": 47
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "CHANNEL 11 NEWS-FIRST AT FIVE",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 80000
+          },
+          "got": {
+            "description": "NEWS 6-300P/4",
+            "quantity": null,
+            "unit_price": "1000.0",
+            "amount_minor": null
+          },
+          "similarity": 47
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "CHANNEL 11 NEWS-FIRST AT FIVE",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 80000
+          },
+          "got": {
+            "description": "NEWS 6-300P/4",
+            "quantity": null,
+            "unit_price": "1000.0",
+            "amount_minor": null
+          },
+          "similarity": 47
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "Channel 11 News At 6pm M-F",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 100000
+          },
+          "got": {
+            "description": "NEWS 5:30-6:00P/3",
+            "quantity": null,
+            "unit_price": "800.0",
+            "amount_minor": null
+          },
+          "similarity": 47
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "Channel 11 News At 6pm M-F",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 100000
+          },
+          "got": {
+            "description": "NEWS 5:30-6:00P/3",
+            "quantity": null,
+            "unit_price": "800.0",
+            "amount_minor": null
+          },
+          "similarity": 47
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "Channel 11 News At 6pm M-F",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 100000
+          },
+          "got": {
+            "description": "NEWS 5:30-6:00P/3",
+            "quantity": null,
+            "unit_price": "800.0",
+            "amount_minor": null
+          },
+          "similarity": 47
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "Channel 11 News At 6pm M-F",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 100000
+          },
+          "got": {
+            "description": "NEWS 5:30-6:00P/3",
+            "quantity": null,
+            "unit_price": "800.0",
+            "amount_minor": null
+          },
+          "similarity": 47
+        },
+        {
+          "gold": {
+            "page": 2,
+            "description": "CHANNEL 11 NEWS",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 67500
+          },
+          "got": {
+            "description": "Spot 6:00:04PM-CHANNEL 11 NEWS",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "page": 2,
+            "description": "Cash Cab 12a",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 30000
+          },
+          "got": {
+            "description": "Spot 12:05:04AM-Cash Cab 12a",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        }
+      ],
+      "line_counts": [
+        28,
+        28
+      ],
+      "error": null
+    },
+    {
+      "case": "r18",
+      "style": null,
+      "pages": null,
+      "status": "exception",
+      "expected_status": null,
+      "fields": {
+        "total_minor": {
+          "gold": [
+            1068875,
+            1257500
+          ],
+          "got": null
+        }
+      },
+      "lines": [
+        {
+          "gold": {
+            "page": 1,
+            "description": "Today Show",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 62500
+          },
+          "got": {
+            "description": "TODAY 7-9A//112",
+            "quantity": null,
+            "unit_price": "625.00",
+            "amount_minor": null
+          },
+          "similarity": 67
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "Today Show",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 62500
+          },
+          "got": {
+            "description": "TODAY 7-9A//112",
+            "quantity": null,
+            "unit_price": "625.00",
+            "amount_minor": null
+          },
+          "similarity": 67
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "1 preempt @ $625.00",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 0
+          },
+          "got": {
+            "description": "1 pre-empt @ $625.00",
+            "quantity": null,
+            "unit_price": "0.00",
+            "amount_minor": null
+          },
+          "similarity": 79
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "JUDGE JUDY 4P",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 40000
+          },
+          "got": {
+            "description": "JUDY 4-430P//114",
+            "quantity": null,
+            "unit_price": "400.00",
+            "amount_minor": null
+          },
+          "similarity": 50
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "JUDGE JUDY 4P",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 40000
+          },
+          "got": {
+            "description": "JUDY 4-430P//114",
+            "quantity": null,
+            "unit_price": "400.00",
+            "amount_minor": null
+          },
+          "similarity": 50
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "1 preempt @ $400.00",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 0
+          },
+          "got": {
+            "description": "1 pre-empt @ $400.00",
+            "quantity": null,
+            "unit_price": "0.00",
+            "amount_minor": null
+          },
+          "similarity": 79
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "CHANNEL 11 NEWS-FIRST AT FIVE",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 80000
+          },
+          "got": {
+            "description": "NEWS 5-530m//118",
+            "quantity": null,
+            "unit_price": "400.00",
+            "amount_minor": null
+          },
+          "similarity": 42
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "1 preempt @ $800.00",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 0
+          },
+          "got": {
+            "description": "1 pre-empt @ $800.00",
+            "quantity": null,
+            "unit_price": "0.00",
+            "amount_minor": null
+          },
+          "similarity": 79
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "Channel 11 News At 6pm M-F",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 100000
+          },
+          "got": {
+            "description": "NEWS 5-900AM//116",
+            "quantity": null,
+            "unit_price": "800.00",
+            "amount_minor": null
+          },
+          "similarity": 57
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "Channel 11 News At 6pm M-F",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 100000
+          },
+          "got": {
+            "description": "NEWS 6-630P//119",
+            "quantity": null,
+            "unit_price": "1000.00",
+            "amount_minor": null
+          },
+          "similarity": 49
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "Channel 11 News At 6pm M-F",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 100000
+          },
+          "got": {
+            "description": "NEWS 5-900AM//116",
+            "quantity": null,
+            "unit_price": "800.00",
+            "amount_minor": null
+          },
+          "similarity": 57
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "Wheel Of Fortune",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 165000
+          },
+          "got": {
+            "description": "WHEEL//124",
+            "quantity": null,
+            "unit_price": "1650.00",
+            "amount_minor": null
+          },
+          "similarity": 71
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "CHANNEL 11 NEWS AT 11P",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 200000
+          },
+          "got": {
+            "description": "SUN NEWS 6-630P//125",
+            "quantity": null,
+            "unit_price": "675.00",
+            "amount_minor": null
+          },
+          "similarity": 49
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "CHANNEL 11 NEWS",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 67500
+          },
+          "got": {
+            "description": "LATE NEWS//123",
+            "quantity": null,
+            "unit_price": "2000.00",
+            "amount_minor": null
+          },
+          "similarity": 64
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "Channel 11 News 6am",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 80000
+          },
+          "got": {
+            "description": "NEWS 6-630P//119",
+            "quantity": null,
+            "unit_price": "1000.00",
+            "amount_minor": null
+          },
+          "similarity": 59
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "Channel 11 News 6am",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 80000
+          },
+          "got": {
+            "description": "NEWS 6-630P//119",
+            "quantity": null,
+            "unit_price": "1000.00",
+            "amount_minor": null
+          },
+          "similarity": 59
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "Channel 11 News 5am",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 40000
+          },
+          "got": {
+            "description": "NEWS 530-6P//118",
+            "quantity": null,
+            "unit_price": "800.00",
+            "amount_minor": null
+          },
+          "similarity": 59
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "Channel 11 News 5am",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 40000
+          },
+          "got": {
+            "description": "NEWS 5-530m//118",
+            "quantity": null,
+            "unit_price": "400.00",
+            "amount_minor": null
+          },
+          "similarity": 59
+        }
+      ],
+      "line_counts": [
+        19,
+        18
+      ],
+      "error": null
+    },
+    {
+      "case": "r19",
+      "style": null,
+      "pages": null,
+      "status": "exception",
+      "expected_status": null,
+      "fields": {
+        "total_minor": {
+          "gold": [
+            199750,
+            235000
+          ],
+          "got": null
+        }
+      },
+      "lines": [
+        {
+          "gold": {
+            "page": 1,
+            "description": "SPOT 30297-Wake Up Wiscons Day,Th-2",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 25000
+          },
+          "got": {
+            "description": "1.0 SPOT 30297-Wake Up WiscoDnasy,Th-2 05/07/20 6:13AM (Th) 01:00 SWBOWT60",
+            "quantity": "1.0",
+            "unit_price": "250.0",
+            "amount_minor": null
+          },
+          "similarity": 79
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "SPOT 30297-Wake Up Wiscons Day,Th-2",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 25000
+          },
+          "got": {
+            "description": "1.0 SPOT 30297-Wake Up WiscoDnasy,Th-2 05/07/20 6:28AM (Th) 01:00 SWBOWT60",
+            "quantity": "1.0",
+            "unit_price": "250.0",
+            "amount_minor": null
+          },
+          "similarity": 79
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "SPOT 62748-GOOD MORNING AM Day,Th-1",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 25000
+          },
+          "got": {
+            "description": "2.0 SPOT 62748-GOOD MORNINDGa yA,TMh-1 05/07/20 7:59AM (Th) 01:00 SWBOWT60",
+            "quantity": "2.0",
+            "unit_price": "250.0",
+            "amount_minor": null
+          },
+          "similarity": 73
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "SPOT 30368-News 9 WAOW at Day,W-1",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 40000
+          },
+          "got": {
+            "description": "3.0 SPOT 30368-News 9 WAOW Daaty,W-1 05/06/20 6:15PM (We) 01:00 SWBOWT60",
+            "quantity": "3.0",
+            "unit_price": "400.0",
+            "amount_minor": null
+          },
+          "similarity": 88
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "SPOT 30368-News 9 WAOW at Day,Th-1",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 40000
+          },
+          "got": {
+            "description": "4.0 SPOT 30368-News 9 WAOW Daaty,Th-1 05/07/20 6:22PM (Th) 01:00 SWBOWT60",
+            "quantity": "4.0",
+            "unit_price": "400.0",
+            "amount_minor": null
+          },
+          "similarity": 89
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "SPOT 30370-News 9 WAOW at Day,W-1",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 40000
+          },
+          "got": {
+            "description": "5.0 SPOT 30370-News 9 WAOW Daaty,W-1 05/06/20 10:31PM (We) 01:00 SWBOWT60",
+            "quantity": "5.0",
+            "unit_price": "400.0",
+            "amount_minor": null
+          },
+          "similarity": 88
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "SPOT 30370-News 9 WAOW at Day,Th-1",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 40000
+          },
+          "got": {
+            "description": "6.0 SPOT 30370-News 9 WAOW Daaty,Th-1 05/07/20 10:33PM (Th) 01:00 SWBOWT60",
+            "quantity": "6.0",
+            "unit_price": "400.0",
+            "amount_minor": null
+          },
+          "similarity": 89
+        }
+      ],
+      "line_counts": [
+        7,
+        7
+      ],
+      "error": null
+    },
+    {
+      "case": "r20",
+      "style": null,
+      "pages": null,
+      "status": "exception",
+      "expected_status": null,
+      "fields": {},
+      "lines": [
+        {
+          "gold": {
+            "page": 1,
+            "description": "ABC-Good Morning American Saturday",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 3000
+          },
+          "got": {
+            "description": "SPOT 20374-ABC-Good MornDiany,Sa-1 02/22/20 8:28AM (Sa) 00:30 ABC-Good Morning American SEFTV021820H",
+            "quantity": "7.0",
+            "unit_price": "30.0",
+            "amount_minor": 3000
+          },
+          "similarity": 85
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "ABC-Good Morning American Saturday",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 3000
+          },
+          "got": {
+            "description": "SPOT 20374-ABC-Good MornDiany,Sa-1 02/22/20 9:25AM (Sa) 00:30 ABC-Good Morning American SEFTV021820H",
+            "quantity": "9.0",
+            "unit_price": "30.0",
+            "amount_minor": 3000
+          },
+          "similarity": 85
+        }
+      ],
+      "line_counts": [
+        15,
+        15
+      ],
+      "error": null
+    },
+    {
+      "case": "r21",
+      "style": null,
+      "pages": null,
+      "status": "exception",
+      "expected_status": null,
+      "fields": {
+        "total_minor": {
+          "gold": [
+            58650,
+            69000
+          ],
+          "got": null
+        }
+      },
+      "lines": [
+        {
+          "gold": {
+            "page": 1,
+            "description": "News-Fox 11s Eyewitness News This Morning",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 3500
+          },
+          "got": {
+            "description": "1.0 News 7:00:00AM- 7:30:00ADMay,W-1 03/25/20 7:20AM (We) 00:30 News-Fox 11s Eyewitness News JJWVG0323H This Morning",
+            "quantity": "0.3",
+            "unit_price": "35.0",
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "News-Fox 11s Eyewitness News This Morning",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 3500
+          },
+          "got": {
+            "description": "2.0 News 7:00:00AM- 7:30:00ADMay,Th-2 03/26/20 7:09AM (Th) 00:30 News-Fox 11s Eyewitness News JJWVG0323H This Morning",
+            "quantity": "0.3",
+            "unit_price": "35.0",
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "News-Fox 11s Eyewitness News This Morning",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 3500
+          },
+          "got": {
+            "description": "2.0 News 7:00:00AM- 7:30:00ADMay,Th-2 03/26/20 7:25AM (Th) 00:30 News-Fox 11s Eyewitness News JJWVG0323H This Morning",
+            "quantity": "0.3",
+            "unit_price": "35.0",
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "News-Fox 11s Eyewitness News This Morning",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 3500
+          },
+          "got": {
+            "description": "3.0 News 7:00:00AM- 7:30:00ADMay,F-2 03/27/20 7:09AM (Fr) 00:30 News-Fox 11s Eyewitness News JJWVG0323H This Morning",
+            "quantity": "0.3",
+            "unit_price": "35.0",
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "News-Fox 11s Eyewitness News This Morning",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 3500
+          },
+          "got": {
+            "description": "3.0 News 7:00:00AM- 7:30:00ADMay,F-2 03/27/20 7:29AM (Fr) 00:30 News-Fox 11s Eyewitness News JJWVG0323H This Morning",
+            "quantity": "0.3",
+            "unit_price": "35.0",
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "News-Fox 11s Eyewitness News This Morning",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 3500
+          },
+          "got": {
+            "description": "6.0 News 7:30:00AM- 8:00:00ADMay,W-1 03/25/20 7:48AM (We) 00:30 News-Fox 11s Eyewitness News JJWVG0323H This Morning",
+            "quantity": "0.3",
+            "unit_price": "35.0",
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "News-Fox 11s Eyewitness News This Morning",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 3500
+          },
+          "got": {
+            "description": "7.0 News 7:30:00AM- 8:00:00ADMay,Th-1 03/26/20 7:46AM (Th) 00:30 News-Fox 11s Eyewitness News JJWVG0323H This Morning",
+            "quantity": "0.3",
+            "unit_price": "35.0",
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "News-Fox 11s Eyewitness News This Morning",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 3500
+          },
+          "got": {
+            "description": "8.0 News 7:30:00AM- 8:00:00ADMay,F-1 03/27/20 7:58AM (Fr) 00:30 News-Fox 11s Eyewitness News JJWVG0323H This Morning",
+            "quantity": "0.3",
+            "unit_price": "35.0",
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "News-Ten OClock News",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 20000
+          },
+          "got": {
+            "description": "13.0 News 10:00:00PM-10:30:00PDMay,W-1 03/25/20 10:13PM (We) 00:30 News-Ten OClock News JJWVG0323H",
+            "quantity": "0.3",
+            "unit_price": "200.0",
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "News-Ten OClock News",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 20000
+          },
+          "got": {
+            "description": "15.0 News 10:30:00PM-11:00:00PDMay,Th-1 03/26/20 10:31PM (Th) 00:30 News-Ten OClock News JJWVG0323H",
+            "quantity": "0.3",
+            "unit_price": "200.0",
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "News-Simulcast of WCHS News-Eyewitness News This Morning 6am",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 1000
+          },
+          "got": {
+            "description": "16.0 News 6:00:00AM- 7:00:00ADMay,Th-1 03/26/20 6:13AM (Th) 00:30 News-Simulcast of WCHS JJWVG0323H News-Eyewitness News This Morning 6am",
+            "quantity": "0.3",
+            "unit_price": "10.0",
+            "amount_minor": null
+          },
+          "similarity": 100
+        }
+      ],
+      "line_counts": [
+        11,
+        11
+      ],
+      "error": null
+    },
+    {
+      "case": "r22",
+      "style": null,
+      "pages": null,
+      "status": "exception",
+      "expected_status": null,
+      "fields": {},
+      "lines": [
+        {
+          "gold": {
+            "page": 1,
+            "description": "2257415-News-NBC 15 New",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 45000
+          },
+          "got": {
+            "description": "SPOT 2257415-News-NBC 15D aNye,Twu-1,W-1,Th-1,F-1 02/25/20 5:20PM (Tu) 00:30 CFGAAL11H",
+            "quantity": "3.0",
+            "unit_price": "150.0",
+            "amount_minor": 45000
+          },
+          "similarity": 82
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "2257415-News-NBC 15 New",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 45000
+          },
+          "got": {
+            "description": "SPOT 2257415-News-NBC 15D aNye,Twu-1,W-1,Th-1,F-1 02/26/20 5:24PM (We) 00:30 CFGAAL11H",
+            "quantity": "3.0",
+            "unit_price": "150.0",
+            "amount_minor": 45000
+          },
+          "similarity": 82
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "2257415-News-NBC 15 New",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 45000
+          },
+          "got": {
+            "description": "SPOT 2257415-News-NBC 15D aNye,Twu-1,W-1,Th-1,F-1 02/27/20 5:22PM (Th) 00:30 CFGAAL11H",
+            "quantity": "3.0",
+            "unit_price": "150.0",
+            "amount_minor": 45000
+          },
+          "similarity": 82
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "2257415-News-NBC 15 New",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 45000
+          },
+          "got": {
+            "description": "SPOT 2257415-News-NBC 15D aNye,Twu-1,W-1,Th-1,F-1 02/28/20 5:22PM (Fr) 00:30 CFGAAL11H",
+            "quantity": "3.0",
+            "unit_price": "150.0",
+            "amount_minor": 45000
+          },
+          "similarity": 82
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "2257416-News-NBC 15 New",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 45000
+          },
+          "got": {
+            "description": "SPOT 2257416-News-NBC 15D aNye,Twu-1,W-1,Th-1,F-1 02/25/20 6:14PM (Tu) 00:30 CFGAAL11H",
+            "quantity": "5.0",
+            "unit_price": "90.0",
+            "amount_minor": 45000
+          },
+          "similarity": 82
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "2257416-News-NBC 15 New",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 45000
+          },
+          "got": {
+            "description": "SPOT 2257416-News-NBC 15D aNye,Twu-1,W-1,Th-1,F-1 02/26/20 6:27PM (We) 00:30 CFGAAL11H",
+            "quantity": "5.0",
+            "unit_price": "90.0",
+            "amount_minor": 45000
+          },
+          "similarity": 82
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "2257416-News-NBC 15 New",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 45000
+          },
+          "got": {
+            "description": "SPOT 2257416-News-NBC 15D aNye,Twu-1,W-1,Th-1,F-1 02/27/20 6:23PM (Th) 00:30 CFGAAL11H",
+            "quantity": "5.0",
+            "unit_price": "90.0",
+            "amount_minor": 45000
+          },
+          "similarity": 82
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "2257416-News-NBC 15 New",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 45000
+          },
+          "got": {
+            "description": "SPOT 2257416-News-NBC 15D aNye,Twu-1,W-1,Th-1,F-1 02/28/20 6:22PM (Fr) 00:30 CFGAAL11H",
+            "quantity": "5.0",
+            "unit_price": "90.0",
+            "amount_minor": 45000
+          },
+          "similarity": 82
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "2257404-News-NBC 15 New",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 22500
+          },
+          "got": {
+            "description": "SPOT 2257404-News-NBC 15P eNr ewweek (1),Su 03/01/20 5:28PM (Su) 00:30 CFGAAL11H",
+            "quantity": "8.0",
+            "unit_price": "28.125",
+            "amount_minor": 22500
+          },
+          "similarity": 82
+        }
+      ],
+      "line_counts": [
+        14,
+        14
+      ],
+      "error": null
+    },
+    {
+      "case": "r23",
+      "style": null,
+      "pages": null,
+      "status": "exception",
+      "expected_status": null,
+      "fields": {
+        "total_minor": {
+          "gold": [
+            30175,
+            35500
+          ],
+          "got": null
+        }
+      },
+      "lines": [
+        {
+          "gold": {
+            "page": 1,
+            "description": "SPOT 4:00:00PM-5:00:00P Day,M-1Tu-1W-1Th-1",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 3500
+          },
+          "got": {
+            "description": "SPOT 4:00:00PM-5:00:00P Day,M-1Tu-1W-1Th-1 03/09/20 04:11 pm (Mo) 00:30 BFP3020048H",
+            "quantity": "1.0",
+            "unit_price": "35.00",
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "SPOT 4:00:00PM-5:00:00P Day,M-1Tu-1W-1Th-1",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 3500
+          },
+          "got": {
+            "description": "SPOT 4:00:00PM-5:00:00P Day,M-1Tu-1W-1Th-1 03/10/20 04:19 pm (Tu) 00:30 BFP3020039H",
+            "quantity": "1.0",
+            "unit_price": "35.00",
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "SPOT 4:00:00PM-5:00:00P Day,M-1Tu-1W-1Th-1",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 3500
+          },
+          "got": {
+            "description": "SPOT 4:00:00PM-5:00:00P Day,M-1Tu-1W-1Th-1 03/11/20 04:40 pm (We) 00:30 BFP3020039H",
+            "quantity": "1.0",
+            "unit_price": "35.00",
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "SPOT 4:00:00PM-5:00:00P Day,M-1Tu-1W-1Th-1",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 3500
+          },
+          "got": {
+            "description": "SPOT 4:00:00PM-5:00:00P Day,M-1Tu-1W-1Th-1 03/12/20 04:11 pm (Th) 00:30 BFP3020048H",
+            "quantity": "1.0",
+            "unit_price": "35.00",
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "SPOT 4:00:00PM-5:00:00P Day,M-1",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 3500
+          },
+          "got": {
+            "description": "SPOT 4:00:00PM-5:00:00P Day,M-1 03/16/20 04:51 pm (Mo) 00:30 BFP3020048H",
+            "quantity": "2.0",
+            "unit_price": "35.00",
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "SPOT 6:00:00PM-7:00:00P Day,F-1",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 3000
+          },
+          "got": {
+            "description": "SPOT 6:00:00PM-7:00:00P Day,F-1 03/06/20 06:44 pm (Fr) 00:30 BFP3020039H",
+            "quantity": "3.0",
+            "unit_price": "30.00",
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "SPOT 6:00:00PM-7:00:00P Day,M-1Tu-1Th-1F-1",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 3000
+          },
+          "got": {
+            "description": "SPOT 6:00:00PM-7:00:00P Day,M-1Tu-1Th-1F-1 03/09/20 06:50 pm (Mo) 00:30 BFP3020039H",
+            "quantity": "4.0",
+            "unit_price": "30.00",
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "SPOT 6:00:00PM-7:00:00P Day,M-1Tu-1Th-1F-1",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 3000
+          },
+          "got": {
+            "description": "SPOT 6:00:00PM-7:00:00P Day,M-1Tu-1Th-1F-1 03/10/20 06:13 pm (Tu) 00:30 BFP3020048H",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "SPOT 6:00:00PM-7:00:00P Day,M-1Tu-1Th-1F-1",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 3000
+          },
+          "got": {
+            "description": "SPOT 6:00:00PM-7:00:00P Day,M-1Tu-1Th-1F-1 03/12/20 06:12 pm (Th) 00:30 BFP3020039H",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "SPOT 6:00:00PM-7:00:00P Day,M-1Tu-1Th-1F-1",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 3000
+          },
+          "got": {
+            "description": "SPOT 6:00:00PM-7:00:00P Day,M-1Tu-1Th-1F-1 03/13/20 06:56 pm (Fr) 00:30 BFP3020048H",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "SPOT 3:00:00PM-4:00:00P Day,Su-1",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 1500
+          },
+          "got": {
+            "description": "SPOT 3:00:00PM-4:00:00P Day,Su-1 03/08/20 03:12 pm (Su) 00:30 BFP3020039H",
+            "quantity": "5.0",
+            "unit_price": "15.00",
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "SPOT 3:00:00PM-4:00:00P Day,Su-1",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 1500
+          },
+          "got": {
+            "description": "SPOT 3:00:00PM-4:00:00P Day,Su-1 03/15/20 03:21 pm (Su) 00:30 BFP3020039H",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        }
+      ],
+      "line_counts": [
+        12,
+        12
+      ],
+      "error": null
+    },
+    {
+      "case": "r24",
+      "style": null,
+      "pages": null,
+      "status": "exception",
+      "expected_status": null,
+      "fields": {
+        "total_minor": {
+          "gold": [
+            91800,
+            108000
+          ],
+          "got": null
+        }
+      },
+      "lines": [
+        {
+          "gold": {
+            "page": 1,
+            "description": "62748-GOOD MORN",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 10000
+          },
+          "got": {
+            "description": "SPOT 62748-GOOD MORN Day,W-1F-1 03/11/20 08:49 am (We) 00:30 FOCM032030NH",
+            "quantity": "1.0",
+            "unit_price": "100.00",
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "62748-GOOD MORN",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 10000
+          },
+          "got": {
+            "description": "SPOT 62748-GOOD MORN Day,W-1F-1 03/13/20 08:46 am (Fr) 00:30 FOCM032030NH",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "62748-GOOD MORN",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 10000
+          },
+          "got": {
+            "description": "SPOT 62748-GOOD MORN Day,M-1 03/16/20 08:53 am (Mo) 00:30 FOCM032030NH",
+            "quantity": "2.0",
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "109805-HOI ABC Go",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 10000
+          },
+          "got": {
+            "description": "SPOT 109805-HOI ABC Go Day,Tu-1Th-1F-1 03/10/20 06:27 am (Tu) 00:30 FOCM032030NH",
+            "quantity": "3.0",
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "109805-HOI ABC Go",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 10000
+          },
+          "got": {
+            "description": "SPOT 109805-HOI ABC Go Day,Tu-1Th-1F-1 03/12/20 06:42 am (Th) 00:30 FOCM032030NH",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "109805-HOI ABC Go",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 10000
+          },
+          "got": {
+            "description": "SPOT 109805-HOI ABC Go Day,Tu-1Th-1F-1 03/13/20 06:56 am (Fr) 00:30 FOCM032030NH",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "109805-HOI ABC Go",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 10000
+          },
+          "got": {
+            "description": "SPOT 109805-HOI ABC Go Day,M-1 03/16/20 06:50 am (Mo) 00:30 FOCM032030NH",
+            "quantity": "4.0",
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "109804-HOI ABC Go",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 3000
+          },
+          "got": {
+            "description": "SPOT 109804-HOI ABC Go Day,Tu-1W-1Th-1F-1 03/10/20 05:58 am (Tu) 00:30 FOCM032030NH",
+            "quantity": "5.0",
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "109804-HOI ABC Go",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 3000
+          },
+          "got": {
+            "description": "SPOT 109804-HOI ABC Go Day,Tu-1W-1Th-1F-1 03/11/20 05:13 am (We) 00:30 FOCM032030NH",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "109804-HOI ABC Go",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 3000
+          },
+          "got": {
+            "description": "SPOT 109804-HOI ABC Go Day,Tu-1W-1Th-1F-1 03/12/20 05:22 am (Th) 00:30 FOCM032030NH",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "109804-HOI ABC Go",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 3000
+          },
+          "got": {
+            "description": "SPOT 109804-HOI ABC Go Day,Tu-1W-1Th-1F-1 03/13/20 05:41 am (Fr) 00:30 FOCM032030NH",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "109804-HOI ABC Go",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 3000
+          },
+          "got": {
+            "description": "SPOT 109804-HOI ABC Go Day,M-1 03/16/20 05:51 am (Mo) 00:30 FOCM032030NH",
+            "quantity": "6.0",
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "62748-GOOD MORN",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 10000
+          },
+          "got": {
+            "description": "SPOT 62748-GOOD MORN Day,Tu-1 03/17/20 07:59 am (Tu) 00:30 FOCM032030NH",
+            "quantity": "7.0",
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "109805-HOI ABC Go",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 10000
+          },
+          "got": {
+            "description": "SPOT 109805-HOI ABC Go Day,Tu-1 03/17/20 06:23 am (Tu) 00:30 FOCM032030NH",
+            "quantity": "8.0",
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "page": 1,
+            "description": "109804-HOI ABC Go",
+            "quantity": null,
+            "unit_price": null,
+            "amount_minor": 3000
+          },
+          "got": {
+            "description": "SPOT 109804-HOI ABC Go Day,Tu-1 03/17/20 05:27 am (Tu) 00:30 FOCM032030NH",
+            "quantity": "9.0",
+            "unit_price": null,
+            "amount_minor": null
+          },
+          "similarity": 100
+        }
+      ],
+      "line_counts": [
+        15,
+        15
+      ],
+      "error": null
+    }
+  ],
+  "agent": []
+}

@@ -1,0 +1,16 @@
+{
+ "model": "gemma4:12b",
+ "created_at": "2026-11-01T16:25:28.809957Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 116396805542,
+ "load_duration": 6944084,
+ "prompt_eval_count": 1623,
+ "prompt_eval_duration": 12226484000,
+ "eval_count": 1471,
+ "eval_duration": 103527018000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"Sinclair Broadcast\",\n  \"vendor_tax_id\": null,\n  \"invoice_number\": \"7302924\",\n  \"po_number\": null,\n  \"invoice_date\": \"2020-03-08\",\n  \"due_date\": null,\n  \"currency\": \"USD\",\n  \"subtotal\": null,\n  \"tax\": null,\n  \"total\": 153.00,\n  \"field_confidence\": {\n    \"vendor_name\": 0.9,\n    \"vendor_tax_id\": 0.0,\n    \"invoice_number\": 0.9,\n    \"po_number\": 0.0,\n    \"invoice_date\": 0.9,\n    \"due_date\": 0.0,\n    \"currency\": 0.8,\n    \"subtotal\": 0.0,\n    \"tax\": 0.0,\n    \"total\": 0.9\n  },\n  \"line_items\": [\n    {\n      \"description\": \"SPOT 9:00:00AM- 5:00:00Day,M-4 03/02/20 9:59AM (Mo) 00:15 MMT115\",\n      \"quantity\": 2.0,\n      \"unit_price\": 10.00,\n      \"amount\": 10.00\n    },\n    {\n      \"description\": \"SPOT 9:00:00AM- 5:00:00Day,M-4 03/02/20 10:17AM (Mo) 00:15 MMT115\",\n      \"quantity\": 2.0,\n      \"unit_price\": 10.00,\n      \"amount\": 10.00\n    },\n    {\n      \"description\": \"SPOT 9:00:00AM- 5:00:00Day,M-4 03/02/20 12:52PM (Mo) 00:15 MMT115\",\n      \"quantity\": 2.0,\n      \"unit_price\": 10.00,\n      \"amount\": 10.00\n    },\n    {\n      \"description\": \"SPOT 9:00:00AM- 5:00:00Day,M-4 03/02/20 4:29PM (Mo) 00:15 MMT115\",\n      \"quantity\": 2.0,\n      \"unit_price\": 10.00,\n      \"amount\": 10.00\n    },\n    {\n      \"description\": \"SPOT 9:00:00AM- 5:00:00Day,M-4 03/02/20 9:23AM (Mo) 00:30 MMT130\",\n      \"quantity\": 4.0,\n      \"unit_price\": 20.00,\n      \"amount\": 20.00\n    },\n    {\n      \"description\": \"SPOT 9:00:00AM- 5:00:00Day,M-4 03/02/20 11:38AM (Mo) 00:30 MMT130\",\n      \"quantity\": 4.0,\n      \"unit_price\": 20.00,\n      \"amount\": 20.00\n    },\n    {\n      \"description\": \"SPOT 9:00:00AM- 5:00:00Day,M-4 03/02/20 12:29PM (Mo) 00:30 MMT130\",\n      \"quantity\": 4.0,\n      \"unit_price\": 20.00,\n      \"amount\": 20.00\n    },\n    {\n      \"description\": \"SPOT 9:00:00AM- 5:00:00Day,M-4 03/02/20 3:44PM (Mo) 00:30 MMT130\",\n      \"quantity\": 4.0,\n      \"unit_price\": 20.00,\n      \"amount\": 20.00\n    },\n    {\n      \"description\": \"SPOT 9:00:00AM- 2:00:00Day,Tu-2 03/03/20 10:32AM (Tu) 00:15 MMT115\",\n      \"quantity\": 5.0,\n      \"unit_price\": 10.00,\n      \"amount\": 10.00\n    },\n    {\n      \"description\": \"SPOT 9:00:00AM- 2:00:00Day,Tu-2 03/03/20 11:55AM (Tu) 00:15 MMT115\",\n      \"quantity\": 5.0,\n      \"unit_price\": 10.00,\n      \"amount\": 10.00\n    },\n    {\n      \"description\": \"SPOT 9:00:00AM- 2:00:00Day,Tu-2 03/03/20 9:44AM (Tu) 00:30 MMT130\",\n      \"quantity\": 6.0,\n      \"unit_price\": 20.00,\n      \"amount\": 20.00\n    },\n    {\n      \"description\": \"SPOT 9:00:00AM- 2:00:00Day,Tu-2 03/03/20 10:55AM (Tu) 00:30 MMT130\",\n      \"quantity\": 6.0,\n      \"unit_price\": 20.00,\n      \"amount\": 20.00\n    }\n  ]\n}"
+ }
+}
