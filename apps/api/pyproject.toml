@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "Ledgerline HTTP API"
 requires-python = ">=3.13"
 dependencies = [
+    "ledgerline-telemetry",
     "alembic>=1.20.1",
     "asyncpg>=0.32.0",
     "boto3>=1.43.122",
@@ -23,3 +24,6 @@ dependencies = [
 [build-system]
 requires = ["uv_build>=0.11,<0.12"]
 build-backend = "uv_build"
+
+[tool.uv.sources]
+ledgerline-telemetry = { workspace = true }
