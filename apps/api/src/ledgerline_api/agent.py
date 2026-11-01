@@ -16,7 +16,7 @@ import uuid
 from collections.abc import Awaitable, Callable
 from dataclasses import asdict, dataclass, field
 from decimal import ROUND_HALF_UP, Decimal
-from typing import Literal
+from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 from sqlalchemy import func, select
@@ -65,7 +65,7 @@ HOLD_REASONS = ("missing_po", "duplicate", "tax_mismatch", "price_variance", "sh
 
 
 class ProposeHold(_Args):
-    reason_code: Literal[HOLD_REASONS]
+    reason_code: Literal[HOLD_REASONS]  # type: ignore[valid-type]  # pydantic expands the tuple; one list of codes
     explanation: str = Field(min_length=3, max_length=500, description="One or two sentences for the reviewer")
 
 
@@ -129,7 +129,7 @@ def compute_variance(lines: list[VarianceLine], order: matching.Order | None, re
     if currency != order.currency:
         raise ToolError(f"the invoice is in {currency} and the PO in {order.currency}; amounts can't be compared")
     exponent = CURRENCY_EXPONENTS[order.currency]
-    unused, rows = list(order.lines), []
+    unused, rows = list(order.lines), list[dict[str, Any]]()
     for line in lines:
         key = matching.description_key(line.description or "")
         po_line = next((c for c in unused if matching.description_key(c.description) == key), None)
@@ -188,7 +188,7 @@ class Step:
 
 @dataclass
 class LoopResult:
-    proposal: Proposal
+    proposal: Proposal | None
     stop_reason: str  # proposed | no_proposal | agent_budget_exceeded
     tool_turns: int = 0
     guard_fires: int = 0
@@ -310,7 +310,7 @@ async def _order_and_receipts(session, po_number: str | None):
     order = (await session.execute(select(PurchaseOrder).where(PurchaseOrder.po_number_key == key))).scalar_one_or_none()
     receipts = (await session.execute(select(GoodsReceipt).where(GoodsReceipt.po_number_key == key)
                                       .order_by(GoodsReceipt.received_on))).scalars().all()
-    received = None
+    received: dict[int, Decimal] | None = None
     if receipts:
         received = {}
         for receipt in receipts:
@@ -323,6 +323,7 @@ def _executor(sessions, evidence: Evidence) -> Execute:
     async def execute(name: str, args: _Args) -> tuple[dict, Proposal | None]:
         async with sessions() as session:
             if name == "get_po":
+                assert isinstance(args, GetPo)  # validate_call built the tool's own argument model
                 order, _, _ = await _order_and_receipts(session, args.po_number)
                 if order is None:
                     return {"found": False, "po_number": args.po_number}, None
@@ -333,6 +334,7 @@ def _executor(sessions, evidence: Evidence) -> Execute:
                                "unit_price": str(l.unit_price)} for l in order.lines],
                 }, None
             if name == "get_receipts":
+                assert isinstance(args, GetReceipts)
                 _, received, receipts = await _order_and_receipts(session, args.po_number)
                 return {
                     "receipts": [{"received_on": r.received_on.isoformat(),
@@ -341,6 +343,7 @@ def _executor(sessions, evidence: Evidence) -> Execute:
                     "received_per_po_line": {str(n): str(q) for n, q in (received or {}).items()},
                 }, None
             if name == "get_vendor_history":
+                assert isinstance(args, GetVendorHistory)
                 if evidence.vendor_id is None:
                     raise ToolError("the invoice has no recognized vendor")
                 rows = (await session.execute(
@@ -356,6 +359,7 @@ def _executor(sessions, evidence: Evidence) -> Execute:
                     "status": r.status, "duplicate_of": (r.invalid_fields or {}).get("invoice_number"),
                 } for r in rows]}, None
             if name == "compute_variance":
+                assert isinstance(args, ComputeVariance)
                 order, received, _ = await _order_and_receipts(session, evidence.po_number)
                 wanted = set(args.lines)
                 lines = [line for line in evidence.lines if not wanted or line.label in wanted]
@@ -371,7 +375,9 @@ def _executor(sessions, evidence: Evidence) -> Execute:
                 evidence.variance = {**result, "lines": list(previous.values())}
                 return result, None
         if name == "draft_credit_memo_request":
+            assert isinstance(args, DraftCreditMemoRequest)
             amount = credit_memo_amount(evidence.variance, args.lines)
+            assert evidence.variance is not None  # credit_memo_amount refuses without it
             details = {"amount_minor": amount, "currency": evidence.variance["currency"], "lines": args.lines,
                        "reason": args.reason}
             return {"proposed": "credit_memo_request", "amount": format_minor(amount, details["currency"])}, \
@@ -443,6 +449,7 @@ async def run(invoice_id: uuid.UUID, chat: Chat = _chat) -> str:
             run_row.tool_turns, run_row.guard_fires = result.tool_turns, result.guard_fires
             run_row.prompt_tokens, run_row.output_tokens, run_row.llm_ms = (
                 result.prompt_tokens, result.output_tokens, result.llm_ms)
+            assert result.proposal is not None  # every run_loop ends in exactly one proposal
             session.add(PendingAction(invoice_id=invoice_id, agent_run_id=run_id,
                                       action_type=result.proposal.action_type, details=result.proposal.details))
             try:

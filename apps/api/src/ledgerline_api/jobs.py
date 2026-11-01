@@ -24,13 +24,28 @@ from sqlalchemy.pool import NullPool
 
 from ledgerline_api import matching, prompts, service, storage, vendors
 from ledgerline_api.db import (
-    DeadLetter, ExtractionRun, GoodsReceipt, Invoice, InvoiceLine, InvoicePageResult, MatchResult, PurchaseOrder,
+    DeadLetter,
+    ExtractionRun,
+    GoodsReceipt,
+    Invoice,
+    InvoiceLine,
+    InvoicePageResult,
+    MatchResult,
+    PurchaseOrder,
     ReceiptLine,
 )
 from ledgerline_api.errors import PermanentError, TransientError, classify
 from ledgerline_api.extraction import ExtractionError, ModelCall, extract_page, read_pages, render_page, repair_invoice
 from ledgerline_api.normalize import (
-    ExtractedPage, check_totals, decide_status, from_repair, merge_pages, needs_repair, po_number_key,
+    ExtractedPage,
+    InvoiceHeader,
+    Line,
+    check_totals,
+    decide_status,
+    from_repair,
+    merge_pages,
+    needs_repair,
+    po_number_key,
 )
 from ledgerline_api.semaphore import llm_slot
 from ledgerline_api.settings import settings
@@ -131,8 +146,8 @@ async def _finish_run(session: AsyncSession, run_id: uuid.UUID, outcome: str, er
 
 @dataclass
 class DocumentResult:
-    header: object
-    lines: list
+    header: InvoiceHeader
+    lines: list[Line]
     pages: list[InvoicePageResult]
     status: str
     repair_attempted: bool
@@ -196,14 +211,14 @@ async def _extract_document(content: bytes, redis_client: redis.Redis) -> Docume
         previous = json.dumps([{"page": n, **p.model_dump()} for n, p in extracted])
         try:
             async with llm_slot(redis_client):
-                call = await repair_invoice(texts, images, previous, problems)
+                repair = await repair_invoice(texts, images, previous, problems)
         except ExtractionError as exc:
             if isinstance(classify(exc), TransientError):
                 raise classify(exc) from exc
-            call = None  # unusable repair: keep the page-by-page result and its problems
-        if call is not None:
-            calls.append(call)
-            repaired_header, repaired_lines = from_repair(call.parsed)
+            repair = None  # unusable repair: keep the page-by-page result and its problems
+        if repair is not None:
+            calls.append(repair)
+            repaired_header, repaired_lines = from_repair(repair.parsed)
             if not check_totals(repaired_header, repaired_lines):
                 header, lines, problems = repaired_header, repaired_lines, []
 
@@ -226,6 +241,7 @@ async def extract(invoice_id: uuid.UUID, task_id: str, attempt: int) -> Outcome:
             await asyncio.sleep(min(claimed, 5.0))
         if claimed is Outcome.ALREADY_DONE:
             return claimed
+        assert isinstance(claimed, uuid.UUID)  # _claim's only other outcome is a new run's id
         run_id = claimed
 
         lost = asyncio.Event()

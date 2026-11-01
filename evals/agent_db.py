@@ -13,7 +13,14 @@ from sqlalchemy import text
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
 from ledgerline_api.db import (
-    GoodsReceipt, Invoice, InvoiceLine, MatchResult, PoLine, PurchaseOrder, ReceiptLine, Vendor,
+    GoodsReceipt,
+    Invoice,
+    InvoiceLine,
+    MatchResult,
+    PoLine,
+    PurchaseOrder,
+    ReceiptLine,
+    Vendor,
 )
 from ledgerline_api.normalize import invoice_number_key, po_number_key, vendor_name_key
 from ledgerline_api.settings import settings

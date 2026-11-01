@@ -13,8 +13,17 @@ from sqlalchemy import select
 
 from ledgerline_api import agent
 from ledgerline_api.db import (
-    AgentRun, AgentStep, GoodsReceipt, Invoice, InvoiceLine, MatchResult, PendingAction, PoLine, PurchaseOrder,
-    ReceiptLine, Vendor,
+    AgentRun,
+    AgentStep,
+    GoodsReceipt,
+    Invoice,
+    InvoiceLine,
+    MatchResult,
+    PendingAction,
+    PoLine,
+    PurchaseOrder,
+    ReceiptLine,
+    Vendor,
 )
 
 pytestmark = [pytest.mark.integration, pytest.mark.anyio]

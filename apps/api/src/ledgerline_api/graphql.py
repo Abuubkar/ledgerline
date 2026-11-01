@@ -7,12 +7,12 @@ import uuid
 from collections import defaultdict
 from datetime import date, datetime
 from decimal import Decimal
-from typing import Annotated, NewType
+from typing import Annotated, NewType, overload
 
 import strawberry
 from fastapi import Depends
-from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 from strawberry import relay
 from strawberry.dataloader import DataLoader
 from strawberry.fastapi import BaseContext, GraphQLRouter
@@ -22,10 +22,10 @@ from strawberry.schema.config import StrawberryConfig
 from ledgerline_api import service
 from ledgerline_api.db import AgentRun as AgentRunRow
 from ledgerline_api.db import GoodsReceipt as GoodsReceiptRow
-from ledgerline_api.db import PurchaseOrder as PurchaseOrderRow
 from ledgerline_api.db import Invoice as InvoiceRow
 from ledgerline_api.db import InvoiceLine as InvoiceLineRow
 from ledgerline_api.db import PendingAction as PendingActionRow
+from ledgerline_api.db import PurchaseOrder as PurchaseOrderRow
 from ledgerline_api.db import Vendor as VendorRow
 from ledgerline_api.db import get_session
 from ledgerline_api.normalize import po_number_key
@@ -121,6 +121,10 @@ class MatchResult:
     matched_at: datetime
 
 
+@overload
+def _decimal(value: Decimal) -> str: ...
+@overload
+def _decimal(value: Decimal | None) -> str | None: ...
 def _decimal(value: Decimal | None) -> str | None:
     return format(value.normalize(), "f") if value is not None else None
 
@@ -208,7 +212,7 @@ class AgentRun:
             prompt_version=row.prompt_version, tool_turns=row.tool_turns, guard_fires=row.guard_fires,
             llm_ms=row.llm_ms, started_at=row.started_at, finished_at=row.finished_at,
             steps=[AgentStep(step_no=s.step_no, kind=s.kind, content=s.content, tool_name=s.tool_name,
-                             arguments=s.arguments, result=s.result, error=s.error, llm_ms=s.llm_ms) for s in row.steps],
+                             arguments=s.arguments, result=s.result, error=s.error, llm_ms=s.llm_ms) for s in row.steps],  # type: ignore[arg-type]  # strawberry's JSON scalar takes any JSON-able value
         )
 
 
@@ -227,7 +231,7 @@ class PendingAction:
     @classmethod
     def from_row(cls, row: PendingActionRow) -> "PendingAction":
         return cls(id=row.id, invoice_id=row.invoice_id, action_type=row.action_type, status=row.status,
-                   details=row.details, version=row.version, decision_note=row.decision_note,
+                   details=row.details, version=row.version, decision_note=row.decision_note,  # type: ignore[arg-type]  # strawberry's JSON scalar takes any JSON-able value
                    created_at=row.created_at, decided_at=row.decided_at)
 
 
@@ -330,7 +334,7 @@ class Invoice:
             invoice_number=row.invoice_number, po_number=row.po_number,
             invoice_date=row.invoice_date, due_date=row.due_date, currency=row.currency,
             subtotal=money(row.subtotal_minor), tax=money(row.tax_minor), total=money(row.total_minor),
-            invalid_fields=row.invalid_fields, field_confidence=row.field_confidence, error_code=row.error_code,
+            invalid_fields=row.invalid_fields, field_confidence=row.field_confidence, error_code=row.error_code,  # type: ignore[arg-type]  # strawberry's JSON scalar takes any JSON-able value
             error_detail=row.error_detail, model=row.model, prompt_version=row.prompt_version, llm_ms=row.llm_ms,
             repair_attempted=row.repair_attempted,
             # Lean list queries don't load pages; the case file asks for one invoice, which does.
@@ -341,12 +345,12 @@ class Invoice:
 
 
 @strawberry.type
-class InvoiceConnection(relay.Connection[Invoice]):
+class InvoiceConnection(relay.Connection[Invoice]):  # type: ignore[type-var]  # Invoice isn't a relay.Node: our cursors are signed keysets, not global ids
     """Relay-style connection backed by the same signed keyset cursors as REST, not by offsets."""
 
 
 def _connection(page: service.Page, after: str | None) -> InvoiceConnection:
-    edges = [relay.Edge(node=Invoice.from_row(row), cursor=c) for row, c in zip(page.items, page.cursors)]
+    edges = [relay.Edge(node=Invoice.from_row(row), cursor=c) for row, c in zip(page.items, page.cursors)]  # type: ignore[type-var]  # Invoice isn't a relay.Node: our cursors are signed keysets, not global ids
     return InvoiceConnection(
         edges=edges,
         page_info=relay.PageInfo(

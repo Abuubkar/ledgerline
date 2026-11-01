@@ -65,7 +65,7 @@ def _now() -> datetime:
 async def fetch_page(client: httpx.AsyncClient, resource: str, cursor: str | None, since: datetime | None,
                      report: Report) -> dict:
     """One page, waiting out 429s as Retry-After says. Raises CursorExpired on 410."""
-    params = {"limit": settings.erp_page_size}
+    params: dict[str, str | int] = {"limit": settings.erp_page_size}
     if cursor is not None:
         params["cursor"] = cursor
     elif since is not None:
@@ -102,12 +102,12 @@ async def _upsert(session: AsyncSession, model, values: list[dict]) -> dict[str,
     """Insert the records, or update the stored ones the ERP has changed since. Returns {erp_id: id} for the
     rows written: Postgres returns no row for a conflict whose WHERE is false (an older or same version)."""
     statement = insert(model).values(values)
-    statement = statement.on_conflict_do_update(
+    upsert = statement.on_conflict_do_update(
         index_elements=["erp_id"],
         set_={name: statement.excluded[name] for name in values[0] if name != "erp_id"},
         where=model.erp_updated_at < statement.excluded.erp_updated_at,
     ).returning(model.erp_id, model.id)
-    return dict((await session.execute(statement)).all())
+    return dict((await session.execute(upsert)).all())
 
 
 async def _store_purchase_orders(session: AsyncSession, records: list[dict]) -> tuple[int, set[str]]:
@@ -178,6 +178,7 @@ async def sync_resource(session: AsyncSession, client: httpx.AsyncClient, resour
     report = Report(resource)
     await session.execute(insert(ErpSyncState).values(resource=resource).on_conflict_do_nothing())
     state = await session.get(ErpSyncState, resource)
+    assert state is not None  # inserted just above if it wasn't there
     report.resumed = state.cursor is not None
     await session.commit()
     while True:

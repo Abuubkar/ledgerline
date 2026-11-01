@@ -28,7 +28,6 @@ def expanded_db(postgres_url):
 
     from alembic import command
     from alembic.config import Config
-
     from conftest import REPO
 
     dsn = postgres_url.replace("postgresql+asyncpg", "postgresql")

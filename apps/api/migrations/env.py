@@ -1,11 +1,13 @@
 import asyncio
 from logging.config import fileConfig
 
+from alembic import context
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
-from alembic import context
+from ledgerline_api.db import Base
+from ledgerline_api.settings import settings
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -15,12 +17,6 @@ config = context.config
 # This line sets up loggers basically.
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
-
-# add your model's MetaData object here
-# for 'autogenerate' support
-# from myapp import mymodel
-from ledgerline_api.db import Base
-from ledgerline_api.settings import settings
 
 # One source of config: the app's settings. configparser treats % as interpolation, hence the escape.
 config.set_main_option("sqlalchemy.url", settings.database_url.replace("%", "%%"))
@@ -50,6 +46,7 @@ def run_migrations_offline() -> None:
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
+        transaction_per_migration=True,  # as online, so the --sql output CI lints matches what runs
     )
 
     with context.begin_transaction():

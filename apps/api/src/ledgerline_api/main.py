@@ -1,11 +1,11 @@
 import uuid
 from datetime import datetime
-from typing import Annotated
+from typing import Annotated, Any
+from urllib.parse import quote
 
 from fastapi import Depends, FastAPI, Header, Query, Request, UploadFile
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse, Response
-from urllib.parse import quote
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
@@ -16,10 +16,10 @@ from ledgerline_api.schemas import (
     ApiProblem,
     DeadLetter,
     DeadLetterPage,
+    Decision,
     Invoice,
     InvoicePage,
     InvoiceStatus,
-    Decision,
     MultiStatus,
     PendingAction,
     PendingActionList,
@@ -62,7 +62,7 @@ def _problems(*statuses: int) -> dict:
 _default_openapi = app.openapi
 
 
-def openapi_with_problem_json() -> dict:
+def openapi_with_problem_json() -> dict[str, Any]:
     """FastAPI documents every response model as application/json and adds a 422 validation response to each
     route. Ours differ: errors are application/problem+json, and validation failures are 400 problems."""
     if app.openapi_schema is None:
@@ -78,10 +78,11 @@ def openapi_with_problem_json() -> dict:
                         response["content"] = {PROBLEM_JSON: content["application/json"]}
         for unused in ("HTTPValidationError", "ValidationError"):
             schema["components"]["schemas"].pop(unused, None)
+    assert app.openapi_schema is not None  # FastAPI's openapi() stores the schema it builds
     return app.openapi_schema
 
 
-app.openapi = openapi_with_problem_json
+app.openapi = openapi_with_problem_json  # type: ignore[method-assign]  # FastAPI's documented way to customize the schema
 
 
 @app.post(
