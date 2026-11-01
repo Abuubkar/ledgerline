@@ -89,8 +89,8 @@ export function Shell({ children }: { children: ReactNode }) {
       <div className="main">
         <div className="bar">
           <span className="crumb">{crumb ?? <><Link href={`/invoices${invoicesKey.split(":")[1] ? `?status=${invoicesKey.split(":")[1]}` : ""}`}>All invoices</Link><Icon name="chevron-right" />Case</>}</span>
-          <button className="cmd" onClick={() => { setPalette(true); setQuery(""); setPicked(0); }}>
-            <Icon name="search" />Jump to an invoice or run a command<span className="kbd">⌘K</span>
+          <button className="cmd" aria-label="Jump to an invoice or run a command" onClick={() => { setPalette(true); setQuery(""); setPicked(0); }}>
+            <Icon name="search" /><span className="cmd-label">Jump to an invoice or run a command</span><span className="kbd">⌘K</span>
           </button>
           {id && list && index >= 0 && (
             <div className="pos">Case <span className="num">{index + 1}</span> of <span className="num">{list.items.length}{list.hasNext ? "+" : ""}</span>
