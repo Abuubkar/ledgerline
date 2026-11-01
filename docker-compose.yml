@@ -68,8 +68,8 @@ services:
       OLLAMA_HOST: ${WORKER_OLLAMA_HOST:-http://host.docker.internal:11434}
       LLM_MAX_CONCURRENCY: ${LLM_MAX_CONCURRENCY:-1}
       ERP_BASE_URL: http://erp_mock:8100
-      # Traces go to Jaeger only with TRACING=1 (and `--profile observability` to run Jaeger); otherwise tracing is off.
-      OTEL_EXPORTER_OTLP_ENDPOINT: ${TRACING:+http://jaeger:4318}
+      # Telemetry goes to the collector only with TRACING=1 (and `--profile observability` to run it); otherwise it's off.
+      OTEL_EXPORTER_OTLP_ENDPOINT: ${TRACING:+http://otel-collector:4318}
     extra_hosts:
       - "host.docker.internal:host-gateway"
     depends_on:
@@ -101,7 +101,7 @@ services:
     command: ["uvicorn", "ledgerline_erp_mock.main:app", "--host", "0.0.0.0", "--port", "8100"]
     environment:
       ERP_DATASET: /data/erp/dataset.json
-      OTEL_EXPORTER_OTLP_ENDPOINT: ${TRACING:+http://jaeger:4318}
+      OTEL_EXPORTER_OTLP_ENDPOINT: ${TRACING:+http://otel-collector:4318}
       ERP_ERROR_RATE: ${ERP_ERROR_RATE:-0}
       ERP_LATENCY_MS: ${ERP_LATENCY_MS:-0}
     ports:
@@ -109,16 +109,63 @@ services:
     volumes:
       - ./data/erp:/data/erp:ro
 
-  # Traces (ADR 0020): Jaeger v2 is both the OpenTelemetry collector (OTLP on 4318) and the trace store and UI
-  # (http://localhost:16686). In memory, so traces go when it stops. Runs only with --profile observability.
+  # Observability (ADR 0020, ADR 0021), only with --profile observability. Services send OTLP to the collector, which
+  # tail-samples traces into Jaeger, writes metrics to Prometheus and logs to Loki. Grafana (http://localhost:3001)
+  # shows the "Ledgerline / Pipeline" dashboard; Jaeger's UI is http://localhost:16686.
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.162.0
+    profiles: [observability]
+    command: ["--config=/etc/otelcol/config.yaml"]
+    volumes:
+      - ./infra/otel-collector.yaml:/etc/otelcol/config.yaml:ro
+    environment:
+      TRACE_SAMPLE_PERCENT: ${TRACE_SAMPLE_PERCENT:-20}
+    ports:
+      - "4318:4318"
+    depends_on: [jaeger, prometheus, loki]
+
   jaeger:
     image: cr.jaegertracing.io/jaegertracing/jaeger:2.22.0
     profiles: [observability]
     ports:
       - "16686:16686"
-      - "4318:4318"
+
+  prometheus:
+    image: prom/prometheus:v3.15.1
+    profiles: [observability]
+    command: ["--config.file=/etc/prometheus/prometheus.yml", "--web.enable-otlp-receiver",
+              "--enable-feature=exemplar-storage", "--storage.tsdb.retention.time=7d"]
+    volumes:
+      - ./infra/prometheus:/etc/prometheus:ro
+      - prometheusdata:/prometheus
+    ports:
+      - "9090:9090"
+
+  loki:
+    image: grafana/loki:3.7.9
+    profiles: [observability]
+    command: ["-config.file=/etc/loki/loki.yaml"]
+    volumes:
+      - ./infra/loki/loki.yaml:/etc/loki/loki.yaml:ro
+      - lokidata:/loki
+
+  grafana:
+    image: grafana/grafana:13.2.4
+    profiles: [observability]
+    environment:
+      GF_AUTH_ANONYMOUS_ENABLED: "true"   # development only: no login to look at the dashboard
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Viewer
+      GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH: /var/lib/grafana/dashboards/pipeline.json
+    volumes:
+      - ./infra/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./infra/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    ports:
+      - "3001:3000"
+    depends_on: [prometheus, loki, jaeger]
 
 volumes:
   pgdata:
+  prometheusdata:
+  lokidata:
   rabbitmqdata:
   seaweeddata:

@@ -1,0 +1,41 @@
+# Run the published, signed images (ADR 0019) instead of building locally, on top of docker-compose.yml:
+#
+#   export LEDGERLINE_TAG=sha-8016aa6    # a release; `main` is the latest merge. Pin one so you know what runs.
+#   docker compose -f docker-compose.yml -f docker-compose.release.yml pull
+#   docker compose -f docker-compose.yml -f docker-compose.release.yml run --rm api alembic upgrade head
+#   docker compose -f docker-compose.yml -f docker-compose.release.yml up -d --wait     # add --profile observability
+#
+# The API (http://localhost:8000) and the reviewer UI (http://localhost:3000) run in containers here, unlike in
+# development. Ollama still runs on the host. Verify an image before trusting it: the cosign command in ADR 0019.
+x-release-image: &pull
+  pull_policy: always  # use the published image; never build these locally
+
+services:
+  api:
+    extends: {file: docker-compose.yml, service: worker}  # same environment and dependencies as the worker
+    image: ghcr.io/abuubkar/ledgerline/api:${LEDGERLINE_TAG:-main}
+    command: ["uvicorn", "ledgerline_api.main:app", "--host", "0.0.0.0", "--port", "8000"]
+    <<: *pull
+    ports:
+      - "8000:8000"
+
+  web:
+    # Proxies /graphql and /v1 to http://api:8000, the address built into the image.
+    image: ghcr.io/abuubkar/ledgerline/web:${LEDGERLINE_TAG:-main}
+    <<: *pull
+    ports:
+      - "3000:3000"
+    depends_on: [api]
+
+  worker:
+    image: ghcr.io/abuubkar/ledgerline/worker:${LEDGERLINE_TAG:-main}
+    <<: *pull
+  relay:
+    image: ghcr.io/abuubkar/ledgerline/worker:${LEDGERLINE_TAG:-main}
+    <<: *pull
+  beat:
+    image: ghcr.io/abuubkar/ledgerline/worker:${LEDGERLINE_TAG:-main}
+    <<: *pull
+  erp_mock:
+    image: ghcr.io/abuubkar/ledgerline/erp-mock:${LEDGERLINE_TAG:-main}
+    <<: *pull

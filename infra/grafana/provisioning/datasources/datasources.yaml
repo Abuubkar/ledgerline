@@ -1,0 +1,25 @@
+# Grafana's data sources (ADR 0021), with fixed uids so the dashboard can name them. Histogram exemplars link to the
+# trace in Jaeger; a log line's trace_id links to its trace; a trace links to its log lines.
+apiVersion: 1
+datasources:
+  - name: Prometheus
+    uid: prometheus
+    type: prometheus
+    url: http://prometheus:9090
+    isDefault: true
+    jsonData:
+      exemplarTraceIdDestinations:
+        - {name: trace_id, datasourceUid: jaeger, urlDisplayLabel: Open trace}
+  - name: Jaeger
+    uid: jaeger
+    type: jaeger
+    url: http://jaeger:16686
+    jsonData:
+      tracesToLogsV2: {datasourceUid: loki, filterByTraceID: true, spanStartTimeShift: "-5m", spanEndTimeShift: "5m"}
+  - name: Loki
+    uid: loki
+    type: loki
+    url: http://loki:3100
+    jsonData:
+      derivedFields:
+        - {name: trace_id, matcherType: label, matcherRegex: trace_id, datasourceUid: jaeger, url: "$${__value.raw}", urlDisplayLabel: Open trace}
