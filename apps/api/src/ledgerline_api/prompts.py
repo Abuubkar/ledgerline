@@ -1,7 +1,7 @@
 """Every prompt Ledgerline sends to a model. Bump a version whenever its wording changes, so stored results
 can be traced to the exact prompt that produced them."""
 
-EXTRACT_PAGE_VERSION = "extract-page/3"  # /3: the schema accepts bare numbers too (ADR 0016)
+EXTRACT_PAGE_VERSION = "extract-page/4"  # /4: totals only as printed, quantity from its column (ADR 0017)
 
 _FIELD_RULES = """\
 - Copy values exactly as printed. Never compute, convert or invent a value.
@@ -13,6 +13,10 @@ _FIELD_RULES = """\
 - currency: the 3-letter ISO code (EUR, USD, GBP, JPY, ...).
 - subtotal, tax, total, and each line's quantity, unit_price and amount: plain numbers with a dot as the
   decimal point and no thousands separators, for example 1234.50. Never include a currency code or symbol.
+- subtotal, tax and total: only the invoice's own figures, where they are printed. If they aren't printed, null.
+  Never add up line amounts to fill them in.
+- quantity: the number in the quantity column. A number inside a description (a pack size such as "5 reams")
+  is part of the description, not the quantity.
 - field_confidence: for each header field, a number from 0 to 1 for how sure you are it was read correctly.
 """
 
@@ -33,7 +37,7 @@ def extract_page_user(page_no: int, page_count: int, text: str | None) -> str:
     return f"{where} Its text:\n\n{text}"
 
 
-REPAIR_VERSION = "repair-totals/3"
+REPAIR_VERSION = "repair-totals/4"  # /4: shares the field rules changed in extract-page/4
 
 REPAIR_SYSTEM = f"""\
 You re-read a supplier invoice whose extracted numbers don't add up, and return a corrected extraction of the
