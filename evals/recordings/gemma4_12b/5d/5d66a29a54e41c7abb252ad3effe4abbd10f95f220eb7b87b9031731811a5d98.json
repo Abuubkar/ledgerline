@@ -1,0 +1,29 @@
+{
+ "model": "gemma4:12b",
+ "created_at": "2026-11-01T01:05:34.885834Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 6952119042,
+ "load_duration": 9362667,
+ "prompt_eval_count": 1639,
+ "prompt_eval_duration": 2244580000,
+ "eval_count": 64,
+ "eval_duration": 4633391000,
+ "message": {
+  "role": "assistant",
+  "content": "",
+  "tool_calls": [
+   {
+    "function": {
+     "name": "draft_credit_memo_request",
+     "arguments": {
+      "lines": [
+       "page 1 line 1"
+      ],
+      "reason": "The invoice billed 12 units, but only 10 were ordered and received. The over-billed amount is $29.00."
+     }
+    }
+   }
+  ]
+ }
+}

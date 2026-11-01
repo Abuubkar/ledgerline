@@ -1,0 +1,27 @@
+{
+ "model": "gemma4:12b",
+ "created_at": "2026-11-01T01:04:23.847879Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 8164362042,
+ "load_duration": 8120125,
+ "prompt_eval_count": 1332,
+ "prompt_eval_duration": 2000350000,
+ "eval_count": 85,
+ "eval_duration": 6134776000,
+ "message": {
+  "role": "assistant",
+  "content": "",
+  "tool_calls": [
+   {
+    "function": {
+     "name": "propose_hold",
+     "arguments": {
+      "explanation": "The invoice number A15-2026-115 is identified as a duplicate of invoice 0199dddd-0000-7000-8000-000000000015.",
+      "reason_code": "duplicate"
+     }
+    }
+   }
+  ]
+ }
+}

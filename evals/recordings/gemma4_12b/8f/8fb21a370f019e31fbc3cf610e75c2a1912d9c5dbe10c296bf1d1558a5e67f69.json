@@ -1,0 +1,16 @@
+{
+ "model": "gemma4:12b",
+ "created_at": "2026-11-01T00:48:23.3168Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 28874143792,
+ "load_duration": 5055209,
+ "prompt_eval_count": 509,
+ "prompt_eval_duration": 3120324000,
+ "eval_count": 340,
+ "eval_duration": 23607518000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"Pacific Rim Packaging Inc.\",\n  \"vendor_tax_id\": \"91-2846573\",\n  \"invoice_number\": \"PR-2026-1329\",\n  \"po_number\": \"4500100047\",\n  \"invoice_date\": \"2026-09-28\",\n  \"due_date\": \"2026-10-28\",\n  \"currency\": \"USD\",\n  \"subtotal\": null,\n  \"tax\": null,\n  \"total\": null,\n  \"field_confidence\": {\n    \"vendor_name\": 1.0,\n    \"vendor_tax_id\": 1.0,\n    \"invoice_number\": 1.0,\n    \"po_number\": 1.0,\n    \"invoice_date\": 1.0,\n    \"due_date\": 1.0,\n    \"currency\": 1.0,\n    \"subtotal\": 0.0,\n    \"tax\": 0.0,\n    \"total\": 0.0\n  },\n  \"line_items\": [\n    {\n      \"description\": \"A4 copy paper, 5 reams\",\n      \"quantity\": null,\n      \"unit_price\": \"20\",\n      \"amount\": \"1,036.00\"\n    }\n  ]\n}"
+ }
+}

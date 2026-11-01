@@ -30,6 +30,9 @@ make chaos            # 200 invoices, stub model failing 15%, one worker killed;
 docker compose build worker && docker compose up -d worker relay   # after changing worker code
 pnpm --dir apps/web install && make web   # reviewer UI on :3000, proxying /graphql and /v1 to the API on :8000
 make test-web                             # Jest + MSW for the UI
+make eval                                 # evals on the dev split, replaying recorded model answers (no Ollama)
+make eval LIVE=1                          # the same against Ollama, recording answers (~1 h); commit evals/recordings
+make eval-test                            # the held-out test split: only to check a finished change
 ```
 
 ## Rules that are easy to break
@@ -74,3 +77,8 @@ make test-web                             # Jest + MSW for the UI
   `format_minor` on `packages/clients/fixtures/money.json`. Never divide minor units by 100 in TypeScript.
 - Anything that can differ between server and browser (random ids, the current time) is computed in an effect,
   or the page fails to hydrate.
+- Changing a prompt (and bumping its version) or anything that changes what's sent to the model invalidates the
+  recordings: run `make eval LIVE=1`, then commit `evals/recordings/`, `evals/REPORT.md` and `evals/results.json`.
+  Never tune against the test split.
+- Golden gold files come from the generator (`make golden`); don't edit them by hand. Agent scenarios
+  (`evals/golden/agent/*.yaml`) are hand-maintained.

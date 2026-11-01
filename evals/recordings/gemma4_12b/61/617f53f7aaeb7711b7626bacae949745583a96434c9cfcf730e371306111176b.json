@@ -1,0 +1,29 @@
+{
+ "model": "gemma4:12b",
+ "created_at": "2026-11-01T01:00:45.540632Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 11134388083,
+ "load_duration": 11211750,
+ "prompt_eval_count": 1892,
+ "prompt_eval_duration": 6342564000,
+ "eval_count": 68,
+ "eval_duration": 4738908000,
+ "message": {
+  "role": "assistant",
+  "content": "",
+  "tool_calls": [
+   {
+    "function": {
+     "name": "draft_credit_memo_request",
+     "arguments": {
+      "lines": [
+       "page 1 line 1"
+      ],
+      "reason": "The vendor billed for 6 units of 'Warehouse shelving unit, steel', but only 4 were received. A credit of 379.98 is requested."
+     }
+    }
+   }
+  ]
+ }
+}

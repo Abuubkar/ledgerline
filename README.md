@@ -113,6 +113,10 @@ Around that:
 - **The agent's limits are code, not prompt.** Tool arguments are validated, guards and budgets sit in the
   loop, every step is stored, and every run ends in exactly one proposal.
   ([ADR 0013](docs/adr/0013-exception-agent-proposes-a-person-decides.md))
+- **Quality is measured, not eyeballed.** A generated golden set (60 invoices, 25 agent scenarios) with gates on
+  field accuracy, line-item F1, schema validity, calibration, agent accuracy and speed. Model answers are recorded,
+  so the eval replays offline with identical numbers. ([ADR 0015](docs/adr/0015-evals-golden-set-gates-replay.md),
+  [evals/REPORT.md](evals/REPORT.md))
 - **Leases, not long-held locks.** A worker owns an invoice through a lease it renews; a unique index allows
   only one completed extraction per invoice, so double extraction is impossible rather than unlikely.
   ([ADR 0009](docs/adr/0009-queued-extraction-with-leases-and-dead-letters.md))
@@ -141,6 +145,7 @@ make smoke                                # end to end with the generated client
 make test                                 # unit tests, offline
 make test-int                             # service tests against a throwaway Postgres (needs Docker)
 make test-web                             # reviewer UI tests (Jest, GraphQL mocked with MSW)
+make eval                                 # accuracy and speed on the golden set, replayed offline (LIVE=1: against Ollama)
 make contract-check                       # code vs. contracts/openapi.yaml (needs Docker)
 make chaos                                # 200 invoices, stub model failing 15%, a worker killed mid-run; cleans up after
 make seed                                 # 200 vendors, 20k invoices, 30 near-duplicates, 5k POs for the ERP mock

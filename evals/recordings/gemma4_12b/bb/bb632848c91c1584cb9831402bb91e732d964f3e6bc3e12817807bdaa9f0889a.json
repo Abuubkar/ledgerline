@@ -1,0 +1,29 @@
+{
+ "model": "gemma4:12b",
+ "created_at": "2026-11-01T01:02:51.940474Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 12564495375,
+ "load_duration": 16967375,
+ "prompt_eval_count": 1662,
+ "prompt_eval_duration": 7500869000,
+ "eval_count": 70,
+ "eval_duration": 4998043000,
+ "message": {
+  "role": "assistant",
+  "content": "",
+  "tool_calls": [
+   {
+    "function": {
+     "name": "draft_credit_memo_request",
+     "arguments": {
+      "lines": [
+       "page 1 line 1"
+      ],
+      "reason": "The vendor billed for 2 units but only 1 was received, and the unit price exceeded the PO price. Total over-billed amount is 713.90."
+     }
+    }
+   }
+  ]
+ }
+}

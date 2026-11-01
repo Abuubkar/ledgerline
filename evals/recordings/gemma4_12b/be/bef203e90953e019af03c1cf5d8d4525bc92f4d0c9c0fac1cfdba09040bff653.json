@@ -1,0 +1,26 @@
+{
+ "model": "gemma4:12b",
+ "created_at": "2026-11-01T01:04:15.539262Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 4348446500,
+ "load_duration": 5177292,
+ "prompt_eval_count": 1129,
+ "prompt_eval_duration": 3271269000,
+ "eval_count": 15,
+ "eval_duration": 1038002999,
+ "message": {
+  "role": "assistant",
+  "content": "",
+  "tool_calls": [
+   {
+    "function": {
+     "name": "get_vendor_history",
+     "arguments": {
+      "limit": 5
+     }
+    }
+   }
+  ]
+ }
+}
