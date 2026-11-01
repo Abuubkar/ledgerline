@@ -49,6 +49,19 @@ def header_correct(gold: dict, predicted: dict) -> dict[str, bool]:
     return {name: normalize_field(name, gold.get(name)) == normalize_field(name, predicted.get(name)) for name in HEADER_FIELDS}
 
 
+# The real-invoice set (evals/golden/real) prints no tax ID, PO or tax, so it's scored on these three. Its invoices
+# print a gross total and a net after agency commission; either is a correct "total".
+REAL_FIELDS = ("invoice_number", "invoice_date", "total_minor")
+
+
+def real_header_correct(gold: dict, predicted: dict) -> dict[str, bool]:
+    correct = {name: normalize_field(name, gold.get(name)) == normalize_field(name, predicted.get(name))
+               for name in ("invoice_number", "invoice_date")}
+    total = predicted.get("total_minor")
+    correct["total_minor"] = total in gold["total_minor_accepted"] if total is not None else not gold["total_minor_accepted"]
+    return correct
+
+
 def _decimal(value) -> Decimal | None:
     try:
         return Decimal(str(value)).normalize() if value not in (None, "") else None
@@ -76,17 +89,31 @@ def similarity(a: str | None, b: str | None) -> float:
     return fuzz.token_sort_ratio(a or "", b or "", processor=utils.default_process)
 
 
-def match_lines(gold: list[dict], predicted: list[dict]) -> LineScore:
-    """Pair predicted lines with gold lines and count the pairs that are right in every value."""
+def match_lines(gold: list[dict], predicted: list[dict], only_printed: bool = False) -> LineScore:
+    """Pair predicted lines with gold lines and count the pairs that are right in every value.
+
+    only_printed is for real invoices (evals/golden/real): a value the invoice doesn't print (None in gold: some
+    layouts print an amount per spot, others count × rate) isn't checked; a description counts when the gold's words
+    are all in the extracted one (models fold neighbouring columns such as air dates into it); and lines whose numbers
+    agree are paired first, since per-spot invoices repeat the same description many times."""
     if not gold or not predicted:
         return LineScore(0, len(predicted), len(gold), [])
-    scores = np.array([[similarity(g.get("description"), p.get("description")) for p in predicted] for g in gold])
-    rows, cols = linear_sum_assignment(scores, maximize=True)
+
+    def numbers_agree(gl: dict, pl: dict) -> bool:
+        checks = (("quantity", _decimal), ("unit_price", _decimal), ("amount_minor", lambda v: v))
+        return all((only_printed and gl.get(key) is None) or norm(gl.get(key)) == norm(pl.get(key)) for key, norm in checks)
+
+    def describe(g: dict, p: dict) -> float:
+        if only_printed:
+            return fuzz.token_set_ratio(g.get("description") or "", p.get("description") or "", processor=utils.default_process)
+        return similarity(g.get("description"), p.get("description"))
+
+    scores = np.array([[describe(g, p) for p in predicted] for g in gold])
+    pairing = scores + np.array([[100 * numbers_agree(g, p) for p in predicted] for g in gold]) if only_printed else scores
+    rows, cols = linear_sum_assignment(pairing, maximize=True)
     pairs, correct = [], 0
     for g, p in zip(rows, cols):
-        gl, pl = gold[g], predicted[p]
-        ok = (scores[g, p] >= DESCRIPTION_SIMILARITY and _decimal(gl["quantity"]) == _decimal(pl.get("quantity"))
-              and _decimal(gl["unit_price"]) == _decimal(pl.get("unit_price")) and gl["amount_minor"] == pl.get("amount_minor"))
+        ok = scores[g, p] >= DESCRIPTION_SIMILARITY and numbers_agree(gold[g], predicted[p])
         correct += ok
         pairs.append((int(g), int(p), float(scores[g, p]), bool(ok)))
     return LineScore(correct, len(predicted), len(gold), pairs)

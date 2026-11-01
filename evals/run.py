@@ -35,7 +35,11 @@ from ledgerline_api.errors import PermanentError, TransientError  # noqa: E402
 from ledgerline_api.settings import settings  # noqa: E402
 
 GOLDEN = EVALS / "golden"
-SPLIT_SIZES = {"extraction": 20, "agent": 10}  # how many cases are held out for the test split
+SPLIT_SIZES = {"extraction": 20, "agent": 10, "scans": 4, "real": 0}  # how many cases are held out for the test split
+# Extraction sets: the 60-invoice golden set (gated, with the agent scenarios) and the 12 scans (reported only, until
+# a baseline exists). Each has its own fixed split, so adding a set never moves a case of another between splits.
+# The real set (25 FCC ad invoices) is for measuring only: no test split, no gates, and scored on its own fields.
+SETS = {"golden": ("extraction", "extraction"), "scans": ("scans", "scans"), "real": ("real", "real")}  # name -> (folder under golden/, split kind)
 # Quality gates, set from the first baseline (docs/metrics.md, slice 6a). Speed is reported but not gated: it
 # depends on the machine, and the eval is for comparing models and runs, not for policing this laptop.
 GATES = {  # metric: (direction, threshold)
@@ -66,11 +70,11 @@ def cache_path(kind: str, version: str, case: str) -> Path:
     return EVALS / "cache" / settings.llm_model.replace(":", "_") / version.replace("/", "_") / kind / f"{case}.json"
 
 
-async def extract_case(case: str, recorder: Recorder) -> dict:
+async def extract_case(case: str, recorder: Recorder, folder: Path) -> dict:
     token = current_case.set(case)
     started = time.perf_counter()
     try:
-        content = (GOLDEN / "extraction" / f"{case}.pdf").read_bytes()
+        content = (folder / f"{case}.pdf").read_bytes()
         try:
             result = await jobs._extract_document(content, redis_client=None)  # type: ignore[arg-type]  # no Redis: llm_slot is swapped for no_slot
         except TransientError:
@@ -129,7 +133,8 @@ async def agent_case(scenario: dict, recorder: Recorder) -> dict:
     }
 
 
-async def run_all(cases: list[str], scenarios: list[dict], recorder: Recorder, fresh: bool, concurrency: int) -> tuple[dict, dict]:
+async def run_all(cases: list[str], scenarios: list[dict], recorder: Recorder, fresh: bool, concurrency: int,
+                  folder: Path) -> tuple[dict, dict]:
     extraction_version = f"{prompts.EXTRACT_PAGE_VERSION}+{prompts.REPAIR_VERSION}"
     results: dict[str, dict] = {}
     gate = asyncio.Semaphore(concurrency)
@@ -140,7 +145,7 @@ async def run_all(cases: list[str], scenarios: list[dict], recorder: Recorder, f
             results[case] = json.loads(path.read_text())
             return
         async with gate:
-            results[case] = await extract_case(case, recorder)
+            results[case] = await extract_case(case, recorder, folder)
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(json.dumps(results[case], indent=1))
         print(f"  extraction {case}: {results[case]['status']} ({sum(c['ms'] for c in results[case]['calls']) / 1000:.1f}s model)", flush=True)
@@ -163,35 +168,47 @@ async def run_all(cases: list[str], scenarios: list[dict], recorder: Recorder, f
 
 # --- scoring -----------------------------------------------------------------------------------------------
 
-def score(golds: dict[str, dict], results: dict[str, dict], scenarios: list[dict], agent_results: dict[str, dict], concurrency: int) -> dict:
-    per_field: dict[str, list[bool]] = {f: [] for f in metrics.HEADER_FIELDS}
+def score(golds: dict[str, dict], results: dict[str, dict], scenarios: list[dict], agent_results: dict[str, dict], concurrency: int,
+          real: bool = False) -> dict:
+    """With real=True (the FCC set): its three header fields, lines checked only on what they print, no expected
+    status, and documents that aren't invoices reported separately (did we invent an invoice number?)."""
+    per_field: dict[str, list[bool]] = {f: [] for f in (metrics.REAL_FIELDS if real else metrics.HEADER_FIELDS)}
+    non_invoices: list[dict] = []
+    statuses_expected = 0
     observations, tp, predicted, gold_lines, failures = [], 0, 0, 0, []
     pages_attempted = pages_invalid = 0
     latencies, page_latencies, out_tokens, out_ms, statuses_ok = [], [], 0, 0.0, 0
     for case, gold in sorted(golds.items()):
         got = results[case]
-        correct = metrics.header_correct(gold, got["header"])
+        if real and gold.get("document_type") != "invoice":
+            non_invoices.append({"case": case, "type": gold["document_type"], "status": got["status"],
+                                 "invoice_number": got["header"].get("invoice_number"), "total_minor": got["header"].get("total_minor"),
+                                 "lines": len(got["lines"]), "invented_invoice_number": bool(got["header"].get("invoice_number")) and not gold.get("invoice_number")})
+            continue
+        correct = (metrics.real_header_correct if real else metrics.header_correct)(gold, got["header"])
         for field, ok in correct.items():
             per_field[field].append(ok)
             confidence = got["confidence"].get(CONFIDENCE_KEY.get(field, field))
             if confidence is not None:
                 observations.append((confidence, ok))
-        lines = metrics.match_lines(gold["lines"], got["lines"])
+        lines = metrics.match_lines(gold["lines"], got["lines"], only_printed=real)
         tp, predicted, gold_lines = tp + lines.true_positives, predicted + lines.predicted, gold_lines + lines.gold
         attempted = [p for p in got["pages"] if p["status"] != "blank"]
         pages_attempted += len(attempted)
         pages_invalid += sum(1 for p in attempted if p["error_code"] == "invalid_model_output")
-        expected_status = "exception" if gold["arithmetic_error"] else "extracted"
-        statuses_ok += got["status"] == expected_status
+        expected_status = None if real else "exception" if gold["arithmetic_error"] else "extracted"
+        if expected_status:
+            statuses_expected += 1
+            statuses_ok += got["status"] == expected_status
         latencies.append(sum(c["ms"] for c in got["calls"]) / 1000)
         read = sum(1 for p in attempted if p["status"] == "extracted" or p["error_code"] == "invalid_model_output")
         page_latencies += [c["ms"] / 1000 for c in got["calls"][:read]]  # page calls come first; a repair call after
         out_tokens += sum(c["output_tokens"] for c in got["calls"])
         out_ms += sum(c["output_ms"] for c in got["calls"])
-        wrong = {f: {"gold": gold.get(f), "got": got["header"].get(f)} for f, ok in correct.items() if not ok}
+        wrong = {f: {"gold": gold.get(f, gold.get(f"{f}_accepted")), "got": got["header"].get(f)} for f, ok in correct.items() if not ok}
         bad_lines = [{"gold": gold["lines"][g], "got": got["lines"][p], "similarity": round(sim)} for g, p, sim, ok in lines.pairs if not ok]
-        if wrong or bad_lines or lines.predicted != lines.gold or got["status"] != expected_status:
-            failures.append({"case": case, "style": gold["style"], "pages": gold["pages"], "status": got["status"], "expected_status": expected_status,
+        if wrong or bad_lines or lines.predicted != lines.gold or (expected_status and got["status"] != expected_status):
+            failures.append({"case": case, "style": gold.get("style"), "pages": gold.get("pages"), "status": got["status"], "expected_status": expected_status,
                              "fields": wrong, "lines": bad_lines, "line_counts": [lines.gold, lines.predicted], "error": got.get("error")})
     field_accuracy = {f: sum(v) / len(v) for f, v in per_field.items()}
     calibration, confident_n = metrics.calibration_error(observations)
@@ -222,7 +239,9 @@ def score(golds: dict[str, dict], results: dict[str, dict], scenarios: list[dict
         "line_f1": metrics.f1(tp, predicted, gold_lines), "line_counts": {"correct": tp, "predicted": predicted, "gold": gold_lines},
         "schema_validity": 1 - pages_invalid / pages_attempted if pages_attempted else 1.0,
         "calibration_error": calibration, "calibration_n": confident_n,
-        "status_accuracy": statuses_ok / len(golds) if golds else 0,
+        "status_accuracy": statuses_ok / statuses_expected if statuses_expected else 0,
+        "statuses": {s: sum(1 for c in golds if results[c]["status"] == s) for s in sorted({results[c]["status"] for c in golds})},
+        "non_invoices": non_invoices,
         "extraction_p50_s": metrics.percentile(latencies, 50), "extraction_p95_s": metrics.percentile(latencies, 95),
         "page_p50_s": metrics.percentile(page_latencies, 50), "page_p95_s": metrics.percentile(page_latencies, 95),
         "output_tokens_per_s": out_tokens / (out_ms / 1000) if out_ms else 0,
@@ -232,6 +251,51 @@ def score(golds: dict[str, dict], results: dict[str, dict], scenarios: list[dict
         "agent_p95_s": metrics.percentile([r["model_s"] for r in agent_rows], 95),
         "failures": failures, "agent_rows": agent_rows,
     }
+
+
+def write_real_report(m: dict, run: dict) -> str:
+    """The real-invoice set's report: measured, not gated (evals/golden/real/README.md)."""
+    fields = "\n".join(f"| {f} | {pct(v)} |" for f, v in m["field_accuracy"].items())
+    statuses = ", ".join(f"{s}: {n}" for s, n in m["statuses"].items())
+    others = "\n".join(f"| {r['case']} | {r['type']} | {r['status']} | {r['invoice_number'] or '—'} | {r['total_minor'] if r['total_minor'] is not None else '—'} | "
+                       f"{'**yes**' if r['invented_invoice_number'] else 'no'} |" for r in m["non_invoices"]) or "| — | | | | | |"
+    failures = []
+    for f in m["failures"]:
+        parts = [f"**{f['case']}**: status {f['status']}" + (f" ({f['error']})" if f.get("error") else "")]
+        parts += [f"  - {name}: gold `{v['gold']}`, got `{v['got']}`" for name, v in f["fields"].items()]
+        if f["line_counts"][0] != f["line_counts"][1]:
+            parts.append(f"  - lines: {f['line_counts'][0]} in gold, {f['line_counts'][1]} extracted")
+        parts += [f"  - line `{l['gold']['description']}`: gold {l['gold']['quantity']} × {l['gold']['unit_price']} = {l['gold']['amount_minor']}, "
+                  f"got `{l['got']['description']}` {l['got']['quantity']} × {l['got']['unit_price']} = {l['got']['amount_minor']} (similarity {l['similarity']})"
+                  for l in f["lines"][:5]]
+        failures.append("\n".join(parts))
+    return f"""# Real invoices: eval report
+
+Model **{run['model']}**, prompt `{run['extraction_prompt']}`, {run['extraction_cases']} documents from FCC public files
+(evals/golden/real/README.md), {run['mode']} on {run['date']}. **Measured, not gated.**
+
+Scored on what these invoices print: invoice number, invoice date, total (gross or net) and line items, each line
+checked only on the values it prints. {len(m['non_invoices'])} documents aren't invoices and are listed separately.
+
+| Field | Correct |
+|---|---|
+{fields}
+
+- Line items: precision {pct(m['line_precision'])}, recall {pct(m['line_recall'])}, F1 **{pct(m['line_f1'])}** ({m['line_counts']['correct']} of {m['line_counts']['gold']} gold lines, {m['line_counts']['predicted']} extracted).
+- First-try schema validity: {pct(m['schema_validity'])} of pages.
+- Final statuses: {statuses}.
+- Model time per invoice p50 / p95: {m['extraction_p50_s']:.1f} s / {m['extraction_p95_s']:.1f} s; per page p50 / p95: {m['page_p50_s']:.1f} s / {m['page_p95_s']:.1f} s.
+
+## Documents that aren't invoices
+
+| Case | What it is | Status | Invoice number read | Total read | Gave an invoice number it doesn't have? |
+|---|---|---|---|---|---|
+{others}
+
+## Where it went wrong ({len(m['failures'])} invoices)
+
+{chr(10).join(failures) or "Nothing."}
+"""
 
 
 def check_gates(m: dict, baseline: dict | None) -> list[str]:
@@ -275,7 +339,7 @@ def write_report(m: dict, run: dict, missed: list[str]) -> str:
     lc = m["line_counts"]
     return f"""# Eval report
 
-Model **{run['model']}**, prompts `{run['extraction_prompt']}` and `{run['agent_prompt']}`, **{run['split']}** split
+Model **{run['model']}**, prompts `{run['extraction_prompt']}` and `{run['agent_prompt']}`, **{run['set']}** set, **{run['split']}** split
 ({run['extraction_cases']} invoices, {run['agent_cases']} agent scenarios), {run['mode']} on {run['date']}.
 Generated by `evals/run.py`; numbers come from the recorded model answers, so a replay reproduces them exactly.
 
@@ -330,19 +394,23 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--live", action="store_true", help="call Ollama and record its answers")
     parser.add_argument("--split", choices=["dev", "test"], default="dev")
+    parser.add_argument("--set", choices=list(SETS), default="golden", help="which extraction set (scans: reported, not gated)")
     parser.add_argument("--fresh", action="store_true", help="ignore cached results")
     parser.add_argument("--baseline", type=Path, help="fail on a drop of more than 1.5 points against this file")
     parser.add_argument("--write-baseline", type=Path, help="save this run's metrics as a baseline")
     parser.add_argument("--cases", help="comma-separated case ids to run (for debugging; gates still apply)")
-    parser.add_argument("--out", type=Path, default=EVALS, help="where REPORT.md and results.json go (the sweep writes one folder per model)")
+    parser.add_argument("--out", type=Path, help="where REPORT.md and results.json go (default: evals/, or evals/<set>/)")
     args = parser.parse_args()
+    folder_name, split_kind = SETS[args.set]
+    folder = GOLDEN / folder_name
+    args.out = args.out or (EVALS if args.set == "golden" else EVALS / args.set)
 
     concurrency = int(os.environ.get("OLLAMA_NUM_PARALLEL", "1"))
-    golds = {p.stem: json.loads(p.read_text()) for p in sorted((GOLDEN / "extraction").glob("*.json"))}
-    cases = split(list(golds), "extraction", args.split)
+    golds = {p.stem: json.loads(p.read_text()) for p in sorted(folder.glob("*.json"))}
+    cases = split(list(golds), split_kind, args.split)
     golds = {c: golds[c] for c in cases}
     all_scenarios = {p.stem: yaml.safe_load(p.read_text()) for p in sorted((GOLDEN / "agent").glob("*.yaml"))}
-    scenarios = [all_scenarios[i] for i in split(list(all_scenarios), "agent", args.split)]
+    scenarios = [all_scenarios[i] for i in split(list(all_scenarios), "agent", args.split)] if args.set == "golden" else []
     if args.cases:
         wanted = set(args.cases.split(","))
         golds = {c: g for c, g in golds.items() if c in wanted}
@@ -355,7 +423,7 @@ def main() -> None:
     needs_db = any(args.fresh or not cache_path("agent", prompts.AGENT_VERSION, s["id"]).exists() for s in scenarios)
     container = agent_db.start_database() if needs_db else None
     try:
-        results, agent_results = asyncio.run(run_all(cases, scenarios, recorder, args.fresh, concurrency))
+        results, agent_results = asyncio.run(run_all(cases, scenarios, recorder, args.fresh, concurrency, folder))
     except MissingRecording as exc:
         sys.exit(f"replay failed: {exc}")
     finally:
@@ -363,17 +431,17 @@ def main() -> None:
         if container:
             container.stop()
 
-    m = score(golds, results, scenarios, agent_results, concurrency)
+    m = score(golds, results, scenarios, agent_results, concurrency, real=args.set == "real")
     baseline = json.loads(args.baseline.read_text()) if args.baseline else None
-    missed = check_gates(m, baseline)
-    run = {"model": settings.llm_model, "extraction_prompt": f"{prompts.EXTRACT_PAGE_VERSION}+{prompts.REPAIR_VERSION}",
+    missed = check_gates(m, baseline) if args.set == "golden" else []
+    run = {"set": args.set, "model": settings.llm_model, "extraction_prompt": f"{prompts.EXTRACT_PAGE_VERSION}+{prompts.REPAIR_VERSION}",
            "agent_prompt": prompts.AGENT_VERSION, "split": args.split, "mode": "live" if args.live else "replayed",
            "date": datetime.now(UTC).strftime("%Y-%m-%d"), "extraction_cases": len(cases), "agent_cases": len(scenarios),
            "concurrency": concurrency, "recorded": recorder.recorded, "replayed": recorder.replayed}
     summary = {k: v for k, v in m.items() if k not in ("failures", "agent_rows")}
     args.out.mkdir(parents=True, exist_ok=True)
     (args.out / "results.json").write_text(json.dumps({"run": run, "metrics": summary, "failures": m["failures"], "agent": m["agent_rows"]}, indent=2, default=str))
-    (args.out / "REPORT.md").write_text(write_report(m, run, missed))
+    (args.out / "REPORT.md").write_text(write_real_report(m, run) if args.set == "real" else write_report(m, run, missed))
     if args.write_baseline:
         args.write_baseline.write_text(json.dumps({k: summary[k] for k in BASELINE_METRICS} | {"model": run["model"]}, indent=2) + "\n")
     print(f"\nheader macro {pct(m['header_macro_accuracy'])} (min field {pct(m['header_min_field_accuracy'])}), line F1 {pct(m['line_f1'])}, "

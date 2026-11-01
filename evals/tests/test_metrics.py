@@ -1,6 +1,14 @@
 """The eval's own scoring rules, on examples small enough to compute by hand."""
 
-from evals.metrics import calibration_error, f1, header_correct, match_lines, normalize_field, percentile
+from evals.metrics import (
+    calibration_error,
+    f1,
+    header_correct,
+    match_lines,
+    normalize_field,
+    percentile,
+    real_header_correct,
+)
 
 
 def line(description, quantity, unit_price, amount_minor):
@@ -65,3 +73,34 @@ def test_nearest_rank_percentile():
     assert percentile([10, 20, 30, 40, 50, 60, 70, 80, 90, 100], 95) == 100
     assert percentile([10, 20, 30, 40, 50, 60, 70, 80, 90, 100], 50) == 50
     assert percentile([], 95) == 0.0
+
+
+def test_real_invoices_check_only_what_the_line_prints():
+    # One layout prints an amount per aired spot, another a spot count and a rate with no line amount.
+    per_spot = [{"description": "Fox 9 AM News at 6am", "quantity": None, "unit_price": None, "amount_minor": 12500}]
+    count_rate = [{"description": "CHANNEL 11 NEWS", "quantity": "4", "unit_price": "625.00", "amount_minor": None}]
+    assert match_lines(per_spot, [line("Fox 9 AM News at 6am", "1", "125.00", 12500)], only_printed=True).true_positives == 1
+    assert match_lines(count_rate, [line("CHANNEL 11 NEWS", "4", "625", 250000)], only_printed=True).true_positives == 1
+    assert match_lines(count_rate, [line("CHANNEL 11 NEWS", "5", "625", 312500)], only_printed=True).true_positives == 0
+    assert match_lines(count_rate, [line("CHANNEL 11 NEWS", "4", "625", 250000)]).true_positives == 0  # strict: amount differs
+
+
+def test_real_invoice_total_may_be_gross_or_net():
+    gold = {"invoice_number": "950658", "invoice_date": "2020-02-23", "total_minor_accepted": [478125, 562500]}
+    assert real_header_correct(gold, {"invoice_number": "950658", "invoice_date": "2020-02-23", "total_minor": 562500}) == \
+        {"invoice_number": True, "invoice_date": True, "total_minor": True}
+    assert real_header_correct(gold, {"total_minor": 478125})["total_minor"]
+    assert not real_header_correct(gold, {"total_minor": 500000})["total_minor"]
+    assert real_header_correct({"invoice_number": None, "invoice_date": None, "total_minor_accepted": []}, {}) == \
+        {"invoice_number": True, "invoice_date": True, "total_minor": True}  # a non-invoice: nothing invented
+
+
+def test_real_invoice_lines_tolerate_extra_columns_and_repeated_descriptions():
+    # The model folds air dates and spot codes into the description; per-spot invoices repeat one description.
+    gold = [{"description": "SPOT 9:00:00AM- 5:00:00 Day,M-4", "quantity": None, "unit_price": None, "amount_minor": 1000},
+            {"description": "SPOT 9:00:00AM- 5:00:00 Day,M-4", "quantity": None, "unit_price": None, "amount_minor": 2000}]
+    got = [line("SPOT 9:00:00AM- 5:00:00 Day,M-4 03/02/20 9:23AM (Mo) 00:30 MMT130", "1", "20.00", 2000),
+           line("SPOT 9:00:00AM- 5:00:00 Day,M-4 03/02/20 9:59AM (Mo) 00:15 MMT115", "1", "10.00", 1000)]
+    assert match_lines(gold, got, only_printed=True).true_positives == 2
+    assert match_lines(gold, got).true_positives == 0  # the strict rule for generated invoices is unchanged
+
