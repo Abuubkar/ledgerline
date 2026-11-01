@@ -1,0 +1,255 @@
+{
+  "run": {
+    "model": "gemma4:12b",
+    "extraction_prompt": "extract-page/4+repair-totals/4",
+    "agent_prompt": "agent/1",
+    "split": "test",
+    "mode": "live",
+    "date": "2026-11-01",
+    "extraction_cases": 20,
+    "agent_cases": 10,
+    "concurrency": 1,
+    "recorded": 63,
+    "replayed": 0
+  },
+  "metrics": {
+    "header_macro_accuracy": 0.9949999999999999,
+    "header_min_field_accuracy": 0.95,
+    "field_accuracy": {
+      "vendor_name": 1.0,
+      "vendor_tax_id": 1.0,
+      "invoice_number": 1.0,
+      "po_number": 1.0,
+      "invoice_date": 1.0,
+      "due_date": 1.0,
+      "currency": 1.0,
+      "subtotal_minor": 0.95,
+      "tax_minor": 1.0,
+      "total_minor": 1.0
+    },
+    "line_precision": 0.9651162790697675,
+    "line_recall": 0.9764705882352941,
+    "line_f1": 0.9707602339181286,
+    "line_counts": {
+      "correct": 83,
+      "predicted": 86,
+      "gold": 85
+    },
+    "schema_validity": 1.0,
+    "calibration_error": 0.005154639175257732,
+    "calibration_n": 194,
+    "status_accuracy": 0.95,
+    "extraction_p50_s": 48.097287125,
+    "extraction_p95_s": 109.07349479199999,
+    "page_p50_s": 33.478081792,
+    "page_p95_s": 46.515261292000005,
+    "output_tokens_per_s": 14.159681056883564,
+    "invoices_per_hour": 57.324025422125764,
+    "agent_action_accuracy": 1.0,
+    "agent_hold_reason_accuracy": 1.0,
+    "agent_evidence_complete": 1.0,
+    "agent_guard_fires": 0,
+    "agent_p95_s": 32.9
+  },
+  "failures": [
+    {
+      "case": "g13",
+      "style": "german",
+      "pages": 1,
+      "status": "exception",
+      "expected_status": "extracted",
+      "fields": {
+        "subtotal_minor": {
+          "gold": 24897,
+          "got": 24997
+        }
+      },
+      "lines": [
+        {
+          "gold": {
+            "description": "A4 copy paper, 5 reams",
+            "quantity": "6",
+            "unit_price": "2.14",
+            "amount_minor": 1284
+          },
+          "got": {
+            "description": "A4 copy paper, 5 reams",
+            "quantity": "22",
+            "unit_price": "3.87",
+            "amount_minor": 8514
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Server rack screws, M6",
+            "quantity": "22",
+            "unit_price": "3.87",
+            "amount_minor": 8514
+          },
+          "got": {
+            "description": "Server rack screws, M6",
+            "quantity": "6",
+            "unit_price": "2.14",
+            "amount_minor": 1284
+          },
+          "similarity": 100
+        }
+      ],
+      "line_counts": [
+        3,
+        4
+      ],
+      "error": null
+    }
+  ],
+  "agent": [
+    {
+      "id": "a01-price-eur",
+      "gold": "credit_memo_request",
+      "got": "credit_memo_request",
+      "correct": true,
+      "evidence": true,
+      "tools": [
+        "get_po",
+        "get_receipts",
+        "compute_variance",
+        "draft_credit_memo_request"
+      ],
+      "guard_fires": 0,
+      "stop": "proposed",
+      "model_s": 29.9
+    },
+    {
+      "id": "a02-price-usd",
+      "gold": "credit_memo_request",
+      "got": "credit_memo_request",
+      "correct": true,
+      "evidence": true,
+      "tools": [
+        "get_po",
+        "get_receipts",
+        "compute_variance",
+        "draft_credit_memo_request"
+      ],
+      "guard_fires": 0,
+      "stop": "proposed",
+      "model_s": 32.9
+    },
+    {
+      "id": "a03-price-jpy",
+      "gold": "credit_memo_request",
+      "got": "credit_memo_request",
+      "correct": true,
+      "evidence": true,
+      "tools": [
+        "get_po",
+        "get_receipts",
+        "compute_variance",
+        "draft_credit_memo_request"
+      ],
+      "guard_fires": 0,
+      "stop": "proposed",
+      "model_s": 22.3
+    },
+    {
+      "id": "a08-short-two-receipts",
+      "gold": "credit_memo_request",
+      "got": "credit_memo_request",
+      "correct": true,
+      "evidence": true,
+      "tools": [
+        "get_receipts",
+        "compute_variance",
+        "draft_credit_memo_request"
+      ],
+      "guard_fires": 0,
+      "stop": "proposed",
+      "model_s": 32.1
+    },
+    {
+      "id": "a09-short-jpy",
+      "gold": "credit_memo_request",
+      "got": "credit_memo_request",
+      "correct": true,
+      "evidence": true,
+      "tools": [
+        "get_receipts",
+        "compute_variance",
+        "draft_credit_memo_request"
+      ],
+      "guard_fires": 0,
+      "stop": "proposed",
+      "model_s": 15.0
+    },
+    {
+      "id": "a12-not-received",
+      "gold": "hold (short_shipment)",
+      "got": "hold (short_shipment)",
+      "correct": true,
+      "evidence": true,
+      "tools": [
+        "get_receipts",
+        "propose_hold"
+      ],
+      "guard_fires": 0,
+      "stop": "proposed",
+      "model_s": 10.1
+    },
+    {
+      "id": "a16-duplicate",
+      "gold": "hold (duplicate)",
+      "got": "hold (duplicate)",
+      "correct": true,
+      "evidence": true,
+      "tools": [
+        "get_vendor_history",
+        "propose_hold"
+      ],
+      "guard_fires": 0,
+      "stop": "proposed",
+      "model_s": 11.9
+    },
+    {
+      "id": "a19-po-not-found",
+      "gold": "hold (missing_po)",
+      "got": "hold (missing_po)",
+      "correct": true,
+      "evidence": true,
+      "tools": [
+        "get_po",
+        "propose_hold"
+      ],
+      "guard_fires": 0,
+      "stop": "proposed",
+      "model_s": 8.4
+    },
+    {
+      "id": "a21-tax-mismatch",
+      "gold": "hold (tax_mismatch)",
+      "got": "hold (tax_mismatch)",
+      "correct": true,
+      "evidence": true,
+      "tools": [
+        "propose_hold"
+      ],
+      "guard_fires": 0,
+      "stop": "proposed",
+      "model_s": 7.7
+    },
+    {
+      "id": "a23-line-not-on-po",
+      "gold": "hold (other)",
+      "got": "hold (other)",
+      "correct": true,
+      "evidence": true,
+      "tools": [
+        "get_po",
+        "propose_hold"
+      ],
+      "guard_fires": 0,
+      "stop": "proposed",
+      "model_s": 10.6
+    }
+  ]
+}

@@ -7,6 +7,8 @@ Accounts-payable automation: invoice PDFs in, structured and matched invoices ou
 - **Why things are the way they are:** [docs/adr/](docs/adr/). Add one for every real choice.
 - **What went wrong before:** [docs/challenges.md](docs/challenges.md). Each slice adds what it hit: the problem,
   what we did, why, and the alternatives.
+- **Known but parked:** [docs/backlog.md](docs/backlog.md). Improvements found and deliberately not done yet, with
+  the suggested fix and its cost.
 
 ## Run it
 

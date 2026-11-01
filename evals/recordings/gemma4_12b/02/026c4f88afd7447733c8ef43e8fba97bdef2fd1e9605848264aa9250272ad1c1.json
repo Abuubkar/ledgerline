@@ -1,0 +1,27 @@
+{
+ "model": "gemma4:12b",
+ "created_at": "2026-11-01T12:31:45.593418Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 4716393500,
+ "load_duration": 5230292,
+ "prompt_eval_count": 1363,
+ "prompt_eval_duration": 1405031000,
+ "eval_count": 48,
+ "eval_duration": 3277190000,
+ "message": {
+  "role": "assistant",
+  "content": "",
+  "tool_calls": [
+   {
+    "function": {
+     "name": "propose_hold",
+     "arguments": {
+      "explanation": "Line 'page 1 line 2' (Gift basket) is not included on the purchase order.",
+      "reason_code": "other"
+     }
+    }
+   }
+  ]
+ }
+}

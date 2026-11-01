@@ -1,0 +1,16 @@
+{
+ "model": "gemma4:12b",
+ "created_at": "2026-11-01T12:26:21.682159Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 44153695833,
+ "load_duration": 5707917,
+ "prompt_eval_count": 1224,
+ "prompt_eval_duration": 9668322000,
+ "eval_count": 448,
+ "eval_duration": 31222352000,
+ "message": {
+  "role": "assistant",
+  "content": "{\"vendor_name\": \"Harbourside Catering Ltd\", \"vendor_tax_id\": \"GB 482 1937 56\", \"invoice_number\": \"NW-2026-1350\", \"po_number\": \"4500100050\", \"invoice_date\": \"2026-01-02\", \"due_date\": \"2026-02-02\", \"currency\": \"GBP\", \"subtotal\": 5742.30, \"tax\": 1148.46, \"total\": 6900.76, \"field_confidence\": {\"vendor_name\": 1.0, \"vendor_tax_id\": 1.0, \"invoice_number\": 1.0, \"po_number\": 1.0, \"invoice_date\": 1.0, \"due_date\": 1.0, \"currency\": 1.0, \"subtotal\": 1.0, \"tax\": 1.0, \"total\": 1.0}, \"line_items\": [{\"description\": \"Safety goggles, anti-fog\", \"quantity\": 37, \"unit_price\": 81.50, \"amount\": 3015.50, \"page\": 1}, {\"description\": \"LED panel light 60x60\", \"quantity\": 34, \"unit_price\": 9.70, \"amount\": 329.80, \"page\": 1}, {\"description\": \"Pallet wrap film, 500 m\", \"quantity\": 22, \"unit_price\": 108.75, \"amount\": 2392.50, \"page\": 1}, {\"description\": \"LED panel light 60x60\", \"quantity\": 2, \"unit_price\": 2.25, \"amount\": 4.50, \"page\": 1}]}"
+ }
+}

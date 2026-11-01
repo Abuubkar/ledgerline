@@ -1,0 +1,16 @@
+{
+ "model": "gemma4:12b",
+ "created_at": "2026-11-01T12:18:53.79177Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 31794143417,
+ "load_duration": 5439375,
+ "prompt_eval_count": 1046,
+ "prompt_eval_duration": 8152518000,
+ "eval_count": 308,
+ "eval_duration": 21752613000,
+ "message": {
+  "role": "assistant",
+  "content": "{\"vendor_name\": \"Kawasemi Electronics K.K.\", \"vendor_tax_id\": \"T9876543210987\", \"invoice_number\": \"SK-2026-1231\", \"po_number\": null, \"invoice_date\": \"2026-01-04\", \"due_date\": \"2026-02-04\", \"currency\": \"JPY\", \"subtotal\": 184080.00, \"tax\": 18408.00, \"total\": 202988.00, \"field_confidence\": {\"vendor_name\": 1.0, \"vendor_tax_id\": 1.0, \"invoice_number\": 1.0, \"po_number\": 1.0, \"invoice_date\": 1.0, \"due_date\": 1.0, \"currency\": 1.0, \"subtotal\": 1.0, \"tax\": 1.0, \"total\": 1.0}, \"line_items\": [{\"description\": \"Cable ties, pack of 1000\", \"quantity\": 39.0, \"unit_price\": 4720.00, \"amount\": 184080.00, \"page\": 1}]}"
+ }
+}

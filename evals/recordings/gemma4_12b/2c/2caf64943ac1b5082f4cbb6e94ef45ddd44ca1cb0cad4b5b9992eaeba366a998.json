@@ -1,0 +1,16 @@
+{
+ "model": "gemma4:12b",
+ "created_at": "2026-11-01T12:10:38.66415Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 48102398042,
+ "load_duration": 5110917,
+ "prompt_eval_count": 755,
+ "prompt_eval_duration": 5019294000,
+ "eval_count": 542,
+ "eval_duration": 42531771000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"Kawasemi Electronics K.K.\",\n  \"vendor_tax_id\": \"T9876543210987\",\n  \"invoice_number\": \"SK-2026-1105\",\n  \"po_number\": \"4500100015\",\n  \"invoice_date\": \"2026-06-28\",\n  \"due_date\": \"2026-07-28\",\n  \"currency\": \"JPY\",\n  \"subtotal\": 533020.0,\n  \"tax\": 53302.0,\n  \"total\": 586322.0,\n  \"field_confidence\": {\n    \"vendor_name\": 1.0,\n    \"vendor_tax_id\": 1.0,\n    \"invoice_number\": 1.0,\n    \"po_number\": 1.0,\n    \"invoice_date\": 1.0,\n    \"due_date\": 1.0,\n    \"currency\": 1.0,\n    \"subtotal\": 1.0,\n    \"tax\": 1.0,\n    \"total\": 1.0\n  },\n  \"line_items\": [\n    {\n      \"description\": \"Pallet wrap film, 500 m\",\n      \"quantity\": 16,\n      \"unit_price\": 4146.0,\n      \"amount\": 66336.0\n    },\n    {\n      \"description\": \"Thermal labels 100x150\",\n      \"quantity\": 10,\n      \"unit_price\": 3920.0,\n      \"amount\": 39200.0\n    },\n    {\n      \"description\": \"Hand truck, folding\",\n      \"quantity\": 3,\n      \"unit_price\": 85000.0,\n      \"amount\": 255000.0\n    },\n    {\n      \"description\": \"USB-C docking station\",\n      \"quantity\": 31,\n      \"unit_price\": 5564.0,\n      \"amount\": 172484.0\n    }\n  ]\n}"
+ }
+}

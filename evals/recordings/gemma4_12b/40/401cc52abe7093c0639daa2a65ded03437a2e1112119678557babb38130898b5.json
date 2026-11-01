@@ -1,0 +1,29 @@
+{
+ "model": "gemma4:12b",
+ "created_at": "2026-11-01T12:29:09.926771Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 8020302709,
+ "load_duration": 5234375,
+ "prompt_eval_count": 1925,
+ "prompt_eval_duration": 3142612000,
+ "eval_count": 70,
+ "eval_duration": 4837540000,
+ "message": {
+  "role": "assistant",
+  "content": "",
+  "tool_calls": [
+   {
+    "function": {
+     "name": "draft_credit_memo_request",
+     "arguments": {
+      "lines": [
+       "page 1 line 1"
+      ],
+      "reason": "The unit price of 92.19 exceeds the PO price of 89.50, resulting in an over-billing of 10.76 EUR."
+     }
+    }
+   }
+  ]
+ }
+}

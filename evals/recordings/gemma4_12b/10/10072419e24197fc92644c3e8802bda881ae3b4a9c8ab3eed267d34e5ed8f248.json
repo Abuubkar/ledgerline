@@ -1,0 +1,16 @@
+{
+ "model": "gemma4:12b",
+ "created_at": "2026-11-01T12:24:14.996261Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 38043885875,
+ "load_duration": 6254333,
+ "prompt_eval_count": 720,
+ "prompt_eval_duration": 3975123000,
+ "eval_count": 486,
+ "eval_duration": 34019686999,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"Kawasemi Electronics K.K.\",\n  \"vendor_tax_id\": \"T9876543210987\",\n  \"invoice_number\": \"SK-2026-1315\",\n  \"po_number\": null,\n  \"invoice_date\": \"2026-03-27\",\n  \"due_date\": \"2026-04-27\",\n  \"currency\": \"JPY\",\n  \"subtotal\": 3246950.0,\n  \"tax\": 324695.0,\n  \"total\": 3571645.0,\n  \"field_confidence\": {\n    \"vendor_name\": 1.0,\n    \"vendor_tax_id\": 1.0,\n    \"invoice_number\": 1.0,\n    \"po_number\": 1.0,\n    \"invoice_date\": 1.0,\n    \"due_date\": 1.0,\n    \"currency\": 1.0,\n    \"subtotal\": 1.0,\n    \"tax\": 1.0,\n    \"total\": 1.0\n  },\n  \"line_items\": [\n    {\n      \"description\": \"Laser printer toner, black\",\n      \"quantity\": 26.0,\n      \"unit_price\": 4660.0,\n      \"amount\": 121160.0\n    },\n    {\n      \"description\": \"Safety goggles, anti-fog\",\n      \"quantity\": 34.0,\n      \"unit_price\": 78300.0,\n      \"amount\": 2662200.0\n    },\n    {\n      \"description\": \"Thermal labels 100x150\",\n      \"quantity\": 9.0,\n      \"unit_price\": 51510.0,\n      \"amount\": 463590.0\n    }\n  ]\n}"
+ }
+}

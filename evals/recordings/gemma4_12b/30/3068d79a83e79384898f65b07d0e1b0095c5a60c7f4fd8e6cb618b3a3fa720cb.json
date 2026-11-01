@@ -1,0 +1,16 @@
+{
+ "model": "gemma4:12b",
+ "created_at": "2026-11-01T12:11:16.604763Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 37880550125,
+ "load_duration": 12865959,
+ "prompt_eval_count": 666,
+ "prompt_eval_duration": 4074992000,
+ "eval_count": 458,
+ "eval_duration": 33394798000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"Alpenblick Logistik AG\",\n  \"vendor_tax_id\": \"CHE-123.456.789\",\n  \"invoice_number\": \"AB-2026-1112\",\n  \"po_number\": \"4500100016\",\n  \"invoice_date\": \"2026-03-28\",\n  \"due_date\": \"2026-04-28\",\n  \"currency\": \"EUR\",\n  \"subtotal\": 489.69,\n  \"tax\": 39.17,\n  \"total\": 528.86,\n  \"field_confidence\": {\n    \"vendor_name\": 1.0,\n    \"vendor_tax_id\": 1.0,\n    \"invoice_number\": 1.0,\n    \"po_number\": 1.0,\n    \"invoice_date\": 1.0,\n    \"due_date\": 1.0,\n    \"currency\": 1.0,\n    \"subtotal\": 1.0,\n    \"tax\": 1.0,\n    \"total\": 1.0\n  },\n  \"line_items\": [\n    {\n      \"description\": \"Hand truck, folding\",\n      \"quantity\": 9,\n      \"unit_price\": 5.13,\n      \"amount\": 46.17\n    },\n    {\n      \"description\": \"Thermal labels 100x150\",\n      \"quantity\": 6,\n      \"unit_price\": 70.10,\n      \"amount\": 420.60\n    },\n    {\n      \"description\": \"Industrial shelving bracket\",\n      \"quantity\": 12,\n      \"unit_price\": 1.91,\n      \"amount\": 22.92\n    }\n  ]\n}"
+ }
+}

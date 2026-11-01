@@ -1,0 +1,26 @@
+{
+ "model": "gemma4:12b",
+ "created_at": "2026-11-01T12:30:45.861066Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 5800799334,
+ "load_duration": 4731125,
+ "prompt_eval_count": 1146,
+ "prompt_eval_duration": 3956319000,
+ "eval_count": 27,
+ "eval_duration": 1808120000,
+ "message": {
+  "role": "assistant",
+  "content": "",
+  "tool_calls": [
+   {
+    "function": {
+     "name": "get_receipts",
+     "arguments": {
+      "po_number": "4500200001"
+     }
+    }
+   }
+  ]
+ }
+}

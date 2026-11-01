@@ -316,3 +316,24 @@ results are kept in [evals/archive/2026-11-01-extract-page-3/](../evals/archive/
   6b figures came from a one-off load by hand; qwen3.5 read 7.1 GB there and 6.6 GB with the sweep's method, so
   treat memory differences under ~0.5 GB as noise.
 
+## Slice 6d: held-out test split (gemma4:12b, `extract-page/4`)
+
+The 20 invoices and 10 agent scenarios never used for tuning, run once, live, after the prompt was settled
+(`make eval-test LIVE=1`, 24 minutes). Report in [evals/test-split/REPORT.md](../evals/test-split/REPORT.md).
+
+| Metric | Test split | Dev split (6c) |
+|---|---|---|
+| Header avg / lowest field | 99.5% / 95.0% (subtotal) | 100% / 100% |
+| Line F1 | 97.1% (83 of 85 lines) | 99.3% (137 of 139) |
+| Schema valid / calibration error | 100% / 0.5% | 100% / 0.0% |
+| Agent | 10/10, hold reasons 100% | 15/15 |
+| Page p50 / p95 | 33 / 47 s | 34 / 42 s |
+| Invoice p50 / p95 | 48 / 109 s | 39 / 98 s |
+
+- **Every gate passes on unseen data**, so `extract-page/4` isn't fitted to the dev invoices.
+- **The one miss is the tilted scan (g13),** read from the image because it has no text layer. On the tilted rows gemma
+  paired two descriptions with the wrong numbers, added an empty fourth line, and read the subtotal 248,97 as 249,97.
+  The arithmetic check caught it, the repair call didn't fix it, and the invoice went to `exception`: the safe outcome.
+  It's the only scanned invoice in the golden set, so the dev split never measured reading from images at all, and
+  one scan is too few to say how well scans go (parked in docs/backlog.md).
+
