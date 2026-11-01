@@ -13,6 +13,7 @@ from contextlib import asynccontextmanager
 
 import redis.asyncio as redis
 
+from ledgerline_api import metrics
 from ledgerline_api.errors import TransientError
 from ledgerline_api.settings import settings
 
@@ -70,11 +71,14 @@ async def release(client: redis.Redis, token: str) -> None:
 async def llm_slot(client: redis.Redis):
     """Wait for a free model slot, hold it for the call, always give it back."""
     token = uuid.uuid4().hex
-    deadline = time.monotonic() + settings.llm_slot_wait_s
+    asked = time.monotonic()
+    deadline = asked + settings.llm_slot_wait_s
     while not await try_acquire(client, token, settings.llm_max_concurrency, settings.llm_slot_lease_s):
         if time.monotonic() > deadline:
+            metrics.slot_wait.record(time.monotonic() - asked, {"outcome": "timeout"})
             raise TransientError("llm_slot_timeout", f"no model slot free within {settings.llm_slot_wait_s}s")
         await asyncio.sleep(0.5)
+    metrics.slot_wait.record(time.monotonic() - asked, {"outcome": "acquired"})
     renewer = asyncio.create_task(_keep_renewing(client, token))
     try:
         yield
