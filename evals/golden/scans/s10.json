@@ -1,0 +1,48 @@
+{
+  "vendor_name": "Kawasemi Electronics K.K.",
+  "vendor_tax_id": "T9876543210987",
+  "invoice_number": "SK-2026-1063",
+  "po_number": "4500100009",
+  "invoice_date": "2026-06-11",
+  "due_date": "2026-07-11",
+  "currency": "JPY",
+  "subtotal_minor": 783431,
+  "tax_minor": 78343,
+  "total_minor": 861774,
+  "arithmetic_error": false,
+  "layout": "single",
+  "scanned": true,
+  "style": "seikyu",
+  "pages": 2,
+  "stamp": null,
+  "scan_style": {
+    "angle": 1,
+    "dpi": 150,
+    "contrast": 1.0,
+    "blur": 0.0,
+    "jpeg_quality": null,
+    "noise": 0.0,
+    "grey": false,
+    "all_pages": true
+  },
+  "lines": [
+    {
+      "description": "A4 copy paper, 5 reams",
+      "quantity": "7",
+      "unit_price": "7142",
+      "amount_minor": 49994
+    },
+    {
+      "description": "Pallet wrap film, 500 m",
+      "quantity": "27",
+      "unit_price": "4631",
+      "amount_minor": 125037
+    },
+    {
+      "description": "LED panel light 60x60",
+      "quantity": "13",
+      "unit_price": "46800",
+      "amount_minor": 608400
+    }
+  ]
+}

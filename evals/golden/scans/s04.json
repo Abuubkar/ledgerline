@@ -1,0 +1,42 @@
+{
+  "vendor_name": "Kawasemi Electronics K.K.",
+  "vendor_tax_id": "T9876543210987",
+  "invoice_number": "SK-2026-1021",
+  "po_number": null,
+  "invoice_date": "2026-06-03",
+  "due_date": "2026-07-03",
+  "currency": "JPY",
+  "subtotal_minor": 394180,
+  "tax_minor": 39418,
+  "total_minor": 433598,
+  "arithmetic_error": false,
+  "layout": "single",
+  "scanned": true,
+  "style": "seikyu",
+  "pages": 1,
+  "stamp": null,
+  "scan_style": {
+    "angle": 1,
+    "dpi": 120,
+    "contrast": 1.0,
+    "blur": 0.0,
+    "jpeg_quality": null,
+    "noise": 0.0,
+    "grey": false,
+    "all_pages": false
+  },
+  "lines": [
+    {
+      "description": "Ergonomic office chair",
+      "quantity": "6",
+      "unit_price": "27380",
+      "amount_minor": 164280
+    },
+    {
+      "description": "Pallet wrap film, 500 m",
+      "quantity": "11",
+      "unit_price": "20900",
+      "amount_minor": 229900
+    }
+  ]
+}

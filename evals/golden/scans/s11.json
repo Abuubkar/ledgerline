@@ -1,0 +1,42 @@
+{
+  "vendor_name": "Alpenblick Logistik AG",
+  "vendor_tax_id": "CHE123456789",
+  "invoice_number": "AB-2026-1070",
+  "po_number": null,
+  "invoice_date": "2026-01-23",
+  "due_date": "2026-02-23",
+  "currency": "EUR",
+  "subtotal_minor": 48591,
+  "tax_minor": 3887,
+  "total_minor": 52478,
+  "arithmetic_error": false,
+  "layout": "single",
+  "scanned": true,
+  "style": "boxed",
+  "pages": 1,
+  "stamp": null,
+  "scan_style": {
+    "angle": 2,
+    "dpi": 110,
+    "contrast": 0.7,
+    "blur": 0.6,
+    "jpeg_quality": null,
+    "noise": 0.0,
+    "grey": true,
+    "all_pages": false
+  },
+  "lines": [
+    {
+      "description": "LED panel light 60x60",
+      "quantity": "23",
+      "unit_price": "7.29",
+      "amount_minor": 16767
+    },
+    {
+      "description": "Thermal labels 100x150",
+      "quantity": "36",
+      "unit_price": "8.84",
+      "amount_minor": 31824
+    }
+  ]
+}

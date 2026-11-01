@@ -1,0 +1,48 @@
+{
+  "vendor_name": "Pacific Rim Packaging Inc.",
+  "vendor_tax_id": "912846573",
+  "invoice_number": "PR-2026-1077",
+  "po_number": "4500100011",
+  "invoice_date": "2026-09-20",
+  "due_date": "2026-10-20",
+  "currency": "USD",
+  "subtotal_minor": 110148,
+  "tax_minor": 8811,
+  "total_minor": 118959,
+  "arithmetic_error": false,
+  "layout": "single",
+  "scanned": true,
+  "style": "compact",
+  "pages": 3,
+  "stamp": null,
+  "scan_style": {
+    "angle": -1,
+    "dpi": 130,
+    "contrast": 1.0,
+    "blur": 0.0,
+    "jpeg_quality": null,
+    "noise": 0.0,
+    "grey": false,
+    "all_pages": true
+  },
+  "lines": [
+    {
+      "description": "LED panel light 60x60",
+      "quantity": "32",
+      "unit_price": "20.40",
+      "amount_minor": 65280
+    },
+    {
+      "description": "Cable ties, pack of 1000",
+      "quantity": "18",
+      "unit_price": "7.26",
+      "amount_minor": 13068
+    },
+    {
+      "description": "Pallet wrap film, 500 m",
+      "quantity": "10",
+      "unit_price": "31.80",
+      "amount_minor": 31800
+    }
+  ]
+}
