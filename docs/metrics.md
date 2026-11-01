@@ -392,3 +392,26 @@ The dashboard is `infra/grafana/dashboards/pipeline.json` (19 panels; generated 
 - extraction p50/p95, tokens per minute by model and type, output speed, model call duration, slot wait;
 - queue depth against `MAX_QUEUE_DEPTH`, dead letters by job, and logs.
 
+## Scans and real invoices (gemma4:12b, `extract-page/4`)
+
+Two sets beside the golden set, measured and not gated (ADR 0022). Reports: [evals/scans/REPORT.md](../evals/scans/REPORT.md),
+[evals/scans/test-split/REPORT.md](../evals/scans/test-split/REPORT.md), [evals/real/REPORT.md](../evals/real/REPORT.md).
+
+| Set | Header | Lines F1 | Calibration error | Page p50 / p95 | Statuses |
+|---|---|---|---|---|---|
+| Golden dev (40 text PDFs) | 100% / 100% lowest | 99.3% | 0.0% | 34 / 42 s | as expected |
+| Scans dev (8) | 91.2% / 50.0% lowest (VAT ID) | 81.0% | 8.9% | — / 45 s | 2 misread amounts caught as `exception` |
+| Scans test (4) | 97.5% / 75.0% lowest | 100% | 2.6% | — / 47 s | |
+| Real (23 invoices + 2 other) | number 91.3%, date 91.3%, total 34.8% | 37.0% (104 of 267) | 2.0% | 80 / 147 s | exception 23, extracted 1, failed 1 (timeout) |
+
+- **Scans:** single-digit misreads in VAT IDs (4 of 8), a due date and two amounts. At 3° tilt two lines swapped
+  their numbers. The arithmetic check caught both misread amounts; nothing catches a misread VAT ID.
+- **Real, the dollar sign:** these invoices print `$` and no currency code, so no currency is read and no amount can
+  be converted. That empties totals and per-spot line amounts. Where a currency was read (8 invoices), all 8 totals
+  were right and 70 of 94 lines were.
+- **Real, by layout:** per-spot invoices 59 of 174 lines (all with a currency right: r04, r08, r25 at 100%);
+  contract-line invoices 45 of 93 (count × rate doesn't need a currency; r06 and r16 at 100%). On r01, r07 and r13
+  the model billed the aired spots instead of the contract lines.
+- **Real, non-invoices:** the payment report got no invoice number. The order worksheet's "REP HEADLINE 6282550"
+  came back as one.
+
