@@ -100,6 +100,18 @@ polyfill and `onUnhandledFrame` handling (ADR 0014).
 
 **Prototype folder committed by accident.** Removed before pushing.
 
+**The UI didn't work on a phone** (found 2026-11-01, after 6d). The stylesheet had no breakpoints: the case file kept
+a fixed 320 px side panel plus 112 px of spacing, so at 375 px the case text wrapped one word per line, the panel
+overlapped it, and tables ran off the screen.
+- *Did:* two breakpoints in `globals.css`. Under 960 px the side panel stacks under the case; under 640 px the rail
+  becomes a bottom tab bar, the command bar shrinks to its icon, facts go two across, wide tables scroll inside their
+  own box, and the decision bar spans the screen above the tabs. Keyboard hints are hidden on touch screens. Checked
+  at 375, 768 and 1366 px: no page scrolls sideways.
+- *Alternatives:* a separate mobile view (two layouts to keep in step); card rows instead of tables on a phone (more
+  markup for a reviewer who mostly works at a desk).
+- *Not checked:* the approve/reject bar with a pending proposal at phone size (none pending in the dev data); the
+  layout follows the same rules as the decided bar that was checked.
+
 ## Slice 6a: evals
 
 **Unrealistic yen prices** in generated invoices (¥1.6M per item). Fixed the generator before the first live run.

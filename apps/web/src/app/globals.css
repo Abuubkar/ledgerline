@@ -71,7 +71,7 @@ abbr[data-tip] { text-decoration: underline dotted var(--muted); text-underline-
 .crumb { font-weight: 600; display: flex; align-items: center; gap: 8px; } .crumb a { font-weight: 500; color: var(--muted); text-decoration: none; }
 .cmd { display: flex; align-items: center; gap: 10px; height: 34px; padding: 0 12px; border: 1px solid var(--line-strong); border-radius: 8px; width: 380px;
   max-width: 45%; color: var(--muted); background: var(--panel); margin-left: 12px; text-align: left; }
-.cmd .kbd { margin-left: auto; }
+.cmd .kbd { margin-left: auto; } .cmd .cmd-label { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .pos { margin-left: auto; display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 13px; } .pos .btn { height: 30px; padding: 0 9px; }
 .work { flex: 1; overflow: auto; }
 .palette-bg { position: fixed; inset: 0; background: rgba(24,24,27,.25); z-index: 60; display: grid; place-items: start center; padding-top: 12vh; }
@@ -147,3 +147,34 @@ ol.chain::before { content: ""; position: absolute; left: 9px; top: 8px; bottom:
 .code { font: 12px var(--figures); background: var(--tag); padding: 3px 7px; border-radius: 5px; }
 .http { font: 500 12px var(--figures); padding: 2px 6px; border-radius: 5px; } .http.s2 { background: var(--ok-bg); color: var(--ok); } .http.s4 { background: var(--warn-bg); color: var(--warn); }
 .actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+
+/* narrower screens. Tablet: the case file's side panel moves under the case. Phone: the rail becomes a bottom tab
+   bar, the command bar shrinks to its icon, facts go two across, wide tables scroll sideways, and the decision bar
+   spans the screen above the tabs. Touch screens have no keyboard, so its hints are hidden. */
+@media (hover: none) { .kbd { display: none; } }
+@media (max-width: 960px) {
+  .case { grid-template-columns: minmax(0, 1fr); gap: 16px; padding: 24px 24px 200px; }
+  .aside { position: static; border-top: 1px solid var(--line); padding-top: 24px; }
+  dl.facts { gap: 4px 28px; }
+}
+@media (max-width: 640px) {
+  .shell { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto; height: 100dvh; }
+  .rail { order: 2; flex-direction: row; justify-content: space-around; padding: 6px 12px calc(6px + env(safe-area-inset-bottom)); }
+  .rail .mark, .rail .gap, .rail .who-am-i, .railtip { display: none; }
+  .rail a { width: 48px; height: 40px; }
+  .bar { padding: 0 12px; gap: 8px; }
+  .cmd { width: 34px; max-width: none; padding: 0; justify-content: center; margin-left: auto; flex: none; }
+  .cmd .cmd-label { display: none; }
+  .pos { margin-left: 0; gap: 6px; } .pos .btn { padding: 0 8px; }
+  .case { padding: 20px 16px 300px; } .page { padding: 20px 16px 120px; }
+  h1.title { font-size: 24px; } .lede { font-size: 16px; margin-bottom: 20px; }
+  dl.facts { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 16px; }
+  .filelink { max-width: 100%; }
+  dl.totals { width: 100%; } dl.kv { grid-template-columns: 110px minmax(0, 1fr); }
+  table.lines, table.list, table.tbl { display: block; overflow-x: auto; position: relative; }
+  .lines td:first-child { min-width: 150px; }
+  .decide { left: 0; bottom: calc(52px + env(safe-area-inset-bottom)); padding: 12px 16px; }
+  .decide .what { min-width: 0; flex-basis: 100%; } .decide .field { width: 100%; }
+  .drop { padding: 28px 16px; }
+}
+
