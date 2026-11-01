@@ -1,0 +1,61 @@
+{
+ "status": "extracted",
+ "repair_attempted": false,
+ "prompt_version": "extract-page/3",
+ "header": {
+  "vendor_name": "Kawasemi Electronics K.K.",
+  "vendor_tax_id": "T9876543210987",
+  "invoice_number": "SK-2026-1357",
+  "po_number": "4500100051",
+  "invoice_date": "2026-08-17",
+  "due_date": "2026-09-17",
+  "currency": "JPY",
+  "subtotal_minor": 1652170,
+  "tax_minor": 165217,
+  "total_minor": 1817387
+ },
+ "confidence": {
+  "vendor_name": 1.0,
+  "vendor_tax_id": 0.9,
+  "invoice_number": 1.0,
+  "po_number": 1.0,
+  "invoice_date": 1.0,
+  "due_date": 1.0,
+  "currency": 1.0,
+  "subtotal": 1.0,
+  "tax": 1.0,
+  "total": 1.0
+ },
+ "invalid_fields": {},
+ "lines": [
+  {
+   "description": "Ergonomic office chair",
+   "quantity": "27",
+   "unit_price": "39520.0",
+   "amount_minor": 1067040
+  },
+  {
+   "description": "Ergonomic office chair",
+   "quantity": "13",
+   "unit_price": "45010.0",
+   "amount_minor": 585130
+  }
+ ],
+ "pages": [
+  {
+   "page_no": 1,
+   "status": "extracted",
+   "source": "text",
+   "error_code": null
+  }
+ ],
+ "calls": [
+  {
+   "ms": 24966.866666,
+   "prompt_tokens": 612,
+   "output_tokens": 410,
+   "output_ms": 21839.86
+  }
+ ],
+ "wall_s": 25.01
+}

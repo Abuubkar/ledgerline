@@ -1,0 +1,105 @@
+{
+ "status": "exception",
+ "repair_attempted": true,
+ "prompt_version": "extract-page/3+repair-totals/3",
+ "header": {
+  "vendor_name": "Kawasemi Electronics K.K.",
+  "vendor_tax_id": "T9876543210987",
+  "invoice_number": "SK-2026-1189",
+  "po_number": "4500100027",
+  "invoice_date": "2026-06-04",
+  "due_date": "2026-07-04",
+  "currency": "JPY",
+  "subtotal_minor": 2181210,
+  "tax_minor": 218121,
+  "total_minor": 2399331
+ },
+ "confidence": {
+  "vendor_name": 1.0,
+  "vendor_tax_id": 1.0,
+  "invoice_number": 1.0,
+  "po_number": 1.0,
+  "invoice_date": 1.0,
+  "due_date": 1.0,
+  "currency": 1.0,
+  "subtotal": 1.0,
+  "tax": 1.0,
+  "total": 1.0
+ },
+ "invalid_fields": {
+  "total": "line amounts sum to 1003804, plus tax 218121 makes 1221925, but the total is 2399331; line amounts sum to 1003804, but the subtotal is 2181210"
+ },
+ "lines": [
+  {
+   "description": "Industrial shelving bracket",
+   "quantity": "13",
+   "unit_price": "9510.0",
+   "amount_minor": 123630
+  },
+  {
+   "description": "Pallet wrap film, 500 m",
+   "quantity": "11",
+   "unit_price": "5984.0",
+   "amount_minor": 65824
+  },
+  {
+   "description": "LED panel light 60x60",
+   "quantity": "6",
+   "unit_price": "32930.00",
+   "amount_minor": 197580
+  },
+  {
+   "description": "Server rack screws, M6",
+   "quantity": "24",
+   "unit_price": "4115.00",
+   "amount_minor": 98760
+  },
+  {
+   "description": "Pallet wrap film, 500 m",
+   "quantity": "11",
+   "unit_price": "24190.00",
+   "amount_minor": 266090
+  },
+  {
+   "description": "Thermal labels 100x150",
+   "quantity": "8",
+   "unit_price": "31490.00",
+   "amount_minor": 251920
+  }
+ ],
+ "pages": [
+  {
+   "page_no": 1,
+   "status": "extracted",
+   "source": "text",
+   "error_code": null
+  },
+  {
+   "page_no": 2,
+   "status": "extracted",
+   "source": "text",
+   "error_code": null
+  }
+ ],
+ "calls": [
+  {
+   "ms": 36236.423541,
+   "prompt_tokens": 715,
+   "output_tokens": 402,
+   "output_ms": 27880.496
+  },
+  {
+   "ms": 41481.88625,
+   "prompt_tokens": 578,
+   "output_tokens": 520,
+   "output_ms": 35882.164
+  },
+  {
+   "ms": 66114.773708,
+   "prompt_tokens": 1798,
+   "output_tokens": 715,
+   "output_ms": 50029.259
+  }
+ ],
+ "wall_s": 143.95
+}

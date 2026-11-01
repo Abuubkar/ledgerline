@@ -1,0 +1,66 @@
+{
+ "status": "extracted",
+ "repair_attempted": false,
+ "prompt_version": "extract-page/3",
+ "header": {
+  "vendor_name": "Pacific Rim Packaging Inc.",
+  "vendor_tax_id": "912846573",
+  "invoice_number": "PR-2026-1287",
+  "po_number": null,
+  "invoice_date": "2026-01-15",
+  "due_date": "2026-02-15",
+  "currency": "USD",
+  "subtotal_minor": 639492,
+  "tax_minor": 51159,
+  "total_minor": 690651
+ },
+ "confidence": {
+  "vendor_name": 1.0,
+  "vendor_tax_id": 1.0,
+  "invoice_number": 1.0,
+  "invoice_date": 1.0,
+  "due_date": 1.0,
+  "currency": 1.0,
+  "subtotal": 1.0,
+  "tax": 1.0,
+  "total": 1.0
+ },
+ "invalid_fields": {},
+ "lines": [
+  {
+   "description": "Thermal labels 100x150",
+   "quantity": "25",
+   "unit_price": "200.75",
+   "amount_minor": 501875
+  },
+  {
+   "description": "Laser printer toner, black",
+   "quantity": "35",
+   "unit_price": "33.75",
+   "amount_minor": 118125
+  },
+  {
+   "description": "Ergonomic office chair",
+   "quantity": "22",
+   "unit_price": "8.86",
+   "amount_minor": 19492
+  }
+ ],
+ "pages": [
+  {
+   "page_no": 1,
+   "status": "extracted",
+   "source": "text",
+   "error_code": null
+  }
+ ],
+ "calls": [
+  {
+   "ms": 37518.452666,
+   "prompt_tokens": 582,
+   "output_tokens": 457,
+   "output_ms": 31645.615
+  }
+ ],
+ "wall_s": 37.57
+}

@@ -1,0 +1,127 @@
+{
+ "status": "extracted",
+ "repair_attempted": false,
+ "prompt_version": "extract-page/3",
+ "header": {
+  "vendor_name": "Kawasemi Electronics K.K.",
+  "vendor_tax_id": null,
+  "invoice_number": "SK-2026-1063",
+  "po_number": "4500100009",
+  "invoice_date": "2026-05-05",
+  "due_date": "2026-06-05",
+  "currency": "JPY",
+  "subtotal_minor": null,
+  "tax_minor": 578140,
+  "total_minor": 6359541
+ },
+ "confidence": {
+  "vendor_name": 1.0,
+  "invoice_number": 1.0,
+  "po_number": 1.0,
+  "invoice_date": 1.0,
+  "due_date": 1.0,
+  "currency": 1.0,
+  "tax": 0.95,
+  "total": 0.95
+ },
+ "invalid_fields": {
+  "subtotal": "pages disagree: page 2 says 3253486; page 3 says 5781401"
+ },
+ "lines": [
+  {
+   "description": "Hand truck, folding",
+   "quantity": "15",
+   "unit_price": "5508",
+   "amount_minor": 82620
+  },
+  {
+   "description": "Thermal labels 100x150",
+   "quantity": "23",
+   "unit_price": "64720",
+   "amount_minor": 1488560
+  },
+  {
+   "description": "Safety goggles, anti-fog",
+   "quantity": "24",
+   "unit_price": "5084",
+   "amount_minor": 122016
+  },
+  {
+   "description": "Safety goggles, anti-fog",
+   "quantity": "14",
+   "unit_price": "8563.0",
+   "amount_minor": 119882
+  },
+  {
+   "description": "Ergonomic office chair",
+   "quantity": "37",
+   "unit_price": "85900.0",
+   "amount_minor": 3178300
+  },
+  {
+   "description": "Industrial shelving bracket",
+   "quantity": "6",
+   "unit_price": "889.0",
+   "amount_minor": 5334
+  },
+  {
+   "description": "Industrial shelving bracket",
+   "quantity": "40",
+   "unit_price": "3960.0",
+   "amount_minor": 158400
+  },
+  {
+   "description": "Thermal labels 100x150",
+   "quantity": "14",
+   "unit_price": "27750.0",
+   "amount_minor": 388500
+  },
+  {
+   "description": "Thermal labels 100x150",
+   "quantity": "27",
+   "unit_price": "8807.0",
+   "amount_minor": 237789
+  }
+ ],
+ "pages": [
+  {
+   "page_no": 1,
+   "status": "extracted",
+   "source": "text",
+   "error_code": null
+  },
+  {
+   "page_no": 2,
+   "status": "extracted",
+   "source": "text",
+   "error_code": null
+  },
+  {
+   "page_no": 3,
+   "status": "extracted",
+   "source": "text",
+   "error_code": null
+  }
+ ],
+ "calls": [
+  {
+   "ms": 25401.0155,
+   "prompt_tokens": 579,
+   "output_tokens": 417,
+   "output_ms": 22346.571
+  },
+  {
+   "ms": 19741.200916,
+   "prompt_tokens": 461,
+   "output_tokens": 335,
+   "output_ms": 17257.571
+  },
+  {
+   "ms": 22265.8145,
+   "prompt_tokens": 535,
+   "output_tokens": 435,
+   "output_ms": 19894.144
+  }
+ ],
+ "wall_s": 67.52
+}

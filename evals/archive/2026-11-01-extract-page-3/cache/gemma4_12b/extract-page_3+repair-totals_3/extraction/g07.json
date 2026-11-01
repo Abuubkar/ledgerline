@@ -1,0 +1,85 @@
+{
+ "status": "extracted",
+ "repair_attempted": false,
+ "prompt_version": "extract-page/3",
+ "header": {
+  "vendor_name": "Nordwerk Industrietechnik GmbH",
+  "vendor_tax_id": "DE274918365",
+  "invoice_number": "RE-2026-1049",
+  "po_number": "4500100007",
+  "invoice_date": "2026-05-06",
+  "due_date": "2026-06-06",
+  "currency": "EUR",
+  "subtotal_minor": 195723,
+  "tax_minor": 37187,
+  "total_minor": 232910
+ },
+ "confidence": {
+  "vendor_name": 1.0,
+  "vendor_tax_id": 1.0,
+  "invoice_number": 1.0,
+  "po_number": 1.0,
+  "invoice_date": 1.0,
+  "due_date": 1.0,
+  "currency": 1.0,
+  "subtotal": 1.0,
+  "tax": 1.0,
+  "total": 1.0
+ },
+ "invalid_fields": {},
+ "lines": [
+  {
+   "description": "Ergonomic office chair",
+   "quantity": "20",
+   "unit_price": "93.75",
+   "amount_minor": 187500
+  },
+  {
+   "description": "Hand truck, folding",
+   "quantity": "5",
+   "unit_price": "0.03",
+   "amount_minor": 15
+  },
+  {
+   "description": "Industrial shelving bracket",
+   "quantity": "3",
+   "unit_price": "5.56",
+   "amount_minor": 1668
+  },
+  {
+   "description": "Ergonomic office chair",
+   "quantity": "6",
+   "unit_price": "10.90",
+   "amount_minor": 6540
+  }
+ ],
+ "pages": [
+  {
+   "page_no": 1,
+   "status": "extracted",
+   "source": "text",
+   "error_code": null
+  },
+  {
+   "page_no": 2,
+   "status": "extracted",
+   "source": "text",
+   "error_code": null
+  }
+ ],
+ "calls": [
+  {
+   "ms": 30646.369042,
+   "prompt_tokens": 542,
+   "output_tokens": 390,
+   "output_ms": 26899.611
+  },
+  {
+   "ms": 24858.829084,
+   "prompt_tokens": 483,
+   "output_tokens": 313,
+   "output_ms": 21461.955
+  }
+ ],
+ "wall_s": 55.56
+}

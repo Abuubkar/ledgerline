@@ -1,0 +1,16 @@
+{
+ "model": "gemma4:12b",
+ "created_at": "2026-11-01T04:36:03.52098Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 31626612500,
+ "load_duration": 16268750,
+ "prompt_eval_count": 545,
+ "prompt_eval_duration": 3049184000,
+ "eval_count": 394,
+ "eval_duration": 27209712000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"Nordwerk Industrietechnik GmbH\",\n  \"vendor_tax_id\": \"DE 274 918 365\",\n  \"invoice_number\": \"RE-2026-1259\",\n  \"po_number\": \"4500100037\",\n  \"invoice_date\": \"2026-05-11\",\n  \"due_date\": \"2026-06-11\",\n  \"currency\": \"EUR\",\n  \"subtotal\": null,\n  \"tax\": null,\n  \"total\": null,\n  \"field_confidence\": {\n    \"vendor_name\": 1.0,\n    \"vendor_tax_id\": 1.0,\n    \"invoice_number\": 1.0,\n    \"po_number\": 1.0,\n    \"invoice_date\": 1.0,\n    \"due_date\": 1.0,\n    \"currency\": 1.0,\n    \"subtotal\": 0.0,\n    \"tax\": 0.0,\n    \"total\": 0.0\n  },\n  \"line_items\": [\n    {\n      \"description\": \"A4 copy paper, 5 reams\",\n      \"quantity\": 5,\n      \"unit_price\": 17.28,\n      \"amount\": 869.40\n    },\n    {\n      \"description\": \"Industrial shelving bracket\",\n      \"quantity\": 4,\n      \"unit_price\": 31.25,\n      \"amount\": 125.00\n    }\n  ]\n}"
+ }
+}

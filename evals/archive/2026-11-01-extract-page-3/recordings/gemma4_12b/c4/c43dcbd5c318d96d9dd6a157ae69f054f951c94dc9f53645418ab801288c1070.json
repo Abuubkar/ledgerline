@@ -1,0 +1,16 @@
+{
+ "model": "gemma4:12b",
+ "created_at": "2026-11-01T04:26:51.86788Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 42028486791,
+ "load_duration": 4710333,
+ "prompt_eval_count": 627,
+ "prompt_eval_duration": 3991975000,
+ "eval_count": 527,
+ "eval_duration": 36392584000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"Harbourside Catering Ltd\",\n  \"vendor_tax_id\": \"GB 482 1937 56\",\n  \"invoice_number\": \"NW-2026-1140\",\n  \"po_number\": \"4500100020\",\n  \"invoice_date\": \"2026-09-26\",\n  \"due_date\": \"2026-10-26\",\n  \"currency\": \"GBP\",\n  \"subtotal\": 3809.00,\n  \"tax\": 761.80,\n  \"total\": 4570.80,\n  \"field_confidence\": {\n    \"vendor_name\": 1.0,\n    \"vendor_tax_id\": 1.0,\n    \"invoice_number\": 1.0,\n    \"po_number\": 1.0,\n    \"invoice_date\": 1.0,\n    \"due_date\": 1.0,\n    \"currency\": 1.0,\n    \"subtotal\": 1.0,\n    \"tax\": 1.0,\n    \"total\": 1.0\n  },\n  \"line_items\": [\n    {\n      \"description\": \"Cable ties, pack of 1000\",\n      \"quantity\": 12,\n      \"unit_price\": 57.60,\n      \"amount\": 691.20\n    },\n    {\n      \"description\": \"LED panel light 60x60\",\n      \"quantity\": 14,\n      \"unit_price\": 45.90,\n      \"amount\": 642.60\n    },\n    {\n      \"description\": \"Safety goggles, anti-fog\",\n      \"quantity\": 27,\n      \"unit_price\": 84.10,\n      \"amount\": 2270.70\n    },\n    {\n      \"description\": \"USB-C docking station\",\n      \"quantity\": 5,\n      \"unit_price\": 40.90,\n      \"amount\": 204.50\n    }\n  ]\n}"
+ }
+}

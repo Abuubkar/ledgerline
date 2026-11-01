@@ -1,0 +1,67 @@
+{
+ "status": "extracted",
+ "repair_attempted": false,
+ "prompt_version": "extract-page/3",
+ "header": {
+  "vendor_name": "Alpenblick Logistik AG",
+  "vendor_tax_id": "CHE123456789",
+  "invoice_number": "AB-2026-1238",
+  "po_number": "4500100034",
+  "invoice_date": "2026-04-26",
+  "due_date": "2026-05-26",
+  "currency": "EUR",
+  "subtotal_minor": 262123,
+  "tax_minor": 20969,
+  "total_minor": 283092
+ },
+ "confidence": {
+  "vendor_name": 1.0,
+  "vendor_tax_id": 1.0,
+  "invoice_number": 1.0,
+  "po_number": 1.0,
+  "invoice_date": 1.0,
+  "due_date": 1.0,
+  "currency": 1.0,
+  "subtotal": 1.0,
+  "tax": 1.0,
+  "total": 1.0
+ },
+ "invalid_fields": {},
+ "lines": [
+  {
+   "description": "LED panel light 60x60",
+   "quantity": "15",
+   "unit_price": "151.75",
+   "amount_minor": 227625
+  },
+  {
+   "description": "Safety goggles, anti-fog",
+   "quantity": "8.31",
+   "unit_price": "6",
+   "amount_minor": 4986
+  },
+  {
+   "description": "Laser printer toner, black",
+   "quantity": "8.68",
+   "unit_price": "34",
+   "amount_minor": 29512
+  }
+ ],
+ "pages": [
+  {
+   "page_no": 1,
+   "status": "extracted",
+   "source": "text",
+   "error_code": null
+  }
+ ],
+ "calls": [
+  {
+   "ms": 16501.31325,
+   "prompt_tokens": 562,
+   "output_tokens": 391,
+   "output_ms": 15407.497
+  }
+ ],
+ "wall_s": 16.52
+}

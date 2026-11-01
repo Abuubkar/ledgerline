@@ -1,0 +1,61 @@
+{
+ "status": "extracted",
+ "repair_attempted": false,
+ "prompt_version": "extract-page/3",
+ "header": {
+  "vendor_name": "Brightline Office Supply LLC",
+  "vendor_tax_id": "841937465",
+  "invoice_number": "INV-2026-1252",
+  "po_number": "4500100036",
+  "invoice_date": "2026-07-04",
+  "due_date": "2026-08-04",
+  "currency": "USD",
+  "subtotal_minor": 257210,
+  "tax_minor": 20576,
+  "total_minor": 277786
+ },
+ "confidence": {
+  "vendor_name": 1.0,
+  "vendor_tax_id": 1.0,
+  "invoice_number": 1.0,
+  "po_number": 1.0,
+  "invoice_date": 1.0,
+  "due_date": 1.0,
+  "currency": 1.0,
+  "subtotal": 1.0,
+  "tax": 1.0,
+  "total": 1.0
+ },
+ "invalid_fields": {},
+ "lines": [
+  {
+   "description": "Safety goggles, anti-fog",
+   "quantity": "2",
+   "unit_price": "212.25",
+   "amount_minor": 42450
+  },
+  {
+   "description": "LED panel light 60x60",
+   "quantity": "28",
+   "unit_price": "76.70",
+   "amount_minor": 214760
+  }
+ ],
+ "pages": [
+  {
+   "page_no": 1,
+   "status": "extracted",
+   "source": "text",
+   "error_code": null
+  }
+ ],
+ "calls": [
+  {
+   "ms": 32601.58675,
+   "prompt_tokens": 572,
+   "output_tokens": 414,
+   "output_ms": 28519.468
+  }
+ ],
+ "wall_s": 32.71
+}

@@ -1,0 +1,54 @@
+{
+ "status": "extracted",
+ "repair_attempted": false,
+ "prompt_version": "extract-page/3",
+ "header": {
+  "vendor_name": "Brightline Office Supply LLC",
+  "vendor_tax_id": "841937465",
+  "invoice_number": "INV-2026-1084",
+  "po_number": null,
+  "invoice_date": "2026-07-04",
+  "due_date": "2026-08-04",
+  "currency": "USD",
+  "subtotal_minor": 100425,
+  "tax_minor": 8034,
+  "total_minor": 108459
+ },
+ "confidence": {
+  "vendor_name": 1.0,
+  "vendor_tax_id": 1.0,
+  "invoice_number": 1.0,
+  "invoice_date": 1.0,
+  "due_date": 1.0,
+  "currency": 1.0,
+  "subtotal": 1.0,
+  "tax": 1.0,
+  "total": 1.0
+ },
+ "invalid_fields": {},
+ "lines": [
+  {
+   "description": "Hand truck, folding",
+   "quantity": "39",
+   "unit_price": "25.75",
+   "amount_minor": 100425
+  }
+ ],
+ "pages": [
+  {
+   "page_no": 1,
+   "status": "extracted",
+   "source": "text",
+   "error_code": null
+  }
+ ],
+ "calls": [
+  {
+   "ms": 19848.126333,
+   "prompt_tokens": 511,
+   "output_tokens": 326,
+   "output_ms": 17082.111
+  }
+ ],
+ "wall_s": 19.89
+}
