@@ -1,0 +1,71 @@
+{
+  "run": {
+    "model": "gemma4:12b",
+    "extraction_prompt": "extract-page/2+repair-totals/2",
+    "agent_prompt": "agent/1",
+    "split": "dev",
+    "mode": "replayed",
+    "date": "2026-11-01",
+    "extraction_cases": 1,
+    "agent_cases": 1,
+    "concurrency": 1,
+    "recorded": 0,
+    "replayed": 5
+  },
+  "metrics": {
+    "header_macro_accuracy": 1.0,
+    "header_min_field_accuracy": 1.0,
+    "field_accuracy": {
+      "vendor_name": 1.0,
+      "vendor_tax_id": 1.0,
+      "invoice_number": 1.0,
+      "po_number": 1.0,
+      "invoice_date": 1.0,
+      "due_date": 1.0,
+      "currency": 1.0,
+      "subtotal_minor": 1.0,
+      "tax_minor": 1.0,
+      "total_minor": 1.0
+    },
+    "line_precision": 1.0,
+    "line_recall": 1.0,
+    "line_f1": 1.0,
+    "line_counts": {
+      "correct": 3,
+      "predicted": 3,
+      "gold": 3
+    },
+    "schema_validity": 1.0,
+    "calibration_error": 0.0,
+    "calibration_n": 9,
+    "status_accuracy": 1.0,
+    "extraction_p50_s": 33.529356125,
+    "extraction_p95_s": 33.529356125,
+    "output_tokens_per_s": 13.762916610669743,
+    "invoices_per_hour": 107.36859922328735,
+    "agent_action_accuracy": 1.0,
+    "agent_hold_reason_accuracy": 0,
+    "agent_evidence_complete": 1.0,
+    "agent_guard_fires": 0,
+    "agent_p95_s": 29.2
+  },
+  "failures": [],
+  "agent": [
+    {
+      "id": "a06-short-one",
+      "gold": "credit_memo_request",
+      "got": "credit_memo_request",
+      "correct": true,
+      "evidence": true,
+      "tools": [
+        "get_po",
+        "get_receipts",
+        "compute_variance",
+        "draft_credit_memo_request"
+      ],
+      "guard_fires": 0,
+      "stop": "proposed",
+      "model_s": 29.2
+    }
+  ]
+}

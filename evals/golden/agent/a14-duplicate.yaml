@@ -1,0 +1,35 @@
+id: a14-duplicate
+description: Same invoice number as one paid last month.
+gold:
+  action: hold
+  reason_code: duplicate
+  required_tools:
+  - get_vendor_history
+invoice:
+  status: exception
+  invoice_number: A14-2026-114
+  po_number: null
+  invoice_date: '2026-10-15'
+  due_date: '2026-11-14'
+  currency: EUR
+  vendor:
+    name: Nordwerk Industrietechnik GmbH
+    tax_id: DE274918365
+  subtotal_minor: 19200
+  tax_minor: 3648
+  total_minor: 22848
+  lines:
+  - description: Laser printer toner, black
+    quantity: '3'
+    unit_price: '64.00'
+    amount_minor: 19200
+  invalid_fields:
+    invoice_number: duplicate of invoice 0199dddd-0000-7000-8000-000000000014
+  match_reasons: []
+purchase_order: null
+receipts: null
+history:
+- id: 0199dddd-0000-7000-8000-000000000014
+  invoice_number: DUP-2026-14
+  status: matched
+  total_minor: 19200

@@ -1,0 +1,26 @@
+{
+  "vendor_name": "Brightline Office Supply LLC",
+  "vendor_tax_id": "841937465",
+  "invoice_number": "INV-2026-1378",
+  "po_number": null,
+  "invoice_date": "2026-01-11",
+  "due_date": "2026-02-11",
+  "currency": "USD",
+  "subtotal_minor": 2453,
+  "tax_minor": 196,
+  "total_minor": 2649,
+  "arithmetic_error": false,
+  "layout": "single",
+  "scanned": false,
+  "style": "classic",
+  "pages": 1,
+  "stamp": null,
+  "lines": [
+    {
+      "description": "Pallet wrap film, 500 m",
+      "quantity": "11",
+      "unit_price": "2.23",
+      "amount_minor": 2453
+    }
+  ]
+}

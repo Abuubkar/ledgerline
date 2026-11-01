@@ -1,0 +1,43 @@
+id: a12-not-received
+description: Nothing received yet against the PO.
+gold:
+  action: hold
+  reason_code: short_shipment
+  required_tools:
+  - get_receipts
+invoice:
+  status: exception
+  invoice_number: A12-2026-112
+  po_number: '4500200001'
+  invoice_date: '2026-10-15'
+  due_date: '2026-11-14'
+  currency: EUR
+  vendor:
+    name: Nordwerk Industrietechnik GmbH
+    tax_id: DE274918365
+  subtotal_minor: 35800
+  tax_minor: 6802
+  total_minor: 42602
+  lines:
+  - description: Torque wrench 40-200 Nm
+    quantity: '4'
+    unit_price: '89.50'
+    amount_minor: 35800
+  invalid_fields: {}
+  match_reasons:
+  - code: not_received
+    detail: no goods receipt for PO 4500200001
+    line: null
+purchase_order:
+  po_number: '4500200001'
+  currency: EUR
+  vendor:
+    name: Nordwerk Industrietechnik GmbH
+    tax_id: DE274918365
+  lines:
+  - line_no: 1
+    description: Torque wrench 40-200 Nm
+    quantity: '4'
+    unit_price: '89.50'
+receipts: null
+history: []

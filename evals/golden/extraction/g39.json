@@ -1,0 +1,56 @@
+{
+  "vendor_name": "Kawasemi Electronics K.K.",
+  "vendor_tax_id": "T9876543210987",
+  "invoice_number": "SK-2026-1273",
+  "po_number": "4500100039",
+  "invoice_date": "2026-07-16",
+  "due_date": "2026-08-16",
+  "currency": "JPY",
+  "subtotal_minor": 971892,
+  "tax_minor": 97189,
+  "total_minor": 1069081,
+  "arithmetic_error": false,
+  "layout": "single",
+  "scanned": false,
+  "style": "seikyu",
+  "pages": 3,
+  "stamp": null,
+  "lines": [
+    {
+      "description": "Cable ties, pack of 1000",
+      "quantity": "25",
+      "unit_price": "5184",
+      "amount_minor": 129600
+    },
+    {
+      "description": "USB-C docking station",
+      "quantity": "28",
+      "unit_price": "1239",
+      "amount_minor": 34692
+    },
+    {
+      "description": "USB-C docking station",
+      "quantity": "28",
+      "unit_price": "5770",
+      "amount_minor": 161560
+    },
+    {
+      "description": "Safety goggles, anti-fog",
+      "quantity": "5",
+      "unit_price": "32630",
+      "amount_minor": 163150
+    },
+    {
+      "description": "USB-C docking station",
+      "quantity": "20",
+      "unit_price": "3287",
+      "amount_minor": 65740
+    },
+    {
+      "description": "Thermal labels 100x150",
+      "quantity": "27",
+      "unit_price": "15450",
+      "amount_minor": 417150
+    }
+  ]
+}

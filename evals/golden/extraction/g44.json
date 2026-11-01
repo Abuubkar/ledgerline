@@ -1,0 +1,56 @@
+{
+  "vendor_name": "Harbourside Catering Ltd",
+  "vendor_tax_id": "GB482193756",
+  "invoice_number": "NW-2026-1308",
+  "po_number": null,
+  "invoice_date": "2026-01-03",
+  "due_date": "2026-02-03",
+  "currency": "GBP",
+  "subtotal_minor": 364038,
+  "tax_minor": 72807,
+  "total_minor": 436845,
+  "arithmetic_error": false,
+  "layout": "single",
+  "scanned": false,
+  "style": "right",
+  "pages": 4,
+  "stamp": null,
+  "lines": [
+    {
+      "description": "Server rack screws, M6",
+      "quantity": "31",
+      "unit_price": "2.58",
+      "amount_minor": 7998
+    },
+    {
+      "description": "Hand truck, folding",
+      "quantity": "32",
+      "unit_price": "97.00",
+      "amount_minor": 310400
+    },
+    {
+      "description": "LED panel light 60x60",
+      "quantity": "15",
+      "unit_price": "2.60",
+      "amount_minor": 3900
+    },
+    {
+      "description": "Server rack screws, M6",
+      "quantity": "15",
+      "unit_price": "6.20",
+      "amount_minor": 9300
+    },
+    {
+      "description": "Server rack screws, M6",
+      "quantity": "4",
+      "unit_price": "60.30",
+      "amount_minor": 24120
+    },
+    {
+      "description": "Pallet wrap film, 500 m",
+      "quantity": "16",
+      "unit_price": "5.20",
+      "amount_minor": 8320
+    }
+  ]
+}

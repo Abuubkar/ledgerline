@@ -1,0 +1,62 @@
+{
+  "vendor_name": "Nordwerk Industrietechnik GmbH",
+  "vendor_tax_id": "DE274918365",
+  "invoice_number": "RE-2026-1343",
+  "po_number": "4500100049",
+  "invoice_date": "2026-05-21",
+  "due_date": "2026-06-21",
+  "currency": "EUR",
+  "subtotal_minor": 1620465,
+  "tax_minor": 307888,
+  "total_minor": 1928353,
+  "arithmetic_error": false,
+  "layout": "single",
+  "scanned": false,
+  "style": "german",
+  "pages": 3,
+  "stamp": null,
+  "lines": [
+    {
+      "description": "Hand truck, folding",
+      "quantity": "2",
+      "unit_price": "207.50",
+      "amount_minor": 41500
+    },
+    {
+      "description": "Pallet wrap film, 500 m",
+      "quantity": "10",
+      "unit_price": "50.30",
+      "amount_minor": 50300
+    },
+    {
+      "description": "Cable ties, pack of 1000",
+      "quantity": "39",
+      "unit_price": "48.10",
+      "amount_minor": 187590
+    },
+    {
+      "description": "Ergonomic office chair",
+      "quantity": "29",
+      "unit_price": "206.00",
+      "amount_minor": 597400
+    },
+    {
+      "description": "Thermal labels 100x150",
+      "quantity": "31",
+      "unit_price": "172.00",
+      "amount_minor": 533200
+    },
+    {
+      "description": "Thermal labels 100x150",
+      "quantity": "23",
+      "unit_price": "89.00",
+      "amount_minor": 204700
+    },
+    {
+      "description": "Ergonomic office chair",
+      "quantity": "15",
+      "unit_price": "3.85",
+      "amount_minor": 5775
+    }
+  ]
+}

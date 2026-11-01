@@ -1,0 +1,26 @@
+{
+  "vendor_name": "Brightline Office Supply LLC",
+  "vendor_tax_id": "841937465",
+  "invoice_number": "INV-2026-1042",
+  "po_number": "4500100006",
+  "invoice_date": "2026-03-12",
+  "due_date": "2026-04-12",
+  "currency": "USD",
+  "subtotal_minor": 113520,
+  "tax_minor": 9081,
+  "total_minor": 122601,
+  "arithmetic_error": false,
+  "layout": "single",
+  "scanned": false,
+  "style": "classic",
+  "pages": 1,
+  "stamp": null,
+  "lines": [
+    {
+      "description": "Hand truck, folding",
+      "quantity": "22",
+      "unit_price": "51.60",
+      "amount_minor": 113520
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+id: a13-not-received-gbp
+description: Invoice arrived before any delivery.
+gold:
+  action: hold
+  reason_code: short_shipment
+  required_tools:
+  - get_receipts
+invoice:
+  status: exception
+  invoice_number: A13-2026-113
+  po_number: '4500200001'
+  invoice_date: '2026-10-15'
+  due_date: '2026-11-14'
+  currency: GBP
+  vendor:
+    name: Harbourside Catering Ltd
+    tax_id: GB482193756
+  subtotal_minor: 74000
+  tax_minor: 14800
+  total_minor: 88800
+  lines:
+  - description: Buffet lunch, per person
+    quantity: '40'
+    unit_price: '18.50'
+    amount_minor: 74000
+  invalid_fields: {}
+  match_reasons:
+  - code: not_received
+    detail: no goods receipt for PO 4500200001
+    line: null
+purchase_order:
+  po_number: '4500200001'
+  currency: GBP
+  vendor:
+    name: Harbourside Catering Ltd
+    tax_id: GB482193756
+  lines:
+  - line_no: 1
+    description: Buffet lunch, per person
+    quantity: '40'
+    unit_price: '18.50'
+receipts: null
+history: []

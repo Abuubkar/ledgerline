@@ -1,0 +1,38 @@
+{
+  "vendor_name": "Nordwerk Industrietechnik GmbH",
+  "vendor_tax_id": "DE274918365",
+  "invoice_number": "RE-2026-1385",
+  "po_number": "4500100055",
+  "invoice_date": "2026-08-17",
+  "due_date": "2026-09-17",
+  "currency": "EUR",
+  "subtotal_minor": 259900,
+  "tax_minor": 49381,
+  "total_minor": 309281,
+  "arithmetic_error": false,
+  "layout": "single",
+  "scanned": false,
+  "style": "german",
+  "pages": 1,
+  "stamp": null,
+  "lines": [
+    {
+      "description": "Pallet wrap film, 500 m",
+      "quantity": "32",
+      "unit_price": "7.60",
+      "amount_minor": 24320
+    },
+    {
+      "description": "Server rack screws, M6",
+      "quantity": "21",
+      "unit_price": "11.00",
+      "amount_minor": 23100
+    },
+    {
+      "description": "USB-C docking station",
+      "quantity": "32",
+      "unit_price": "66.40",
+      "amount_minor": 212480
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "vendor_name": "Harbourside Catering Ltd",
+  "vendor_tax_id": "GB482193756",
+  "invoice_number": "NW-2026-1140",
+  "po_number": "4500100020",
+  "invoice_date": "2026-09-26",
+  "due_date": "2026-10-26",
+  "currency": "GBP",
+  "subtotal_minor": 380900,
+  "tax_minor": 76180,
+  "total_minor": 457080,
+  "arithmetic_error": false,
+  "layout": "single",
+  "scanned": false,
+  "style": "right",
+  "pages": 1,
+  "stamp": null,
+  "lines": [
+    {
+      "description": "Cable ties, pack of 1000",
+      "quantity": "12",
+      "unit_price": "57.60",
+      "amount_minor": 69120
+    },
+    {
+      "description": "LED panel light 60x60",
+      "quantity": "14",
+      "unit_price": "45.90",
+      "amount_minor": 64260
+    },
+    {
+      "description": "Safety goggles, anti-fog",
+      "quantity": "27",
+      "unit_price": "84.10",
+      "amount_minor": 227070
+    },
+    {
+      "description": "USB-C docking station",
+      "quantity": "5",
+      "unit_price": "40.90",
+      "amount_minor": 20450
+    }
+  ]
+}

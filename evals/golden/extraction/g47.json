@@ -1,0 +1,32 @@
+{
+  "vendor_name": "Pacific Rim Packaging Inc.",
+  "vendor_tax_id": "912846573",
+  "invoice_number": "PR-2026-1329",
+  "po_number": "4500100047",
+  "invoice_date": "2026-09-28",
+  "due_date": "2026-10-28",
+  "currency": "USD",
+  "subtotal_minor": 107024,
+  "tax_minor": 8561,
+  "total_minor": 115585,
+  "arithmetic_error": false,
+  "layout": "single",
+  "scanned": false,
+  "style": "compact",
+  "pages": 2,
+  "stamp": null,
+  "lines": [
+    {
+      "description": "A4 copy paper, 5 reams",
+      "quantity": "20",
+      "unit_price": "51.80",
+      "amount_minor": 103600
+    },
+    {
+      "description": "Laser printer toner, black",
+      "quantity": "16",
+      "unit_price": "2.14",
+      "amount_minor": 3424
+    }
+  ]
+}

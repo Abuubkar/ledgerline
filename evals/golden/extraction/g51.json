@@ -1,0 +1,32 @@
+{
+  "vendor_name": "Kawasemi Electronics K.K.",
+  "vendor_tax_id": "T9876543210987",
+  "invoice_number": "SK-2026-1357",
+  "po_number": "4500100051",
+  "invoice_date": "2026-08-17",
+  "due_date": "2026-09-17",
+  "currency": "JPY",
+  "subtotal_minor": 1652170,
+  "tax_minor": 165217,
+  "total_minor": 1817387,
+  "arithmetic_error": false,
+  "layout": "single",
+  "scanned": false,
+  "style": "seikyu",
+  "pages": 1,
+  "stamp": null,
+  "lines": [
+    {
+      "description": "Ergonomic office chair",
+      "quantity": "27",
+      "unit_price": "39520",
+      "amount_minor": 1067040
+    },
+    {
+      "description": "Ergonomic office chair",
+      "quantity": "13",
+      "unit_price": "45010",
+      "amount_minor": 585130
+    }
+  ]
+}

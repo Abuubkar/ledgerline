@@ -1,0 +1,57 @@
+id: a01-price-eur
+description: One line billed 3% above the PO price; everything received.
+gold:
+  action: credit_memo_request
+  required_tools:
+  - get_receipts
+  - compute_variance
+invoice:
+  status: exception
+  invoice_number: A01-2026-101
+  po_number: '4500200001'
+  invoice_date: '2026-10-15'
+  due_date: '2026-11-14'
+  currency: EUR
+  vendor:
+    name: Nordwerk Industrietechnik GmbH
+    tax_id: DE274918365
+  subtotal_minor: 61676
+  tax_minor: 11718
+  total_minor: 73394
+  lines:
+  - description: Torque wrench 40-200 Nm
+    quantity: '4'
+    unit_price: '92.19'
+    amount_minor: 36876
+  - description: Socket set 1/2 inch, 24 pcs
+    quantity: '2'
+    unit_price: '124.00'
+    amount_minor: 24800
+  invalid_fields: {}
+  match_reasons:
+  - code: price_variance
+    detail: unit price 92.19 vs PO 89.50 (+3.00%, tolerance 1%)
+    line: page 1 line 1
+purchase_order:
+  po_number: '4500200001'
+  currency: EUR
+  vendor:
+    name: Nordwerk Industrietechnik GmbH
+    tax_id: DE274918365
+  lines:
+  - line_no: 1
+    description: Torque wrench 40-200 Nm
+    quantity: '4'
+    unit_price: '89.50'
+  - line_no: 2
+    description: Socket set 1/2 inch, 24 pcs
+    quantity: '2'
+    unit_price: '124.00'
+receipts:
+- received_on: '2026-10-10'
+  lines:
+  - po_line_no: 1
+    quantity: '4'
+  - po_line_no: 2
+    quantity: '2'
+history: []

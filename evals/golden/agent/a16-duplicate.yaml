@@ -1,0 +1,35 @@
+id: a16-duplicate
+description: Same number printed differently ('SK 2026 0042' vs 'SK-2026-42').
+gold:
+  action: hold
+  reason_code: duplicate
+  required_tools:
+  - get_vendor_history
+invoice:
+  status: exception
+  invoice_number: A16-2026-116
+  po_number: null
+  invoice_date: '2026-10-15'
+  due_date: '2026-11-14'
+  currency: JPY
+  vendor:
+    name: Kawasemi Electronics K.K.
+    tax_id: T9876543210987
+  subtotal_minor: 19200
+  tax_minor: 3648
+  total_minor: 22848
+  lines:
+  - description: Laser printer toner, black
+    quantity: '3'
+    unit_price: '6400'
+    amount_minor: 19200
+  invalid_fields:
+    invoice_number: duplicate of invoice 0199dddd-0000-7000-8000-000000000016
+  match_reasons: []
+purchase_order: null
+receipts: null
+history:
+- id: 0199dddd-0000-7000-8000-000000000016
+  invoice_number: SK-2026-42
+  status: matched
+  total_minor: 19200

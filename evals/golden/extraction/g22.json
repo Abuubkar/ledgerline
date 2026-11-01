@@ -1,0 +1,32 @@
+{
+  "vendor_name": "Alpenblick Logistik AG",
+  "vendor_tax_id": "CHE123456789",
+  "invoice_number": "AB-2026-1154",
+  "po_number": "4500100022",
+  "invoice_date": "2026-04-12",
+  "due_date": "2026-05-12",
+  "currency": "EUR",
+  "subtotal_minor": 114706,
+  "tax_minor": 9176,
+  "total_minor": 123882,
+  "arithmetic_error": false,
+  "layout": "single",
+  "scanned": false,
+  "style": "boxed",
+  "pages": 1,
+  "stamp": null,
+  "lines": [
+    {
+      "description": "Server rack screws, M6",
+      "quantity": "17",
+      "unit_price": "58.60",
+      "amount_minor": 99620
+    },
+    {
+      "description": "Safety goggles, anti-fog",
+      "quantity": "38",
+      "unit_price": "3.97",
+      "amount_minor": 15086
+    }
+  ]
+}

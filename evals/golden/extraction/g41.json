@@ -1,0 +1,38 @@
+{
+  "vendor_name": "Pacific Rim Packaging Inc.",
+  "vendor_tax_id": "912846573",
+  "invoice_number": "PR-2026-1287",
+  "po_number": null,
+  "invoice_date": "2026-01-15",
+  "due_date": "2026-02-15",
+  "currency": "USD",
+  "subtotal_minor": 639492,
+  "tax_minor": 51159,
+  "total_minor": 690651,
+  "arithmetic_error": false,
+  "layout": "single",
+  "scanned": false,
+  "style": "compact",
+  "pages": 1,
+  "stamp": null,
+  "lines": [
+    {
+      "description": "Thermal labels 100x150",
+      "quantity": "25",
+      "unit_price": "200.75",
+      "amount_minor": 501875
+    },
+    {
+      "description": "Laser printer toner, black",
+      "quantity": "35",
+      "unit_price": "33.75",
+      "amount_minor": 118125
+    },
+    {
+      "description": "Ergonomic office chair",
+      "quantity": "22",
+      "unit_price": "8.86",
+      "amount_minor": 19492
+    }
+  ]
+}

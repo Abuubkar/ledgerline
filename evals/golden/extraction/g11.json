@@ -1,0 +1,32 @@
+{
+  "vendor_name": "Pacific Rim Packaging Inc.",
+  "vendor_tax_id": "912846573",
+  "invoice_number": "PR-2026-1077",
+  "po_number": null,
+  "invoice_date": "2026-02-07",
+  "due_date": "2026-03-07",
+  "currency": "USD",
+  "subtotal_minor": 270850,
+  "tax_minor": 21668,
+  "total_minor": 292518,
+  "arithmetic_error": false,
+  "layout": "single",
+  "scanned": false,
+  "style": "compact",
+  "pages": 1,
+  "stamp": null,
+  "lines": [
+    {
+      "description": "Industrial shelving bracket",
+      "quantity": "13",
+      "unit_price": "81.70",
+      "amount_minor": 106210
+    },
+    {
+      "description": "Safety goggles, anti-fog",
+      "quantity": "28",
+      "unit_price": "58.80",
+      "amount_minor": 164640
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "vendor_name": "Alpenblick Logistik AG",
+  "vendor_tax_id": "CHE123456789",
+  "invoice_number": "AB-2026-1112",
+  "po_number": "4500100016",
+  "invoice_date": "2026-03-28",
+  "due_date": "2026-04-28",
+  "currency": "EUR",
+  "subtotal_minor": 48969,
+  "tax_minor": 3917,
+  "total_minor": 52886,
+  "arithmetic_error": false,
+  "layout": "single",
+  "scanned": false,
+  "style": "boxed",
+  "pages": 1,
+  "stamp": null,
+  "lines": [
+    {
+      "description": "Hand truck, folding",
+      "quantity": "9",
+      "unit_price": "5.13",
+      "amount_minor": 4617
+    },
+    {
+      "description": "Thermal labels 100x150",
+      "quantity": "6",
+      "unit_price": "70.10",
+      "amount_minor": 42060
+    },
+    {
+      "description": "Industrial shelving bracket",
+      "quantity": "12",
+      "unit_price": "1.91",
+      "amount_minor": 2292
+    }
+  ]
+}

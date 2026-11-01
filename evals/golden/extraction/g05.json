@@ -1,0 +1,26 @@
+{
+  "vendor_name": "Pacific Rim Packaging Inc.",
+  "vendor_tax_id": "912846573",
+  "invoice_number": "PR-2026-1035",
+  "po_number": "4500100005",
+  "invoice_date": "2026-02-25",
+  "due_date": "2026-03-25",
+  "currency": "USD",
+  "subtotal_minor": 124050,
+  "tax_minor": 9924,
+  "total_minor": 134974,
+  "arithmetic_error": true,
+  "layout": "single",
+  "scanned": false,
+  "style": "compact",
+  "pages": 1,
+  "stamp": null,
+  "lines": [
+    {
+      "description": "LED panel light 60x60",
+      "quantity": "15",
+      "unit_price": "82.70",
+      "amount_minor": 124050
+    }
+  ]
+}

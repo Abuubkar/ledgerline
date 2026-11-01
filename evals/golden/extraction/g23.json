@@ -1,0 +1,38 @@
+{
+  "vendor_name": "Pacific Rim Packaging Inc.",
+  "vendor_tax_id": "912846573",
+  "invoice_number": "PR-2026-1161",
+  "po_number": null,
+  "invoice_date": "2026-03-23",
+  "due_date": "2026-04-23",
+  "currency": "USD",
+  "subtotal_minor": 356613,
+  "tax_minor": 28529,
+  "total_minor": 385142,
+  "arithmetic_error": false,
+  "layout": "single",
+  "scanned": false,
+  "style": "compact",
+  "pages": 1,
+  "stamp": null,
+  "lines": [
+    {
+      "description": "Server rack screws, M6",
+      "quantity": "39",
+      "unit_price": "2.57",
+      "amount_minor": 10023
+    },
+    {
+      "description": "A4 copy paper, 5 reams",
+      "quantity": "21",
+      "unit_price": "135.50",
+      "amount_minor": 284550
+    },
+    {
+      "description": "Hand truck, folding",
+      "quantity": "12",
+      "unit_price": "51.70",
+      "amount_minor": 62040
+    }
+  ]
+}

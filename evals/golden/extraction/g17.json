@@ -1,0 +1,68 @@
+{
+  "vendor_name": "Pacific Rim Packaging Inc.",
+  "vendor_tax_id": "912846573",
+  "invoice_number": "PR-2026-1119",
+  "po_number": null,
+  "invoice_date": "2026-03-24",
+  "due_date": "2026-04-24",
+  "currency": "USD",
+  "subtotal_minor": 788338,
+  "tax_minor": 63067,
+  "total_minor": 851405,
+  "arithmetic_error": false,
+  "layout": "single",
+  "scanned": false,
+  "style": "compact",
+  "pages": 2,
+  "stamp": null,
+  "lines": [
+    {
+      "description": "LED panel light 60x60",
+      "quantity": "1",
+      "unit_price": "3.64",
+      "amount_minor": 364
+    },
+    {
+      "description": "A4 copy paper, 5 reams",
+      "quantity": "7",
+      "unit_price": "69.50",
+      "amount_minor": 48650
+    },
+    {
+      "description": "Laser printer toner, black",
+      "quantity": "24",
+      "unit_price": "142.00",
+      "amount_minor": 340800
+    },
+    {
+      "description": "Safety goggles, anti-fog",
+      "quantity": "40",
+      "unit_price": "27.60",
+      "amount_minor": 110400
+    },
+    {
+      "description": "Safety goggles, anti-fog",
+      "quantity": "16",
+      "unit_price": "4.39",
+      "amount_minor": 7024
+    },
+    {
+      "description": "A4 copy paper, 5 reams",
+      "quantity": "2",
+      "unit_price": "149.75",
+      "amount_minor": 29950
+    },
+    {
+      "description": "Laser printer toner, black",
+      "quantity": "12",
+      "unit_price": "187.00",
+      "amount_minor": 224400
+    },
+    {
+      "description": "Cable ties, pack of 1000",
+      "quantity": "5",
+      "unit_price": "53.50",
+      "amount_minor": 26750
+    }
+  ]
+}

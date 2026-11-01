@@ -1,0 +1,26 @@
+{
+  "vendor_name": "Harbourside Catering Ltd",
+  "vendor_tax_id": "GB482193756",
+  "invoice_number": "NW-2026-1224",
+  "po_number": "4500100032",
+  "invoice_date": "2026-05-08",
+  "due_date": "2026-06-08",
+  "currency": "GBP",
+  "subtotal_minor": 11620,
+  "tax_minor": 2324,
+  "total_minor": 13944,
+  "arithmetic_error": false,
+  "layout": "single",
+  "scanned": false,
+  "style": "right",
+  "pages": 1,
+  "stamp": null,
+  "lines": [
+    {
+      "description": "USB-C docking station",
+      "quantity": "7",
+      "unit_price": "16.60",
+      "amount_minor": 11620
+    }
+  ]
+}

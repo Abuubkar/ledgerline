@@ -1,0 +1,57 @@
+id: a07-short-usd
+description: Two of six shelving units never arrived.
+gold:
+  action: credit_memo_request
+  required_tools:
+  - get_receipts
+  - compute_variance
+invoice:
+  status: exception
+  invoice_number: A07-2026-107
+  po_number: '4500200001'
+  invoice_date: '2026-10-15'
+  due_date: '2026-11-14'
+  currency: USD
+  vendor:
+    name: Brightline Office Supply LLC
+    tax_id: '841937465'
+  subtotal_minor: 128494
+  tax_minor: 10279
+  total_minor: 138773
+  lines:
+  - description: Warehouse shelving unit, steel
+    quantity: '6'
+    unit_price: '189.99'
+    amount_minor: 113994
+  - description: Safety gloves (box of 100)
+    quantity: '10'
+    unit_price: '14.50'
+    amount_minor: 14500
+  invalid_fields: {}
+  match_reasons:
+  - code: short_shipment
+    detail: billed 6, received 4
+    line: page 1 line 1
+purchase_order:
+  po_number: '4500200001'
+  currency: USD
+  vendor:
+    name: Brightline Office Supply LLC
+    tax_id: '841937465'
+  lines:
+  - line_no: 1
+    description: Warehouse shelving unit, steel
+    quantity: '6'
+    unit_price: '189.99'
+  - line_no: 2
+    description: Safety gloves (box of 100)
+    quantity: '10'
+    unit_price: '14.50'
+receipts:
+- received_on: '2026-10-10'
+  lines:
+  - po_line_no: 1
+    quantity: '4'
+  - po_line_no: 2
+    quantity: '10'
+history: []

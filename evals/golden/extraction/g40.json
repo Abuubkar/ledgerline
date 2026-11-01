@@ -1,0 +1,44 @@
+{
+  "vendor_name": "Alpenblick Logistik AG",
+  "vendor_tax_id": "CHE123456789",
+  "invoice_number": "AB-2026-1280",
+  "po_number": null,
+  "invoice_date": "2026-04-12",
+  "due_date": "2026-05-12",
+  "currency": "EUR",
+  "subtotal_minor": 468655,
+  "tax_minor": 37492,
+  "total_minor": 506147,
+  "arithmetic_error": false,
+  "layout": "single",
+  "scanned": false,
+  "style": "boxed",
+  "pages": 1,
+  "stamp": null,
+  "lines": [
+    {
+      "description": "Laser printer toner, black",
+      "quantity": "13",
+      "unit_price": "164.75",
+      "amount_minor": 214175
+    },
+    {
+      "description": "Ergonomic office chair",
+      "quantity": "22",
+      "unit_price": "54.50",
+      "amount_minor": 119900
+    },
+    {
+      "description": "Cable ties, pack of 1000",
+      "quantity": "33",
+      "unit_price": "9.70",
+      "amount_minor": 32010
+    },
+    {
+      "description": "USB-C docking station",
+      "quantity": "39",
+      "unit_price": "26.30",
+      "amount_minor": 102570
+    }
+  ]
+}

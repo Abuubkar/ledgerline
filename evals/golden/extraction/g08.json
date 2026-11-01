@@ -1,0 +1,50 @@
+{
+  "vendor_name": "Harbourside Catering Ltd",
+  "vendor_tax_id": "GB482193756",
+  "invoice_number": "NW-2026-1056",
+  "po_number": "4500100008",
+  "invoice_date": "2026-09-05",
+  "due_date": "2026-10-05",
+  "currency": "GBP",
+  "subtotal_minor": 453758,
+  "tax_minor": 90751,
+  "total_minor": 544509,
+  "arithmetic_error": false,
+  "layout": "single",
+  "scanned": false,
+  "style": "right",
+  "pages": 2,
+  "stamp": null,
+  "lines": [
+    {
+      "description": "Cable ties, pack of 1000",
+      "quantity": "32",
+      "unit_price": "58.60",
+      "amount_minor": 187520
+    },
+    {
+      "description": "Server rack screws, M6",
+      "quantity": "39",
+      "unit_price": "49.20",
+      "amount_minor": 191880
+    },
+    {
+      "description": "USB-C docking station",
+      "quantity": "18",
+      "unit_price": "35.75",
+      "amount_minor": 64350
+    },
+    {
+      "description": "Ergonomic office chair",
+      "quantity": "11",
+      "unit_price": "5.70",
+      "amount_minor": 6270
+    },
+    {
+      "description": "Server rack screws, M6",
+      "quantity": "6",
+      "unit_price": "6.23",
+      "amount_minor": 3738
+    }
+  ]
+}
