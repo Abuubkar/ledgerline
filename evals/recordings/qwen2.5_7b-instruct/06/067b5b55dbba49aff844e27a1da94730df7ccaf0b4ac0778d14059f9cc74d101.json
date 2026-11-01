@@ -1,0 +1,16 @@
+{
+ "model": "qwen2.5:7b-instruct",
+ "created_at": "2026-11-01T05:34:28.303556Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 11831750125,
+ "load_duration": 690958,
+ "prompt_eval_count": 517,
+ "prompt_eval_duration": 565461000,
+ "eval_count": 286,
+ "eval_duration": 11255453000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"Harbourside Catering Ltd\",\n  \"vendor_tax_id\": null,\n  \"invoice_number\": \"NW-2026-1056\",\n  \"po_number\": null,\n  \"invoice_date\": null,\n  \"due_date\": null,\n  \"currency\": \"GBP\",\n  \"subtotal\": null,\n  \"tax\": 907.51,\n  \"total\": 5445.09,\n  \"field_confidence\": {\n    \"vendor_name\": 1,\n    \"vendor_tax_id\": 0,\n    \"invoice_number\": 1,\n    \"po_number\": 0,\n    \"invoice_date\": 0,\n    \"due_date\": 0,\n    \"currency\": 1,\n    \"subtotal\": 0,\n    \"tax\": 1,\n    \"total\": 1\n  },\n  \"line_items\": [\n    {\n      \"description\": \"Ergonomic office chair\",\n      \"quantity\": 11,\n      \"unit_price\": 5.70,\n      \"amount\": 62.70\n    },\n    {\n      \"description\": \"Server rack screws, M6\",\n      \"quantity\": 6,\n      \"unit_price\": 6.23,\n      \"amount\": 37.38\n    }\n  ]\n}"
+ }
+}

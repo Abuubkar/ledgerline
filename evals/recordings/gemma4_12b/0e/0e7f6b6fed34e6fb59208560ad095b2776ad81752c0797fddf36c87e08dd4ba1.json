@@ -1,0 +1,16 @@
+{
+ "model": "gemma4:12b",
+ "created_at": "2026-11-01T06:29:37.857276Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 33444935083,
+ "load_duration": 3495083,
+ "prompt_eval_count": 637,
+ "prompt_eval_duration": 3942754000,
+ "eval_count": 364,
+ "eval_duration": 25519960000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"Alpenblick Logistik AG\",\n  \"vendor_tax_id\": \"CHE-123.456.789\",\n  \"invoice_number\": \"AB-2026-1364\",\n  \"po_number\": \"4500100052\",\n  \"invoice_date\": \"2026-02-04\",\n  \"due_date\": \"2026-03-04\",\n  \"currency\": \"EUR\",\n  \"subtotal\": 1875.50,\n  \"tax\": 150.04,\n  \"total\": 2025.54,\n  \"field_confidence\": {\n    \"vendor_name\": 1.0,\n    \"vendor_tax_id\": 1.0,\n    \"invoice_number\": 1.0,\n    \"po_number\": 1.0,\n    \"invoice_date\": 1.0,\n    \"due_date\": 1.0,\n    \"currency\": 1.0,\n    \"subtotal\": 1.0,\n    \"tax\": 1.0,\n    \"total\": 1.0\n  },\n  \"line_items\": [\n    {\n      \"description\": \"A4 copy paper, 5 reams\",\n      \"quantity\": 31,\n      \"unit_price\": 60.50,\n      \"amount\": 1875.50\n    }\n  ]\n}"
+ }
+}

@@ -1,6 +1,6 @@
 {
-  "header_macro_accuracy": 0.9949999999999999,
-  "line_f1": 0.963768115942029,
+  "header_macro_accuracy": 1.0,
+  "line_f1": 0.9927536231884058,
   "schema_validity": 1.0,
   "agent_action_accuracy": 1.0,
   "model": "gemma4:12b"

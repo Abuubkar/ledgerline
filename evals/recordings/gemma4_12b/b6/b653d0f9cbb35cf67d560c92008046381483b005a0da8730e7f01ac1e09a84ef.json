@@ -1,0 +1,16 @@
+{
+ "model": "gemma4:12b",
+ "created_at": "2026-11-01T06:30:59.367017Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 40408932083,
+ "load_duration": 8689333,
+ "prompt_eval_count": 702,
+ "prompt_eval_duration": 4149220999,
+ "eval_count": 471,
+ "eval_duration": 32934334000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"Nordwerk Industrietechnik GmbH\",\n  \"vendor_tax_id\": \"DE 274 918 365\",\n  \"invoice_number\": \"RE-2026-1385\",\n  \"po_number\": \"4500100055\",\n  \"invoice_date\": \"2026-08-17\",\n  \"due_date\": \"2026-09-17\",\n  \"currency\": \"EUR\",\n  \"subtotal\": 2599.00,\n  \"tax\": 493.81,\n  \"total\": 3092.81,\n  \"field_confidence\": {\n    \"vendor_name\": 1.0,\n    \"vendor_tax_id\": 1.0,\n    \"invoice_number\": 1.0,\n    \"po_number\": 1.0,\n    \"invoice_date\": 1.0,\n    \"due_date\": 1.0,\n    \"currency\": 1.0,\n    \"subtotal\": 1.0,\n    \"tax\": 1.0,\n    \"total\": 1.0\n  },\n  \"line_items\": [\n    {\n      \"description\": \"Pallet wrap film, 500 m\",\n      \"quantity\": 32,\n      \"unit_price\": 7.60,\n      \"amount\": 243.20\n    },\n    {\n      \"description\": \"Server rack screws, M6\",\n      \"quantity\": 21,\n      \"unit_price\": 11.00,\n      \"amount\": 231.00\n    },\n    {\n      \"description\": \"USB-C docking station\",\n      \"quantity\": 32,\n      \"unit_price\": 66.40,\n      \"amount\": 2124.80\n    }\n  ]\n}"
+ }
+}

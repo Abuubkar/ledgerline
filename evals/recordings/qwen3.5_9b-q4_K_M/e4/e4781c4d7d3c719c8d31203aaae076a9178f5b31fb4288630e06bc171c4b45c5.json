@@ -1,0 +1,16 @@
+{
+ "model": "qwen3.5:9b-q4_K_M",
+ "created_at": "2026-11-01T05:13:29.539012Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 16174962459,
+ "load_duration": 1666125,
+ "prompt_eval_count": 532,
+ "prompt_eval_duration": 2606901000,
+ "eval_count": 299,
+ "eval_duration": 13533187000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"Nordwerk Industrietechnik GmbH\",\n  \"vendor_tax_id\": null,\n  \"invoice_number\": \"RE-2026-1343\",\n  \"po_number\": null,\n  \"invoice_date\": null,\n  \"due_date\": null,\n  \"currency\": \"EUR\",\n  \"subtotal\": 16204.65,\n  \"tax\": 3078.88,\n  \"total\": 19283.53,\n  \"field_confidence\": {\n    \"vendor_name\": 1.0,\n    \"vendor_tax_id\": 0.0,\n    \"invoice_number\": 1.0,\n    \"po_number\": 0.0,\n    \"invoice_date\": 0.0,\n    \"due_date\": 0.0,\n    \"currency\": 1.0,\n    \"subtotal\": 1.0,\n    \"tax\": 1.0,\n    \"total\": 1.0\n  },\n  \"line_items\": [\n    {\n      \"description\": \"Ergonomic office chair\",\n      \"quantity\": 15,\n      \"unit_price\": 3.85,\n      \"amount\": 57.75\n    }\n  ]\n}"
+ }
+}

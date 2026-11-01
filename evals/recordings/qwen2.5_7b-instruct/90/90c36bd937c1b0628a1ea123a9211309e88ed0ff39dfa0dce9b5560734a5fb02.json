@@ -1,0 +1,16 @@
+{
+ "model": "qwen2.5:7b-instruct",
+ "created_at": "2026-11-01T05:38:46.535004Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 29365104667,
+ "load_duration": 597584,
+ "prompt_eval_count": 1701,
+ "prompt_eval_duration": 6218320000,
+ "eval_count": 576,
+ "eval_duration": 23130300000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"Kawasemi Electronics K.K.\",\n  \"vendor_tax_id\": \"T9876543210987\",\n  \"invoice_number\": \"SK-2026-1189\",\n  \"po_number\": \"4500100027\",\n  \"invoice_date\": \"2026-06-04\",\n  \"due_date\": \"2026-07-04\",\n  \"currency\": \"JPY\",\n  \"subtotal\": null,\n  \"tax\": null,\n  \"total\": null,\n  \"field_confidence\": {\n    \"vendor_name\": 1.0,\n    \"vendor_tax_id\": 1.0,\n    \"invoice_number\": 1.0,\n    \"po_number\": 1.0,\n    \"invoice_date\": 1.0,\n    \"due_date\": 1.0,\n    \"currency\": 1.0\n  },\n  \"line_items\": [\n    {\n      \"description\": \"Industrial shelving bracket\",\n      \"quantity\": 13,\n      \"unit_price\": 9510,\n      \"amount\": 123630.00,\n      \"page\": 1\n    },\n    {\n      \"description\": \"Pallet wrap film, 500 m\",\n      \"quantity\": 11,\n      \"unit_price\": 5984,\n      \"amount\": 65824.00,\n      \"page\": 1\n    },\n    {\n      \"description\": \"LED panel light 60x60\",\n      \"quantity\": 6,\n      \"unit_price\": 32930,\n      \"amount\": 197580.00,\n      \"page\": 2\n    },\n    {\n      \"description\": \"Server rack screws, M6\",\n      \"quantity\": 24,\n      \"unit_price\": 4115,\n      \"amount\": 98760.00,\n      \"page\": 2\n    },\n    {\n      \"description\": \"Pallet wrap film, 500 m\",\n      \"quantity\": 11,\n      \"unit_price\": 24190,\n      \"amount\": 266090.00,\n      \"page\": 2\n    },\n    {\n      \"description\": \"Thermal labels 100x150\",\n      \"quantity\": 8,\n      \"unit_price\": 31490,\n      \"amount\": 251920.00,\n      \"page\": 2\n    }\n  ]\n}"
+ }
+}

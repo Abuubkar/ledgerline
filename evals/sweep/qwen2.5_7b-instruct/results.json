@@ -1,7 +1,7 @@
 {
   "run": {
     "model": "qwen2.5:7b-instruct",
-    "extraction_prompt": "extract-page/3+repair-totals/3",
+    "extraction_prompt": "extract-page/4+repair-totals/4",
     "agent_prompt": "agent/1",
     "split": "dev",
     "mode": "replayed",
@@ -13,8 +13,8 @@
     "replayed": 0
   },
   "metrics": {
-    "header_macro_accuracy": 0.9875,
-    "header_min_field_accuracy": 0.925,
+    "header_macro_accuracy": 0.9824999999999999,
+    "header_min_field_accuracy": 0.9,
     "field_accuracy": {
       "vendor_name": 0.925,
       "vendor_tax_id": 1.0,
@@ -23,28 +23,28 @@
       "invoice_date": 1.0,
       "due_date": 1.0,
       "currency": 1.0,
-      "subtotal_minor": 0.95,
+      "subtotal_minor": 0.9,
       "tax_minor": 1.0,
       "total_minor": 1.0
     },
-    "line_precision": 0.9854014598540146,
-    "line_recall": 0.9712230215827338,
-    "line_f1": 0.9782608695652174,
+    "line_precision": 1.0,
+    "line_recall": 0.9856115107913669,
+    "line_f1": 0.9927536231884058,
     "line_counts": {
-      "correct": 135,
+      "correct": 137,
       "predicted": 137,
       "gold": 139
     },
     "schema_validity": 1.0,
     "calibration_error": 0.0,
-    "calibration_n": 379,
+    "calibration_n": 376,
     "status_accuracy": 0.975,
-    "extraction_p50_s": 17.677842042,
-    "extraction_p95_s": 54.750003582999994,
-    "page_p50_s": 14.078396583,
-    "page_p95_s": 18.479389167,
-    "output_tokens_per_s": 25.278997046447305,
-    "invoices_per_hour": 159.08425591053637,
+    "extraction_p50_s": 17.81287775,
+    "extraction_p95_s": 40.417154667,
+    "page_p50_s": 14.166478625,
+    "page_p95_s": 18.500838166,
+    "output_tokens_per_s": 25.36500874798675,
+    "invoices_per_hour": 172.076546997226,
     "agent_action_accuracy": 0.6666666666666666,
     "agent_hold_reason_accuracy": 0.5,
     "agent_evidence_complete": 0.8,
@@ -52,6 +52,44 @@
     "agent_p95_s": 20.4
   },
   "failures": [
+    {
+      "case": "g02",
+      "style": "right",
+      "pages": 1,
+      "status": "extracted",
+      "expected_status": "extracted",
+      "fields": {
+        "subtotal_minor": {
+          "gold": 357200,
+          "got": null
+        }
+      },
+      "lines": [],
+      "line_counts": [
+        1,
+        1
+      ],
+      "error": null
+    },
+    {
+      "case": "g08",
+      "style": "right",
+      "pages": 2,
+      "status": "extracted",
+      "expected_status": "extracted",
+      "fields": {
+        "subtotal_minor": {
+          "gold": 453758,
+          "got": null
+        }
+      },
+      "lines": [],
+      "line_counts": [
+        5,
+        5
+      ],
+      "error": null
+    },
     {
       "case": "g09",
       "style": "seikyu",
@@ -72,6 +110,44 @@
       "error": null
     },
     {
+      "case": "g14",
+      "style": "right",
+      "pages": 1,
+      "status": "extracted",
+      "expected_status": "extracted",
+      "fields": {
+        "subtotal_minor": {
+          "gold": 593694,
+          "got": null
+        }
+      },
+      "lines": [],
+      "line_counts": [
+        3,
+        3
+      ],
+      "error": null
+    },
+    {
+      "case": "g26",
+      "style": "right",
+      "pages": 1,
+      "status": "extracted",
+      "expected_status": "extracted",
+      "fields": {
+        "subtotal_minor": {
+          "gold": 138561,
+          "got": null
+        }
+      },
+      "lines": [],
+      "line_counts": [
+        3,
+        3
+      ],
+      "error": null
+    },
+    {
       "case": "g27",
       "style": "seikyu",
       "pages": 2,
@@ -87,89 +163,6 @@
       "line_counts": [
         8,
         6
-      ],
-      "error": null
-    },
-    {
-      "case": "g29",
-      "style": "compact",
-      "pages": 3,
-      "status": "extracted",
-      "expected_status": "extracted",
-      "fields": {
-        "subtotal_minor": {
-          "gold": 984677,
-          "got": null
-        }
-      },
-      "lines": [],
-      "line_counts": [
-        9,
-        9
-      ],
-      "error": null
-    },
-    {
-      "case": "g34",
-      "style": "boxed",
-      "pages": 1,
-      "status": "extracted",
-      "expected_status": "extracted",
-      "fields": {},
-      "lines": [
-        {
-          "gold": {
-            "description": "Safety goggles, anti-fog",
-            "quantity": "6",
-            "unit_price": "8.31",
-            "amount_minor": 4986
-          },
-          "got": {
-            "description": "Safety goggles, anti-fog",
-            "quantity": "8.31",
-            "unit_price": "6",
-            "amount_minor": 4986
-          },
-          "similarity": 100
-        },
-        {
-          "gold": {
-            "description": "Laser printer toner, black",
-            "quantity": "34",
-            "unit_price": "8.68",
-            "amount_minor": 29512
-          },
-          "got": {
-            "description": "Laser printer toner, black",
-            "quantity": "8.68",
-            "unit_price": "34",
-            "amount_minor": 29512
-          },
-          "similarity": 100
-        }
-      ],
-      "line_counts": [
-        3,
-        3
-      ],
-      "error": null
-    },
-    {
-      "case": "g47",
-      "style": "compact",
-      "pages": 2,
-      "status": "extracted",
-      "expected_status": "extracted",
-      "fields": {
-        "subtotal_minor": {
-          "gold": 107024,
-          "got": null
-        }
-      },
-      "lines": [],
-      "line_counts": [
-        2,
-        2
       ],
       "error": null
     },

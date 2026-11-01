@@ -1,7 +1,7 @@
 {
   "run": {
     "model": "gemma4:12b",
-    "extraction_prompt": "extract-page/3+repair-totals/3",
+    "extraction_prompt": "extract-page/4+repair-totals/4",
     "agent_prompt": "agent/1",
     "split": "dev",
     "mode": "replayed",
@@ -13,10 +13,10 @@
     "replayed": 0
   },
   "metrics": {
-    "header_macro_accuracy": 0.9949999999999999,
-    "header_min_field_accuracy": 0.95,
+    "header_macro_accuracy": 1.0,
+    "header_min_field_accuracy": 1.0,
     "field_accuracy": {
-      "vendor_name": 0.95,
+      "vendor_name": 1.0,
       "vendor_tax_id": 1.0,
       "invoice_number": 1.0,
       "po_number": 1.0,
@@ -27,24 +27,24 @@
       "tax_minor": 1.0,
       "total_minor": 1.0
     },
-    "line_precision": 0.9708029197080292,
-    "line_recall": 0.9568345323741008,
-    "line_f1": 0.963768115942029,
+    "line_precision": 1.0,
+    "line_recall": 0.9856115107913669,
+    "line_f1": 0.9927536231884058,
     "line_counts": {
-      "correct": 133,
+      "correct": 137,
       "predicted": 137,
       "gold": 139
     },
     "schema_validity": 1.0,
-    "calibration_error": 0.002577319587628866,
-    "calibration_n": 388,
+    "calibration_error": 0.0,
+    "calibration_n": 389,
     "status_accuracy": 0.975,
-    "extraction_p50_s": 38.508617083,
-    "extraction_p95_s": 99.131626084,
-    "page_p50_s": 33.802706958,
-    "page_p95_s": 42.023776458,
-    "output_tokens_per_s": 14.456379313314251,
-    "invoices_per_hour": 73.76155343748422,
+    "extraction_p50_s": 38.6727815,
+    "extraction_p95_s": 97.73809291600001,
+    "page_p50_s": 34.485731832999996,
+    "page_p95_s": 41.812004542000004,
+    "output_tokens_per_s": 14.4012467164802,
+    "invoices_per_hour": 73.029755154393,
     "agent_action_accuracy": 1.0,
     "agent_hold_reason_accuracy": 1.0,
     "agent_evidence_complete": 0.9333333333333333,
@@ -52,25 +52,6 @@
     "agent_p95_s": 66.0
   },
   "failures": [
-    {
-      "case": "g04",
-      "style": "boxed",
-      "pages": 1,
-      "status": "extracted",
-      "expected_status": "extracted",
-      "fields": {
-        "vendor_name": {
-          "gold": "Alpenblick Logistik AG",
-          "got": "Alpenblick Logistik_AG"
-        }
-      },
-      "lines": [],
-      "line_counts": [
-        3,
-        3
-      ],
-      "error": null
-    },
     {
       "case": "g27",
       "style": "seikyu",
@@ -82,145 +63,6 @@
       "line_counts": [
         8,
         6
-      ],
-      "error": null
-    },
-    {
-      "case": "g37",
-      "style": "german",
-      "pages": 2,
-      "status": "extracted",
-      "expected_status": "extracted",
-      "fields": {},
-      "lines": [
-        {
-          "gold": {
-            "description": "A4 copy paper, 5 reams",
-            "quantity": "21",
-            "unit_price": "41.40",
-            "amount_minor": 86940
-          },
-          "got": {
-            "description": "A4 copy paper, 5 reams",
-            "quantity": "5",
-            "unit_price": "17.28",
-            "amount_minor": 86940
-          },
-          "similarity": 100
-        }
-      ],
-      "line_counts": [
-        3,
-        3
-      ],
-      "error": null
-    },
-    {
-      "case": "g47",
-      "style": "compact",
-      "pages": 2,
-      "status": "extracted",
-      "expected_status": "extracted",
-      "fields": {},
-      "lines": [
-        {
-          "gold": {
-            "description": "A4 copy paper, 5 reams",
-            "quantity": "20",
-            "unit_price": "51.80",
-            "amount_minor": 103600
-          },
-          "got": {
-            "description": "A4 copy paper, 5 reams",
-            "quantity": "5",
-            "unit_price": "20.0",
-            "amount_minor": 103600
-          },
-          "similarity": 100
-        }
-      ],
-      "line_counts": [
-        2,
-        2
-      ],
-      "error": null
-    },
-    {
-      "case": "g52",
-      "style": "boxed",
-      "pages": 1,
-      "status": "extracted",
-      "expected_status": "extracted",
-      "fields": {},
-      "lines": [
-        {
-          "gold": {
-            "description": "A4 copy paper, 5 reams",
-            "quantity": "31",
-            "unit_price": "60.50",
-            "amount_minor": 187550
-          },
-          "got": {
-            "description": "A4 copy paper, 5 reams",
-            "quantity": "5",
-            "unit_price": "31",
-            "amount_minor": 187550
-          },
-          "similarity": 100
-        }
-      ],
-      "line_counts": [
-        1,
-        1
-      ],
-      "error": null
-    },
-    {
-      "case": "g56",
-      "style": "right",
-      "pages": 1,
-      "status": "extracted",
-      "expected_status": "extracted",
-      "fields": {},
-      "lines": [
-        {
-          "gold": {
-            "description": "A4 copy paper, 5 reams",
-            "quantity": "37",
-            "unit_price": "44.90",
-            "amount_minor": 166130
-          },
-          "got": {
-            "description": "A4 copy paper, 5 reams",
-            "quantity": "5",
-            "unit_price": "37",
-            "amount_minor": 166130
-          },
-          "similarity": 100
-        }
-      ],
-      "line_counts": [
-        1,
-        1
-      ],
-      "error": null
-    },
-    {
-      "case": "g58",
-      "style": "boxed",
-      "pages": 2,
-      "status": "extracted",
-      "expected_status": "extracted",
-      "fields": {
-        "vendor_name": {
-          "gold": "Alpenblick Logistik AG",
-          "got": null
-        }
-      },
-      "lines": [],
-      "line_counts": [
-        5,
-        5
       ],
       "error": null
     }

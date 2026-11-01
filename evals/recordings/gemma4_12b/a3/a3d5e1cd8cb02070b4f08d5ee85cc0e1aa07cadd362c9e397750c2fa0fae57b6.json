@@ -1,0 +1,16 @@
+{
+ "model": "gemma4:12b",
+ "created_at": "2026-11-01T06:31:28.707131Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 29299908416,
+ "load_duration": 5726125,
+ "prompt_eval_count": 638,
+ "prompt_eval_duration": 3194964000,
+ "eval_count": 363,
+ "eval_duration": 25386823000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"Harbourside Catering Ltd\",\n  \"vendor_tax_id\": \"GB 482 1937 56\",\n  \"invoice_number\": \"NW-2026-1392\",\n  \"po_number\": \"4500100056\",\n  \"invoice_date\": \"2026-07-12\",\n  \"due_date\": \"2026-08-12\",\n  \"currency\": \"GBP\",\n  \"subtotal\": 1661.30,\n  \"tax\": 332.26,\n  \"total\": 1993.56,\n  \"field_confidence\": {\n    \"vendor_name\": 1.0,\n    \"vendor_tax_id\": 1.0,\n    \"invoice_number\": 1.0,\n    \"po_number\": 1.0,\n    \"invoice_date\": 1.0,\n    \"due_date\": 1.0,\n    \"currency\": 1.0,\n    \"subtotal\": 1.0,\n    \"tax\": 1.0,\n    \"total\": 1.0\n  },\n  \"line_items\": [\n    {\n      \"description\": \"A4 copy paper, 5 reams\",\n      \"quantity\": 37,\n      \"unit_price\": 44.90,\n      \"amount\": 1661.30\n    }\n  ]\n}"
+ }
+}
