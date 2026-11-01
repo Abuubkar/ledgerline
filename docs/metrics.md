@@ -337,3 +337,35 @@ The 20 invoices and 10 agent scenarios never used for tuning, run once, live, af
   It's the only scanned invoice in the golden set, so the dev split never measured reading from images at all, and
   one scan is too few to say how well scans go (parked in docs/backlog.md).
 
+## Slice 8a: one invoice, one trace
+
+After a chaos run (203 uploads, a worker killed, 0 lost, exactly the 3 corrupt files dead-lettered, 118 s), one real
+invoice billing PO 4500005000 with line 1 priced 3% high went through gemma4:12b with tracing on (ADR 0020). Jaeger's
+v3 API returned its trace; `scripts/trace_tree.py --invoice <id>` printed it:
+
+```text
+79 spans; 70 database/Redis spans hidden below
+api      POST /v1/invoices  (137 ms)
+  api      S3.PutObject  (11 ms)
+  relay    apply_async/ledgerline.extract_invoice  (9 ms)
+    worker   run/ledgerline.extract_invoice  (55,156 ms)  {'ledgerline.invoice_id': '74c79f61-47c5-40c1-b7ca-ec0c0bb12c63'}
+      worker   S3.GetObject  (5 ms)
+      worker   chat gemma4:12b  (54,857 ms)  {'gen_ai.prompt.version': 'extract-page/4', 'gen_ai.usage.input_tokens': '677', 'gen_ai.usage.output_tokens': '465', 'ledgerline.tokens_per_second': 11.5}
+        worker   POST  (54,805 ms)
+      relay    apply_async/ledgerline.match_invoice  (43 ms)
+        worker   run/ledgerline.match_invoice  (331 ms)  {'ledgerline.invoice_id': '74c79f61-47c5-40c1-b7ca-ec0c0bb12c63'}
+```
+
+- **One trace from upload to match:** the upload request is the parent of the relay's publish, then of the worker's
+  extraction, the model call and the HTTP call to Ollama, then of the match job the extraction queued (through the
+  outbox again). The match found the planted price variance and a short shipment.
+- **The agent run and the approval are their own traces,** found by `ledgerline.invoice_id`. The agent:
+  `invoke_agent exception-agent` (38.8 s), with 4 `chat` spans (1,360 → 2,114 input tokens as the conversation
+  grows; 5–16 s each) and `execute_tool` get_po → get_receipts → compute_variance → draft_credit_memo_request.
+  The approval: `POST /v1/pending-actions/{action_id}:approve` (138 ms), tagged `ledgerline.decision=approved`.
+- **Where the time goes:** the model call is 99.5% of the extraction job (54.9 of 55.2 s). Everything else, the
+  upload included, is milliseconds.
+- **Privacy:** about 5 MB of stored spans held none of the invoice's number, vendor, tax ID, total or line
+  descriptions. The attribute keys are metadata only (model, tokens, prompt version, routes, SQL with `$1`
+  parameters).
+
