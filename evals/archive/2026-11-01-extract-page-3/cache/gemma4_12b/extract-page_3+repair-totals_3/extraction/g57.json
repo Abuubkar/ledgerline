@@ -1,0 +1,90 @@
+{
+ "status": "extracted",
+ "repair_attempted": false,
+ "prompt_version": "extract-page/3",
+ "header": {
+  "vendor_name": "Kawasemi Electronics K.K.",
+  "vendor_tax_id": "T9876543210987",
+  "invoice_number": "SK-2026-1399",
+  "po_number": null,
+  "invoice_date": "2026-07-25",
+  "due_date": "2026-08-25",
+  "currency": "JPY",
+  "subtotal_minor": 3117253,
+  "tax_minor": 311725,
+  "total_minor": 3428978
+ },
+ "confidence": {
+  "vendor_name": 1.0,
+  "vendor_tax_id": 1.0,
+  "invoice_number": 1.0,
+  "invoice_date": 1.0,
+  "due_date": 1.0,
+  "currency": 1.0,
+  "subtotal": 1.0,
+  "tax": 1.0,
+  "total": 1.0
+ },
+ "invalid_fields": {},
+ "lines": [
+  {
+   "description": "Laser printer toner, black",
+   "quantity": "26",
+   "unit_price": "79650.0",
+   "amount_minor": 2070900
+  },
+  {
+   "description": "USB-C docking station",
+   "quantity": "26",
+   "unit_price": "24530.0",
+   "amount_minor": 637780
+  },
+  {
+   "description": "Cable ties, pack of 1000",
+   "quantity": "35",
+   "unit_price": "1739.0",
+   "amount_minor": 60865
+  },
+  {
+   "description": "LED panel light 60x60",
+   "quantity": "25.0",
+   "unit_price": "6174.0",
+   "amount_minor": 154350
+  },
+  {
+   "description": "Cable ties, pack of 1000",
+   "quantity": "22.0",
+   "unit_price": "8789.0",
+   "amount_minor": 193358
+  }
+ ],
+ "pages": [
+  {
+   "page_no": 1,
+   "status": "extracted",
+   "source": "text",
+   "error_code": null
+  },
+  {
+   "page_no": 2,
+   "status": "extracted",
+   "source": "text",
+   "error_code": null
+  }
+ ],
+ "calls": [
+  {
+   "ms": 37237.950792,
+   "prompt_tokens": 577,
+   "output_tokens": 453,
+   "output_ms": 31451.357
+  },
+  {
+   "ms": 32212.93975,
+   "prompt_tokens": 526,
+   "output_tokens": 395,
+   "output_ms": 27451.995
+  }
+ ],
+ "wall_s": 69.62
+}

@@ -1,0 +1,55 @@
+{
+ "status": "extracted",
+ "repair_attempted": false,
+ "prompt_version": "extract-page/3",
+ "header": {
+  "vendor_name": "Alpenblick Logistik AG",
+  "vendor_tax_id": "CHE123456789",
+  "invoice_number": "AB-2026-1364",
+  "po_number": "4500100052",
+  "invoice_date": "2026-02-04",
+  "due_date": "2026-03-04",
+  "currency": "EUR",
+  "subtotal_minor": 187550,
+  "tax_minor": 15004,
+  "total_minor": 202554
+ },
+ "confidence": {
+  "vendor_name": 1.0,
+  "vendor_tax_id": 1.0,
+  "invoice_number": 1.0,
+  "po_number": 1.0,
+  "invoice_date": 1.0,
+  "due_date": 1.0,
+  "currency": 1.0,
+  "subtotal": 1.0,
+  "tax": 1.0,
+  "total": 1.0
+ },
+ "invalid_fields": {},
+ "lines": [
+  {
+   "description": "A4 copy paper, 5 reams",
+   "quantity": "31",
+   "unit_price": "60.50",
+   "amount_minor": 187550
+  }
+ ],
+ "pages": [
+  {
+   "page_no": 1,
+   "status": "extracted",
+   "source": "text",
+   "error_code": null
+  }
+ ],
+ "calls": [
+  {
+   "ms": 12556.325709,
+   "prompt_tokens": 518,
+   "output_tokens": 297,
+   "output_ms": 11696.145
+  }
+ ],
+ "wall_s": 12.58
+}

@@ -1,0 +1,128 @@
+{
+ "status": "extracted",
+ "repair_attempted": false,
+ "prompt_version": "extract-page/3",
+ "header": {
+  "vendor_name": "Pacific Rim Packaging Inc.",
+  "vendor_tax_id": "912846573",
+  "invoice_number": "PR-2026-1203",
+  "po_number": "4500100029",
+  "invoice_date": "2026-07-20",
+  "due_date": "2026-08-20",
+  "currency": "USD",
+  "subtotal_minor": null,
+  "tax_minor": 78774,
+  "total_minor": 1063451
+ },
+ "confidence": {
+  "vendor_name": 1.0,
+  "vendor_tax_id": 0.95,
+  "invoice_number": 1.0,
+  "po_number": 1.0,
+  "invoice_date": 1.0,
+  "due_date": 1.0,
+  "currency": 1.0,
+  "tax": 1.0,
+  "total": 1.0
+ },
+ "invalid_fields": {
+  "subtotal": "pages disagree: page 1 says 44483; page 2 says 491166; page 3 says 984677"
+ },
+ "lines": [
+  {
+   "description": "Server rack screws, M6",
+   "quantity": "1",
+   "unit_price": "6.89",
+   "amount_minor": 689
+  },
+  {
+   "description": "Pallet wrap film, 500 m",
+   "quantity": "7",
+   "unit_price": "59.50",
+   "amount_minor": 41650
+  },
+  {
+   "description": "Ergonomic office chair",
+   "quantity": "8",
+   "unit_price": "2.68",
+   "amount_minor": 2144
+  },
+  {
+   "description": "Hand truck, folding",
+   "quantity": "36",
+   "unit_price": "7.36",
+   "amount_minor": 26496
+  },
+  {
+   "description": "Pallet wrap film, 500 m",
+   "quantity": "37",
+   "unit_price": "70.10",
+   "amount_minor": 259370
+  },
+  {
+   "description": "Laser printer toner, black",
+   "quantity": "38",
+   "unit_price": "54.00",
+   "amount_minor": 205200
+  },
+  {
+   "description": "Hand truck, folding",
+   "quantity": "40",
+   "unit_price": "74.80",
+   "amount_minor": 299200
+  },
+  {
+   "description": "Laser printer toner, black",
+   "quantity": "10",
+   "unit_price": "141.00",
+   "amount_minor": 141000
+  },
+  {
+   "description": "Safety goggles, anti-fog",
+   "quantity": "12",
+   "unit_price": "7.44",
+   "amount_minor": 8928
+  }
+ ],
+ "pages": [
+  {
+   "page_no": 1,
+   "status": "extracted",
+   "source": "text",
+   "error_code": null
+  },
+  {
+   "page_no": 2,
+   "status": "extracted",
+   "source": "text",
+   "error_code": null
+  },
+  {
+   "page_no": 3,
+   "status": "extracted",
+   "source": "text",
+   "error_code": null
+  }
+ ],
+ "calls": [
+  {
+   "ms": 24552.212166,
+   "prompt_tokens": 526,
+   "output_tokens": 426,
+   "output_ms": 21747.601
+  },
+  {
+   "ms": 21246.256959,
+   "prompt_tokens": 449,
+   "output_tokens": 384,
+   "output_ms": 19058.445
+  },
+  {
+   "ms": 20403.457625,
+   "prompt_tokens": 485,
+   "output_tokens": 405,
+   "output_ms": 18269.101
+  }
+ ],
+ "wall_s": 66.29
+}

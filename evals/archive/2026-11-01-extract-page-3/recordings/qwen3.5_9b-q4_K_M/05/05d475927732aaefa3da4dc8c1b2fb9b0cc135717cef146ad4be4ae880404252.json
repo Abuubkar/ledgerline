@@ -1,0 +1,16 @@
+{
+ "model": "qwen3.5:9b-q4_K_M",
+ "created_at": "2026-11-01T03:11:39.269454Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 22415143750,
+ "load_duration": 1294584,
+ "prompt_eval_count": 560,
+ "prompt_eval_duration": 2063139999,
+ "eval_count": 440,
+ "eval_duration": 20188919000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"Pacific Rim Packaging Inc.\",\n  \"vendor_tax_id\": \"91-2846573\",\n  \"invoice_number\": \"PR-2026-1161\",\n  \"po_number\": null,\n  \"invoice_date\": \"2026-03-23\",\n  \"due_date\": \"2026-04-23\",\n  \"currency\": \"USD\",\n  \"subtotal\": 3566.13,\n  \"tax\": 285.29,\n  \"total\": 3851.42,\n  \"field_confidence\": {\n    \"vendor_name\": 0.95,\n    \"vendor_tax_id\": 0.9,\n    \"invoice_number\": 0.95,\n    \"po_number\": 0.0,\n    \"invoice_date\": 1.0,\n    \"due_date\": 1.0,\n    \"currency\": 1.0,\n    \"subtotal\": 0.95,\n    \"tax\": 0.95,\n    \"total\": 0.95\n  },\n  \"line_items\": [\n    {\n      \"description\": \"Server rack screws, M6\",\n      \"quantity\": 39,\n      \"unit_price\": 2.57,\n      \"amount\": 100.23\n    },\n    {\n      \"description\": \"A4 copy paper, 5 reams\",\n      \"quantity\": 21,\n      \"unit_price\": 135.50,\n      \"amount\": 2845.50\n    },\n    {\n      \"description\": \"Hand truck, folding\",\n      \"quantity\": 12,\n      \"unit_price\": 51.70,\n      \"amount\": 620.40\n    }\n  ]\n}"
+ }
+}

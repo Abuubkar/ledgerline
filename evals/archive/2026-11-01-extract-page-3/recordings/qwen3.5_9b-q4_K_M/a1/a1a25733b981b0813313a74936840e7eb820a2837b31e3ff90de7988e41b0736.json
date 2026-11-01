@@ -1,0 +1,16 @@
+{
+ "model": "qwen3.5:9b-q4_K_M",
+ "created_at": "2026-11-01T03:07:05.490543Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 26097397708,
+ "load_duration": 1106958,
+ "prompt_eval_count": 548,
+ "prompt_eval_duration": 2802412000,
+ "eval_count": 436,
+ "eval_duration": 23206707000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"Harbourside Catering Ltd\",\n  \"vendor_tax_id\": \"GB 482 1937 56\",\n  \"invoice_number\": \"NW-2026-1056\",\n  \"po_number\": \"4500100008\",\n  \"invoice_date\": \"2026-09-05\",\n  \"due_date\": \"2026-10-05\",\n  \"currency\": \"GBP\",\n  \"subtotal\": null,\n  \"tax\": null,\n  \"total\": null,\n  \"field_confidence\": {\n    \"vendor_name\": 1.0,\n    \"vendor_tax_id\": 1.0,\n    \"invoice_number\": 1.0,\n    \"po_number\": 1.0,\n    \"invoice_date\": 1.0,\n    \"due_date\": 1.0,\n    \"currency\": 1.0,\n    \"subtotal\": 0.0,\n    \"tax\": 0.0,\n    \"total\": 0.0\n  },\n  \"line_items\": [\n    {\n      \"description\": \"Cable ties, pack of 1000\",\n      \"quantity\": 32,\n      \"unit_price\": 58.60,\n      \"amount\": 1875.20\n    },\n    {\n      \"description\": \"Server rack screws, M6\",\n      \"quantity\": 39,\n      \"unit_price\": 49.20,\n      \"amount\": 1918.80\n    },\n    {\n      \"description\": \"USB-C docking station\",\n      \"quantity\": 18,\n      \"unit_price\": 35.75,\n      \"amount\": 643.50\n    }\n  ]\n}"
+ }
+}

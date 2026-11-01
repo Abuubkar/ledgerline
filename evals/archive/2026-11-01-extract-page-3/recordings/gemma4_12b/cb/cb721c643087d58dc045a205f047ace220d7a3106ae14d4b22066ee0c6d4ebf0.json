@@ -1,0 +1,16 @@
+{
+ "model": "gemma4:12b",
+ "created_at": "2026-11-01T04:39:47.573178Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 21623223708,
+ "load_duration": 2971083,
+ "prompt_eval_count": 452,
+ "prompt_eval_duration": 3074370000,
+ "eval_count": 247,
+ "eval_duration": 16894503000,
+ "message": {
+  "role": "assistant",
+  "content": "{\"vendor_name\": \"Pacific Rim Packaging Inc.\", \"vendor_tax_id\": null, \"invoice_number\": \"PR-2026-1329\", \"po_number\": null, \"invoice_date\": null, \"due_date\": null, \"currency\": \"USD\", \"subtotal\": 1070.24, \"tax\": 85.61, \"total\": 1155.85, \"field_confidence\": {\"vendor_name\": 1.0, \"vendor_tax_id\": 0.0, \"invoice_number\": 1.0, \"po_number\": 0.0, \"invoice_date\": 0.0, \"due_date\": 0.0, \"currency\": 1.0, \"subtotal\": 1.0, \"tax\": 1.0, \"total\": 1.0}, \"line_items\": [{\"description\": \"Laser printer toner, black\", \"quantity\": 16.0, \"unit_price\": 2.14, \"amount\": 34.24}]}"
+ }
+}

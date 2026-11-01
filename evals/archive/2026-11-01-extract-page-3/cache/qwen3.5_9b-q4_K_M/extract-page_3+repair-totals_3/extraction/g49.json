@@ -1,0 +1,116 @@
+{
+ "status": "extracted",
+ "repair_attempted": false,
+ "prompt_version": "extract-page/3",
+ "header": {
+  "vendor_name": "Nordwerk Industrietechnik GmbH",
+  "vendor_tax_id": "DE274918365",
+  "invoice_number": "RE-2026-1343",
+  "po_number": "4500100049",
+  "invoice_date": "2026-05-21",
+  "due_date": "2026-06-21",
+  "currency": "EUR",
+  "subtotal_minor": null,
+  "tax_minor": 307888,
+  "total_minor": 1928353
+ },
+ "confidence": {
+  "vendor_name": 1.0,
+  "vendor_tax_id": 1.0,
+  "invoice_number": 1.0,
+  "po_number": 1.0,
+  "invoice_date": 1.0,
+  "due_date": 1.0,
+  "currency": 1.0,
+  "tax": 0.9,
+  "total": 0.9
+ },
+ "invalid_fields": {
+  "subtotal": "pages disagree: page 1 says 279390; page 2 says 1335300; page 3 says 1620465"
+ },
+ "lines": [
+  {
+   "description": "Hand truck, folding",
+   "quantity": "2",
+   "unit_price": "207.50",
+   "amount_minor": 41500
+  },
+  {
+   "description": "Pallet wrap film, 500 m",
+   "quantity": "10",
+   "unit_price": "50.30",
+   "amount_minor": 50300
+  },
+  {
+   "description": "Cable ties, pack of 1000",
+   "quantity": "39",
+   "unit_price": "48.10",
+   "amount_minor": 187590
+  },
+  {
+   "description": "Ergonomic office chair",
+   "quantity": "29",
+   "unit_price": "206.00",
+   "amount_minor": 597400
+  },
+  {
+   "description": "Thermal labels 100x150",
+   "quantity": "31",
+   "unit_price": "172.00",
+   "amount_minor": 533200
+  },
+  {
+   "description": "Thermal labels 100x150",
+   "quantity": "23",
+   "unit_price": "89.00",
+   "amount_minor": 204700
+  },
+  {
+   "description": "Ergonomic office chair",
+   "quantity": "15",
+   "unit_price": "3.85",
+   "amount_minor": 5775
+  }
+ ],
+ "pages": [
+  {
+   "page_no": 1,
+   "status": "extracted",
+   "source": "text",
+   "error_code": null
+  },
+  {
+   "page_no": 2,
+   "status": "extracted",
+   "source": "text",
+   "error_code": null
+  },
+  {
+   "page_no": 3,
+   "status": "extracted",
+   "source": "text",
+   "error_code": null
+  }
+ ],
+ "calls": [
+  {
+   "ms": 22830.53975,
+   "prompt_tokens": 563,
+   "output_tokens": 444,
+   "output_ms": 20271.35
+  },
+  {
+   "ms": 22902.757875,
+   "prompt_tokens": 465,
+   "output_tokens": 411,
+   "output_ms": 20761.045
+  },
+  {
+   "ms": 18257.289417,
+   "prompt_tokens": 453,
+   "output_tokens": 301,
+   "output_ms": 15991.949
+  }
+ ],
+ "wall_s": 64.07
+}

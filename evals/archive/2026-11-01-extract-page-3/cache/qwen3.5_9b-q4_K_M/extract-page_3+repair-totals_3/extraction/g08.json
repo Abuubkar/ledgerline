@@ -1,0 +1,91 @@
+{
+ "status": "extracted",
+ "repair_attempted": false,
+ "prompt_version": "extract-page/3",
+ "header": {
+  "vendor_name": "Harbourside Catering Ltd",
+  "vendor_tax_id": "GB482193756",
+  "invoice_number": "NW-2026-1056",
+  "po_number": "4500100008",
+  "invoice_date": "2026-09-05",
+  "due_date": "2026-10-05",
+  "currency": "GBP",
+  "subtotal_minor": 453758,
+  "tax_minor": 90751,
+  "total_minor": 544509
+ },
+ "confidence": {
+  "vendor_name": 1.0,
+  "vendor_tax_id": 1.0,
+  "invoice_number": 1.0,
+  "po_number": 1.0,
+  "invoice_date": 1.0,
+  "due_date": 1.0,
+  "currency": 1.0,
+  "subtotal": 0.95,
+  "tax": 0.95,
+  "total": 0.95
+ },
+ "invalid_fields": {},
+ "lines": [
+  {
+   "description": "Cable ties, pack of 1000",
+   "quantity": "32",
+   "unit_price": "58.60",
+   "amount_minor": 187520
+  },
+  {
+   "description": "Server rack screws, M6",
+   "quantity": "39",
+   "unit_price": "49.20",
+   "amount_minor": 191880
+  },
+  {
+   "description": "USB-C docking station",
+   "quantity": "18",
+   "unit_price": "35.75",
+   "amount_minor": 64350
+  },
+  {
+   "description": "Ergonomic office chair",
+   "quantity": "11",
+   "unit_price": "5.70",
+   "amount_minor": 6270
+  },
+  {
+   "description": "Server rack screws, M6",
+   "quantity": "6",
+   "unit_price": "6.23",
+   "amount_minor": 3738
+  }
+ ],
+ "pages": [
+  {
+   "page_no": 1,
+   "status": "extracted",
+   "source": "text",
+   "error_code": null
+  },
+  {
+   "page_no": 2,
+   "status": "extracted",
+   "source": "text",
+   "error_code": null
+  }
+ ],
+ "calls": [
+  {
+   "ms": 26096.29075,
+   "prompt_tokens": 548,
+   "output_tokens": 436,
+   "output_ms": 23206.707
+  },
+  {
+   "ms": 21715.770458,
+   "prompt_tokens": 459,
+   "output_tokens": 352,
+   "output_ms": 19212.444
+  }
+ ],
+ "wall_s": 47.91
+}

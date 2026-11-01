@@ -1,0 +1,16 @@
+{
+ "model": "qwen2.5:7b-instruct",
+ "created_at": "2026-11-01T03:56:50.160611Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 15252438750,
+ "load_duration": 535666,
+ "prompt_eval_count": 554,
+ "prompt_eval_duration": 1092013000,
+ "eval_count": 359,
+ "eval_duration": 14155251000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"Nordwerk Industrietechnik GmbH\",\n  \"vendor_tax_id\": \"DE 274 918 365\",\n  \"invoice_number\": \"RE-2026-1343\",\n  \"po_number\": \"4500100049\",\n  \"invoice_date\": \"2026-05-21\",\n  \"due_date\": \"2026-06-21\",\n  \"currency\": \"EUR\",\n  \"subtotal\": null,\n  \"tax\": null,\n  \"total\": null,\n  \"field_confidence\": {\n    \"vendor_name\": 1,\n    \"vendor_tax_id\": 1,\n    \"invoice_number\": 1,\n    \"po_number\": 1,\n    \"invoice_date\": 1,\n    \"due_date\": 1,\n    \"currency\": 1\n  },\n  \"line_items\": [\n    {\n      \"description\": \"Hand truck, folding\",\n      \"quantity\": 2,\n      \"unit_price\": 207.50,\n      \"amount\": 415.00\n    },\n    {\n      \"description\": \"Pallet wrap film, 500 m\",\n      \"quantity\": 10,\n      \"unit_price\": 50.30,\n      \"amount\": 503.00\n    },\n    {\n      \"description\": \"Cable ties, pack of 1000\",\n      \"quantity\": 39,\n      \"unit_price\": 48.10,\n      \"amount\": 1875.90\n    }\n  ]\n}"
+ }
+}

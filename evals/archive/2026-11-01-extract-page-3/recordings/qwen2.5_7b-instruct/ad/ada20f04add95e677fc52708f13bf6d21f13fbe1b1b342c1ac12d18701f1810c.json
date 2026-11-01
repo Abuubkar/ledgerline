@@ -1,0 +1,16 @@
+{
+ "model": "qwen2.5:7b-instruct",
+ "created_at": "2026-11-01T03:45:07.565174Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 19101984459,
+ "load_duration": 680209,
+ "prompt_eval_count": 653,
+ "prompt_eval_duration": 1505015000,
+ "eval_count": 441,
+ "eval_duration": 17587482000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"Kawasemi Electronics K.K.\",\n  \"vendor_tax_id\": \"T9876543210987\",\n  \"invoice_number\": \"SK-2026-1021\",\n  \"po_number\": \"4500100003\",\n  \"invoice_date\": \"2026-09-26\",\n  \"due_date\": \"2026-10-26\",\n  \"currency\": \"JPY\",\n  \"subtotal\": 6218130,\n  \"tax\": 621813,\n  \"total\": 6839943,\n  \"field_confidence\": {\n    \"vendor_name\": 1,\n    \"vendor_tax_id\": 1,\n    \"invoice_number\": 1,\n    \"po_number\": 1,\n    \"invoice_date\": 1,\n    \"due_date\": 1,\n    \"currency\": 1,\n    \"subtotal\": 1,\n    \"tax\": 1,\n    \"total\": 1\n  },\n  \"line_items\": [\n    {\n      \"description\": \"Pallet wrap film, 500 m\",\n      \"quantity\": 32,\n      \"unit_price\": 71930,\n      \"amount\": 2301760\n    },\n    {\n      \"description\": \"Ergonomic office chair\",\n      \"quantity\": 3,\n      \"unit_price\": 5970,\n      \"amount\": 17910\n    },\n    {\n      \"description\": \"Safety goggles, anti-fog\",\n      \"quantity\": 35,\n      \"unit_price\": 51540,\n      \"amount\": 1803900\n    },\n    {\n      \"description\": \"Industrial shelving bracket\",\n      \"quantity\": 26,\n      \"unit_price\": 80560,\n      \"amount\": 2094560\n    }\n  ]\n}"
+ }
+}

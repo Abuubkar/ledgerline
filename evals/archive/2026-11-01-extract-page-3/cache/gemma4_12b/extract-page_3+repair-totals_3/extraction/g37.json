@@ -1,0 +1,79 @@
+{
+ "status": "extracted",
+ "repair_attempted": false,
+ "prompt_version": "extract-page/3",
+ "header": {
+  "vendor_name": "Nordwerk Industrietechnik GmbH",
+  "vendor_tax_id": "DE274918365",
+  "invoice_number": "RE-2026-1259",
+  "po_number": "4500100037",
+  "invoice_date": "2026-05-11",
+  "due_date": "2026-06-11",
+  "currency": "EUR",
+  "subtotal_minor": 100400,
+  "tax_minor": 19076,
+  "total_minor": 119476
+ },
+ "confidence": {
+  "vendor_name": 1.0,
+  "vendor_tax_id": 1.0,
+  "invoice_number": 1.0,
+  "po_number": 1.0,
+  "invoice_date": 1.0,
+  "due_date": 1.0,
+  "currency": 1.0,
+  "subtotal": 1.0,
+  "tax": 1.0,
+  "total": 1.0
+ },
+ "invalid_fields": {},
+ "lines": [
+  {
+   "description": "A4 copy paper, 5 reams",
+   "quantity": "5",
+   "unit_price": "17.28",
+   "amount_minor": 86940
+  },
+  {
+   "description": "Industrial shelving bracket",
+   "quantity": "4",
+   "unit_price": "31.25",
+   "amount_minor": 12500
+  },
+  {
+   "description": "LED panel light 60x60",
+   "quantity": "3.0",
+   "unit_price": "3.20",
+   "amount_minor": 960
+  }
+ ],
+ "pages": [
+  {
+   "page_no": 1,
+   "status": "extracted",
+   "source": "text",
+   "error_code": null
+  },
+  {
+   "page_no": 2,
+   "status": "extracted",
+   "source": "text",
+   "error_code": null
+  }
+ ],
+ "calls": [
+  {
+   "ms": 31610.34375,
+   "prompt_tokens": 545,
+   "output_tokens": 394,
+   "output_ms": 27209.712
+  },
+  {
+   "ms": 23003.5905,
+   "prompt_tokens": 468,
+   "output_tokens": 253,
+   "output_ms": 17342.988
+  }
+ ],
+ "wall_s": 54.73
+}
