@@ -1,0 +1,62 @@
+# Alert rules (ADR 0021). Every alert links its runbook in docs/runbooks/. The SLO and its burn-rate alerts are
+# explained in docs/slo.md.
+groups:
+  - name: ledgerline-slo
+    rules:
+      # Share of invoices that did NOT reach a terminal status within 15 minutes, over several windows.
+      - record: ledgerline:invoice_slow_ratio:rate5m
+        expr: 1 - sum(rate(ledgerline_invoice_duration_seconds_bucket{le="900"}[5m])) / sum(rate(ledgerline_invoice_duration_seconds_count[5m]))
+      - record: ledgerline:invoice_slow_ratio:rate30m
+        expr: 1 - sum(rate(ledgerline_invoice_duration_seconds_bucket{le="900"}[30m])) / sum(rate(ledgerline_invoice_duration_seconds_count[30m]))
+      - record: ledgerline:invoice_slow_ratio:rate1h
+        expr: 1 - sum(rate(ledgerline_invoice_duration_seconds_bucket{le="900"}[1h])) / sum(rate(ledgerline_invoice_duration_seconds_count[1h]))
+      - record: ledgerline:invoice_slow_ratio:rate6h
+        expr: 1 - sum(rate(ledgerline_invoice_duration_seconds_bucket{le="900"}[6h])) / sum(rate(ledgerline_invoice_duration_seconds_count[6h]))
+      # Error budget 1% (99% within 15 minutes). Fast burn: 2% of the month's budget in an hour (14.4x).
+      - alert: InvoiceSLOFastBurn
+        expr: ledgerline:invoice_slow_ratio:rate1h > (14.4 * 0.01) and ledgerline:invoice_slow_ratio:rate5m > (14.4 * 0.01)
+        for: 2m
+        labels: {severity: page}
+        annotations:
+          summary: Invoices are missing the 15-minute target fast enough to spend the month's error budget in about 2 days
+          runbook_url: https://github.com/Abuubkar/ledgerline/blob/main/docs/runbooks/invoice-slo-burn.md
+      # Slow burn: 5% of the budget in 6 hours (6x).
+      - alert: InvoiceSLOSlowBurn
+        expr: ledgerline:invoice_slow_ratio:rate6h > (6 * 0.01) and ledgerline:invoice_slow_ratio:rate30m > (6 * 0.01)
+        for: 15m
+        labels: {severity: ticket}
+        annotations:
+          summary: Invoices are steadily missing the 15-minute target; at this rate the month's budget lasts about 5 days
+          runbook_url: https://github.com/Abuubkar/ledgerline/blob/main/docs/runbooks/invoice-slo-burn.md
+
+  - name: ledgerline-pipeline
+    rules:
+      - alert: ExtractionSlow
+        expr: histogram_quantile(0.95, sum by (le) (rate(ledgerline_extraction_duration_seconds_bucket[10m]))) > 45
+        for: 10m
+        labels: {severity: ticket}
+        annotations:
+          summary: "95th percentile extraction time is {{ $value | humanizeDuration }} (over 45 s for 10 minutes)"
+          runbook_url: https://github.com/Abuubkar/ledgerline/blob/main/docs/runbooks/extraction-slow.md
+      - alert: DeadLettersGrowing
+        expr: sum(increase(ledgerline_dead_letters_total[15m])) > 10
+        labels: {severity: page}
+        annotations:
+          summary: "{{ $value | humanize }} jobs were dead-lettered in the last 15 minutes"
+          runbook_url: https://github.com/Abuubkar/ledgerline/blob/main/docs/runbooks/dead-letters-growing.md
+      # Gauges arrive over OTLP, which leaves no staleness marker when a process stops: a restarted relay's old
+      # series keeps its last value for 5 minutes. last_over_time(...[1m]) sees only series that reported recently.
+      - alert: OllamaUnreachable
+        expr: max(last_over_time(ledgerline_ollama_up[1m])) == 0
+        for: 2m
+        labels: {severity: page}
+        annotations:
+          summary: Ollama hasn't answered for 2 minutes; extraction and the agent are retrying and will dead-letter
+          runbook_url: https://github.com/Abuubkar/ledgerline/blob/main/docs/runbooks/ollama-unreachable.md
+      - alert: QueueNearlyFull
+        expr: max(last_over_time(ledgerline_queue_depth{queue="invoices.extract"}[1m])) > 0.8 * max(last_over_time(ledgerline_queue_limit[1m]))
+        for: 5m
+        labels: {severity: ticket}
+        annotations:
+          summary: "Extraction queue at {{ $value | humanize }} jobs, over 80% of MAX_QUEUE_DEPTH; uploads get 429 at 100%"
+          runbook_url: https://github.com/Abuubkar/ledgerline/blob/main/docs/runbooks/queue-nearly-full.md

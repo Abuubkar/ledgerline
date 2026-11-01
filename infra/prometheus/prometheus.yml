@@ -1,0 +1,15 @@
+# Prometheus receives metrics from the collector over OTLP (--web.enable-otlp-receiver) and evaluates the alert
+# rules (ADR 0021). It scrapes nothing.
+global:
+  evaluation_interval: 30s
+
+otlp:
+  # service.name becomes the `job` label; the version and environment become labels too.
+  promote_resource_attributes: [service.version, deployment.environment.name]
+
+storage:
+  tsdb:
+    out_of_order_time_window: 30m  # the collector batches; a late batch is still accepted
+
+rule_files:
+  - /etc/prometheus/alerts.yml

@@ -1,0 +1,42 @@
+# The OpenTelemetry Collector between the services and the backends (ADR 0021). Every service sends traces, metrics
+# and logs here over OTLP; traces go to Jaeger after tail sampling, metrics to Prometheus, logs to Loki.
+receivers:
+  otlp:
+    protocols:
+      http: {endpoint: 0.0.0.0:4318}
+      grpc: {endpoint: 0.0.0.0:4317}
+
+processors:
+  memory_limiter: {check_interval: 1s, limit_mib: 256}
+  batch: {}
+  # Keep every trace with an error or a dead letter, and a share of the rest (20% unless TRACE_SAMPLE_PERCENT says).
+  # decision_wait is long because an invoice's trace runs a minute or more (extraction, then the match job), and the
+  # error that makes it worth keeping can come late. Spans arriving after the decision follow it (decision_cache).
+  tail_sampling:
+    decision_wait: 120s
+    num_traces: 20000
+    decision_cache: {sampled_cache_size: 100000, non_sampled_cache_size: 100000}
+    policies:
+      - {name: errors, type: status_code, status_code: {status_codes: [ERROR]}}
+      - {name: dead-letters, type: boolean_attribute, boolean_attribute: {key: ledgerline.dead_letter, value: true}}
+      - name: share-of-the-rest
+        type: probabilistic
+        probabilistic:
+          sampling_percentage: ${env:TRACE_SAMPLE_PERCENT:-20}
+
+exporters:
+  otlp/jaeger:
+    endpoint: jaeger:4317
+    tls: {insecure: true}
+  otlphttp/prometheus:
+    endpoint: http://prometheus:9090/api/v1/otlp
+    tls: {insecure: true}
+  otlphttp/loki:
+    endpoint: http://loki:3100/otlp
+    tls: {insecure: true}
+
+service:
+  pipelines:
+    traces: {receivers: [otlp], processors: [memory_limiter, tail_sampling, batch], exporters: [otlp/jaeger]}
+    metrics: {receivers: [otlp], processors: [memory_limiter, batch], exporters: [otlphttp/prometheus]}
+    logs: {receivers: [otlp], processors: [memory_limiter, batch], exporters: [otlphttp/loki]}
