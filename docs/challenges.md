@@ -190,3 +190,16 @@ to `invoices`, which briefly locks it. Found by running squawk over all migratio
 - *Did:* left it (already applied everywhere); squawk now fails any new migration without it.
 - *Alternatives:* squawk on the whole chain (48 warnings on reviewed migrations), or editing 0010 (rewrites history).
 
+## Slice 7b: release images
+
+**New GHCR packages start private, even in a public repository,** and GitHub has no API to change a package's
+visibility. Private packages would also have filled the free plan's ~500 MB Packages allowance within a couple of
+releases (four images, two architectures each, every merge).
+- *Did:* the user made the four packages public in the web UI. `cosign verify` then worked without logging in, and
+  verifying against the wrong workflow identity (`ci.yml`) was rejected, showing the real signer
+  (`release.yml@refs/heads/main`).
+- *Alternatives:* keep them private and give the CLI `read:packages`, plus a retention rule for old versions.
+
+**Next rewrites are fixed at build time,** so the web image can't read the API address from its environment when it
+starts. `API_URL` is a build argument instead (default `http://api:8000`), recorded in ADR 0019.
+
