@@ -30,6 +30,7 @@ export default function UploadPage() {
   const [files, setFiles] = useState<File[]>([]);
   // Made in the browser only: a key generated during server rendering would differ from the client's.
   const [key, setKey] = useState("");
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- must run after hydration (see the comment above)
   useEffect(() => setKey(crypto.randomUUID()), []);
   const [last, setLast] = useState<File[] | null>(null);
   const [response, setResponse] = useState<UploadResponse | null>(null);

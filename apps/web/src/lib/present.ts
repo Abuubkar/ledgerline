@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any -- proposal details and agent tool results are free-form JSON
+   (GraphQL's JSON scalar); their shape depends on the tool, and this file reads them field by field. */
 // How invoices, problems and proposals are put into words for a reviewer. Plain language, no internal codes:
 // the API stores terse reasons ("billed 46, received 45"); a person reads sentences.
 

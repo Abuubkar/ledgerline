@@ -26,7 +26,6 @@ export function ListsProvider({ children }: { children: ReactNode }) {
   const client = useClient();
   const [lists, setLists] = useState<Record<string, ListState>>({});
   const listsRef = useRef(lists);
-  listsRef.current = lists;
   const [invoicesKey, setInvoicesKey] = useState("invoices:");
   const caseActions = useRef<CaseActions>({});
 

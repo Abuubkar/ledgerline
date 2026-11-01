@@ -52,6 +52,8 @@ export function CaseFile({ id }: { id: string }) {
   }
 
   useEffect(() => {
+    // caseActions is a ref shared through context, written after render: the rule can't see it's a ref.
+    // eslint-disable-next-line react-hooks/immutability
     caseActions.current = action?.status === "pending" ? { approve: () => decide("approve"), reject: () => decide("reject") } : {};
     return () => { caseActions.current = {}; };
   });
