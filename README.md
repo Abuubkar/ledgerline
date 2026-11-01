@@ -177,6 +177,7 @@ Each slice is one end-to-end change. The destination layout and stack are in [do
 | 5b | Reviewer UI (Next.js + urql): queue, case file, decisions, upload, dead letters; Jest tests | Done |
 | 6a | Golden set of 60 invoices and 25 agent scenarios, eval script with gates, recorded answers | Done |
 | 6b | Model sweep: gemma4:12b, qwen3.5:9b, qwen2.5:7b on the same eval ([evals/SWEEP.md](evals/SWEEP.md)) | Done |
+| 6c | Extraction prompt v4 from the sweep's findings: gemma4 at 100% header fields, 99.3% line items | Done |
 | 7 | GitHub Actions: checks, offline eval, signed images to GHCR | Planned |
 | 8 | OpenTelemetry: one invoice traced from upload to approval; dashboards and alerts | Planned |
 

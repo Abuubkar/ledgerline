@@ -16,9 +16,11 @@ scenarios), reference Mac, one model call at a time. Full table and recommendati
 
 | Model | Prompts | Header avg / lowest field | Line F1 | Agent | Page p50 / p95 | Invoices/h | Memory | Measured |
 |---|---|---|---|---|---|---|---|---|
-| **gemma4:12b** (default) | extract-page/3, agent/1 | 99.5% / 95.0% (vendor name) | 96.4% | 15/15 | 34 / 42 s | 74 | 8.7 GB | 2026-11-01, slice 6b |
-| qwen3.5:9b-q4_K_M | extract-page/3, agent/1 | 96.2% / 72.5% (subtotal) | 99.3% | 14/15 | 22 / 29 s | 110 | 7.1 GB | 2026-11-01, slice 6b |
-| qwen2.5:7b-instruct | extract-page/3, agent/1 | 98.8% / 92.5% (vendor name) | 97.8% | 10/15 | 14 / 18 s | 159 | 5.2 GB | 2026-11-01, slice 6b |
+| **gemma4:12b** (default) | extract-page/4, agent/1 | 100% / 100% | 99.3% | 15/15 | 34 / 42 s | 73 | 8.7 GB | 2026-11-01, slice 6c |
+| qwen3.5:9b-q4_K_M | extract-page/4, agent/1 | 99.0% / 90.0% (tax ID) | 99.3% | 14/15 | 21 / 27 s | 115 | 6.6 GB | 2026-11-01, slice 6c |
+| qwen2.5:7b-instruct | extract-page/4, agent/1 | 98.2% / 90.0% (subtotal) | 99.3% | 10/15 | 14 / 19 s | 172 | 5.1 GB | 2026-11-01, slice 6c |
+
+Memory is the resident size of Ollama's model server on a fresh load at `num_ctx` 8192 (`evals/sweep.py --memory`).
 
 ## Model time per invoice
 
@@ -287,4 +289,30 @@ What changed and why:
   `/api/ps` reported 1.0 GB for gemma4:12b (it leaves out the weights), so the sweep now reads the process instead.
 - gemma4's p95 per invoice fell from 148 s to 99 s: totals now add up more often, so it made 2 repair calls instead
   of 7 (each re-reads the whole invoice).
+
+## Slice 6c: prompt `extract-page/4` (dev split)
+
+Two rules added to the extraction prompt (ADR 0017): subtotal, tax and total only where printed, never summed from
+lines; quantity from its own column, not a pack size in the description. All three models rerun, one after another
+with a 15-minute rest between them. Wall time: qwen3.5 21 min, qwen2.5 14 min, gemma4 33 min. The `extract-page/3`
+results are kept in [evals/archive/2026-11-01-extract-page-3/](../evals/archive/2026-11-01-extract-page-3/README.md).
+
+| Model | Header avg / lowest field | Line F1 | Calibration error | Agent | Page p50 / p95 | Invoice p50 / p95 | Tokens/s | Invoices/h | Memory |
+|---|---|---|---|---|---|---|---|---|---|
+| gemma4:12b | 100% / 100% (was 99.5% / 95.0%) | 99.3% (was 96.4%) | 0.0% | 15/15 | 34 / 42 s | 39 / 98 s | 14.4 | 73 | 8.7 GB |
+| qwen3.5:9b-q4_K_M | 99.0% / 90.0% (was 96.2% / 72.5%) | 99.3% (same) | 0.0% | 14/15 | 21 / 27 s | 25 / 63 s | 21.8 | 115 | 6.6 GB |
+| qwen2.5:7b-instruct | 98.2% / 90.0% (was 98.8% / 92.5%) | 99.3% (was 97.8%) | 0.0% | 10/15 | 14 / 19 s | 18 / 40 s | 25.4 | 172 | 5.1 GB |
+
+- **qwen3.5's invented subtotals are gone:** subtotal 72.5% → 100%, tax 97.5% → 100%. Its one weak field is the
+  Japanese "Registration No.: T…" (tax ID 90%).
+- **gemma4's pack-size errors are gone:** every header field right, 137 of 139 lines. The 2 missed lines sit under
+  the rubber stamp on g27 and have in every run.
+- **qwen2.5 over-corrected:** lines up to 99.3%, but it no longer reads "Net GBP …" as the subtotal (subtotal 95% →
+  90%), on one of the six layouts.
+- **All three models now read 137 of 139 lines.** What separates them is the agent (15, 14 and 10 of 15), speed and
+  memory.
+- **Memory corrected.** Read right after a run, the same model's resident size varied by up to 1.7 GB (gemma4 8.7 GB
+  in one run, 7.1 GB in the next), because macOS compresses idle memory. The sweep now measures on a fresh load; the
+  6b figures came from a one-off load by hand; qwen3.5 read 7.1 GB there and 6.6 GB with the sweep's method, so
+  treat memory differences under ~0.5 GB as noise.
 
