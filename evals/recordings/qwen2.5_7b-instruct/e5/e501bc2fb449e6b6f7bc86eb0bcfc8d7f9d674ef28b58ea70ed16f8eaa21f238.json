@@ -1,0 +1,27 @@
+{
+ "model": "qwen2.5:7b-instruct",
+ "created_at": "2026-11-01T02:45:25.598029Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 2979490541,
+ "load_duration": 1254583,
+ "prompt_eval_count": 1072,
+ "prompt_eval_duration": 1111420000,
+ "eval_count": 48,
+ "eval_duration": 1860093000,
+ "message": {
+  "role": "assistant",
+  "content": "",
+  "tool_calls": [
+   {
+    "function": {
+     "name": "propose_hold",
+     "arguments": {
+      "reason_code": "missing_po",
+      "explanation": "No purchase order found for invoice A17-2026-117."
+     }
+    }
+   }
+  ]
+ }
+}

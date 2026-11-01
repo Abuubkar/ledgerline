@@ -1,0 +1,16 @@
+{
+ "model": "qwen3.5:9b-q4_K_M",
+ "created_at": "2026-11-01T03:24:10.646398Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 23267869167,
+ "load_duration": 756584,
+ "prompt_eval_count": 510,
+ "prompt_eval_duration": 2678887000,
+ "eval_count": 378,
+ "eval_duration": 20203684000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"Kawasemi Electronics K.K.\",\n  \"vendor_tax_id\": null,\n  \"invoice_number\": \"SK-2026-1399\",\n  \"po_number\": null,\n  \"invoice_date\": null,\n  \"due_date\": null,\n  \"currency\": \"JPY\",\n  \"subtotal\": 3117253.0,\n  \"tax\": 311725.0,\n  \"total\": 3428978.0,\n  \"field_confidence\": {\n    \"vendor_name\": 0.95,\n    \"vendor_tax_id\": 0.0,\n    \"invoice_number\": 0.95,\n    \"po_number\": 0.0,\n    \"invoice_date\": 0.0,\n    \"due_date\": 0.0,\n    \"currency\": 1.0,\n    \"subtotal\": 0.98,\n    \"tax\": 0.98,\n    \"total\": 0.98\n  },\n  \"line_items\": [\n    {\n      \"description\": \"LED panel light 60x60\",\n      \"quantity\": 25,\n      \"unit_price\": 6174.0,\n      \"amount\": 154350.0\n    },\n    {\n      \"description\": \"Cable ties, pack of 1000\",\n      \"quantity\": 22,\n      \"unit_price\": 8789.0,\n      \"amount\": 193358.0\n    }\n  ]\n}"
+ }
+}

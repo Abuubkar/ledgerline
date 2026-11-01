@@ -1,0 +1,16 @@
+{
+ "model": "qwen3.5:9b-q4_K_M",
+ "created_at": "2026-11-01T03:14:26.111136Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 24553175708,
+ "load_duration": 963542,
+ "prompt_eval_count": 526,
+ "prompt_eval_duration": 2701006000,
+ "eval_count": 426,
+ "eval_duration": 21747601000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"Pacific Rim Packaging Inc.\",\n  \"vendor_tax_id\": \"91-2846573\",\n  \"invoice_number\": \"PR-2026-1203\",\n  \"po_number\": \"4500100029\",\n  \"invoice_date\": \"2026-07-20\",\n  \"due_date\": \"2026-08-20\",\n  \"currency\": \"USD\",\n  \"subtotal\": 444.83,\n  \"tax\": null,\n  \"total\": null,\n  \"field_confidence\": {\n    \"vendor_name\": 1.0,\n    \"vendor_tax_id\": 0.95,\n    \"invoice_number\": 1.0,\n    \"po_number\": 1.0,\n    \"invoice_date\": 1.0,\n    \"due_date\": 1.0,\n    \"currency\": 1.0,\n    \"subtotal\": 0.95,\n    \"tax\": 0.8,\n    \"total\": 0.8\n  },\n  \"line_items\": [\n    {\n      \"description\": \"Server rack screws, M6\",\n      \"quantity\": 1,\n      \"unit_price\": 6.89,\n      \"amount\": 6.89\n    },\n    {\n      \"description\": \"Pallet wrap film, 500 m\",\n      \"quantity\": 7,\n      \"unit_price\": 59.50,\n      \"amount\": 416.50\n    },\n    {\n      \"description\": \"Ergonomic office chair\",\n      \"quantity\": 8,\n      \"unit_price\": 2.68,\n      \"amount\": 21.44\n    }\n  ]\n}"
+ }
+}

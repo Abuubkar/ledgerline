@@ -1,0 +1,16 @@
+{
+ "model": "qwen3.5:9b-q4_K_M",
+ "created_at": "2026-11-01T03:19:33.729729Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 15785899750,
+ "load_duration": 1751250,
+ "prompt_eval_count": 434,
+ "prompt_eval_duration": 1892042000,
+ "eval_count": 300,
+ "eval_duration": 13826721000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"Pacific Rim Packaging Inc.\",\n  \"vendor_tax_id\": null,\n  \"invoice_number\": \"PR-2026-1329\",\n  \"po_number\": null,\n  \"invoice_date\": null,\n  \"due_date\": null,\n  \"currency\": \"USD\",\n  \"subtotal\": 1070.24,\n  \"tax\": 85.61,\n  \"total\": 1155.85,\n  \"field_confidence\": {\n    \"vendor_name\": 0.95,\n    \"vendor_tax_id\": 0.0,\n    \"invoice_number\": 0.95,\n    \"po_number\": 0.0,\n    \"invoice_date\": 0.0,\n    \"due_date\": 0.0,\n    \"currency\": 1.0,\n    \"subtotal\": 0.98,\n    \"tax\": 0.98,\n    \"total\": 0.98\n  },\n  \"line_items\": [\n    {\n      \"description\": \"Laser printer toner, black\",\n      \"quantity\": 16,\n      \"unit_price\": 2.14,\n      \"amount\": 34.24\n    }\n  ]\n}"
+ }
+}

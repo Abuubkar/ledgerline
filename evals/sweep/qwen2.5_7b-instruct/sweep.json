@@ -1,0 +1,5 @@
+{
+  "memory_gb": 5.2,
+  "wall_minutes": 15.2,
+  "memory_note": "model server resident size at num_ctx 8192, measured 2026-11-01 after the runs (the in-run /api/ps reading was wrong)"
+}

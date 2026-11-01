@@ -1,0 +1,16 @@
+{
+ "model": "qwen3.5:9b-q4_K_M",
+ "created_at": "2026-11-01T03:22:31.292359Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 29674984959,
+ "load_duration": 956167,
+ "prompt_eval_count": 592,
+ "prompt_eval_duration": 2578508000,
+ "eval_count": 502,
+ "eval_duration": 26856746000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"Pacific Rim Packaging Inc.\",\n  \"vendor_tax_id\": \"91-2846573\",\n  \"invoice_number\": \"PR-2026-1371\",\n  \"po_number\": \"4500100053\",\n  \"invoice_date\": \"2026-02-15\",\n  \"due_date\": \"2026-03-15\",\n  \"currency\": \"USD\",\n  \"subtotal\": 7158.45,\n  \"tax\": 572.67,\n  \"total\": 7731.12,\n  \"field_confidence\": {\n    \"vendor_name\": 0.95,\n    \"vendor_tax_id\": 0.9,\n    \"invoice_number\": 0.98,\n    \"po_number\": 0.98,\n    \"invoice_date\": 1.0,\n    \"due_date\": 1.0,\n    \"currency\": 1.0,\n    \"subtotal\": 0.95,\n    \"tax\": 0.95,\n    \"total\": 0.95\n  },\n  \"line_items\": [\n    {\n      \"description\": \"Hand truck, folding\",\n      \"quantity\": 14,\n      \"unit_price\": 201.75,\n      \"amount\": 2824.50\n    },\n    {\n      \"description\": \"Hand truck, folding\",\n      \"quantity\": 27,\n      \"unit_price\": 152.75,\n      \"amount\": 4124.25\n    },\n    {\n      \"description\": \"Safety goggles, anti-fog\",\n      \"quantity\": 38,\n      \"unit_price\": 4.91,\n      \"amount\": 186.58\n    },\n    {\n      \"description\": \"Laser printer toner, black\",\n      \"quantity\": 34,\n      \"unit_price\": 0.68,\n      \"amount\": 23.12\n    }\n  ]\n}"
+ }
+}

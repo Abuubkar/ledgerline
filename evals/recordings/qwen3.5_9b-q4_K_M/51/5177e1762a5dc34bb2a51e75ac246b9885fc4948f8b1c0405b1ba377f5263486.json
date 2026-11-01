@@ -1,0 +1,26 @@
+{
+ "model": "qwen3.5:9b-q4_K_M",
+ "created_at": "2026-11-01T03:25:10.244671Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 2961449167,
+ "load_duration": 4220875,
+ "prompt_eval_count": 1528,
+ "prompt_eval_duration": 944213000,
+ "eval_count": 37,
+ "eval_duration": 1994574000,
+ "message": {
+  "role": "assistant",
+  "content": "",
+  "tool_calls": [
+   {
+    "function": {
+     "name": "get_receipts",
+     "arguments": {
+      "po_number": "4500200001"
+     }
+    }
+   }
+  ]
+ }
+}

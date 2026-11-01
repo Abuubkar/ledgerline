@@ -1,0 +1,28 @@
+{
+ "model": "qwen2.5:7b-instruct",
+ "created_at": "2026-11-01T02:45:01.552259Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 1501515250,
+ "load_duration": 1561959,
+ "prompt_eval_count": 1377,
+ "prompt_eval_duration": 461281000,
+ "eval_count": 26,
+ "eval_duration": 1031993999,
+ "message": {
+  "role": "assistant",
+  "content": "",
+  "tool_calls": [
+   {
+    "function": {
+     "name": "compute_variance",
+     "arguments": {
+      "lines": [
+       "page 1 line 1"
+      ]
+     }
+    }
+   }
+  ]
+ }
+}

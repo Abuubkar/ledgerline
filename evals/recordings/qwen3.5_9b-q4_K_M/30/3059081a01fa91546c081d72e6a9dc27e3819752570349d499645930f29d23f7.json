@@ -1,0 +1,26 @@
+{
+ "model": "qwen3.5:9b-q4_K_M",
+ "created_at": "2026-11-01T03:28:38.822369Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 3500111917,
+ "load_duration": 2313084,
+ "prompt_eval_count": 1378,
+ "prompt_eval_duration": 1889648000,
+ "eval_count": 36,
+ "eval_duration": 1599090000,
+ "message": {
+  "role": "assistant",
+  "content": "",
+  "tool_calls": [
+   {
+    "function": {
+     "name": "get_po",
+     "arguments": {
+      "po_number": "4500200001"
+     }
+    }
+   }
+  ]
+ }
+}

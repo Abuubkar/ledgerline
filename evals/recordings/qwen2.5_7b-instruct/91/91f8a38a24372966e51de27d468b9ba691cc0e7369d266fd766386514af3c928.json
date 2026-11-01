@@ -1,0 +1,26 @@
+{
+ "model": "qwen2.5:7b-instruct",
+ "created_at": "2026-11-01T02:45:32.553032Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 1216484167,
+ "load_duration": 1406459,
+ "prompt_eval_count": 1250,
+ "prompt_eval_duration": 450620000,
+ "eval_count": 20,
+ "eval_duration": 757497000,
+ "message": {
+  "role": "assistant",
+  "content": "",
+  "tool_calls": [
+   {
+    "function": {
+     "name": "get_po",
+     "arguments": {
+      "po_number": null
+     }
+    }
+   }
+  ]
+ }
+}
