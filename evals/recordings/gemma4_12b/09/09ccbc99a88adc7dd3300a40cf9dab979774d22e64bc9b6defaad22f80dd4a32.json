@@ -1,0 +1,16 @@
+{
+ "model": "gemma4:12b",
+ "created_at": "2026-11-01T16:07:44.475134Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 35926742083,
+ "load_duration": 13036958,
+ "prompt_eval_count": 939,
+ "prompt_eval_duration": 9078583000,
+ "eval_count": 363,
+ "eval_duration": 26311562000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"Alpenblick Logistik AG\",\n  \"vendor_tax_id\": \"CH-E-123.456.789\",\n  \"invoice_number\": \"AB-2026-1028\",\n  \"po_number\": \"4500100004\",\n  \"invoice_date\": \"2026-02-04\",\n  \"due_date\": \"2026-03-04\",\n  \"currency\": \"EUR\",\n  \"subtotal\": 312.40,\n  \"tax\": 24.99,\n  \"total\": 337.39,\n  \"field_confidence\": {\n    \"vendor_name\": 1.0,\n    \"vendor_tax_id\": 1.0,\n    \"invoice_number\": 1.0,\n    \"po_number\": 1.0,\n    \"invoice_date\": 1.0,\n    \"due_date\": 1.0,\n    \"currency\": 1.0,\n    \"subtotal\": 1.0,\n    \"tax\": 1.0,\n    \"total\": 1.0\n  },\n  \"line_items\": [\n    {\n      \"description\": \"Thermal labels 100x150\",\n      \"quantity\": 22,\n      \"unit_price\": 14.20,\n      \"amount\": 312.40\n    }\n  ]\n}"
+ }
+}

@@ -1,0 +1,16 @@
+{
+ "model": "gemma4:12b",
+ "created_at": "2026-11-01T17:01:18.631142Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 92518908834,
+ "load_duration": 7249000,
+ "prompt_eval_count": 1429,
+ "prompt_eval_duration": 8963572000,
+ "eval_count": 1181,
+ "eval_duration": 82974125000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": null,\n  \"vendor_tax_id\": null,\n  \"invoice_number\": null,\n  \"po_number\": null,\n  \"invoice_date\": null,\n  \"due_date\": null,\n  \"currency\": null,\n  \"subtotal\": null,\n  \"tax\": null,\n  \"total\": null,\n  \"field_confidence\": {\n    \"vendor_name\": 0.0,\n    \"vendor_tax_id\": 0.0,\n    \"invoice_number\": 0.0,\n    \"po_number\": 0.0,\n    \"invoice_date\": 0.0,\n    \"due_date\": 0.0,\n    \"currency\": 0.0,\n    \"subtotal\": 0.0,\n    \"tax\": 0.0,\n    \"total\": 0.0\n  },\n  \"line_items\": [\n    {\n      \"description\": \"PROGRAM : 900A-1000A\\nCOM_ID : DOCTORS\\nORD_COM1 : A\\nTHIS IS : FOR 1 SPOT/WK\\nRATE : $600.00\\nSTART : 9/14\\nEND : 9/14\\nSPOTS : 0\\nDAYS : FRI\\nQTY : 30\\nUNIT_PRICE : 20.00\\nAMOUNT : 600.00\",\n      \"quantity\": 30,\n      \"unit_price\": 20.0,\n      \"amount\": 600.0\n    },\n    {\n      \"description\": \"PROGRAM : 900A-1000A\\nCOM_ID : DOCTORS\\nORD_COM1 : A\\nTHIS IS : FOR 1 SPOT/WK\\nRATE : $600.00\\nSTART : 9/14\\nEND : 9/14\\nSPOTS : 1\\nDAYS : FRI\\nQTY : 30\\nUNIT_PRICE : 20.00\\nAMOUNT : 600.00\",\n      \"quantity\": 30,\n      \"unit_price\": 20.0,\n      \"amount\": 600.0\n    },\n    {\n      \"description\": \"PROGRAM : 120A-105A\\nCOM_ID : ME_TIM_ABC\\nORD_COM1 : F\\nTHIS IS : FOR 1 SPOT/WK\\nRATE : $425.00\\nSTART : 9/13\\nEND : 9/13\\nSPOTS : 0\\nDAYS : THU\\nQTY : 30\\nUNIT_PRICE : 14.17\\nAMOUNT : 425.00\",\n      \"quantity\": 30,\n      \"unit_price\": 14.17,\n      \"amount\": 425.0\n    },\n    {\n      \"description\": \"PROGRAM : 120A-105A\\nCOM_ID : EL_TIMEL\\nORD_COM1 : F\\nTHIS IS : FOR 1 SPOT/WK\\nRATE : $600.00\\nSTART : 9/13\\nEND : 9/13\\nSPOTS : 0\\nDAYS : THU\\nQTY : 30\\nUNIT_PRICE : 20.00\\nAMOUNT : 600.00\",\n      \"quantity\": 30,\n      \"unit_price\": 20.0,\n      \"amount\": 600.0\n    },\n    {\n      \"description\": \"PROGRAM : 900A-1000A\\nCOM_ID : DOCTORS\\nORD_COM1 : A\\nTHIS IS : FOR 1 SPOT/WK\\nRATE : $600.00\\nSTART : 9/13\\nEND : 9/13\\nSPOTS : 1\\nDAYS : THU\\nQTY : 30\\nUNIT_PRICE : 20.00\\nAMOUNT : 600.00\",\n      \"quantity\": 30,\n      \"unit_price\": 20.0,\n      \"amount\": 600.0\n    },\n    {\n      \"description\": \"PROGRAM : 900A-1000A\\nCOM_ID : DOCTORS\\nORD_COM1 : A\\nTHIS IS : FOR 1 SPOT/WK\\nRATE : $600.00\\nSTART : 9/13\\nEND : 9/13\\nSPOTS : 1\\nDAYS : THU\\nQTY : 30\\nUNIT_PRICE : 20.00\\nAMOUNT : 600.00\",\n      \"quantity\": 30,\n      \"unit_price\": 20.0,\n      \"amount\": 600.0\n    }\n  ]\n}"
+ }
+}

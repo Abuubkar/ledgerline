@@ -1,0 +1,16 @@
+{
+ "model": "gemma4:12b",
+ "created_at": "2026-11-01T16:22:53.010893Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 32056820791,
+ "load_duration": 7771541,
+ "prompt_eval_count": 1120,
+ "prompt_eval_duration": 8991519000,
+ "eval_count": 321,
+ "eval_duration": 22338148000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"KPTH\",\n  \"vendor_tax_id\": null,\n  \"invoice_number\": \"1336165-2\",\n  \"po_number\": \"09742697\",\n  \"invoice_date\": \"2020-02-09\",\n  \"due_date\": null,\n  \"currency\": null,\n  \"subtotal\": null,\n  \"tax\": null,\n  \"total\": 40.00,\n  \"field_confidence\": {\n    \"vendor_name\": 0.9,\n    \"vendor_tax_id\": 0.0,\n    \"invoice_number\": 0.9,\n    \"po_number\": 0.8,\n    \"invoice_date\": 0.9,\n    \"due_date\": 0.0,\n    \"currency\": 0.0,\n    \"subtotal\": 0.0,\n    \"tax\": 0.0,\n    \"total\": 0.9\n  },\n  \"line_items\": [\n    {\n      \"description\": \"The Doctors 10a-11a Lassee= :30\",\n      \"quantity\": 1,\n      \"unit_price\": 40.00,\n      \"amount\": 40.00\n    }\n  ]\n}"
+ }
+}

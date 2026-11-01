@@ -1,0 +1,16 @@
+{
+ "model": "gemma4:12b",
+ "created_at": "2026-11-01T17:14:20.703241Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 110774938917,
+ "load_duration": 19963292,
+ "prompt_eval_count": 1639,
+ "prompt_eval_duration": 13493748000,
+ "eval_count": 1274,
+ "eval_duration": 95958895000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"WRAZ\",\n  \"vendor_tax_id\": null,\n  \"invoice_number\": \"117698-1\",\n  \"po_number\": null,\n  \"invoice_date\": \"2012-09-30\",\n  \"due_date\": null,\n  \"currency\": null,\n  \"subtotal\": null,\n  \"tax\": null,\n  \"total\": null,\n  \"field_confidence\": {\n    \"vendor_name\": 0.9,\n    \"vendor_tax_id\": 0.0,\n    \"invoice_number\": 0.9,\n    \"po_number\": 0.0,\n    \"invoice_date\": 0.9,\n    \"due_date\": 0.0,\n    \"currency\": 0.0,\n    \"subtotal\": 0.0,\n    \"tax\": 0.0,\n    \"total\": 0.0\n  },\n  \"line_items\": [\n    {\n      \"description\": \"WRAZ M 09/17/12 :30 8:13 AM 2012MRFP110H\",\n      \"quantity\": 1,\n      \"unit_price\": 165.0,\n      \"amount\": 165.0\n    },\n    {\n      \"description\": \"WRAZ Tu 09/18/12 :30 8:24 AM 2012MRFP110H\",\n      \"quantity\": 2,\n      \"unit_price\": 165.0,\n      \"amount\": 330.0\n    },\n    {\n      \"description\": \"WRAZ W 09/12/12 :30 8:54 AM 2012MRFP094H\",\n      \"quantity\": 2,\n      \"unit_price\": 165.0,\n      \"amount\": 330.0\n    },\n    {\n      \"description\": \"WRAZ Th 09/13/12 :30 8:29 AM 2012MRFP094H\",\n      \"quantity\": 3,\n      \"unit_price\": 165.0,\n      \"amount\": 495.0\n    },\n    {\n      \"description\": \"WRAZ F 09/14/12 :30 8:43 AM 2012MRFP110H\",\n      \"quantity\": 1,\n      \"unit_price\": 165.0,\n      \"amount\": 165.0\n    },\n    {\n      \"description\": \"WRAZ W 09/12/12 :30 9:27 AM 2012MRFP094H\",\n      \"quantity\": 1,\n      \"unit_price\": 100.0,\n      \"amount\": 100.0\n    },\n    {\n      \"description\": \"WRAZ Th 09/13/12 :30 9:51 AM 2012MRFP094H\",\n      \"quantity\": 3,\n      \"unit_price\": 100.0,\n      \"amount\": 300.0\n    },\n    {\n      \"description\": \"WRAZ F 09/14/12 :30 9:45 AM 2012MRFP110H\",\n      \"quantity\": 2,\n      \"unit_price\": 100.0,\n      \"amount\": 200.0\n    },\n    {\n      \"description\": \"WRAZ M 09/17/12 :30 9:51 AM 2012MRFP110H\",\n      \"quantity\": 2,\n      \"unit_price\": 100.0,\n      \"amount\": 200.0\n    },\n    {\n      \"description\": \"WRAZ Tu 09/18/12 :30 9:27 AM 2012MRFP114H\",\n      \"quantity\": 1,\n      \"unit_price\": 100.0,\n      \"amount\": 100.0\n    },\n    {\n      \"description\": \"WRAZ M 09/17/12 :30 7:14 PM 2012MRFP110H\",\n      \"quantity\": 2,\n      \"unit_price\": 580.0,\n      \"amount\": 1160.0\n    },\n    {\n      \"description\": \"WRAZ Tu 09/18/12 :30 7:15 PM 2012MRFP110H\",\n      \"quantity\": 1,\n      \"unit_price\": 580.0,\n      \"amount\": 580.0\n    },\n    {\n      \"description\": \"WRAZ W 09/12/12 :30 7:14 PM 2012MRFP094H\",\n      \"quantity\": 1,\n      \"unit_price\": 580.0,\n      \"amount\": 580.0\n    }\n  ]\n}"
+ }
+}

@@ -1,0 +1,16 @@
+{
+ "model": "gemma4:12b",
+ "created_at": "2026-11-01T16:59:09.991209Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 29632296667,
+ "load_duration": 2970417,
+ "prompt_eval_count": 1065,
+ "prompt_eval_duration": 8919602000,
+ "eval_count": 267,
+ "eval_duration": 18587882000,
+ "message": {
+  "role": "assistant",
+  "content": "{\"vendor_name\": \"OSI:traffic\", \"vendor_tax_id\": null, \"invoice_number\": null, \"po_number\": \"64532\", \"invoice_date\": \"2020-02-27\", \"due_date\": null, \"currency\": \"USD\", \"subtotal\": null, \"tax\": null, \"total\": 1105.00, \"field_confidence\": {\"vendor_name\": 0.8, \"vendor_tax_id\": 0.0, \"invoice_number\": 0.0, \"po_number\": 0.9, \"invoice_date\": 0.9, \"due_date\": 0.0, \"currency\": 1.0, \"subtotal\": 0.0, \"total\": 1.0}, \"line_items\": [{\"description\": \"<Pre-Pay> Wire Transfer / Normal Checks POLI/M BLOOMBERG/D/PRE/US. HRP/VA/AMBR_ WSVN wire\", \"quantity\": null, \"unit_price\": 39100.00, \"amount\": 1105.00, \"page\": 1}]}"
+ }
+}

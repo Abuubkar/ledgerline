@@ -1,0 +1,16 @@
+{
+ "model": "gemma4:12b",
+ "created_at": "2026-11-01T17:43:36.927016Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 91816602000,
+ "load_duration": 15486167,
+ "prompt_eval_count": 2159,
+ "prompt_eval_duration": 17833565000,
+ "eval_count": 1010,
+ "eval_duration": 71167954000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"WAOW-WYOW Television Inc\",\n  \"vendor_tax_id\": null,\n  \"invoice_number\": \"1471574\",\n  \"po_number\": null,\n  \"invoice_date\": \"2020-05-31\",\n  \"due_date\": null,\n  \"currency\": \"USD\",\n  \"subtotal\": null,\n  \"tax\": null,\n  \"total\": 1997.50,\n  \"field_confidence\": {\n    \"vendor_name\": 0.95,\n    \"vendor_tax_id\": 0.0,\n    \"invoice_number\": 0.95,\n    \"po_number\": 0.0,\n    \"invoice_date\": 0.9,\n    \"due_date\": 0.0,\n    \"currency\": 0.9,\n    \"subtotal\": 0.0,\n    \"tax\": 0.0,\n    \"total\": 0.95\n  },\n  \"line_items\": [\n    {\n      \"description\": \"1.0 SPOT 30297-Wake Up WiscoDnasy,Th-2 05/07/20 6:13AM (Th) 01:00 SWBOWT60\",\n      \"quantity\": 1.0,\n      \"unit_price\": 250.0,\n      \"amount\": 250.0,\n      \"page\": 1\n    },\n    {\n      \"description\": \"1.0 SPOT 30297-Wake Up WiscoDnasy,Th-2 05/07/20 6:28AM (Th) 01:00 SWBOWT60\",\n      \"quantity\": 1.0,\n      \"unit_price\": 250.0,\n      \"amount\": 250.0,\n      \"page\": 1\n    },\n    {\n      \"description\": \"2.0 SPOT 62748-GOOD MORNINDGa yA,TMh-1 05/07/20 7:59AM (Th) 01:00 SWBOWT60\",\n      \"quantity\": 2.0,\n      \"unit_price\": 250.0,\n      \"amount\": 250.0,\n      \"page\": 1\n    },\n    {\n      \"description\": \"3.0 SPOT 30368-News 9 WAOW Daaty,W-1 05/06/20 6:15PM (We) 01:00 SWBOWT60\",\n      \"quantity\": 3.0,\n      \"unit_price\": 400.0,\n      \"amount\": 400.0,\n      \"page\": 1\n    },\n    {\n      \"description\": \"4.0 SPOT 30368-News 9 WAOW Daaty,Th-1 05/07/20 6:22PM (Th) 01:00 SWBOWT60\",\n      \"quantity\": 4.0,\n      \"unit_price\": 400.0,\n      \"amount\": 400.0,\n      \"page\": 1\n    },\n    {\n      \"description\": \"5.0 SPOT 30370-News 9 WAOW Daaty,W-1 05/06/20 10:31PM (We) 01:00 SWBOWT60\",\n      \"quantity\": 5.0,\n      \"unit_price\": 400.0,\n      \"amount\": 400.0,\n      \"page\": 1\n    },\n    {\n      \"description\": \"6.0 SPOT 30370-News 9 WAOW Daaty,Th-1 05/07/20 10:33PM (Th) 01:00 SWBOWT60\",\n      \"quantity\": 6.0,\n      \"unit_price\": 400.0,\n      \"amount\": 400.0,\n      \"page\": 1\n    }\n  ]\n}"
+ }
+}

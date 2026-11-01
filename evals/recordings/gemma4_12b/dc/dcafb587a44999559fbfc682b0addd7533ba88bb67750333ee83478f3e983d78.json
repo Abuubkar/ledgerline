@@ -1,0 +1,16 @@
+{
+ "model": "gemma4:12b",
+ "created_at": "2026-11-01T16:34:20.304242Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 51878770833,
+ "load_duration": 7067000,
+ "prompt_eval_count": 1885,
+ "prompt_eval_duration": 15336526000,
+ "eval_count": 485,
+ "eval_duration": 34075104000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"WCNC\",\n  \"vendor_tax_id\": null,\n  \"invoice_number\": \"1990774-1\",\n  \"po_number\": null,\n  \"invoice_date\": \"2020-05-10\",\n  \"due_date\": null,\n  \"currency\": null,\n  \"subtotal\": null,\n  \"tax\": null,\n  \"total\": null,\n  \"field_confidence\": {\n    \"vendor_name\": 0.9,\n    \"vendor_tax_id\": 0.0,\n    \"invoice_number\": 0.9,\n    \"po_number\": 0.0,\n    \"invoice_date\": 0.9,\n    \"due_date\": 0.0,\n    \"currency\": 0.0,\n    \"subtotal\": 0.0,\n    \"tax\": 0.0,\n    \"total\": 0.0\n  },\n  \"line_items\": [\n    {\n      \"description\": \"Today Show 7-9a\",\n      \"quantity\": 2,\n      \"unit_price\": 475.0,\n      \"amount\": 475.0\n    },\n    {\n      \"description\": \"Local News @ 4p M-F 4-5p\",\n      \"quantity\": 1,\n      \"unit_price\": 225.0,\n      \"amount\": 225.0\n    },\n    {\n      \"description\": \"Local News @ 5p M-F 5-530p\",\n      \"quantity\": 4,\n      \"unit_price\": 300.0,\n      \"amount\": 300.0\n    },\n    {\n      \"description\": \"Local News @ 530p M-F 530-6p\",\n      \"quantity\": 5,\n      \"unit_price\": 350.0,\n      \"amount\": 350.0\n    }\n  ]\n}"
+ }
+}

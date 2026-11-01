@@ -1,0 +1,16 @@
+{
+ "model": "gemma4:12b",
+ "created_at": "2026-11-01T15:59:20.686281Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 34792960209,
+ "load_duration": 17587500,
+ "prompt_eval_count": 939,
+ "prompt_eval_duration": 8283638000,
+ "eval_count": 355,
+ "eval_duration": 24925546000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"Pacific Rim Packaging Inc.\",\n  \"vendor_tax_id\": \"91-2946573\",\n  \"invoice_number\": \"PR-2026-1035\",\n  \"po_number\": \"4500100005\",\n  \"invoice_date\": \"2026-09-06\",\n  \"due_date\": \"2026-10-06\",\n  \"currency\": \"USD\",\n  \"subtotal\": 422.40,\n  \"tax\": 33.79,\n  \"total\": 456.19,\n  \"field_confidence\": {\n    \"vendor_name\": 1.0,\n    \"vendor_tax_id\": 1.0,\n    \"invoice_number\": 1.0,\n    \"po_number\": 1.0,\n    \"invoice_date\": 1.0,\n    \"due_date\": 1.0,\n    \"currency\": 1.0,\n    \"subtotal\": 1.0,\n    \"tax\": 1.0,\n    \"total\": 1.0\n  },\n  \"line_items\": [\n    {\n      \"description\": \"Pallet wrap film, 500 m\",\n      \"quantity\": 6,\n      \"unit_price\": 70.40,\n      \"amount\": 422.40\n    }\n  ]\n}"
+ }
+}

@@ -1,0 +1,16 @@
+{
+ "model": "gemma4:12b",
+ "created_at": "2026-11-01T17:24:45.463004Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 71320492375,
+ "load_duration": 5945333,
+ "prompt_eval_count": 2565,
+ "prompt_eval_duration": 18569679000,
+ "eval_count": 675,
+ "eval_duration": 47874946000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"KCRA\",\n  \"vendor_tax_id\": null,\n  \"invoice_number\": \"963706-1\",\n  \"po_number\": null,\n  \"invoice_date\": \"2012-10-21\",\n  \"due_date\": null,\n  \"currency\": null,\n  \"subtotal\": null,\n  \"tax\": null,\n  \"total\": null,\n  \"field_confidence\": {\n    \"vendor_name\": 0.9,\n    \"vendor_tax_id\": 0.0,\n    \"invoice_number\": 0.9,\n    \"po_number\": 0.0,\n    \"invoice_date\": 0.9,\n    \"due_date\": 0.0,\n    \"currency\": 0.0,\n    \"subtotal\": 0.0,\n    \"tax\": 0.0,\n    \"total\": 0.0\n  },\n  \"line_items\": [\n    {\n      \"description\": \"Late Night w/Jimmy F\",\n      \"quantity\": 4,\n      \"unit_price\": 600.0,\n      \"amount\": 600.0\n    },\n    {\n      \"description\": \"M-F 9am-10am\",\n      \"quantity\": 3,\n      \"unit_price\": 550.0,\n      \"amount\": 550.0\n    },\n    {\n      \"description\": \"NBC Today Show II\",\n      \"quantity\": 3,\n      \"unit_price\": 450.0,\n      \"amount\": 450.0\n    },\n    {\n      \"description\": \"KCRA-TV News at Noon\",\n      \"quantity\": 2,\n      \"unit_price\": 650.0,\n      \"amount\": 650.0\n    },\n    {\n      \"description\": \"Days of Our Lives\",\n      \"quantity\": 3,\n      \"unit_price\": 700.0,\n      \"amount\": 700.0\n    },\n    {\n      \"description\": \"ANDERSON COOPER DA1Y1AM TO 12PM\",\n      \"quantity\": 3,\n      \"unit_price\": 450.0,\n      \"amount\": 450.0\n    },\n    {\n      \"description\": \"Notre Dame Football VARIOUS\",\n      \"quantity\": 2,\n      \"unit_price\": 1500.0,\n      \"amount\": 1500.0\n    },\n    {\n      \"description\": \"HOLLYSCOOP 3-330p\",\n      \"quantity\": 1,\n      \"unit_price\": 75.0,\n      \"amount\": 75.0\n    }\n  ]\n}"
+ }
+}

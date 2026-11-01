@@ -1,0 +1,16 @@
+{
+ "model": "gemma4:12b",
+ "created_at": "2026-11-01T16:36:54.824164Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 100667692792,
+ "load_duration": 6051333,
+ "prompt_eval_count": 4539,
+ "prompt_eval_duration": 36180823000,
+ "eval_count": 822,
+ "eval_duration": 59117095000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"WCNC\",\n  \"vendor_tax_id\": null,\n  \"invoice_number\": \"1990774-1\",\n  \"po_number\": null,\n  \"invoice_date\": \"2020-05-10\",\n  \"due_date\": null,\n  \"currency\": \"USD\",\n  \"subtotal\": null,\n  \"tax\": null,\n  \"total\": 23125.00,\n  \"field_confidence\": {\n    \"vendor_name\": 0.9,\n    \"vendor_tax_id\": 0.0,\n    \"invoice_number\": 0.9,\n    \"po_number\": 0.0,\n    \"invoice_date\": 0.9,\n    \"due_date\": 0.0,\n    \"currency\": 1.0,\n    \"subtotal\": 0.0,\n    \"tax\": 0.0,\n    \"total\": 0.9\n  },\n  \"line_items\": [\n    {\n      \"description\": \"Today Show 7-9a\",\n      \"quantity\": 2,\n      \"unit_price\": 475.0,\n      \"amount\": 950.0,\n      \"page\": 1\n    },\n    {\n      \"description\": \"Local News @ 4p M-F 4-5p\",\n      \"quantity\": 1,\n      \"unit_price\": 225.0,\n      \"amount\": 225.0,\n      \"page\": 1\n    },\n    {\n      \"description\": \"Local News @ 5p M-F 5-530p\",\n      \"quantity\": 4,\n      \"unit_price\": 300.0,\n      \"amount\": 1200.0,\n      \"page\": 1\n    },\n    {\n      \"description\": \"Local News @ 530p M-F 530-6p\",\n      \"quantity\": 5,\n      \"unit_price\": 350.0,\n      \"amount\": 1750.0,\n      \"page\": 1\n    },\n    {\n      \"description\": \"Local News @ 530p M-F 530-6p\",\n      \"quantity\": 5,\n      \"unit_price\": 350.0,\n      \"amount\": 1750.0,\n      \"page\": 2\n    },\n    {\n      \"description\": \"Jeopardy 7-730p 7-730p\",\n      \"quantity\": 5,\n      \"unit_price\": 2500.0,\n      \"amount\": 12500.0,\n      \"page\": 2\n    },\n    {\n      \"description\": \"Wheel of Frtune 730-8p 730-8p\",\n      \"quantity\": 1,\n      \"unit_price\": 2500.0,\n      \"amount\": 2500.0,\n      \"page\": 2\n    },\n    {\n      \"description\": \"Local News @ 11p M-F 11-1135p\",\n      \"quantity\": 5,\n      \"unit_price\": 800.0,\n      \"amount\": 4000.0,\n      \"page\": 2\n    }\n  ]\n}"
+ }
+}

@@ -1,0 +1,16 @@
+{
+ "model": "gemma4:12b",
+ "created_at": "2026-11-01T16:35:14.11787Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 53786325166,
+ "load_duration": 6332125,
+ "prompt_eval_count": 2249,
+ "prompt_eval_duration": 17634696000,
+ "eval_count": 504,
+ "eval_duration": 35565134000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"WCNC\",\n  \"vendor_tax_id\": null,\n  \"invoice_number\": \"1990774-1\",\n  \"po_number\": null,\n  \"invoice_date\": \"2020-05-10\",\n  \"due_date\": null,\n  \"currency\": null,\n  \"subtotal\": null,\n  \"tax\": null,\n  \"total\": 23125.00,\n  \"field_confidence\": {\n    \"vendor_name\": 0.9,\n    \"vendor_tax_id\": 0.0,\n    \"po_number\": 0.0,\n    \"invoice_date\": 1.0,\n    \"due_date\": 0.0,\n    \"currency\": 0.0,\n    \"subtotal\": 0.0,\n    \"tax\": 0.0,\n    \"total\": 0.9\n  },\n  \"line_items\": [\n    {\n      \"description\": \"Local News @ 530p M-F 530-6p\",\n      \"quantity\": 5,\n      \"unit_price\": 350.0,\n      \"amount\": 1750.0\n    },\n    {\n      \"description\": \"Jeopardy 7-730p 7-730p\",\n      \"quantity\": 5,\n      \"unit_price\": 2500.0,\n      \"amount\": 12500.0\n    },\n    {\n      \"description\": \"Wheel of Frtune 730-8p 730-8p\",\n      \"quantity\": 1,\n      \"unit_price\": 2500.0,\n      \"amount\": 2500.0\n    },\n    {\n      \"description\": \"Local News @ 11p M-F 11-1135p\",\n      \"quantity\": 5,\n      \"unit_price\": 800.0,\n      \"amount\": 4000.0\n    }\n  ]\n}"
+ }
+}
