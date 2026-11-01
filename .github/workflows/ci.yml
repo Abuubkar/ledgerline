@@ -173,6 +173,7 @@ jobs:
         run: gh pr comment "$PR" --repo "$GITHUB_REPOSITORY" --body-file eval-comment.md --edit-last --create-if-none
 
   images:
+    name: images (${{ matrix.service }})
     # Builds each release image (amd64 only, not pushed), so a broken Dockerfile fails the PR, not the release.
     # Shares the release workflow's build cache.
     runs-on: ubuntu-latest
