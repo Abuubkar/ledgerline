@@ -79,3 +79,10 @@ archived first.
   it as a question, not a requirement (2026-11-01).
 - **Found:** slice 8a, 2026-11-01.
 
+### Alertmanager, so alerts reach someone
+
+- **What:** Prometheus evaluates the alerts and Grafana shows them, but nothing notifies anyone.
+- **Fix:** add Alertmanager to the observability profile with a route per severity (`page`, `ticket`) to a channel
+  (email, Slack, a webhook); Prometheus's `alerting:` block points at it.
+- **Why it waits:** there's no on-call channel for a local portfolio stack. Found: slice 8b, 2026-11-01.
+

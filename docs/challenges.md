@@ -232,3 +232,38 @@ telemetry starts, after modules imported it).
 **The GenAI conventions moved repositories mid-2026** (to `open-telemetry/semantic-conventions-genai`) and renamed
 `gen_ai.system` to `gen_ai.provider.name`. The spans follow the new repo, at a recorded commit (ADR 0020).
 
+## Slice 8b: metrics, logs, alerts
+
+**Prometheus's OTLP receiver can't count a series' first measurement.** It ignores a counter's start time (its
+zero-start features cover only scraped data), so a counter whose first export already read 3 showed `increase()` = 0.
+The first dead-letter test showed nothing.
+- *Did:* counters are reported at 0 when each process starts (so the dead-letter counter lost its error-code label);
+  histograms can't be, so the speed panel uses running totals. Documented as a known limit (ADR 0021).
+- *Alternatives:* scrape /metrics instead of OTLP (needs a multiprocess setup for Celery's pool); delta temporality
+  (Prometheus's conversion is experimental and has the same first-sample gap).
+
+**Stale gauges hid an outage.** OTLP leaves no staleness marker when a process stops, so a restarted relay's old
+`ollama_up=1` kept `max()` at 1 for 5 minutes while the new relay reported 0.
+- *Did:* gauge alerts and panels use `last_over_time(...[1m])`.
+
+**Metrics lost when Celery pool children exit:** no atexit hooks run, so the last 15 s never left.
+- *Did:* flush in `worker_process_shutdown`. A SIGKILLed worker (as in the chaos test) still loses up to 15 s.
+
+**I misdiagnosed the first gap as processes overwriting each other's series.** The SDK already gives each process a
+random `service.instance.id`. The real causes were the killed and scaled-down workers. The host-pid id I added stays
+(more readable), with the comment corrected.
+
+**A unit doubled a name:** `{token}/s` on `ledgerline.llm.tokens_per_second` became `…_per_second_per_second` in
+Prometheus. Renamed to `ledgerline.llm.output_speed`.
+
+**httpx logged every request at INFO, URL included**: noise every 15 s from the gauges, and the RabbitMQ management
+URL carries its (development) credentials. httpx is set to WARNING.
+
+**The collector 0.163.0 release has no published image** (Docker Hub and GHCR both lack it); 0.162.0 is used.
+
+**The queue gauge first listed Celery's internal queues** (pidbox, delayed, events). It now reports only
+`invoices.*` and `erp.*`.
+
+**My runbooks first named the dead-letter endpoints wrongly** (`/v1/dead-letters/...`); checked against the contract,
+they're `/v1/admin/dead-letters` and `.../{id}/replay`.
+

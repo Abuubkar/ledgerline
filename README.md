@@ -183,7 +183,7 @@ Each slice is one end-to-end change. The destination layout and stack are in [do
 | 7a | GitHub Actions on every PR: lint, contracts, unit and integration tests, migration lint, web tests, offline eval | Done |
 | 7b | Release: signed multi-arch images to GHCR with SBOM, provenance and a vulnerability scan | Done |
 | 8a | OpenTelemetry tracing: one invoice traced from upload through the model call to the match; agent and approval traces; Jaeger | Done |
-| 8b | Metrics, logs, dashboard, alerts with runbooks, SLOs, tail sampling | Planned |
+| 8b | Metrics, logs in Loki, Grafana dashboard, alerts with runbooks, SLO with burn-rate alerts, tail sampling, release compose | Done |
 
 ## Layout
 
