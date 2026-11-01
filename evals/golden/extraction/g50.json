@@ -1,0 +1,44 @@
+{
+  "vendor_name": "Harbourside Catering Ltd",
+  "vendor_tax_id": "GB482193756",
+  "invoice_number": "NW-2026-1350",
+  "po_number": "4500100050",
+  "invoice_date": "2026-01-02",
+  "due_date": "2026-02-02",
+  "currency": "GBP",
+  "subtotal_minor": 574230,
+  "tax_minor": 114846,
+  "total_minor": 690076,
+  "arithmetic_error": true,
+  "layout": "single",
+  "scanned": false,
+  "style": "right",
+  "pages": 1,
+  "stamp": null,
+  "lines": [
+    {
+      "description": "Safety goggles, anti-fog",
+      "quantity": "37",
+      "unit_price": "81.50",
+      "amount_minor": 301550
+    },
+    {
+      "description": "LED panel light 60x60",
+      "quantity": "34",
+      "unit_price": "9.70",
+      "amount_minor": 32980
+    },
+    {
+      "description": "Pallet wrap film, 500 m",
+      "quantity": "22",
+      "unit_price": "108.75",
+      "amount_minor": 239250
+    },
+    {
+      "description": "LED panel light 60x60",
+      "quantity": "2",
+      "unit_price": "2.25",
+      "amount_minor": 450
+    }
+  ]
+}

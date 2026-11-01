@@ -1,0 +1,38 @@
+{
+  "vendor_name": "Harbourside Catering Ltd",
+  "vendor_tax_id": "GB482193756",
+  "invoice_number": "NW-2026-1098",
+  "po_number": "4500100014",
+  "invoice_date": "2026-09-14",
+  "due_date": "2026-10-14",
+  "currency": "GBP",
+  "subtotal_minor": 593694,
+  "tax_minor": 118738,
+  "total_minor": 712432,
+  "arithmetic_error": false,
+  "layout": "single",
+  "scanned": false,
+  "style": "right",
+  "pages": 1,
+  "stamp": null,
+  "lines": [
+    {
+      "description": "Server rack screws, M6",
+      "quantity": "3",
+      "unit_price": "2.62",
+      "amount_minor": 786
+    },
+    {
+      "description": "Pallet wrap film, 500 m",
+      "quantity": "22",
+      "unit_price": "2.64",
+      "amount_minor": 5808
+    },
+    {
+      "description": "Cable ties, pack of 1000",
+      "quantity": "38",
+      "unit_price": "154.50",
+      "amount_minor": 587100
+    }
+  ]
+}

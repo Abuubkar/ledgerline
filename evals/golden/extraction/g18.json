@@ -1,0 +1,62 @@
+{
+  "vendor_name": "Brightline Office Supply LLC",
+  "vendor_tax_id": "841937465",
+  "invoice_number": "INV-2026-1126",
+  "po_number": "4500100018",
+  "invoice_date": "2026-01-23",
+  "due_date": "2026-02-23",
+  "currency": "USD",
+  "subtotal_minor": 868170,
+  "tax_minor": 69453,
+  "total_minor": 937623,
+  "arithmetic_error": false,
+  "layout": "single",
+  "scanned": false,
+  "style": "classic",
+  "pages": 2,
+  "stamp": null,
+  "lines": [
+    {
+      "description": "USB-C docking station",
+      "quantity": "22",
+      "unit_price": "32.60",
+      "amount_minor": 71720
+    },
+    {
+      "description": "USB-C docking station",
+      "quantity": "4",
+      "unit_price": "57.25",
+      "amount_minor": 22900
+    },
+    {
+      "description": "Ergonomic office chair",
+      "quantity": "25",
+      "unit_price": "220.50",
+      "amount_minor": 551250
+    },
+    {
+      "description": "A4 copy paper, 5 reams",
+      "quantity": "7",
+      "unit_price": "13.30",
+      "amount_minor": 9310
+    },
+    {
+      "description": "USB-C docking station",
+      "quantity": "39",
+      "unit_price": "3.05",
+      "amount_minor": 11895
+    },
+    {
+      "description": "LED panel light 60x60",
+      "quantity": "16",
+      "unit_price": "61.70",
+      "amount_minor": 98720
+    },
+    {
+      "description": "Ergonomic office chair",
+      "quantity": "35",
+      "unit_price": "29.25",
+      "amount_minor": 102375
+    }
+  ]
+}

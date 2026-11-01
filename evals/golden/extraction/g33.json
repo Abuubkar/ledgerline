@@ -1,0 +1,26 @@
+{
+  "vendor_name": "Kawasemi Electronics K.K.",
+  "vendor_tax_id": "T9876543210987",
+  "invoice_number": "SK-2026-1231",
+  "po_number": null,
+  "invoice_date": "2026-01-04",
+  "due_date": "2026-02-04",
+  "currency": "JPY",
+  "subtotal_minor": 184080,
+  "tax_minor": 18408,
+  "total_minor": 202988,
+  "arithmetic_error": true,
+  "layout": "single",
+  "scanned": false,
+  "style": "seikyu",
+  "pages": 1,
+  "stamp": null,
+  "lines": [
+    {
+      "description": "Cable ties, pack of 1000",
+      "quantity": "39",
+      "unit_price": "4720",
+      "amount_minor": 184080
+    }
+  ]
+}

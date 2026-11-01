@@ -1,0 +1,68 @@
+{
+  "vendor_name": "Harbourside Catering Ltd",
+  "vendor_tax_id": "GB482193756",
+  "invoice_number": "NW-2026-1266",
+  "po_number": "4500100038",
+  "invoice_date": "2026-09-08",
+  "due_date": "2026-10-08",
+  "currency": "GBP",
+  "subtotal_minor": 1220384,
+  "tax_minor": 244076,
+  "total_minor": 1464460,
+  "arithmetic_error": false,
+  "layout": "single",
+  "scanned": false,
+  "style": "right",
+  "pages": 2,
+  "stamp": null,
+  "lines": [
+    {
+      "description": "Thermal labels 100x150",
+      "quantity": "29",
+      "unit_price": "39.40",
+      "amount_minor": 114260
+    },
+    {
+      "description": "Cable ties, pack of 1000",
+      "quantity": "6",
+      "unit_price": "31.00",
+      "amount_minor": 18600
+    },
+    {
+      "description": "Laser printer toner, black",
+      "quantity": "9",
+      "unit_price": "57.00",
+      "amount_minor": 51300
+    },
+    {
+      "description": "LED panel light 60x60",
+      "quantity": "17",
+      "unit_price": "1.42",
+      "amount_minor": 2414
+    },
+    {
+      "description": "Pallet wrap film, 500 m",
+      "quantity": "28",
+      "unit_price": "168.75",
+      "amount_minor": 472500
+    },
+    {
+      "description": "Pallet wrap film, 500 m",
+      "quantity": "36",
+      "unit_price": "43.20",
+      "amount_minor": 155520
+    },
+    {
+      "description": "Cable ties, pack of 1000",
+      "quantity": "26",
+      "unit_price": "80.40",
+      "amount_minor": 209040
+    },
+    {
+      "description": "Safety goggles, anti-fog",
+      "quantity": "25",
+      "unit_price": "78.70",
+      "amount_minor": 196750
+    }
+  ]
+}

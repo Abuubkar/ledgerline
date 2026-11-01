@@ -1,0 +1,86 @@
+{
+  "vendor_name": "Nordwerk Industrietechnik GmbH",
+  "vendor_tax_id": "DE274918365",
+  "invoice_number": "RE-2026-1133",
+  "po_number": "4500100019",
+  "invoice_date": "2026-09-03",
+  "due_date": "2026-10-03",
+  "currency": "EUR",
+  "subtotal_minor": 1166887,
+  "tax_minor": 221708,
+  "total_minor": 1388595,
+  "arithmetic_error": false,
+  "layout": "single",
+  "scanned": false,
+  "style": "german",
+  "pages": 4,
+  "stamp": null,
+  "lines": [
+    {
+      "description": "Industrial shelving bracket",
+      "quantity": "3",
+      "unit_price": "71.50",
+      "amount_minor": 21450
+    },
+    {
+      "description": "Laser printer toner, black",
+      "quantity": "30",
+      "unit_price": "15.25",
+      "amount_minor": 45750
+    },
+    {
+      "description": "Cable ties, pack of 1000",
+      "quantity": "17",
+      "unit_price": "17.10",
+      "amount_minor": 29070
+    },
+    {
+      "description": "Laser printer toner, black",
+      "quantity": "19",
+      "unit_price": "74.50",
+      "amount_minor": 141550
+    },
+    {
+      "description": "Server rack screws, M6",
+      "quantity": "28",
+      "unit_price": "87.00",
+      "amount_minor": 243600
+    },
+    {
+      "description": "Cable ties, pack of 1000",
+      "quantity": "17",
+      "unit_price": "46.10",
+      "amount_minor": 78370
+    },
+    {
+      "description": "Server rack screws, M6",
+      "quantity": "29",
+      "unit_price": "0.63",
+      "amount_minor": 1827
+    },
+    {
+      "description": "Laser printer toner, black",
+      "quantity": "4",
+      "unit_price": "56.40",
+      "amount_minor": 22560
+    },
+    {
+      "description": "Safety goggles, anti-fog",
+      "quantity": "23",
+      "unit_price": "5.70",
+      "amount_minor": 13110
+    },
+    {
+      "description": "LED panel light 60x60",
+      "quantity": "17",
+      "unit_price": "96.00",
+      "amount_minor": 163200
+    },
+    {
+      "description": "Server rack screws, M6",
+      "quantity": "32",
+      "unit_price": "127.00",
+      "amount_minor": 406400
+    }
+  ]
+}

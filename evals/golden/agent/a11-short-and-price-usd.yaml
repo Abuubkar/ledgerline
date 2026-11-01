@@ -1,0 +1,50 @@
+id: a11-short-and-price-usd
+description: Short shipment and a 5% price increase on the same line.
+gold:
+  action: credit_memo_request
+  required_tools:
+  - get_receipts
+  - compute_variance
+invoice:
+  status: exception
+  invoice_number: A11-2026-111
+  po_number: '4500200001'
+  invoice_date: '2026-10-15'
+  due_date: '2026-11-14'
+  currency: USD
+  vendor:
+    name: Brightline Office Supply LLC
+    tax_id: '841937465'
+  subtotal_minor: 136290
+  tax_minor: 10903
+  total_minor: 147193
+  lines:
+  - description: Pallet jack, 5500 lb
+    quantity: '2'
+    unit_price: '681.45'
+    amount_minor: 136290
+  invalid_fields: {}
+  match_reasons:
+  - code: price_variance
+    detail: unit price 681.45 vs PO 649.00 (+5.00%, tolerance 1%)
+    line: page 1 line 1
+  - code: short_shipment
+    detail: billed 2, received 1
+    line: page 1 line 1
+purchase_order:
+  po_number: '4500200001'
+  currency: USD
+  vendor:
+    name: Brightline Office Supply LLC
+    tax_id: '841937465'
+  lines:
+  - line_no: 1
+    description: Pallet jack, 5500 lb
+    quantity: '2'
+    unit_price: '649.00'
+receipts:
+- received_on: '2026-10-10'
+  lines:
+  - po_line_no: 1
+    quantity: '1'
+history: []

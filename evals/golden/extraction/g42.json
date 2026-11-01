@@ -1,0 +1,32 @@
+{
+  "vendor_name": "Brightline Office Supply LLC",
+  "vendor_tax_id": "841937465",
+  "invoice_number": "INV-2026-1294",
+  "po_number": "4500100042",
+  "invoice_date": "2026-02-22",
+  "due_date": "2026-03-22",
+  "currency": "USD",
+  "subtotal_minor": 18823,
+  "tax_minor": 1505,
+  "total_minor": 20328,
+  "arithmetic_error": false,
+  "layout": "single",
+  "scanned": false,
+  "style": "classic",
+  "pages": 1,
+  "stamp": null,
+  "lines": [
+    {
+      "description": "Cable ties, pack of 1000",
+      "quantity": "23",
+      "unit_price": "4.01",
+      "amount_minor": 9223
+    },
+    {
+      "description": "USB-C docking station",
+      "quantity": "40",
+      "unit_price": "2.40",
+      "amount_minor": 9600
+    }
+  ]
+}

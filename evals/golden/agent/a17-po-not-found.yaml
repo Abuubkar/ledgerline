@@ -1,0 +1,33 @@
+id: a17-po-not-found
+description: The invoice cites PO 4600000120, which the ERP doesn't have.
+gold:
+  action: hold
+  reason_code: missing_po
+  required_tools:
+  - get_po
+invoice:
+  status: exception
+  invoice_number: A17-2026-117
+  po_number: '4600000120'
+  invoice_date: '2026-10-15'
+  due_date: '2026-11-14'
+  currency: EUR
+  vendor:
+    name: Nordwerk Industrietechnik GmbH
+    tax_id: DE274918365
+  subtotal_minor: 6200
+  tax_minor: 1178
+  total_minor: 7378
+  lines:
+  - description: Safety goggles, anti-fog
+    quantity: '10'
+    unit_price: '6.20'
+    amount_minor: 6200
+  invalid_fields: {}
+  match_reasons:
+  - code: po_not_found
+    detail: no purchase order 4600000120 in the ERP data
+    line: null
+purchase_order: null
+receipts: null
+history: []

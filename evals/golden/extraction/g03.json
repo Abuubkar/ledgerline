@@ -1,0 +1,44 @@
+{
+  "vendor_name": "Kawasemi Electronics K.K.",
+  "vendor_tax_id": "T9876543210987",
+  "invoice_number": "SK-2026-1021",
+  "po_number": "4500100003",
+  "invoice_date": "2026-09-26",
+  "due_date": "2026-10-26",
+  "currency": "JPY",
+  "subtotal_minor": 6218130,
+  "tax_minor": 621813,
+  "total_minor": 6839943,
+  "arithmetic_error": false,
+  "layout": "single",
+  "scanned": false,
+  "style": "seikyu",
+  "pages": 1,
+  "stamp": null,
+  "lines": [
+    {
+      "description": "Pallet wrap film, 500 m",
+      "quantity": "32",
+      "unit_price": "71930",
+      "amount_minor": 2301760
+    },
+    {
+      "description": "Ergonomic office chair",
+      "quantity": "3",
+      "unit_price": "5970",
+      "amount_minor": 17910
+    },
+    {
+      "description": "Safety goggles, anti-fog",
+      "quantity": "35",
+      "unit_price": "51540",
+      "amount_minor": 1803900
+    },
+    {
+      "description": "Industrial shelving bracket",
+      "quantity": "26",
+      "unit_price": "80560",
+      "amount_minor": 2094560
+    }
+  ]
+}

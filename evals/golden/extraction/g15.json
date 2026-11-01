@@ -1,0 +1,44 @@
+{
+  "vendor_name": "Kawasemi Electronics K.K.",
+  "vendor_tax_id": "T9876543210987",
+  "invoice_number": "SK-2026-1105",
+  "po_number": "4500100015",
+  "invoice_date": "2026-06-28",
+  "due_date": "2026-07-28",
+  "currency": "JPY",
+  "subtotal_minor": 533020,
+  "tax_minor": 53302,
+  "total_minor": 586322,
+  "arithmetic_error": false,
+  "layout": "single",
+  "scanned": false,
+  "style": "seikyu",
+  "pages": 1,
+  "stamp": null,
+  "lines": [
+    {
+      "description": "Pallet wrap film, 500 m",
+      "quantity": "16",
+      "unit_price": "4146",
+      "amount_minor": 66336
+    },
+    {
+      "description": "Thermal labels 100x150",
+      "quantity": "10",
+      "unit_price": "3920",
+      "amount_minor": 39200
+    },
+    {
+      "description": "Hand truck, folding",
+      "quantity": "3",
+      "unit_price": "85000",
+      "amount_minor": 255000
+    },
+    {
+      "description": "USB-C docking station",
+      "quantity": "31",
+      "unit_price": "5564",
+      "amount_minor": 172484
+    }
+  ]
+}

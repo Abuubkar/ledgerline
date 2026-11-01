@@ -1,0 +1,26 @@
+{
+  "vendor_name": "Brightline Office Supply LLC",
+  "vendor_tax_id": "841937465",
+  "invoice_number": "INV-2026-1210",
+  "po_number": "4500100030",
+  "invoice_date": "2026-04-17",
+  "due_date": "2026-05-17",
+  "currency": "USD",
+  "subtotal_minor": 227425,
+  "tax_minor": 18194,
+  "total_minor": 245619,
+  "arithmetic_error": false,
+  "layout": "single",
+  "scanned": false,
+  "style": "classic",
+  "pages": 1,
+  "stamp": null,
+  "lines": [
+    {
+      "description": "Safety goggles, anti-fog",
+      "quantity": "11",
+      "unit_price": "206.75",
+      "amount_minor": 227425
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "vendor_name": "Kawasemi Electronics K.K.",
+  "vendor_tax_id": "T9876543210987",
+  "invoice_number": "SK-2026-1147",
+  "po_number": "4500100021",
+  "invoice_date": "2026-09-16",
+  "due_date": "2026-10-16",
+  "currency": "JPY",
+  "subtotal_minor": 961884,
+  "tax_minor": 96188,
+  "total_minor": 1058072,
+  "arithmetic_error": false,
+  "layout": "single",
+  "scanned": false,
+  "style": "seikyu",
+  "pages": 1,
+  "stamp": null,
+  "lines": [
+    {
+      "description": "USB-C docking station",
+      "quantity": "36",
+      "unit_price": "4928",
+      "amount_minor": 177408
+    },
+    {
+      "description": "Server rack screws, M6",
+      "quantity": "13",
+      "unit_price": "5442",
+      "amount_minor": 70746
+    },
+    {
+      "description": "USB-C docking station",
+      "quantity": "37",
+      "unit_price": "19290",
+      "amount_minor": 713730
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 OASDIFF := docker run --rm -v $(CURDIR):/specs:ro tufin/oasdiff:v1.35.0
 
-.PHONY: codegen contract-check test test-int test-web web smoke chaos seed
+.PHONY: codegen contract-check test test-int test-web web smoke chaos seed eval eval-test golden
 
 # Regenerate everything derived from the contracts. Generated code is never edited by hand.
 codegen:
@@ -40,3 +40,16 @@ chaos:
 seed:
 	uv run python scripts/seed.py --profile $(or $(PROFILE),small) --replace
 	docker compose restart erp_mock
+
+# Evals (evals/run.py): the dev split, replaying recorded model answers; LIVE=1 calls Ollama and records them.
+# BASELINE=evals/baseline.json also fails on a drop of more than 1.5 points.
+eval:
+	uv run python evals/run.py $(if $(LIVE),--live,) $(if $(BASELINE),--baseline $(BASELINE),)
+
+# The held-out test split: run only to check a finished change, never to tune against.
+eval-test:
+	uv run python evals/run.py --split test $(if $(LIVE),--live,)
+
+# Re-render the 60 golden invoices (deterministic; only needed after changing scripts/make_invoice.py).
+golden:
+	uv run python scripts/make_invoice.py --golden

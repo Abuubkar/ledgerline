@@ -1,0 +1,35 @@
+id: a15-duplicate
+description: Re-sent copy of an invoice already on file.
+gold:
+  action: hold
+  reason_code: duplicate
+  required_tools:
+  - get_vendor_history
+invoice:
+  status: exception
+  invoice_number: A15-2026-115
+  po_number: null
+  invoice_date: '2026-10-15'
+  due_date: '2026-11-14'
+  currency: USD
+  vendor:
+    name: Brightline Office Supply LLC
+    tax_id: '841937465'
+  subtotal_minor: 19200
+  tax_minor: 3648
+  total_minor: 22848
+  lines:
+  - description: Laser printer toner, black
+    quantity: '3'
+    unit_price: '64.00'
+    amount_minor: 19200
+  invalid_fields:
+    invoice_number: duplicate of invoice 0199dddd-0000-7000-8000-000000000015
+  match_reasons: []
+purchase_order: null
+receipts: null
+history:
+- id: 0199dddd-0000-7000-8000-000000000015
+  invoice_number: DUP-2026-15
+  status: matched
+  total_minor: 19200

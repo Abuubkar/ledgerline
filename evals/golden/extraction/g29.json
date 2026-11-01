@@ -1,0 +1,74 @@
+{
+  "vendor_name": "Pacific Rim Packaging Inc.",
+  "vendor_tax_id": "912846573",
+  "invoice_number": "PR-2026-1203",
+  "po_number": "4500100029",
+  "invoice_date": "2026-07-20",
+  "due_date": "2026-08-20",
+  "currency": "USD",
+  "subtotal_minor": 984677,
+  "tax_minor": 78774,
+  "total_minor": 1063451,
+  "arithmetic_error": false,
+  "layout": "single",
+  "scanned": false,
+  "style": "compact",
+  "pages": 3,
+  "stamp": null,
+  "lines": [
+    {
+      "description": "Server rack screws, M6",
+      "quantity": "1",
+      "unit_price": "6.89",
+      "amount_minor": 689
+    },
+    {
+      "description": "Pallet wrap film, 500 m",
+      "quantity": "7",
+      "unit_price": "59.50",
+      "amount_minor": 41650
+    },
+    {
+      "description": "Ergonomic office chair",
+      "quantity": "8",
+      "unit_price": "2.68",
+      "amount_minor": 2144
+    },
+    {
+      "description": "Hand truck, folding",
+      "quantity": "36",
+      "unit_price": "7.36",
+      "amount_minor": 26496
+    },
+    {
+      "description": "Pallet wrap film, 500 m",
+      "quantity": "37",
+      "unit_price": "70.10",
+      "amount_minor": 259370
+    },
+    {
+      "description": "Laser printer toner, black",
+      "quantity": "38",
+      "unit_price": "54.00",
+      "amount_minor": 205200
+    },
+    {
+      "description": "Hand truck, folding",
+      "quantity": "40",
+      "unit_price": "74.80",
+      "amount_minor": 299200
+    },
+    {
+      "description": "Laser printer toner, black",
+      "quantity": "10",
+      "unit_price": "141.00",
+      "amount_minor": 141000
+    },
+    {
+      "description": "Safety goggles, anti-fog",
+      "quantity": "12",
+      "unit_price": "7.44",
+      "amount_minor": 8928
+    }
+  ]
+}

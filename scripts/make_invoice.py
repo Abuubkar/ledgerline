@@ -5,6 +5,7 @@ Usage:
   uv run python scripts/make_invoice.py [out_dir]                      # the 3 fixed samples
   uv run python scripts/make_invoice.py --random 200 --seed 7 out_dir  # 200 varied, unique invoices
   uv run python scripts/make_invoice.py --scenarios out_dir            # slice 3b edge cases (see SCENARIOS)
+  uv run python scripts/make_invoice.py --golden                       # the 60-invoice eval set in evals/golden/
   uv run python scripts/make_invoice.py --from-po 4500000042 out_dir   # bills a PO from data/erp/dataset.json
       [--price-change 3]                                               # ...with line 1 priced 3% above the PO
 """
@@ -50,6 +51,28 @@ class Sample:
     total_misprint_minor: int = 0  # printed total = true total + this, to test the arithmetic check
     scanned: bool = False  # image-only PDF of the rendered page, rotated 2 degrees, no text layer
     po_number: str | None = None  # printed as "PO number" when set
+    style: str = "classic"  # how the vendor lays out its invoices: see STYLES
+    pages: int = 1  # with layout "single": spread the lines over this many pages, totals on the last
+    stamp: str | None = None  # text of a rubber stamp drawn across the lines (e.g. "PAID 2026-10-31")
+
+
+# Six vendor layouts for the golden set. Labels, number format and arrangement differ; what's printed is always
+# the same information, so the gold values don't depend on the style.
+STYLES = {
+    "classic": {"labels": ("Invoice number", "Invoice date", "Due date", "PO number"), "totals": ("Subtotal", "Tax", "Total due"),
+                "table": ("Description", "Qty", "Unit price", "Amount"), "decimal_comma": False, "align": "L", "font": 10},
+    "german": {"labels": ("Rechnungsnummer", "Rechnungsdatum", "Faellig am", "Bestellnummer"), "totals": ("Zwischensumme", "MwSt.", "Gesamtbetrag"),
+               "table": ("Bezeichnung", "Menge", "Einzelpreis", "Betrag"), "decimal_comma": True, "align": "L", "font": 10},
+    "right": {"labels": ("Invoice #", "Date", "Payment due", "Your order"), "totals": ("Net", "VAT", "Amount payable"),
+              "table": ("Item", "Quantity", "Price each", "Line total"), "decimal_comma": False, "align": "R", "font": 10},
+    "boxed": {"labels": ("Invoice No.", "Issued", "Due", "Purchase order"), "totals": ("Sub-total", "Sales tax", "TOTAL"),
+              "table": ("Description", "Units", "Rate", "Amount"), "decimal_comma": False, "align": "L", "font": 10, "boxed": True},
+    "compact": {"labels": ("Invoice", "Dated", "Pay by", "PO"), "totals": ("Subtotal", "Tax", "Balance due"),
+                "table": ("Description", "Qty", "Unit", "Total"), "decimal_comma": False, "align": "L", "font": 8.5, "inline": True},
+    "seikyu": {"labels": ("Seikyusho No. (Invoice)", "Hakko-bi (Date)", "Shiharai kigen (Due)", "Chumon No. (PO)"),
+               "totals": ("Shokei (Subtotal)", "Shohizei (Tax)", "Gokei (Total)"), "table": ("Hinmei (Item)", "Suryo", "Tanka", "Kingaku"),
+               "decimal_comma": False, "align": "L", "font": 10},
+}
 
 
 def fmt(minor: int, sample: Sample) -> str:
@@ -57,7 +80,10 @@ def fmt(minor: int, sample: Sample) -> str:
     # invoices print the ISO code instead (see docs/adr/0002).
     units, cents = divmod(minor, 10**sample.exponent) if sample.exponent else (minor, 0)
     text = f"{units:,}"
-    return f"{text}.{cents:0{sample.exponent}d}" if sample.exponent else text
+    text = f"{text}.{cents:0{sample.exponent}d}" if sample.exponent else text
+    if STYLES[sample.style]["decimal_comma"]:  # German print: 1.234,50
+        text = text.replace(",", "\0").replace(".", ",").replace("\0", ".")
+    return text
 
 
 FIXED_CREATION_DATE = datetime(2026, 10, 30, tzinfo=UTC)
@@ -131,6 +157,8 @@ def totals(sample: Sample) -> tuple[int, int, int]:
 
 
 def _header(pdf: FPDF, sample: Sample) -> None:
+    if sample.style != "classic":
+        return _styled_header(pdf, sample)
     pdf.set_font("helvetica", style="B", size=16)
     pdf.cell(0, 8, sample.vendor_name, new_x="LMARGIN", new_y="NEXT")
     pdf.set_font("helvetica", size=9)
@@ -161,7 +189,51 @@ def _header(pdf: FPDF, sample: Sample) -> None:
     pdf.ln(6)
 
 
+def _styled_header(pdf: FPDF, sample: Sample) -> None:
+    style = STYLES[sample.style]
+    align, size = style["align"], style["font"]
+    pdf.set_font("helvetica", style="B", size=size + 6)
+    pdf.cell(0, 8, sample.vendor_name, align=align, new_x="LMARGIN", new_y="NEXT")
+    pdf.set_font("helvetica", size=size - 1)
+    for line in [*sample.vendor_address, f"{sample.vendor_tax_label}: {sample.vendor_tax_id_printed}"]:
+        pdf.cell(0, 5, line, align=align, new_x="LMARGIN", new_y="NEXT")
+    pdf.ln(6)
+    labels = style["labels"]
+    rows = [(labels[0], sample.invoice_number), (labels[1], sample.invoice_date_printed), (labels[2], sample.due_date_printed)]
+    if sample.po_number:
+        rows.append((labels[3], sample.po_number))
+    pdf.set_font("helvetica", style="B", size=size + 2)
+    pdf.cell(0, 7, "RECHNUNG" if sample.style == "german" else "INVOICE", align=align, new_x="LMARGIN", new_y="NEXT")
+    pdf.set_font("helvetica", size=size)
+    if style.get("inline"):  # all on one line, as compact layouts do
+        pdf.cell(0, 6, "   ".join(f"{label}: {value}" for label, value in rows), new_x="LMARGIN", new_y="NEXT")
+    else:
+        for label, value in rows:
+            if align == "R":
+                pdf.cell(0, 6, f"{label}: {value}", align="R", new_x="LMARGIN", new_y="NEXT")
+            else:
+                pdf.cell(48, 6, label)
+                pdf.cell(0, 6, value, new_x="LMARGIN", new_y="NEXT")
+    pdf.ln(4)
+    pdf.set_font("helvetica", style="B", size=size)
+    pdf.cell(0, 6, "Rechnungsempfaenger" if sample.style == "german" else "Bill to", new_x="LMARGIN", new_y="NEXT")
+    pdf.set_font("helvetica", size=size)
+    for line in sample.buyer:
+        pdf.cell(0, 5, line, new_x="LMARGIN", new_y="NEXT")
+    pdf.ln(6)
+
+
 def _lines_table(pdf: FPDF, sample: Sample, lines: list[Line]) -> None:
+    if sample.style != "classic":
+        style = STYLES[sample.style]
+        pdf.set_font("helvetica", size=style["font"])
+        heads = style["table"]
+        borders = "ALL" if style.get("boxed") else "HORIZONTAL_LINES"
+        with pdf.table(col_widths=(90, 20, 40, 40), text_align=("LEFT", "RIGHT", "RIGHT", "RIGHT"), borders_layout=borders) as table:
+            table.row([heads[0], heads[1], f"{heads[2]} ({sample.currency})", f"{heads[3]} ({sample.currency})"])
+            for line in lines:
+                table.row([line.description, str(line.quantity), fmt(line.unit_price_minor, sample), fmt(line.quantity * line.unit_price_minor, sample)])
+        return
     pdf.set_font("helvetica", size=10)
     with pdf.table(col_widths=(90, 20, 40, 40), text_align=("LEFT", "RIGHT", "RIGHT", "RIGHT")) as table:
         table.row(["Description", "Qty", f"Unit price ({sample.currency})", f"Amount ({sample.currency})"])
@@ -177,10 +249,11 @@ def _lines_table(pdf: FPDF, sample: Sample, lines: list[Line]) -> None:
 def _totals(pdf: FPDF, sample: Sample) -> None:
     subtotal, tax, total = totals(sample)
     pdf.ln(4)
+    names = STYLES[sample.style]["totals"]
     for label, minor, bold in [
-        ("Subtotal", subtotal, False),
-        (f"Tax ({sample.tax_rate_pct}%)", tax, False),
-        ("Total due", total + sample.total_misprint_minor, True),
+        (names[0], subtotal, False),
+        (f"{names[1]} ({sample.tax_rate_pct}%)", tax, False),
+        (names[2], total + sample.total_misprint_minor, True),
     ]:
         pdf.set_font("helvetica", style="B" if bold else "", size=10)
         pdf.cell(150, 6, label, align="R")
@@ -198,6 +271,23 @@ def _fine_print(pdf: FPDF) -> None:
     pdf.set_auto_page_break(True)
 
 
+def _stamp(pdf: FPDF, text: str) -> None:
+    """A red rubber stamp, tilted and see-through, drawn across the line items as a clerk would."""
+    x, y = 70, pdf.get_y() - 22
+    with pdf.local_context(fill_opacity=0.55, stroke_opacity=0.55):
+        pdf.set_draw_color(200, 30, 30)
+        pdf.set_text_color(200, 30, 30)
+        pdf.set_line_width(1.2)
+        with pdf.rotation(14, x=x + 35, y=y + 8):
+            pdf.rect(x, y, 70, 16)
+            pdf.set_font("helvetica", style="B", size=15)
+            pdf.set_xy(x, y + 3)
+            pdf.cell(70, 10, text, align="C")
+    pdf.set_text_color(0, 0, 0)
+    pdf.set_draw_color(0, 0, 0)
+    pdf.set_line_width(0.2)
+
+
 def _new_pdf() -> FPDF:
     pdf = FPDF()
     # A fixed date keeps regenerated PDFs byte-identical, so rerunning the script never shows up as a git diff.
@@ -209,8 +299,24 @@ def render_bytes(sample: Sample) -> bytes:
     pdf = _new_pdf()
     pdf.add_page()
     _header(pdf, sample)
-    if sample.layout == "single":
+    if sample.layout == "single" and sample.pages > 1:
+        # Lines spread over the pages; each continuation page repeats who and which invoice, totals on the last.
+        per_page = -(-len(sample.lines) // sample.pages)
+        for page in range(sample.pages):
+            if page:
+                pdf.add_page()
+                pdf.set_font("helvetica", size=9)
+                pdf.cell(0, 6, f"{sample.vendor_name} - {STYLES[sample.style]['labels'][0]} {sample.invoice_number} - page {page + 1} of {sample.pages}",
+                         new_x="LMARGIN", new_y="NEXT")
+                pdf.ln(4)
+            _lines_table(pdf, sample, sample.lines[page * per_page:(page + 1) * per_page])
+            if page == 0 and sample.stamp:
+                _stamp(pdf, sample.stamp)
+        _totals(pdf, sample)
+    elif sample.layout == "single":
         _lines_table(pdf, sample, sample.lines)
+        if sample.stamp:
+            _stamp(pdf, sample.stamp)
         _totals(pdf, sample)
     else:
         half = max(1, len(sample.lines) // 2)
@@ -263,6 +369,56 @@ def gold(sample: Sample) -> dict:
         "layout": sample.layout,
         "scanned": sample.scanned,
     }
+
+
+def golden_gold(sample: Sample) -> dict:
+    """The gold file of a golden-set invoice: every header field and every line, exactly as printed."""
+    exponent = sample.exponent
+    unit = lambda minor: f"{minor / 10**exponent:.{exponent}f}" if exponent else str(minor)  # noqa: E731
+    return gold(sample) | {
+        "style": sample.style, "pages": sample.pages if not sample.scanned else 1, "stamp": sample.stamp,
+        "lines": [{"description": line.description, "quantity": str(line.quantity), "unit_price": unit(line.unit_price_minor),
+                   "amount_minor": line.quantity * line.unit_price_minor} for line in sample.lines],
+    }
+
+
+GOLDEN_STYLES = [  # (style, vendor index in VENDORS, currency override)
+    ("classic", 0, None), ("german", 1, None), ("right", 2, None), ("seikyu", 3, None), ("boxed", 4, "EUR"), ("compact", 5, None),
+]
+GOLDEN_SCANNED, GOLDEN_STAMPED, GOLDEN_MISPRINTED = {13}, {27}, {5, 33, 50}
+
+
+def golden_samples() -> list[Sample]:
+    """60 invoices: six vendor layouts, EUR/USD/JPY/GBP, 1–4 pages, one rotated scan, one stamped, three with
+    a misprinted total. Deterministic, so the set never changes unless this function does."""
+    from dataclasses import replace
+
+    out = []
+    for i in range(60):
+        rng = random.Random(f"golden-{i}")
+        style, vendor_index, currency = GOLDEN_STYLES[i % 6]
+        base = random_sample(rng, i, "gold")
+        name, tax_label, tax_printed, vendor_currency, rate = VENDORS[vendor_index]
+        currency = currency or vendor_currency
+        exponent = 0 if currency == "JPY" else 2
+        pages = 4 if i in (19, 44) else 3 if i % 10 == 9 else 2 if i % 10 in (7, 8) else 1
+        lines = [Line(rng.choice(ITEMS), rng.randint(1, 40), rng.randint(50, 9000) * rng.choice([1, 10]) if exponent == 0
+                      else rng.randint(1, 900) * rng.choice([1, 10, 25]))
+                 for _ in range(rng.randint(pages, min(pages * 4, 12)))]
+        day, month = rng.randint(1, 28), rng.randint(1, 9)
+        printed = (lambda d: f"{d[8:]}.{d[5:7]}.{d[:4]}") if style == "german" else (lambda d: d)
+        iso, due = f"2026-{month:02d}-{day:02d}", f"2026-{month + 1:02d}-{day:02d}"
+        out.append(replace(base,
+            slug=f"g{i:02d}", vendor_name=name, vendor_tax_label=tax_label, vendor_tax_id_printed=tax_printed,
+            vendor_tax_id="".join(c for c in tax_printed.upper() if c.isalnum()), currency=currency, exponent=exponent,
+            tax_rate_pct=rate, lines=lines, style=style, pages=1 if i in GOLDEN_SCANNED else pages,
+            invoice_number=f"{['INV', 'RE', 'NW', 'SK', 'AB', 'PR'][i % 6]}-2026-{1000 + i * 7}",
+            invoice_date=iso, invoice_date_printed=printed(iso), due_date=due, due_date_printed=printed(due),
+            po_number=str(4_500_100_000 + i) if rng.random() < 0.7 else None,
+            scanned=i in GOLDEN_SCANNED, stamp="PAID 2026-10-31" if i in GOLDEN_STAMPED else None,
+            total_misprint_minor=(500 if exponent == 0 else 1000) if i in GOLDEN_MISPRINTED else 0,
+        ))
+    return out
 
 
 VENDORS = [
@@ -359,6 +515,7 @@ def main() -> None:
     parser.add_argument("--seed", default="1", help="any string; the same seed gives the same invoices")
     parser.add_argument("--tag", default="gen", help="prefix for file names and invoice numbers")
     parser.add_argument("--scenarios", action="store_true", help="write the slice 3b edge cases instead")
+    parser.add_argument("--golden", action="store_true", help="write the 60-invoice eval set to evals/golden/extraction")
     parser.add_argument("--from-po", help="write one invoice billing this purchase order instead")
     parser.add_argument("--dataset", type=Path, default=Path("data/erp/dataset.json"))
     parser.add_argument("--price-change", type=int, default=0, help="percent added to line 1's unit price")
@@ -366,6 +523,14 @@ def main() -> None:
 
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
+    if args.golden:
+        out = Path("evals/golden/extraction")
+        out.mkdir(parents=True, exist_ok=True)
+        for sample in golden_samples():
+            render(sample, out / f"{sample.slug}.pdf")
+            (out / f"{sample.slug}.json").write_text(json.dumps(golden_gold(sample), indent=2) + "\n")
+        print(f"wrote 60 golden invoices to {out}/")
+        return
     if args.from_po:
         samples = [from_purchase_order(args.from_po, args.dataset, args.tag, args.price_change)]
     elif args.scenarios:

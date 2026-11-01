@@ -1,0 +1,80 @@
+{
+  "vendor_name": "Pacific Rim Packaging Inc.",
+  "vendor_tax_id": "912846573",
+  "invoice_number": "PR-2026-1413",
+  "po_number": "4500100059",
+  "invoice_date": "2026-06-26",
+  "due_date": "2026-07-26",
+  "currency": "USD",
+  "subtotal_minor": 1052777,
+  "tax_minor": 84222,
+  "total_minor": 1136999,
+  "arithmetic_error": false,
+  "layout": "single",
+  "scanned": false,
+  "style": "compact",
+  "pages": 3,
+  "stamp": null,
+  "lines": [
+    {
+      "description": "Server rack screws, M6",
+      "quantity": "13",
+      "unit_price": "32.90",
+      "amount_minor": 42770
+    },
+    {
+      "description": "Laser printer toner, black",
+      "quantity": "38",
+      "unit_price": "39.40",
+      "amount_minor": 149720
+    },
+    {
+      "description": "Ergonomic office chair",
+      "quantity": "19",
+      "unit_price": "104.75",
+      "amount_minor": 199025
+    },
+    {
+      "description": "Laser printer toner, black",
+      "quantity": "25",
+      "unit_price": "87.00",
+      "amount_minor": 217500
+    },
+    {
+      "description": "Ergonomic office chair",
+      "quantity": "26",
+      "unit_price": "4.16",
+      "amount_minor": 10816
+    },
+    {
+      "description": "Safety goggles, anti-fog",
+      "quantity": "31",
+      "unit_price": "6.02",
+      "amount_minor": 18662
+    },
+    {
+      "description": "USB-C docking station",
+      "quantity": "10",
+      "unit_price": "84.70",
+      "amount_minor": 84700
+    },
+    {
+      "description": "Thermal labels 100x150",
+      "quantity": "29",
+      "unit_price": "5.71",
+      "amount_minor": 16559
+    },
+    {
+      "description": "Ergonomic office chair",
+      "quantity": "27",
+      "unit_price": "112.25",
+      "amount_minor": 303075
+    },
+    {
+      "description": "Pallet wrap film, 500 m",
+      "quantity": "5",
+      "unit_price": "19.90",
+      "amount_minor": 9950
+    }
+  ]
+}

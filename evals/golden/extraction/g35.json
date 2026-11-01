@@ -1,0 +1,32 @@
+{
+  "vendor_name": "Pacific Rim Packaging Inc.",
+  "vendor_tax_id": "912846573",
+  "invoice_number": "PR-2026-1245",
+  "po_number": null,
+  "invoice_date": "2026-03-20",
+  "due_date": "2026-04-20",
+  "currency": "USD",
+  "subtotal_minor": 190750,
+  "tax_minor": 15260,
+  "total_minor": 206010,
+  "arithmetic_error": false,
+  "layout": "single",
+  "scanned": false,
+  "style": "compact",
+  "pages": 1,
+  "stamp": null,
+  "lines": [
+    {
+      "description": "Industrial shelving bracket",
+      "quantity": "20",
+      "unit_price": "78.70",
+      "amount_minor": 157400
+    },
+    {
+      "description": "Laser printer toner, black",
+      "quantity": "29",
+      "unit_price": "11.50",
+      "amount_minor": 33350
+    }
+  ]
+}

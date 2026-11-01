@@ -1,0 +1,26 @@
+{
+  "vendor_name": "Nordwerk Industrietechnik GmbH",
+  "vendor_tax_id": "DE274918365",
+  "invoice_number": "RE-2026-1175",
+  "po_number": "4500100025",
+  "invoice_date": "2026-03-01",
+  "due_date": "2026-04-01",
+  "currency": "EUR",
+  "subtotal_minor": 2442,
+  "tax_minor": 463,
+  "total_minor": 2905,
+  "arithmetic_error": false,
+  "layout": "single",
+  "scanned": false,
+  "style": "german",
+  "pages": 1,
+  "stamp": null,
+  "lines": [
+    {
+      "description": "LED panel light 60x60",
+      "quantity": "37",
+      "unit_price": "0.66",
+      "amount_minor": 2442
+    }
+  ]
+}

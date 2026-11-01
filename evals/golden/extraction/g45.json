@@ -1,0 +1,38 @@
+{
+  "vendor_name": "Kawasemi Electronics K.K.",
+  "vendor_tax_id": "T9876543210987",
+  "invoice_number": "SK-2026-1315",
+  "po_number": null,
+  "invoice_date": "2026-03-27",
+  "due_date": "2026-04-27",
+  "currency": "JPY",
+  "subtotal_minor": 3246950,
+  "tax_minor": 324695,
+  "total_minor": 3571645,
+  "arithmetic_error": false,
+  "layout": "single",
+  "scanned": false,
+  "style": "seikyu",
+  "pages": 1,
+  "stamp": null,
+  "lines": [
+    {
+      "description": "Laser printer toner, black",
+      "quantity": "26",
+      "unit_price": "4660",
+      "amount_minor": 121160
+    },
+    {
+      "description": "Safety goggles, anti-fog",
+      "quantity": "34",
+      "unit_price": "78300",
+      "amount_minor": 2662200
+    },
+    {
+      "description": "Thermal labels 100x150",
+      "quantity": "9",
+      "unit_price": "51510",
+      "amount_minor": 463590
+    }
+  ]
+}

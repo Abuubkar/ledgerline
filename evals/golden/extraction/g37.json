@@ -1,0 +1,38 @@
+{
+  "vendor_name": "Nordwerk Industrietechnik GmbH",
+  "vendor_tax_id": "DE274918365",
+  "invoice_number": "RE-2026-1259",
+  "po_number": "4500100037",
+  "invoice_date": "2026-05-11",
+  "due_date": "2026-06-11",
+  "currency": "EUR",
+  "subtotal_minor": 100400,
+  "tax_minor": 19076,
+  "total_minor": 119476,
+  "arithmetic_error": false,
+  "layout": "single",
+  "scanned": false,
+  "style": "german",
+  "pages": 2,
+  "stamp": null,
+  "lines": [
+    {
+      "description": "A4 copy paper, 5 reams",
+      "quantity": "21",
+      "unit_price": "41.40",
+      "amount_minor": 86940
+    },
+    {
+      "description": "Industrial shelving bracket",
+      "quantity": "4",
+      "unit_price": "31.25",
+      "amount_minor": 12500
+    },
+    {
+      "description": "LED panel light 60x60",
+      "quantity": "3",
+      "unit_price": "3.20",
+      "amount_minor": 960
+    }
+  ]
+}

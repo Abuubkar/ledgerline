@@ -1,0 +1,26 @@
+{
+  "vendor_name": "Harbourside Catering Ltd",
+  "vendor_tax_id": "GB482193756",
+  "invoice_number": "NW-2026-1392",
+  "po_number": "4500100056",
+  "invoice_date": "2026-07-12",
+  "due_date": "2026-08-12",
+  "currency": "GBP",
+  "subtotal_minor": 166130,
+  "tax_minor": 33226,
+  "total_minor": 199356,
+  "arithmetic_error": false,
+  "layout": "single",
+  "scanned": false,
+  "style": "right",
+  "pages": 1,
+  "stamp": null,
+  "lines": [
+    {
+      "description": "A4 copy paper, 5 reams",
+      "quantity": "37",
+      "unit_price": "44.90",
+      "amount_minor": 166130
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "vendor_name": "Harbourside Catering Ltd",
+  "vendor_tax_id": "GB482193756",
+  "invoice_number": "NW-2026-1182",
+  "po_number": null,
+  "invoice_date": "2026-06-07",
+  "due_date": "2026-07-07",
+  "currency": "GBP",
+  "subtotal_minor": 138561,
+  "tax_minor": 27712,
+  "total_minor": 166273,
+  "arithmetic_error": false,
+  "layout": "single",
+  "scanned": false,
+  "style": "right",
+  "pages": 1,
+  "stamp": null,
+  "lines": [
+    {
+      "description": "Cable ties, pack of 1000",
+      "quantity": "35",
+      "unit_price": "8.50",
+      "amount_minor": 29750
+    },
+    {
+      "description": "USB-C docking station",
+      "quantity": "5",
+      "unit_price": "216.75",
+      "amount_minor": 108375
+    },
+    {
+      "description": "Laser printer toner, black",
+      "quantity": "2",
+      "unit_price": "2.18",
+      "amount_minor": 436
+    }
+  ]
+}

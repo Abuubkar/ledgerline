@@ -1,0 +1,34 @@
+id: a20-tax-mismatch
+description: Tax printed at the wrong rate, so lines plus tax don't make the total.
+gold:
+  action: hold
+  reason_code: tax_mismatch
+  required_tools: []
+invoice:
+  status: exception
+  invoice_number: A20-2026-120
+  po_number: null
+  invoice_date: '2026-10-15'
+  due_date: '2026-11-14'
+  currency: EUR
+  vendor:
+    name: Nordwerk Industrietechnik GmbH
+    tax_id: DE274918365
+  subtotal_minor: 24100
+  tax_minor: 4579
+  total_minor: 28369
+  lines:
+  - description: Safety goggles, anti-fog
+    quantity: '10'
+    unit_price: '6.20'
+    amount_minor: 6200
+  - description: Torque wrench 40-200 Nm
+    quantity: '2'
+    unit_price: '89.50'
+    amount_minor: 17900
+  invalid_fields:
+    total: line amounts sum to 241.00, plus tax 45.79 makes 286.79, but the total is 283.69
+  match_reasons: []
+purchase_order: null
+receipts: null
+history: []

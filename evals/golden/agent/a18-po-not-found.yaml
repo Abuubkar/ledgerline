@@ -1,0 +1,33 @@
+id: a18-po-not-found
+description: The invoice cites PO 4500999999, which the ERP doesn't have.
+gold:
+  action: hold
+  reason_code: missing_po
+  required_tools:
+  - get_po
+invoice:
+  status: exception
+  invoice_number: A18-2026-118
+  po_number: '4500999999'
+  invoice_date: '2026-10-15'
+  due_date: '2026-11-14'
+  currency: USD
+  vendor:
+    name: Brightline Office Supply LLC
+    tax_id: '841937465'
+  subtotal_minor: 6200
+  tax_minor: 1178
+  total_minor: 7378
+  lines:
+  - description: Safety goggles, anti-fog
+    quantity: '10'
+    unit_price: '6.20'
+    amount_minor: 6200
+  invalid_fields: {}
+  match_reasons:
+  - code: po_not_found
+    detail: no purchase order 4500999999 in the ERP data
+    line: null
+purchase_order: null
+receipts: null
+history: []

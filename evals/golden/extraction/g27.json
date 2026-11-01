@@ -1,0 +1,68 @@
+{
+  "vendor_name": "Kawasemi Electronics K.K.",
+  "vendor_tax_id": "T9876543210987",
+  "invoice_number": "SK-2026-1189",
+  "po_number": "4500100027",
+  "invoice_date": "2026-06-04",
+  "due_date": "2026-07-04",
+  "currency": "JPY",
+  "subtotal_minor": 2181210,
+  "tax_minor": 218121,
+  "total_minor": 2399331,
+  "arithmetic_error": false,
+  "layout": "single",
+  "scanned": false,
+  "style": "seikyu",
+  "pages": 2,
+  "stamp": "PAID 2026-10-31",
+  "lines": [
+    {
+      "description": "Industrial shelving bracket",
+      "quantity": "13",
+      "unit_price": "9510",
+      "amount_minor": 123630
+    },
+    {
+      "description": "USB-C docking station",
+      "quantity": "12",
+      "unit_price": "3238",
+      "amount_minor": 38856
+    },
+    {
+      "description": "Safety goggles, anti-fog",
+      "quantity": "35",
+      "unit_price": "32530",
+      "amount_minor": 1138550
+    },
+    {
+      "description": "Pallet wrap film, 500 m",
+      "quantity": "11",
+      "unit_price": "5984",
+      "amount_minor": 65824
+    },
+    {
+      "description": "LED panel light 60x60",
+      "quantity": "6",
+      "unit_price": "32930",
+      "amount_minor": 197580
+    },
+    {
+      "description": "Server rack screws, M6",
+      "quantity": "24",
+      "unit_price": "4115",
+      "amount_minor": 98760
+    },
+    {
+      "description": "Pallet wrap film, 500 m",
+      "quantity": "11",
+      "unit_price": "24190",
+      "amount_minor": 266090
+    },
+    {
+      "description": "Thermal labels 100x150",
+      "quantity": "8",
+      "unit_price": "31490",
+      "amount_minor": 251920
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "vendor_name": "Brightline Office Supply LLC",
+  "vendor_tax_id": "841937465",
+  "invoice_number": "INV-2026-1000",
+  "po_number": "4500100000",
+  "invoice_date": "2026-03-14",
+  "due_date": "2026-04-14",
+  "currency": "USD",
+  "subtotal_minor": 22971,
+  "tax_minor": 1837,
+  "total_minor": 24808,
+  "arithmetic_error": false,
+  "layout": "single",
+  "scanned": false,
+  "style": "classic",
+  "pages": 1,
+  "stamp": null,
+  "lines": [
+    {
+      "description": "Hand truck, folding",
+      "quantity": "18",
+      "unit_price": "7.88",
+      "amount_minor": 14184
+    },
+    {
+      "description": "Safety goggles, anti-fog",
+      "quantity": "7",
+      "unit_price": "3.70",
+      "amount_minor": 2590
+    },
+    {
+      "description": "Hand truck, folding",
+      "quantity": "25",
+      "unit_price": "2.45",
+      "amount_minor": 6125
+    },
+    {
+      "description": "Ergonomic office chair",
+      "quantity": "36",
+      "unit_price": "0.02",
+      "amount_minor": 72
+    }
+  ]
+}

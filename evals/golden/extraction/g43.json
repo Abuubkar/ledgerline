@@ -1,0 +1,44 @@
+{
+  "vendor_name": "Nordwerk Industrietechnik GmbH",
+  "vendor_tax_id": "DE274918365",
+  "invoice_number": "RE-2026-1301",
+  "po_number": null,
+  "invoice_date": "2026-03-18",
+  "due_date": "2026-04-18",
+  "currency": "EUR",
+  "subtotal_minor": 23311,
+  "tax_minor": 4429,
+  "total_minor": 27740,
+  "arithmetic_error": false,
+  "layout": "single",
+  "scanned": false,
+  "style": "german",
+  "pages": 1,
+  "stamp": null,
+  "lines": [
+    {
+      "description": "Ergonomic office chair",
+      "quantity": "11",
+      "unit_price": "4.22",
+      "amount_minor": 4642
+    },
+    {
+      "description": "USB-C docking station",
+      "quantity": "21",
+      "unit_price": "0.09",
+      "amount_minor": 189
+    },
+    {
+      "description": "Pallet wrap film, 500 m",
+      "quantity": "16",
+      "unit_price": "5.46",
+      "amount_minor": 8736
+    },
+    {
+      "description": "Laser printer toner, black",
+      "quantity": "21",
+      "unit_price": "4.64",
+      "amount_minor": 9744
+    }
+  ]
+}

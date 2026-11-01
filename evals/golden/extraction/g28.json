@@ -1,0 +1,32 @@
+{
+  "vendor_name": "Alpenblick Logistik AG",
+  "vendor_tax_id": "CHE123456789",
+  "invoice_number": "AB-2026-1196",
+  "po_number": "4500100028",
+  "invoice_date": "2026-06-19",
+  "due_date": "2026-07-19",
+  "currency": "EUR",
+  "subtotal_minor": 1050075,
+  "tax_minor": 84006,
+  "total_minor": 1134081,
+  "arithmetic_error": false,
+  "layout": "single",
+  "scanned": false,
+  "style": "boxed",
+  "pages": 2,
+  "stamp": null,
+  "lines": [
+    {
+      "description": "Industrial shelving bracket",
+      "quantity": "38",
+      "unit_price": "140.25",
+      "amount_minor": 532950
+    },
+    {
+      "description": "USB-C docking station",
+      "quantity": "35",
+      "unit_price": "147.75",
+      "amount_minor": 517125
+    }
+  ]
+}
