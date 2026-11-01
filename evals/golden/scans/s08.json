@@ -1,0 +1,54 @@
+{
+  "vendor_name": "Nordwerk Industrietechnik GmbH",
+  "vendor_tax_id": "DE274918365",
+  "invoice_number": "RE-2026-1049",
+  "po_number": "4500100007",
+  "invoice_date": "2026-09-25",
+  "due_date": "2026-10-25",
+  "currency": "EUR",
+  "subtotal_minor": 596505,
+  "tax_minor": 113335,
+  "total_minor": 709840,
+  "arithmetic_error": false,
+  "layout": "single",
+  "scanned": true,
+  "style": "german",
+  "pages": 1,
+  "stamp": null,
+  "scan_style": {
+    "angle": 2,
+    "dpi": 150,
+    "contrast": 1.0,
+    "blur": 0.0,
+    "jpeg_quality": 30,
+    "noise": 0.0,
+    "grey": false,
+    "all_pages": false
+  },
+  "lines": [
+    {
+      "description": "USB-C docking station",
+      "quantity": "14",
+      "unit_price": "8.36",
+      "amount_minor": 11704
+    },
+    {
+      "description": "Safety goggles, anti-fog",
+      "quantity": "7",
+      "unit_price": "3.43",
+      "amount_minor": 2401
+    },
+    {
+      "description": "Thermal labels 100x150",
+      "quantity": "11",
+      "unit_price": "108.00",
+      "amount_minor": 118800
+    },
+    {
+      "description": "Hand truck, folding",
+      "quantity": "38",
+      "unit_price": "122.00",
+      "amount_minor": 463600
+    }
+  ]
+}

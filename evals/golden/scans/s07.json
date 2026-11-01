@@ -1,0 +1,48 @@
+{
+  "vendor_name": "Brightline Office Supply LLC",
+  "vendor_tax_id": "841937465",
+  "invoice_number": "INV-2026-1042",
+  "po_number": "4500100006",
+  "invoice_date": "2026-07-25",
+  "due_date": "2026-08-25",
+  "currency": "USD",
+  "subtotal_minor": 230506,
+  "tax_minor": 18440,
+  "total_minor": 248946,
+  "arithmetic_error": false,
+  "layout": "single",
+  "scanned": true,
+  "style": "classic",
+  "pages": 1,
+  "stamp": null,
+  "scan_style": {
+    "angle": -1,
+    "dpi": 150,
+    "contrast": 1.0,
+    "blur": 0.9,
+    "jpeg_quality": null,
+    "noise": 0.0,
+    "grey": false,
+    "all_pages": false
+  },
+  "lines": [
+    {
+      "description": "Laser printer toner, black",
+      "quantity": "11",
+      "unit_price": "6.24",
+      "amount_minor": 6864
+    },
+    {
+      "description": "USB-C docking station",
+      "quantity": "28",
+      "unit_price": "79.75",
+      "amount_minor": 223300
+    },
+    {
+      "description": "A4 copy paper, 5 reams",
+      "quantity": "9",
+      "unit_price": "0.38",
+      "amount_minor": 342
+    }
+  ]
+}

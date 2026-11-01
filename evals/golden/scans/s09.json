@@ -1,0 +1,36 @@
+{
+  "vendor_name": "Harbourside Catering Ltd",
+  "vendor_tax_id": "GB482193756",
+  "invoice_number": "NW-2026-1056",
+  "po_number": "4500100008",
+  "invoice_date": "2026-02-04",
+  "due_date": "2026-03-04",
+  "currency": "GBP",
+  "subtotal_minor": 16200,
+  "tax_minor": 3240,
+  "total_minor": 19440,
+  "arithmetic_error": false,
+  "layout": "single",
+  "scanned": true,
+  "style": "right",
+  "pages": 1,
+  "stamp": null,
+  "scan_style": {
+    "angle": 1,
+    "dpi": 150,
+    "contrast": 1.0,
+    "blur": 0.0,
+    "jpeg_quality": null,
+    "noise": 0.004,
+    "grey": false,
+    "all_pages": false
+  },
+  "lines": [
+    {
+      "description": "Server rack screws, M6",
+      "quantity": "5",
+      "unit_price": "32.40",
+      "amount_minor": 16200
+    }
+  ]
+}

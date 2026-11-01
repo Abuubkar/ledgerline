@@ -65,3 +65,4 @@ eval-test:
 # Re-render the 60 golden invoices (deterministic; only needed after changing scripts/make_invoice.py).
 golden:
 	uv run python scripts/make_invoice.py --golden
+	uv run python scripts/make_invoice.py --scans

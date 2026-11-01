@@ -1,0 +1,36 @@
+{
+  "vendor_name": "Pacific Rim Packaging Inc.",
+  "vendor_tax_id": "912846573",
+  "invoice_number": "PR-2026-1035",
+  "po_number": "4500100005",
+  "invoice_date": "2026-09-06",
+  "due_date": "2026-10-06",
+  "currency": "USD",
+  "subtotal_minor": 42240,
+  "tax_minor": 3379,
+  "total_minor": 45619,
+  "arithmetic_error": false,
+  "layout": "single",
+  "scanned": true,
+  "style": "compact",
+  "pages": 1,
+  "stamp": null,
+  "scan_style": {
+    "angle": 1,
+    "dpi": 150,
+    "contrast": 0.55,
+    "blur": 0.0,
+    "jpeg_quality": null,
+    "noise": 0.0,
+    "grey": false,
+    "all_pages": false
+  },
+  "lines": [
+    {
+      "description": "Pallet wrap film, 500 m",
+      "quantity": "6",
+      "unit_price": "70.40",
+      "amount_minor": 42240
+    }
+  ]
+}

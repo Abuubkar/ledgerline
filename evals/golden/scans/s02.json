@@ -1,0 +1,42 @@
+{
+  "vendor_name": "Nordwerk Industrietechnik GmbH",
+  "vendor_tax_id": "DE274918365",
+  "invoice_number": "RE-2026-1007",
+  "po_number": "4500100001",
+  "invoice_date": "2026-09-17",
+  "due_date": "2026-10-17",
+  "currency": "EUR",
+  "subtotal_minor": 49101,
+  "tax_minor": 9329,
+  "total_minor": 58430,
+  "arithmetic_error": false,
+  "layout": "single",
+  "scanned": true,
+  "style": "german",
+  "pages": 1,
+  "stamp": null,
+  "scan_style": {
+    "angle": -1.5,
+    "dpi": 150,
+    "contrast": 1.0,
+    "blur": 0.0,
+    "jpeg_quality": null,
+    "noise": 0.0,
+    "grey": false,
+    "all_pages": false
+  },
+  "lines": [
+    {
+      "description": "Server rack screws, M6",
+      "quantity": "36",
+      "unit_price": "12.00",
+      "amount_minor": 43200
+    },
+    {
+      "description": "Industrial shelving bracket",
+      "quantity": "7",
+      "unit_price": "8.43",
+      "amount_minor": 5901
+    }
+  ]
+}

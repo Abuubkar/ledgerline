@@ -1,0 +1,36 @@
+{
+  "vendor_name": "Alpenblick Logistik AG",
+  "vendor_tax_id": "CHE123456789",
+  "invoice_number": "AB-2026-1028",
+  "po_number": "4500100004",
+  "invoice_date": "2026-02-04",
+  "due_date": "2026-03-04",
+  "currency": "EUR",
+  "subtotal_minor": 31240,
+  "tax_minor": 2499,
+  "total_minor": 33739,
+  "arithmetic_error": false,
+  "layout": "single",
+  "scanned": true,
+  "style": "boxed",
+  "pages": 1,
+  "stamp": null,
+  "scan_style": {
+    "angle": 0.5,
+    "dpi": 100,
+    "contrast": 1.0,
+    "blur": 0.0,
+    "jpeg_quality": null,
+    "noise": 0.0,
+    "grey": false,
+    "all_pages": false
+  },
+  "lines": [
+    {
+      "description": "Thermal labels 100x150",
+      "quantity": "22",
+      "unit_price": "14.20",
+      "amount_minor": 31240
+    }
+  ]
+}

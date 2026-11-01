@@ -13,7 +13,7 @@ Usage:
 import argparse
 import json
 import random
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from datetime import UTC, datetime
 from pathlib import Path
 
@@ -49,7 +49,8 @@ class Sample:
     # page of dense fine print or a blank page in between.
     layout: str = "single"
     total_misprint_minor: int = 0  # printed total = true total + this, to test the arithmetic check
-    scanned: bool = False  # image-only PDF of the rendered page, rotated 2 degrees, no text layer
+    scanned: bool = False  # image-only PDF of the rendered page, no text layer (how: scan_style)
+    scan_style: "ScanStyle | None" = None  # None: the original golden scan (first page, 150 dpi, rotated 2 degrees)
     po_number: str | None = None  # printed as "PO number" when set
     style: str = "classic"  # how the vendor lays out its invoices: see STYLES
     pages: int = 1  # with layout "single": spread the lines over this many pages, totals on the last
@@ -333,23 +334,57 @@ def render_bytes(sample: Sample) -> bytes:
     return bytes(pdf.output())
 
 
-def _as_scan(pdf_bytes: bytes) -> bytes:
-    """Rasterize the first page and put the picture, slightly rotated, in a PDF with no text layer."""
+@dataclass(frozen=True)
+class ScanStyle:
+    """How a page looks after a scanner or a fax: what the scans set varies (evals/golden/scans)."""
+    angle: float = 2.0  # degrees, counter-clockwise
+    dpi: int = 150
+    contrast: float = 1.0  # below 1: greyish paper and faded ink
+    blur: float = 0.0  # Gaussian blur radius in pixels
+    jpeg_quality: int | None = None  # compress the page as a JPEG at this quality
+    noise: float = 0.0  # share of pixels turned into dark specks
+    grey: bool = False  # greyscale, as a fax
+    all_pages: bool = False  # scan every page, not just the first
+
+
+def _as_scan(pdf_bytes: bytes, style: ScanStyle | None = None) -> bytes:
+    """Rasterize the page(s) and put the pictures in a PDF with no text layer, degraded as `style` says. With no
+    style: the first page at 150 dpi, rotated 2 degrees (the golden set's one scan, unchanged)."""
     import io
 
     import pdfplumber
+    from PIL import Image, ImageEnhance, ImageFilter
 
-    with pdfplumber.open(io.BytesIO(pdf_bytes)) as source:
-        image = source.pages[0].to_image(resolution=150).original.rotate(2, expand=True, fillcolor="white")
+    style = style or ScanStyle()
     scan = _new_pdf()
-    scan.add_page()
-    scan.image(image, x=0, y=0, w=210)
+    with pdfplumber.open(io.BytesIO(pdf_bytes)) as source:
+        pages = source.pages if style.all_pages else source.pages[:1]
+        for page_no, page in enumerate(pages):
+            image = page.to_image(resolution=style.dpi).original
+            if style.grey:
+                image = image.convert("L").convert("RGB")
+            if style.contrast != 1.0:
+                image = ImageEnhance.Contrast(image).enhance(style.contrast)
+            if style.blur:
+                image = image.filter(ImageFilter.GaussianBlur(style.blur))
+            if style.noise:
+                rng = random.Random(f"specks-{page_no}-{style}")
+                pixels = image.load()
+                for _ in range(int(image.width * image.height * style.noise)):
+                    pixels[rng.randrange(image.width), rng.randrange(image.height)] = (40, 40, 40)
+            image = image.rotate(style.angle, expand=True, fillcolor="white")
+            if style.jpeg_quality:
+                buffer = io.BytesIO()
+                image.save(buffer, "JPEG", quality=style.jpeg_quality)
+                image = Image.open(io.BytesIO(buffer.getvalue()))
+            scan.add_page()
+            scan.image(image, x=0, y=0, w=210)
     return bytes(scan.output())
 
 
 def render(sample: Sample, path: Path) -> None:
     content = render_bytes(sample)
-    path.write_bytes(_as_scan(content) if sample.scanned else content)
+    path.write_bytes(_as_scan(content, sample.scan_style) if sample.scanned else content)
 
 
 def gold(sample: Sample) -> dict:
@@ -376,7 +411,9 @@ def golden_gold(sample: Sample) -> dict:
     exponent = sample.exponent
     unit = lambda minor: f"{minor / 10**exponent:.{exponent}f}" if exponent else str(minor)  # noqa: E731
     return gold(sample) | {
-        "style": sample.style, "pages": sample.pages if not sample.scanned else 1, "stamp": sample.stamp,
+        "style": sample.style,
+        "pages": sample.pages if not sample.scanned or (sample.scan_style and sample.scan_style.all_pages) else 1,
+        "stamp": sample.stamp, **({"scan_style": asdict(sample.scan_style)} if sample.scan_style else {}),
         "lines": [{"description": line.description, "quantity": str(line.quantity), "unit_price": unit(line.unit_price_minor),
                    "amount_minor": line.quantity * line.unit_price_minor} for line in sample.lines],
     }
@@ -388,37 +425,69 @@ GOLDEN_STYLES = [  # (style, vendor index in VENDORS, currency override)
 GOLDEN_SCANNED, GOLDEN_STAMPED, GOLDEN_MISPRINTED = {13}, {27}, {5, 33, 50}
 
 
+def _layout_sample(i: int, seed: str, slug: str, pages: int, **overrides) -> Sample:
+    """One invoice in one of the six vendor layouts (i picks the layout), from its own seeded random source."""
+    from dataclasses import replace
+
+    rng = random.Random(seed)
+    style, vendor_index, currency = GOLDEN_STYLES[i % 6]
+    base = random_sample(rng, i, "gold")
+    name, tax_label, tax_printed, vendor_currency, rate = VENDORS[vendor_index]
+    currency = currency or vendor_currency
+    exponent = 0 if currency == "JPY" else 2
+    lines = [Line(rng.choice(ITEMS), rng.randint(1, 40), rng.randint(50, 9000) * rng.choice([1, 10]) if exponent == 0
+                  else rng.randint(1, 900) * rng.choice([1, 10, 25]))
+             for _ in range(rng.randint(pages, min(pages * 4, 12)))]
+    day, month = rng.randint(1, 28), rng.randint(1, 9)
+    printed = (lambda d: f"{d[8:]}.{d[5:7]}.{d[:4]}") if style == "german" else (lambda d: d)
+    iso, due = f"2026-{month:02d}-{day:02d}", f"2026-{month + 1:02d}-{day:02d}"
+    return replace(base,
+        slug=slug, vendor_name=name, vendor_tax_label=tax_label, vendor_tax_id_printed=tax_printed,
+        vendor_tax_id="".join(c for c in tax_printed.upper() if c.isalnum()), currency=currency, exponent=exponent,
+        tax_rate_pct=rate, lines=lines, style=style, pages=pages,
+        invoice_number=f"{['INV', 'RE', 'NW', 'SK', 'AB', 'PR'][i % 6]}-2026-{1000 + i * 7}",
+        invoice_date=iso, invoice_date_printed=printed(iso), due_date=due, due_date_printed=printed(due),
+        po_number=str(4_500_100_000 + i) if rng.random() < 0.7 else None, **overrides,
+    )
+
+
 def golden_samples() -> list[Sample]:
     """60 invoices: six vendor layouts, EUR/USD/JPY/GBP, 1–4 pages, one rotated scan, one stamped, three with
     a misprinted total. Deterministic, so the set never changes unless this function does."""
-    from dataclasses import replace
-
     out = []
     for i in range(60):
-        rng = random.Random(f"golden-{i}")
-        style, vendor_index, currency = GOLDEN_STYLES[i % 6]
-        base = random_sample(rng, i, "gold")
-        name, tax_label, tax_printed, vendor_currency, rate = VENDORS[vendor_index]
-        currency = currency or vendor_currency
-        exponent = 0 if currency == "JPY" else 2
         pages = 4 if i in (19, 44) else 3 if i % 10 == 9 else 2 if i % 10 in (7, 8) else 1
-        lines = [Line(rng.choice(ITEMS), rng.randint(1, 40), rng.randint(50, 9000) * rng.choice([1, 10]) if exponent == 0
-                      else rng.randint(1, 900) * rng.choice([1, 10, 25]))
-                 for _ in range(rng.randint(pages, min(pages * 4, 12)))]
-        day, month = rng.randint(1, 28), rng.randint(1, 9)
-        printed = (lambda d: f"{d[8:]}.{d[5:7]}.{d[:4]}") if style == "german" else (lambda d: d)
-        iso, due = f"2026-{month:02d}-{day:02d}", f"2026-{month + 1:02d}-{day:02d}"
-        out.append(replace(base,
-            slug=f"g{i:02d}", vendor_name=name, vendor_tax_label=tax_label, vendor_tax_id_printed=tax_printed,
-            vendor_tax_id="".join(c for c in tax_printed.upper() if c.isalnum()), currency=currency, exponent=exponent,
-            tax_rate_pct=rate, lines=lines, style=style, pages=1 if i in GOLDEN_SCANNED else pages,
-            invoice_number=f"{['INV', 'RE', 'NW', 'SK', 'AB', 'PR'][i % 6]}-2026-{1000 + i * 7}",
-            invoice_date=iso, invoice_date_printed=printed(iso), due_date=due, due_date_printed=printed(due),
-            po_number=str(4_500_100_000 + i) if rng.random() < 0.7 else None,
+        exponent_jpy = GOLDEN_STYLES[i % 6][2] is None and VENDORS[GOLDEN_STYLES[i % 6][1]][3] == "JPY"
+        out.append(_layout_sample(
+            i, f"golden-{i}", f"g{i:02d}", 1 if i in GOLDEN_SCANNED else pages,
             scanned=i in GOLDEN_SCANNED, stamp="PAID 2026-10-31" if i in GOLDEN_STAMPED else None,
-            total_misprint_minor=(500 if exponent == 0 else 1000) if i in GOLDEN_MISPRINTED else 0,
+            total_misprint_minor=(500 if exponent_jpy else 1000) if i in GOLDEN_MISPRINTED else 0,
         ))
     return out
+
+
+# The scans set (evals/golden/scans): what a scanner, a phone or a fax does to a page, one degradation or a mix per
+# invoice, across the six layouts. (pages, style) per invoice.
+SCAN_VARIANTS = [
+    (1, ScanStyle(angle=0)),                                   # straight, clean
+    (1, ScanStyle(angle=-1.5)),                                # tilted the other way
+    (1, ScanStyle(angle=3)),                                   # tilted more
+    (1, ScanStyle(angle=1, dpi=120)),                          # lower resolution
+    (1, ScanStyle(angle=0.5, dpi=100)),                        # low resolution
+    (1, ScanStyle(angle=1, contrast=0.55)),                    # faded: grey paper, light ink
+    (1, ScanStyle(angle=-1, blur=0.9)),                        # out of focus
+    (1, ScanStyle(angle=2, jpeg_quality=30)),                  # heavy JPEG compression
+    (1, ScanStyle(angle=1, noise=0.004)),                      # specks
+    (2, ScanStyle(angle=1, all_pages=True)),                   # a two-page scan
+    (1, ScanStyle(angle=2, dpi=110, contrast=0.7, blur=0.6, grey=True)),   # fax-like
+    (3, ScanStyle(angle=-1, dpi=130, all_pages=True)),         # a three-page scan
+]
+
+
+def scan_samples() -> list[Sample]:
+    """12 scanned invoices, one per SCAN_VARIANTS entry, in the golden set's layouts but with their own seeds."""
+    return [_layout_sample(i, f"scan-{i}", f"s{i + 1:02d}", pages, scanned=True, scan_style=style)
+            for i, (pages, style) in enumerate(SCAN_VARIANTS)]
 
 
 VENDORS = [
@@ -516,6 +585,7 @@ def main() -> None:
     parser.add_argument("--tag", default="gen", help="prefix for file names and invoice numbers")
     parser.add_argument("--scenarios", action="store_true", help="write the slice 3b edge cases instead")
     parser.add_argument("--golden", action="store_true", help="write the 60-invoice eval set to evals/golden/extraction")
+    parser.add_argument("--scans", action="store_true", help="write the 12 scanned invoices to evals/golden/scans")
     parser.add_argument("--from-po", help="write one invoice billing this purchase order instead")
     parser.add_argument("--dataset", type=Path, default=Path("data/erp/dataset.json"))
     parser.add_argument("--price-change", type=int, default=0, help="percent added to line 1's unit price")
@@ -530,6 +600,14 @@ def main() -> None:
             render(sample, out / f"{sample.slug}.pdf")
             (out / f"{sample.slug}.json").write_text(json.dumps(golden_gold(sample), indent=2) + "\n")
         print(f"wrote 60 golden invoices to {out}/")
+        return
+    if args.scans:
+        out = Path("evals/golden/scans")
+        out.mkdir(parents=True, exist_ok=True)
+        for sample in scan_samples():
+            render(sample, out / f"{sample.slug}.pdf")
+            (out / f"{sample.slug}.json").write_text(json.dumps(golden_gold(sample), indent=2) + "\n")
+        print(f"wrote {len(SCAN_VARIANTS)} scanned invoices to {out}/")
         return
     if args.from_po:
         samples = [from_purchase_order(args.from_po, args.dataset, args.tag, args.price_change)]

@@ -1,0 +1,54 @@
+{
+  "vendor_name": "Harbourside Catering Ltd",
+  "vendor_tax_id": "GB482193756",
+  "invoice_number": "NW-2026-1014",
+  "po_number": null,
+  "invoice_date": "2026-08-23",
+  "due_date": "2026-09-23",
+  "currency": "GBP",
+  "subtotal_minor": 560405,
+  "tax_minor": 112081,
+  "total_minor": 672486,
+  "arithmetic_error": false,
+  "layout": "single",
+  "scanned": true,
+  "style": "right",
+  "pages": 1,
+  "stamp": null,
+  "scan_style": {
+    "angle": 3,
+    "dpi": 150,
+    "contrast": 1.0,
+    "blur": 0.0,
+    "jpeg_quality": null,
+    "noise": 0.0,
+    "grey": false,
+    "all_pages": false
+  },
+  "lines": [
+    {
+      "description": "Ergonomic office chair",
+      "quantity": "40",
+      "unit_price": "4.25",
+      "amount_minor": 17000
+    },
+    {
+      "description": "Thermal labels 100x150",
+      "quantity": "37",
+      "unit_price": "137.25",
+      "amount_minor": 507825
+    },
+    {
+      "description": "Ergonomic office chair",
+      "quantity": "5",
+      "unit_price": "5.40",
+      "amount_minor": 2700
+    },
+    {
+      "description": "Industrial shelving bracket",
+      "quantity": "8",
+      "unit_price": "41.10",
+      "amount_minor": 32880
+    }
+  ]
+}
