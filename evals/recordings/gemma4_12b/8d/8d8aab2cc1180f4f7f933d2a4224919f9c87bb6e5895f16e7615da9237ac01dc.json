@@ -1,0 +1,16 @@
+{
+ "model": "gemma4:12b",
+ "created_at": "2026-11-01T12:15:15.008182Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 38158463750,
+ "load_duration": 3328834,
+ "prompt_eval_count": 728,
+ "prompt_eval_duration": 4041236000,
+ "eval_count": 481,
+ "eval_duration": 33679006999,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"Kawasemi Electronics K.K.\",\n  \"vendor_tax_id\": \"T9876543210987\",\n  \"invoice_number\": \"SK-2026-1147\",\n  \"po_number\": \"4500100021\",\n  \"invoice_date\": \"2026-09-16\",\n  \"due_date\": \"2026-10-16\",\n  \"currency\": \"JPY\",\n  \"subtotal\": 961884.0,\n  \"tax\": 96188.0,\n  \"total\": 1058072.0,\n  \"field_confidence\": {\n    \"vendor_name\": 1.0,\n    \"vendor_tax_id\": 1.0,\n    \"invoice_number\": 1.0,\n    \"po_number\": 1.0,\n    \"invoice_date\": 1.0,\n    \"due_date\": 1.0,\n    \"currency\": 1.0,\n    \"subtotal\": 1.0,\n    \"tax\": 1.0,\n    \"total\": 1.0\n  },\n  \"line_items\": [\n    {\n      \"description\": \"USB-C docking station\",\n      \"quantity\": 36,\n      \"unit_price\": 4928.0,\n      \"amount\": 177408.0\n    },\n    {\n      \"description\": \"Server rack screws, M6\",\n      \"quantity\": 13,\n      \"unit_price\": 5442.0,\n      \"amount\": 70746.0\n    },\n    {\n      \"description\": \"USB-C docking station\",\n      \"quantity\": 37,\n      \"unit_price\": 19290.0,\n      \"amount\": 713730.0\n    }\n  ]\n}"
+ }
+}

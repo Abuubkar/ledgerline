@@ -1,0 +1,16 @@
+{
+ "model": "gemma4:12b",
+ "created_at": "2026-11-01T12:25:37.48992Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 43885988083,
+ "load_duration": 4533750,
+ "prompt_eval_count": 714,
+ "prompt_eval_duration": 3776113000,
+ "eval_count": 530,
+ "eval_duration": 37093810000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"Harbourside Catering Ltd\",\n  \"vendor_tax_id\": \"GB 482 1937 56\",\n  \"invoice_number\": \"NW-2026-1350\",\n  \"po_number\": \"4500100050\",\n  \"invoice_date\": \"2026-01-02\",\n  \"due_date\": \"2026-02-02\",\n  \"currency\": \"GBP\",\n  \"subtotal\": 5742.30,\n  \"tax\": 1148.46,\n  \"total\": 6900.76,\n  \"field_confidence\": {\n    \"vendor_name\": 1.0,\n    \"vendor_tax_id\": 1.0,\n    \"invoice_number\": 1.0,\n    \"po_number\": 1.0,\n    \"invoice_date\": 1.0,\n    \"due_date\": 1.0,\n    \"currency\": 1.0,\n    \"subtotal\": 1.0,\n    \"tax\": 1.0,\n    \"total\": 1.0\n  },\n  \"line_items\": [\n    {\n      \"description\": \"Safety goggles, anti-fog\",\n      \"quantity\": 37,\n      \"unit_price\": 81.50,\n      \"amount\": 3015.50\n    },\n    {\n      \"description\": \"LED panel light 60x60\",\n      \"quantity\": 34,\n      \"unit_price\": 9.70,\n      \"amount\": 329.80\n    },\n    {\n      \"description\": \"Pallet wrap film, 500 m\",\n      \"quantity\": 22,\n      \"unit_price\": 108.75,\n      \"amount\": 2392.50\n    },\n    {\n      \"description\": \"LED panel light 60x60\",\n      \"quantity\": 2,\n      \"unit_price\": 2.25,\n      \"amount\": 4.50\n    }\n  ]\n}"
+ }
+}

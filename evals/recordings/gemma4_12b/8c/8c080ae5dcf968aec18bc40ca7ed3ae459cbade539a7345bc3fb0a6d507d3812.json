@@ -1,0 +1,27 @@
+{
+ "model": "gemma4:12b",
+ "created_at": "2026-11-01T12:31:05.763257Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 4855599917,
+ "load_duration": 6697417,
+ "prompt_eval_count": 1198,
+ "prompt_eval_duration": 705695000,
+ "eval_count": 60,
+ "eval_duration": 4124089000,
+ "message": {
+  "role": "assistant",
+  "content": "",
+  "tool_calls": [
+   {
+    "function": {
+     "name": "propose_hold",
+     "arguments": {
+      "explanation": "No goods receipt was found for PO 4500200001, and the invoice cannot be settled without confirmation of receipt.",
+      "reason_code": "short_shipment"
+     }
+    }
+   }
+  ]
+ }
+}

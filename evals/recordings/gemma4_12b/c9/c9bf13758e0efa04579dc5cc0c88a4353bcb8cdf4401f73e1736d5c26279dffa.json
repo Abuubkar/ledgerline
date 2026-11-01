@@ -1,0 +1,16 @@
+{
+ "model": "gemma4:12b",
+ "created_at": "2026-11-01T12:09:09.022632Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 41610271083,
+ "load_duration": 11331792,
+ "prompt_eval_count": 939,
+ "prompt_eval_duration": 6257760000,
+ "eval_count": 493,
+ "eval_duration": 35102092000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"Nordwerk Industrietechnik GmbH\",\n  \"vendor_tax_id\": \"DE 274 918 365\",\n  \"invoice_number\": \"RE-2026-1091\",\n  \"po_number\": null,\n  \"invoice_date\": \"2026-09-08\",\n  \"due_date\": \"2026-10-08\",\n  \"currency\": \"EUR\",\n  \"subtotal\": 249.97,\n  \"tax\": 47.30,\n  \"total\": 296.27,\n  \"field_confidence\": {\n    \"vendor_name\": 1.0,\n    \"vendor_tax_id\": 1.0,\n    \"invoice_number\": 1.0,\n    \"po_number\": 1.0,\n    \"invoice_date\": 1.0,\n    \"due_date\": 1.0,\n    \"currency\": 1.0,\n    \"subtotal\": 1.0,\n    \"tax\": 1.0,\n    \"total\": 1.0\n  },\n  \"line_items\": [\n    {\n      \"description\": \"Server rack screws, M6\",\n      \"quantity\": 21,\n      \"unit_price\": 7.19,\n      \"amount\": 150.99\n    },\n    {\n      \"description\": \"Server rack screws, M6\",\n      \"quantity\": 6,\n      \"unit_price\": 2.14,\n      \"amount\": 12.84\n    },\n    {\n      \"description\": \"A4 copy paper, 5 reams\",\n      \"quantity\": 22,\n      \"unit_price\": 3.87,\n      \"amount\": 85.14\n    },\n    {\n      \"description\": \"Server rack screws, M6\",\n      \"quantity\": null,\n      \"unit_price\": null,\n      \"amount\": null\n    }\n  ]\n}"
+ }
+}

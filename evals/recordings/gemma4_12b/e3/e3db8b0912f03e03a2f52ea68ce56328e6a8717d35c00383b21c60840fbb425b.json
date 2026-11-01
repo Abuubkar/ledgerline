@@ -1,0 +1,16 @@
+{
+ "model": "gemma4:12b",
+ "created_at": "2026-11-01T12:19:36.605651Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 42732464833,
+ "load_duration": 3373375,
+ "prompt_eval_count": 671,
+ "prompt_eval_duration": 4153241000,
+ "eval_count": 508,
+ "eval_duration": 35245056000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"Harbourside Catering Ltd\",\n  \"vendor_tax_id\": \"GB 482 1937 56\",\n  \"invoice_number\": \"NW-2026-1266\",\n  \"po_number\": \"4500100038\",\n  \"invoice_date\": \"2026-09-08\",\n  \"due_date\": \"2026-10-08\",\n  \"currency\": \"GBP\",\n  \"subtotal\": null,\n  \"tax\": null,\n  \"total\": null,\n  \"field_confidence\": {\n    \"vendor_name\": 1.0,\n    \"vendor_tax_id\": 1.0,\n    \"invoice_number\": 1.0,\n    \"po_number\": 1.0,\n    \"invoice_date\": 1.0,\n    \"due_date\": 1.0,\n    \"currency\": 1.0,\n    \"subtotal\": 0.0,\n    \"tax\": 0.0,\n    \"total\": 0.0\n  },\n  \"line_items\": [\n    {\n      \"description\": \"Thermal labels 100x150\",\n      \"quantity\": 29,\n      \"unit_price\": 39.40,\n      \"amount\": 1142.60\n    },\n    {\n      \"description\": \"Cable ties, pack of 1000\",\n      \"quantity\": 6,\n      \"unit_price\": 31.00,\n      \"amount\": 186.00\n    },\n    {\n      \"description\": \"Laser printer toner, black\",\n      \"quantity\": 9,\n      \"unit_price\": 57.00,\n      \"amount\": 513.00\n    },\n    {\n      \"description\": \"LED panel light 60x60\",\n      \"quantity\": 17,\n      \"unit_price\": 1.42,\n      \"amount\": 24.14\n    }\n  ]\n}"
+ }
+}

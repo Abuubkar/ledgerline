@@ -1,0 +1,16 @@
+{
+ "model": "gemma4:12b",
+ "created_at": "2026-11-01T12:20:15.688017Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 39058181459,
+ "load_duration": 4244417,
+ "prompt_eval_count": 634,
+ "prompt_eval_duration": 3631582000,
+ "eval_count": 486,
+ "eval_duration": 33631264000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"Harbourside Catering Ltd\",\n  \"vendor_tax_id\": null,\n  \"invoice_number\": \"NW-2026-1266\",\n  \"po_number\": null,\n  \"invoice_date\": null,\n  \"due_date\": null,\n  \"currency\": \"GBP\",\n  \"subtotal\": 12203.84,\n  \"tax\": 2440.76,\n  \"total\": 14644.60,\n  \"field_confidence\": {\n    \"vendor_name\": 1.0,\n    \"vendor_tax_id\": 0.0,\n    \"po_number\": 0.0,\n    \"invoice_date\": 0.0,\n    \"due_date\": 0.0,\n    \"currency\": 1.0,\n    \"subtotal\": 1.0,\n    \"tax\": 1.0,\n    \"total\": 1.0\n  },\n  \"line_items\": [\n    {\n      \"description\": \"Pallet wrap film, 500 m\",\n      \"quantity\": 28,\n      \"unit_price\": 168.75,\n      \"amount\": 4725.00\n    },\n    {\n      \"description\": \"Pallet wrap film, 500 m\",\n      \"quantity\": 36,\n      \"unit_price\": 43.20,\n      \"amount\": 1555.20\n    },\n    {\n      \"description\": \"Cable ties, pack of 1000\",\n      \"quantity\": 26,\n      \"unit_price\": 80.40,\n      \"amount\": 2090.40\n    },\n    {\n      \"description\": \"Safety goggles, anti-fog\",\n      \"quantity\": 25,\n      \"unit_price\": 78.70,\n      \"amount\": 1967.50\n    }\n  ]\n}"
+ }
+}

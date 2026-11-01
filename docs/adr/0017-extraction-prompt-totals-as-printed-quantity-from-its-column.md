@@ -48,6 +48,7 @@ The default model stays gemma4:12b, now with no failing header field. The baseli
   invoice prints exactly that, and code must never second-guess what was printed.
 - **Name the labels in the prompt** ("Net", "Zwischensumme", "小計" mean subtotal). Not done yet: it would fix
   qwen2.5's "Net" misses but tunes the prompt to our six generated layouts. Worth trying only with real invoices.
+  Parked in [docs/backlog.md](../backlog.md), with the Japanese registration-number hint for qwen3.5.
 
 ## Assumptions
 

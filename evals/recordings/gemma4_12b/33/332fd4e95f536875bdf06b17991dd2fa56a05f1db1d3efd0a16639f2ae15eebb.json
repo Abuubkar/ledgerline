@@ -1,0 +1,16 @@
+{
+ "model": "gemma4:12b",
+ "created_at": "2026-11-01T12:14:07.000212Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 30593304167,
+ "load_duration": 7583000,
+ "prompt_eval_count": 546,
+ "prompt_eval_duration": 2499667000,
+ "eval_count": 400,
+ "eval_duration": 27819239000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"Nordwerk Industrietechnik GmbH\",\n  \"vendor_tax_id\": null,\n  \"invoice_number\": \"RE-2026-1133\",\n  \"po_number\": null,\n  \"invoice_date\": null,\n  \"due_date\": null,\n  \"currency\": \"EUR\",\n  \"subtotal\": null,\n  \"tax\": null,\n  \"total\": null,\n  \"field_confidence\": {\n    \"vendor_name\": 1.0,\n    \"vendor_tax_id\": 0.0,\n    \"invoice_number\": 1.0,\n    \"po_number\": 0.0,\n    \"invoice_date\": 0.0,\n    \"due_date\": 0.0,\n    \"currency\": 1.0,\n    \"subtotal\": 0.0,\n    \"tax\": 0.0,\n    \"total\": 0.0\n  },\n  \"line_items\": [\n    {\n      \"description\": \"Server rack screws, M6\",\n      \"quantity\": 29,\n      \"unit_price\": 0.63,\n      \"amount\": 18.27\n    },\n    {\n      \"description\": \"Laser printer toner, black\",\n      \"quantity\": 4,\n      \"unit_price\": 56.40,\n      \"amount\": 225.60\n    },\n    {\n      \"description\": \"Safety goggles, anti-fog\",\n      \"quantity\": 23,\n      \"unit_price\": 5.70,\n      \"amount\": 131.10\n    }\n  ]\n}"
+ }
+}

@@ -48,7 +48,7 @@ eval:
 
 # The held-out test split: run only to check a finished change, never to tune against.
 eval-test:
-	uv run python evals/run.py --split test $(if $(LIVE),--live,)
+	uv run python evals/run.py --split test --out evals/test-split $(if $(LIVE),--live,)
 
 # Re-render the 60 golden invoices (deterministic; only needed after changing scripts/make_invoice.py).
 golden:

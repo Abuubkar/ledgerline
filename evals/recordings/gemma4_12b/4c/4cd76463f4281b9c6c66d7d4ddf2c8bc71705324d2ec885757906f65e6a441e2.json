@@ -1,0 +1,16 @@
+{
+ "model": "gemma4:12b",
+ "created_at": "2026-11-01T12:28:07.985321Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 39080749125,
+ "load_duration": 5925542,
+ "prompt_eval_count": 567,
+ "prompt_eval_duration": 3269187000,
+ "eval_count": 464,
+ "eval_duration": 32005933000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"Pacific Rim Packaging Inc.\",\n  \"vendor_tax_id\": null,\n  \"invoice_number\": \"PR-2026-1413\",\n  \"po_number\": null,\n  \"invoice_date\": null,\n  \"due_date\": null,\n  \"currency\": \"USD\",\n  \"subtotal\": null,\n  \"tax\": null,\n  \"total\": null,\n  \"field_confidence\": {\n    \"vendor_name\": 1.0,\n    \"vendor_tax_id\": 0.0,\n    \"invoice_number\": 1.0,\n    \"po_number\": 0.0,\n    \"invoice_date\": 0.0,\n    \"due_date\": 0.0,\n    \"currency\": 1.0,\n    \"subtotal\": 0.0,\n    \"tax\": 0.0,\n    \"total\": 0.0\n  },\n  \"line_items\": [\n    {\n      \"description\": \"Ergonomic office chair\",\n      \"quantity\": 26.0,\n      \"unit_price\": 4.16,\n      \"amount\": 108.16\n    },\n    {\n      \"description\": \"Safety goggles, anti-fog\",\n      \"quantity\": 31.0,\n      \"unit_price\": 6.02,\n      \"amount\": 186.62\n    },\n    {\n      \"description\": \"USB-C docking station\",\n      \"quantity\": 10.0,\n      \"unit_price\": 84.70,\n      \"amount\": 847.00\n    },\n    {\n      \"description\": \"Thermal labels 100x150\",\n      \"quantity\": 29.0,\n      \"unit_price\": 5.71,\n      \"amount\": 165.59\n    }\n  ]\n}"
+ }
+}
