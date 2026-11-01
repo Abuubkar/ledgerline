@@ -4,6 +4,7 @@ way any part of Ledgerline calls the model."""
 import asyncio
 import io
 import json
+from decimal import Decimal
 import threading
 import time
 from dataclasses import dataclass
@@ -148,11 +149,16 @@ async def _chat(system: str, user: str, schema: type[BaseModel], images: list[by
     response, prompt_tokens, output_tokens, llm_ms = await call_model(
         [{"role": "system", "content": system}, message], schema=schema
     )
+    return ModelCall(parse_answer(response.message.content or "", schema), prompt_tokens, output_tokens, llm_ms)
+
+
+def parse_answer(content: str, schema: type[BaseModel]) -> BaseModel:
+    """The model's JSON as `schema`. Bare numbers are read as Decimal, so 3572.00 arrives as "3572.00" and no amount
+    ever passes through a float (ADR 0003, ADR 0016)."""
     try:
-        parsed = schema.model_validate_json(response.message.content or "")
-    except ValidationError as exc:
+        return schema.model_validate(json.loads(content, parse_float=Decimal))
+    except (ValueError, ValidationError) as exc:
         raise ExtractionError("invalid_model_output", str(exc)) from exc
-    return ModelCall(parsed, prompt_tokens, output_tokens, llm_ms)
 
 
 async def extract_page(page_no: int, page_count: int, text: str | None, image: bytes | None) -> ModelCall:

@@ -1,7 +1,7 @@
 """Every prompt Ledgerline sends to a model. Bump a version whenever its wording changes, so stored results
 can be traced to the exact prompt that produced them."""
 
-EXTRACT_PAGE_VERSION = "extract-page/2"
+EXTRACT_PAGE_VERSION = "extract-page/3"  # /3: the schema accepts bare numbers too (ADR 0016)
 
 _FIELD_RULES = """\
 - Copy values exactly as printed. Never compute, convert or invent a value.
@@ -33,7 +33,7 @@ def extract_page_user(page_no: int, page_count: int, text: str | None) -> str:
     return f"{where} Its text:\n\n{text}"
 
 
-REPAIR_VERSION = "repair-totals/2"
+REPAIR_VERSION = "repair-totals/3"
 
 REPAIR_SYSTEM = f"""\
 You re-read a supplier invoice whose extracted numbers don't add up, and return a corrected extraction of the
