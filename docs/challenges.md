@@ -176,3 +176,17 @@ taken after a long run, when macOS had compressed part of the weights.
 - *Did:* `sweep.py` measures each model on a fresh load (unload, one tiny call, read, unload); `--memory` remeasures
   without rerunning the eval.
 
+## Slice 7a: CI on GitHub Actions
+
+**Lint had never run, so the first run found 81 type errors, 110 ruff findings and 21 ESLint errors.**
+- *Did:* fixed all of them in the slice, so CI starts green (the user's call). Ruff's fixes were mostly import order
+  and `X | None`. The type fixes were annotations and narrowing, with `type: ignore[code]` and a reason only where a
+  library's types can't say it (strawberry's JSON scalar and relay generics, FastAPI's `app.openapi` override). No
+  real bug turned up. ESLint found one real React issue (a ref written during render in `Lists.tsx`, now removed).
+- *Alternatives:* report-only lint, or a baseline file of accepted findings (both leave the debt in place).
+
+**Migration 0010 never set `lock_timeout`,** though docs/migrations.md says every migration does; it adds foreign keys
+to `invoices`, which briefly locks it. Found by running squawk over all migrations.
+- *Did:* left it (already applied everywhere); squawk now fails any new migration without it.
+- *Alternatives:* squawk on the whole chain (48 warnings on reviewed migrations), or editing 0010 (rewrites history).
+

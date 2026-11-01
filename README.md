@@ -1,5 +1,7 @@
 # Ledgerline
 
+[![CI](https://github.com/Abuubkar/ledgerline/actions/workflows/ci.yml/badge.svg)](https://github.com/Abuubkar/ledgerline/actions/workflows/ci.yml)
+
 Accounts-payable automation that runs on a local LLM. Ledgerline reads vendor invoice PDFs, extracts the
 header and line items, matches them against purchase orders and goods receipts from an ERP, and hands
 mismatches to an agent that proposes a fix (credit memo request, PO amendment, or hold) for a person to
@@ -178,7 +180,8 @@ Each slice is one end-to-end change. The destination layout and stack are in [do
 | 6a | Golden set of 60 invoices and 25 agent scenarios, eval script with gates, recorded answers | Done |
 | 6b | Model sweep: gemma4:12b, qwen3.5:9b, qwen2.5:7b on the same eval ([evals/SWEEP.md](evals/SWEEP.md)) | Done |
 | 6c | Extraction prompt v4 from the sweep's findings: gemma4 at 100% header fields, 99.3% line items | Done |
-| 7 | GitHub Actions: checks, offline eval, signed images to GHCR | Planned |
+| 7a | GitHub Actions on every PR: lint, contracts, unit and integration tests, migration lint, web tests, offline eval | Done |
+| 7b | Release: signed multi-arch images to GHCR with SBOM, provenance and a vulnerability scan | Planned |
 | 8 | OpenTelemetry: one invoice traced from upload to approval; dashboards and alerts | Planned |
 
 ## Layout
