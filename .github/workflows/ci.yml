@@ -1,0 +1,173 @@
+# Checks on every pull request and every push to main. Each job gets only the permissions it needs, and every
+# third-party action is pinned to a full commit SHA (the version is in the comment next to it).
+name: CI
+
+on:
+  pull_request:
+    # labeled/unlabeled: adding breaking-change-approved reruns the contract and migration checks.
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  UV_VERSION: "0.13.6"  # the same uv as the Dockerfile
+  BASE_REF: ${{ github.base_ref || 'main' }}
+  BREAKING_APPROVED: ${{ contains(github.event.pull_request.labels.*.name, 'breaking-change-approved') }}
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with: { persist-credentials: false }
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+        with: { version: "${{ env.UV_VERSION }}", enable-cache: true }
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+        with: { package_json_file: apps/web/package.json }
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with: { node-version: 24, cache: pnpm, cache-dependency-path: apps/web/pnpm-lock.yaml }
+      - run: uv sync --locked
+      - run: pnpm --dir apps/web install --frozen-lockfile
+      - name: ruff
+        run: uv run ruff check --output-format github .
+      - name: mypy
+        run: uv run mypy
+      - name: tsc
+        run: pnpm --dir apps/web typecheck
+      - name: eslint
+        run: pnpm --dir apps/web lint
+      - name: actionlint
+        run: |
+          curl -sSfL -o actionlint.tgz https://github.com/rhysd/actionlint/releases/download/v1.7.12/actionlint_1.7.12_linux_amd64.tar.gz
+          echo "8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8  actionlint.tgz" | sha256sum -c -
+          tar -xzf actionlint.tgz actionlint && ./actionlint -color
+
+  contracts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with: { persist-credentials: false, fetch-depth: 0 }
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+        with: { version: "${{ env.UV_VERSION }}", enable-cache: true }
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+        with: { package_json_file: apps/web/package.json }
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with: { node-version: 24, cache: pnpm, cache-dependency-path: apps/web/pnpm-lock.yaml }
+      - run: uv sync --locked
+      - run: pnpm --dir apps/web install --frozen-lockfile
+      - name: Generated code matches the contracts
+        run: |
+          make codegen
+          git diff --exit-code || { echo "::error::Generated files are stale: run make codegen and commit the result."; exit 1; }
+      - name: Code matches contracts/openapi.yaml
+        run: make contract-check
+      - name: No breaking change against the base branch (REST and GraphQL)
+        if: github.event_name == 'pull_request'
+        run: |
+          mkdir -p build
+          git show "origin/$BASE_REF:contracts/openapi.yaml" > build/openapi.base.yaml
+          git show "origin/$BASE_REF:contracts/schema.graphql" > build/schema.base.graphql
+          status=0
+          docker run --rm -v "$PWD:/specs:ro" tufin/oasdiff:v1.35.0 breaking --fail-on ERR \
+            /specs/build/openapi.base.yaml /specs/contracts/openapi.yaml || status=1
+          npx --yes @graphql-inspector/cli@7.0.2 diff build/schema.base.graphql contracts/schema.graphql || status=1
+          if [ "$status" = 1 ] && [ "$BREAKING_APPROVED" = true ]; then
+            echo "::warning::Breaking contract change, approved with the breaking-change-approved label."; status=0
+          fi
+          exit "$status"
+
+  unit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with: { persist-credentials: false }
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+        with: { version: "${{ env.UV_VERSION }}", enable-cache: true }
+      - run: uv sync --locked
+      - run: uv run pytest -m "not integration" --junitxml=build/junit-unit.xml
+      - if: always() && hashFiles('build/junit-unit.xml') != ''
+        run: uv run python scripts/junit_summary.py "Unit tests" build/junit-unit.xml >> "$GITHUB_STEP_SUMMARY"
+
+  integration:
+    runs-on: ubuntu-latest  # Docker is available here, which testcontainers needs
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with: { persist-credentials: false }
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+        with: { version: "${{ env.UV_VERSION }}", enable-cache: true }
+      - run: uv sync --locked
+      - run: uv run pytest -m integration --junitxml=build/junit-integration.xml
+      - if: always() && hashFiles('build/junit-integration.xml') != ''
+        run: uv run python scripts/junit_summary.py "Integration tests" build/junit-integration.xml >> "$GITHUB_STEP_SUMMARY"
+
+  migrations:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with: { persist-credentials: false, fetch-depth: 0 }
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+        with: { version: "${{ env.UV_VERSION }}", enable-cache: true }
+      - run: uv sync --locked
+      - name: Lint the SQL of new migrations (squawk, rules in .squawk.toml)
+        run: |
+          mkdir -p build && uv run python scripts/migration_sql.py "origin/$BASE_REF" > build/new_migrations.sql
+          if [ ! -s build/new_migrations.sql ]; then echo "No new migrations."; exit 0; fi
+          status=0
+          uvx --from squawk-cli==2.70.0 squawk build/new_migrations.sql || status=1
+          if [ "$status" = 1 ] && [ "$BREAKING_APPROVED" = true ]; then
+            echo "::warning::Squawk findings approved with the breaking-change-approved label."; status=0
+          fi
+          exit "$status"
+
+  web:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with: { persist-credentials: false }
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+        with: { package_json_file: apps/web/package.json }
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with: { node-version: 24, cache: pnpm, cache-dependency-path: apps/web/pnpm-lock.yaml }
+      - run: pnpm --dir apps/web install --frozen-lockfile
+      - run: pnpm --dir apps/web exec jest --ci
+
+  eval-offline:
+    runs-on: ubuntu-latest  # the agent scenarios seed a Postgres container
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      pull-requests: write  # the sticky eval comment
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with: { persist-credentials: false, fetch-depth: 0 }
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+        with: { version: "${{ env.UV_VERSION }}", enable-cache: true }
+      - run: uv sync --locked
+      - name: Replay the eval against the base branch's baseline
+        id: eval
+        run: |
+          git show "origin/$BASE_REF:evals/baseline.json" > base-baseline.json 2>/dev/null || echo "{}" > base-baseline.json
+          uv run python evals/run.py --baseline base-baseline.json
+      - name: Metric table
+        if: always() && hashFiles('evals/results.json') != ''
+        run: uv run python evals/compare.py evals/results.json base-baseline.json | tee eval-comment.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Sticky PR comment
+        if: always() && github.event_name == 'pull_request' && hashFiles('eval-comment.md') != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+        run: gh pr comment "$PR" --repo "$GITHUB_REPOSITORY" --body-file eval-comment.md --edit-last --create-if-none
