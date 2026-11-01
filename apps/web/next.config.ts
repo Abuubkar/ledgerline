@@ -5,6 +5,8 @@ import type { NextConfig } from "next";
 const API_URL = process.env.API_URL ?? "http://localhost:8000";
 
 const config: NextConfig = {
+  // A self-contained server in .next/standalone, which the image runs (apps/web/Dockerfile).
+  output: "standalone",
   async rewrites() {
     return [
       { source: "/graphql", destination: `${API_URL}/graphql` },
