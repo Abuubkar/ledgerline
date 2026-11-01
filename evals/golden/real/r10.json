@@ -1,0 +1,42 @@
+{
+  "source": {
+    "dataset": "VRDU ad-buy forms (DeepForm), FCC public inspection files",
+    "url": "https://github.com/google-research-datasets/vrdu/blob/main/ad-buy-form/main/pdfs/28ecadfe-5e9c-237a-82f3-26b71ddf2ea6.pdf",
+    "file": "28ecadfe-5e9c-237a-82f3-26b71ddf2ea6.pdf"
+  },
+  "document_type": "other",
+  "invoice_number": null,
+  "invoice_date": null,
+  "due_date": null,
+  "total_minor_accepted": [],
+  "lines": [
+    {
+      "page": 1,
+      "description": "<Pre-Pay> Wire Transfer / Normal Checks",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 110500
+    }
+  ],
+  "fcc": {
+    "station_call_sign": "WSVN",
+    "vendor_name": null,
+    "vendor_address": null,
+    "contract_number": "64532",
+    "advertiser": "POLI/M BLOOMBERG/D/PRE/US(4853)",
+    "agency": "Assembly Media (1387)",
+    "product": null,
+    "flight_from": null,
+    "flight_to": null,
+    "gross_amount": null,
+    "agency_commission": null,
+    "net_amount": null,
+    "tax": null
+  },
+  "notes": [
+    "Not an invoice: 'Billing Payments - Detailed' payment report (OSI-Traffic), as of Thursday, February 27, 2020 12:45:11PM; footer says 'Page: 2' though the PDF has one page.",
+    "Single payment row: Invoice column '<Pre-Pay>', Source/Type 'Wire Transfer / Normal Checks', Salesperson 'HRP/VA/AMBRON,I', Check # 'wire', Check Amount $39,100.00, Sub-Amount $1,105.00 (recorded as line amount), Deposit Date 2/12/2020, Invoice Date blank, Account Type 'National/Political Candidate'.",
+    "Grand Total $1,105.00 is a payment total, not a billed gross/net, so header amounts left null.",
+    "No vendor name/address printed; station only appears in the Station column."
+  ]
+}

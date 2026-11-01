@@ -1,0 +1,137 @@
+{
+  "source": {
+    "dataset": "VRDU ad-buy forms (DeepForm), FCC public inspection files",
+    "url": "https://github.com/google-research-datasets/vrdu/blob/main/ad-buy-form/main/pdfs/aad5c844-731e-28fc-c55e-78b98dd6bc4a.pdf",
+    "file": "aad5c844-731e-28fc-c55e-78b98dd6bc4a.pdf"
+  },
+  "document_type": "invoice",
+  "invoice_number": "7301943",
+  "invoice_date": "2020-03-01",
+  "due_date": null,
+  "total_minor_accepted": [
+    439875,
+    517500
+  ],
+  "lines": [
+    {
+      "page": 1,
+      "description": "By Orbit-[P]Family Feud(",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 32500
+    },
+    {
+      "page": 1,
+      "description": "By Orbit-[P]Family Feud(",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 32500
+    },
+    {
+      "page": 1,
+      "description": "By Orbit-[P]Family Feud(",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 32500
+    },
+    {
+      "page": 1,
+      "description": "By Orbit-[P]Family Feud(",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 32500
+    },
+    {
+      "page": 1,
+      "description": "2257415-News-NBC 15 New",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 45000
+    },
+    {
+      "page": 1,
+      "description": "2257415-News-NBC 15 New",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 45000
+    },
+    {
+      "page": 1,
+      "description": "2257415-News-NBC 15 New",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 45000
+    },
+    {
+      "page": 1,
+      "description": "2257415-News-NBC 15 New",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 45000
+    },
+    {
+      "page": 1,
+      "description": "2257416-News-NBC 15 New",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 45000
+    },
+    {
+      "page": 1,
+      "description": "2257416-News-NBC 15 New",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 45000
+    },
+    {
+      "page": 1,
+      "description": "2257416-News-NBC 15 New",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 45000
+    },
+    {
+      "page": 1,
+      "description": "2257416-News-NBC 15 New",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 45000
+    },
+    {
+      "page": 1,
+      "description": "2257404-News-NBC 15 New",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 22500
+    },
+    {
+      "page": 1,
+      "description": "2637439-Ready Set Renov",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 5000
+    }
+  ],
+  "fcc": {
+    "station_call_sign": "WPMI",
+    "vendor_name": "Sinclair Broadcast Group Inc",
+    "vendor_address": "c/o WPMI PO Box 206270 Dallas, TX 75320-6270",
+    "contract_number": "4250800",
+    "advertiser": "Club For Growth (3622)",
+    "agency": "Target Enterprises (2076)",
+    "product": "POLITICAL ISSUE (ns) (1187)",
+    "flight_from": "2020-02-24",
+    "flight_to": "2020-03-01",
+    "gross_amount": "5175.00",
+    "agency_commission": "-776.25",
+    "net_amount": "4398.75",
+    "tax": null
+  },
+  "notes": [
+    "Text-layer PDF, checked against image; titled 'DUPLICATE INVOICE' with 'Duplicate' watermark (the text layer places the watermark word after the 02/26/20 line 1.0 row; it is not a remark). Remit-to name visually truncated ('REMIT TO Sinclair Broadcast'); text layer gives 'Sinclair Broadcast Group Inc'.",
+    "Lines are individual spot rows (contract lines 1.0 x4, 3.0 x4, 5.0 x4, 8.0, 9.0); no Program column, so description is the 'Scheduled' field. That field is clipped: visible image shows only e.g. 'By Orbit-[P]Family Fe', '2257415-News-NBC 1', '2637439-Ready Set R'; recorded strings are the full field text from the text layer ('By Orbit-[P]Family Feud(', '2257415-News-NBC 15 New', '2257416-News-NBC 15 New', '2257404-News-NBC 15 New', '2637439-Ready Set Renov'), which is itself cut off mid-word.",
+    "Dates are air dates; quantity/unit price not printed. All 00:30, ISCI CFGAAL11H.",
+    "Commission printed ($776.25), recorded negative. Terms CIA; footer 'Net 30-Payment is due within 30 days from invoice date'; no due date printed. Total Spots 14.",
+    "Est/External # 2929/ECR26805107; Brand CLUB FOR GROWTH//2929 (1342104); Demo A50+R; Comments 'Club for Growth Acti' / '3p cut off on 3/3'. Market 'Mobile (WPMI)'."
+  ]
+}

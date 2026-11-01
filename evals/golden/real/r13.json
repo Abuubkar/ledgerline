@@ -1,0 +1,124 @@
+{
+  "source": {
+    "dataset": "VRDU ad-buy forms (DeepForm), FCC public inspection files",
+    "url": "https://github.com/google-research-datasets/vrdu/blob/main/ad-buy-form/main/pdfs/462236-romney-for-president-8-27-9-18-invoice-117698-1.pdf",
+    "file": "462236-romney-for-president-8-27-9-18-invoice-117698-1.pdf"
+  },
+  "document_type": "invoice",
+  "invoice_number": "117698-1",
+  "invoice_date": "2012-09-30",
+  "due_date": null,
+  "total_minor_accepted": [
+    799000,
+    940000
+  ],
+  "lines": [
+    {
+      "page": 1,
+      "description": "8-9a M-F",
+      "quantity": "2",
+      "unit_price": "165.00",
+      "amount_minor": null
+    },
+    {
+      "page": 1,
+      "description": "8-9a M-F",
+      "quantity": "3",
+      "unit_price": "165.00",
+      "amount_minor": null
+    },
+    {
+      "page": 1,
+      "description": "9-10a M-F",
+      "quantity": "3",
+      "unit_price": "100.00",
+      "amount_minor": null
+    },
+    {
+      "page": 1,
+      "description": "9-10a M-F",
+      "quantity": "2",
+      "unit_price": "100.00",
+      "amount_minor": null
+    },
+    {
+      "page": 1,
+      "description": "7-730p M-F",
+      "quantity": "2",
+      "unit_price": "580.00",
+      "amount_minor": null
+    },
+    {
+      "page": 1,
+      "description": "7-730p M-F",
+      "quantity": "3",
+      "unit_price": "580.00",
+      "amount_minor": null
+    },
+    {
+      "page": 2,
+      "description": "730-8p M-F",
+      "quantity": "3",
+      "unit_price": "580.00",
+      "amount_minor": null
+    },
+    {
+      "page": 2,
+      "description": "730-8p M-F",
+      "quantity": "2",
+      "unit_price": "580.00",
+      "amount_minor": null
+    },
+    {
+      "page": 2,
+      "description": "WRAL's 10p News On Fox 50",
+      "quantity": "2",
+      "unit_price": "400.00",
+      "amount_minor": null
+    },
+    {
+      "page": 2,
+      "description": "WRAL's 10p News On Fox 50",
+      "quantity": "3",
+      "unit_price": "400.00",
+      "amount_minor": null
+    },
+    {
+      "page": 2,
+      "description": "9-10a Sun",
+      "quantity": "1",
+      "unit_price": "125.00",
+      "amount_minor": null
+    },
+    {
+      "page": 2,
+      "description": "11:35p-12:05x Sun",
+      "quantity": "1",
+      "unit_price": "150.00",
+      "amount_minor": null
+    }
+  ],
+  "fcc": {
+    "station_call_sign": "WRAZ",
+    "vendor_name": "WRAZ",
+    "vendor_address": "Accounting Dept. PO Box 60928 Charlotte, NC 28260",
+    "contract_number": "117698",
+    "advertiser": "Romney for President, Inc.",
+    "agency": "American Rambler Productions",
+    "product": "ROMNEY FOR PRESIDENT",
+    "flight_from": "2012-09-12",
+    "flight_to": "2012-09-18",
+    "gross_amount": "9400.00",
+    "agency_commission": "1410.00",
+    "net_amount": "7990.00",
+    "tax": null
+  },
+  "notes": [
+    "Text-layer PDF (3 pages), checked against images; watermark 'DUPLICATE'.",
+    "Lines are the 12 schedule lines; description is the line Description, start/end the scheduled week range, quantity the 'Nx' count, unit_price the per-spot Rate on the aired rows; no line amount column, so amount null. Sub-labels 'Candidate Class 2' (lines 1, 2, 12) / 'Candidate Class 4' (others). Ad-IDs 2012MRFP110H / 2012MRFP094H / 2012MRFP114H.",
+    "Line 6 spans pages 1-2; line 12 header is on page 2 with its spot on page 3; both recorded with the page where the line starts.",
+    "Flight from 'Order Flight 09/12/12 - 09/18/12'; Invoice Period 08/27/12 - 09/18/12. Lines 1, 4, 5, 8, 9 have week range 09/17/12 to 09/23/12 extending past the order flight (aired 09/17-09/18).",
+    "vendor_name: remit-to prints only 'WRAZ'; footer names 'Capitol Broadcasting'. Agency: no Agency label; American Rambler Productions is the Billing Address (138 Conant Street, Beverly, MA 01915).",
+    "Alt Order # 06310899; Estimate Number 201. Commission printed positive $1,410.00. Payment Terms 30 Days, no due date. Aired Spots 27."
+  ]
+}

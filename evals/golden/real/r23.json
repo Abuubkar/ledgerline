@@ -1,0 +1,121 @@
+{
+  "source": {
+    "dataset": "VRDU ad-buy forms (DeepForm), FCC public inspection files",
+    "url": "https://github.com/google-research-datasets/vrdu/blob/main/ad-buy-form/main/pdfs/d2bbcfb2-5161-3095-6498-ee67f5346032.pdf",
+    "file": "d2bbcfb2-5161-3095-6498-ee67f5346032.pdf"
+  },
+  "document_type": "invoice",
+  "invoice_number": "1457963",
+  "invoice_date": "2020-03-29",
+  "due_date": null,
+  "total_minor_accepted": [
+    30175,
+    35500
+  ],
+  "lines": [
+    {
+      "page": 1,
+      "description": "SPOT 4:00:00PM-5:00:00P Day,M-1Tu-1W-1Th-1",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 3500
+    },
+    {
+      "page": 1,
+      "description": "SPOT 4:00:00PM-5:00:00P Day,M-1Tu-1W-1Th-1",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 3500
+    },
+    {
+      "page": 1,
+      "description": "SPOT 4:00:00PM-5:00:00P Day,M-1Tu-1W-1Th-1",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 3500
+    },
+    {
+      "page": 1,
+      "description": "SPOT 4:00:00PM-5:00:00P Day,M-1Tu-1W-1Th-1",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 3500
+    },
+    {
+      "page": 1,
+      "description": "SPOT 4:00:00PM-5:00:00P Day,M-1",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 3500
+    },
+    {
+      "page": 1,
+      "description": "SPOT 6:00:00PM-7:00:00P Day,F-1",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 3000
+    },
+    {
+      "page": 1,
+      "description": "SPOT 6:00:00PM-7:00:00P Day,M-1Tu-1Th-1F-1",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 3000
+    },
+    {
+      "page": 1,
+      "description": "SPOT 6:00:00PM-7:00:00P Day,M-1Tu-1Th-1F-1",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 3000
+    },
+    {
+      "page": 1,
+      "description": "SPOT 6:00:00PM-7:00:00P Day,M-1Tu-1Th-1F-1",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 3000
+    },
+    {
+      "page": 1,
+      "description": "SPOT 6:00:00PM-7:00:00P Day,M-1Tu-1Th-1F-1",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 3000
+    },
+    {
+      "page": 1,
+      "description": "SPOT 3:00:00PM-4:00:00P Day,Su-1",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 1500
+    },
+    {
+      "page": 1,
+      "description": "SPOT 3:00:00PM-4:00:00P Day,Su-1",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 1500
+    }
+  ],
+  "fcc": {
+    "station_call_sign": "WAOE",
+    "vendor_name": "WAOE-TV",
+    "vendor_address": "PO BOX 1001 QUINCY IL 62306-1001",
+    "contract_number": "569080",
+    "advertiser": "Biden for President(33138)",
+    "agency": "Media Buying & Analytics(5286)",
+    "product": null,
+    "flight_from": "2020-02-24",
+    "flight_to": "2020-03-29",
+    "gross_amount": "355.00",
+    "agency_commission": "-53.25",
+    "net_amount": "301.75",
+    "tax": "0.00"
+  },
+  "notes": [
+    "One line per aired spot; quantity/unit_price not printed per line (null). Description = Type + Scheduled Time + Schedule Day to Run; channel = section header 'WAOE MyNetwork (WAOE)'. Contract line numbers 1.0-5.0 group the spots.",
+    "No Product field printed; Brand '1106/1271/7189 (195954)', Estimate/HL '7189/26819032'.",
+    "Rev # 0. Terms 'Cash In Advance'; no due date printed. Total Spots 12. Signed by Quincy Media, Inc."
+  ]
+}

@@ -1,0 +1,137 @@
+{
+  "source": {
+    "dataset": "VRDU ad-buy forms (DeepForm), FCC public inspection files",
+    "url": "https://github.com/google-research-datasets/vrdu/blob/main/ad-buy-form/main/pdfs/1672687e-ddc6-ce1d-8ab1-46acdc04953f.pdf",
+    "file": "1672687e-ddc6-ce1d-8ab1-46acdc04953f.pdf"
+  },
+  "document_type": "invoice",
+  "invoice_number": "7154112",
+  "invoice_date": "2019-12-29",
+  "due_date": null,
+  "total_minor_accepted": [
+    20230,
+    23800
+  ],
+  "lines": [
+    {
+      "page": 1,
+      "description": "News-WCTI News This Morning on FOX WYDO 7a",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 1700
+    },
+    {
+      "page": 1,
+      "description": "News-WCTI News This Morning on FOX WYDO 7a",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 1700
+    },
+    {
+      "page": 1,
+      "description": "News-WCTI News This Morning on FOX WYDO 7a",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 1700
+    },
+    {
+      "page": 1,
+      "description": "News-WCTI News This Morning on FOX WYDO 7a",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 1700
+    },
+    {
+      "page": 1,
+      "description": "News-WCTI News This Morning on FOX WYDO 7a",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 1700
+    },
+    {
+      "page": 1,
+      "description": "News-WCTI News This Morning on FOX WYDO 7a",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 1700
+    },
+    {
+      "page": 1,
+      "description": "News-WCTI News This Morning on FOX WYDO 7a",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 1700
+    },
+    {
+      "page": 1,
+      "description": "News-WCTI News This Morning on FOX WYDO 7a",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 1700
+    },
+    {
+      "page": 1,
+      "description": "News-WCTI News This Morning on FOX WYDO 7a",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 1700
+    },
+    {
+      "page": 1,
+      "description": "News-WCTI News This Morning on FOX WYDO 7a",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 1700
+    },
+    {
+      "page": 1,
+      "description": "News-WCTI News This Morning on FOX WYDO 7a",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 1700
+    },
+    {
+      "page": 1,
+      "description": "News-WCTI News This Morning on FOX WYDO 7a",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 1700
+    },
+    {
+      "page": 1,
+      "description": "News-WCTI News This Morning on FOX WYDO 7a",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 1700
+    },
+    {
+      "page": 1,
+      "description": "News-WCTI News This Morning on FOX WYDO 7a",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 1700
+    }
+  ],
+  "fcc": {
+    "station_call_sign": "WYDO",
+    "vendor_name": "Sinclair Broadcast Group Inc",
+    "vendor_address": "c/o WYDO PO BOX 206270 Dallas, TX 75320-6270",
+    "contract_number": "4094674",
+    "advertiser": "Tom Steyer for President-SBGN (133677)",
+    "agency": "Buying Time Media-Network Exclusiv(20039",
+    "product": "POLITICAL CANDIDATE (ns) (1186)",
+    "flight_from": "2019-11-25",
+    "flight_to": "2019-12-29",
+    "gross_amount": "238.00",
+    "agency_commission": "-35.70",
+    "net_amount": "202.30",
+    "tax": null
+  },
+  "notes": [
+    "Text-layer PDF, checked against image. Remit-to name visually truncated ('REMIT TO Sinclair Broadcast'); text layer gives 'Sinclair Broadcast Group Inc'.",
+    "Agency name is truncated in print: 'Buying Time Media-Network Exclusiv(20039' (closing parenthesis cut off).",
+    "Lines are individual spot rows (contract line 6.1 x7, 8.1 x7); description is the Program column (wraps to two lines: 'News-WCTI News This Morning' / 'on FOX WYDO 7a'); dates are air dates; quantity/unit price not printed. All 00:30; ISCI TS20TV1937AH except three 8.1 spots TS20TV1914AH (12/02 7:39AM, 12/03 7:14AM, 12/04 7:24AM).",
+    "Commission printed ($35.70), recorded negative. Terms CIA; footer 'Net 30-Payment is due within 30 days from invoice date'; no due date printed. Total Spots 14.",
+    "Bill-to is 'Tom Steyer for President-SBGN DO NOT MAIL'. Est/External # SBGN7388/. Brand Tom Steyer for President (1282522). Market 'Greenville (WYDO)'; logo 'FOX Eastern Carolina'."
+  ]
+}

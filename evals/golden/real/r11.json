@@ -1,0 +1,96 @@
+{
+  "source": {
+    "dataset": "VRDU ad-buy forms (DeepForm), FCC public inspection files",
+    "url": "https://github.com/google-research-datasets/vrdu/blob/main/ad-buy-form/main/pdfs/417792-collect-files-72076-political-file-2012-non.pdf",
+    "file": "417792-collect-files-72076-political-file-2012-non.pdf"
+  },
+  "document_type": "order",
+  "invoice_number": null,
+  "invoice_date": null,
+  "due_date": null,
+  "total_minor_accepted": [
+    3307500
+  ],
+  "lines": [
+    {
+      "page": 1,
+      "description": "J KIMMEL-ABC<",
+      "quantity": "0",
+      "unit_price": "425.00",
+      "amount_minor": null
+    },
+    {
+      "page": 1,
+      "description": "KIMMEL",
+      "quantity": "1",
+      "unit_price": "425.00",
+      "amount_minor": null
+    },
+    {
+      "page": 2,
+      "description": "DOCTORS",
+      "quantity": "0",
+      "unit_price": "600.00",
+      "amount_minor": null
+    },
+    {
+      "page": 2,
+      "description": "JEFF PRBOST",
+      "quantity": "1",
+      "unit_price": "600.00",
+      "amount_minor": null
+    },
+    {
+      "page": 2,
+      "description": "J KIMMEL-ABC<",
+      "quantity": "0",
+      "unit_price": "425.00",
+      "amount_minor": null
+    },
+    {
+      "page": 2,
+      "description": "KIMMEL",
+      "quantity": "1",
+      "unit_price": "425.00",
+      "amount_minor": null
+    },
+    {
+      "page": 2,
+      "description": "DOCTORS",
+      "quantity": "0",
+      "unit_price": "600.00",
+      "amount_minor": null
+    },
+    {
+      "page": 2,
+      "description": "JEFF PRBOST",
+      "quantity": "1",
+      "unit_price": "600.00",
+      "amount_minor": null
+    }
+  ],
+  "fcc": {
+    "station_call_sign": "WFTV-TV",
+    "vendor_name": null,
+    "vendor_address": null,
+    "contract_number": "6282550",
+    "advertiser": "ISS/PRIORITIES USA ACTION",
+    "agency": "MUNDY KATOWITZ MEDIA",
+    "product": "PRIORITIES USA ACT",
+    "flight_from": "2012-09-11",
+    "flight_to": "2012-09-17",
+    "gross_amount": "33075.00",
+    "agency_commission": null,
+    "net_amount": null,
+    "tax": null
+  },
+  "notes": [
+    "Not an invoice: a rep-firm 'ORDER WORKSHEET' / 'CREDIT ADVISORY' (revision '**CHANGES**', '$$$ UNAPPROVED REV #1 $$$') for WFTV-TV, dated AUG17/12 17.42. Scanned, pages printed rotated 90 degrees.",
+    "vendor_name/vendor_address: no issuing company name or address printed (only REP TEL# 703 528 7800, FAX# 703 528 7880); left null.",
+    "gross_amount is the printed 'CONTRACT TOTAL 33075.00' (also 'SEP/12 33075.00'); TOTAL SPOTS 26. No commission/net/tax printed (CITY TAX / STATE TAX blank).",
+    "Lines are the 8 order lines shown (line# 2, 27 on p1; 7, 28, 16, 29, 20, 30 on p2) with rep code S or A; description is the PROGRAM; quantity is the TOTL SPTS column (0 for the replaced 'S' lines, 1 for the 'A' make-good lines); unit_price is RATE; dates printed as M/D without year (9/14, 9/13), year 2012 taken from flight dates. All 30-second. Time periods: 2 1210A-105A, 27 1205A-105A, 7/28 900A-1000A, 16 1210A-105A, 29 1205A-105A, 20/30 900A-1000A.",
+    "Program 'JEFF PRBOST' printed as-is (sic, likely 'Probst'). 'J KIMMEL-ABC<' includes trailing '<' as printed.",
+    "Station makegood offers M1-M4 (OK'D, BUY#2/#7/#16/#20, 30S at $425.00/$600.00, '(AUG17/12) PLS ADVISE.') are listed separately and not recorded as lines.",
+    "Agency address 1322 G STREET SE WASHINGTON, DC 20003. Est# 1560; Rep Headline# 6282550; TRF# 327316; IDB#9914019; OFF.# 6556; Buyer MEDIA PLACEMENT; Sales prsn WA- JOE KNAUER. 'THIS IS A CASH IN ADVANCE SCHEDULE'."
+  ]
+}

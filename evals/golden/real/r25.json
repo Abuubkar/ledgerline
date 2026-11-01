@@ -1,0 +1,144 @@
+{
+  "source": {
+    "dataset": "VRDU ad-buy forms (DeepForm), FCC public inspection files",
+    "url": "https://github.com/google-research-datasets/vrdu/blob/main/ad-buy-form/main/pdfs/db4ee420-c938-2ff9-ea91-a7725092488e.pdf",
+    "file": "db4ee420-c938-2ff9-ea91-a7725092488e.pdf"
+  },
+  "document_type": "invoice",
+  "invoice_number": "1460589",
+  "invoice_date": "2020-03-31",
+  "due_date": null,
+  "total_minor_accepted": [
+    419100,
+    493059
+  ],
+  "lines": [
+    {
+      "page": 1,
+      "description": "5:00:00AM- 6:00:00AM",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 30000
+    },
+    {
+      "page": 1,
+      "description": "5:00:00AM- 6:00:00AM",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 30000
+    },
+    {
+      "page": 1,
+      "description": "5:00:00AM- 6:00:00AM",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 30000
+    },
+    {
+      "page": 1,
+      "description": "6:00:00AM- 7:00:00AM",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 40000
+    },
+    {
+      "page": 1,
+      "description": "6:00:00AM- 7:00:00AM",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 40000
+    },
+    {
+      "page": 1,
+      "description": "6:00:00AM- 7:00:00AM",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 40000
+    },
+    {
+      "page": 1,
+      "description": "10:00:00PM-10:35:00PM (Revised)",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 47059
+    },
+    {
+      "page": 1,
+      "description": "10:00:00PM-10:35:00PM (Original Rev)",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 70000
+    },
+    {
+      "page": 1,
+      "description": "10:00:00PM-10:35:00PM Adj/Rate reversal",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": -70000
+    },
+    {
+      "page": 1,
+      "description": "10:00:00PM-10:35:00PM",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 70000
+    },
+    {
+      "page": 1,
+      "description": "12:00:00PM-12:30:00PM",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 52000
+    },
+    {
+      "page": 1,
+      "description": "1:30:00PM- 2:30:00PM",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 10000
+    },
+    {
+      "page": 1,
+      "description": "2:30:00PM- 3:00:00PM",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 10000
+    },
+    {
+      "page": 1,
+      "description": "3:00:00PM- 4:00:00PM",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 47000
+    },
+    {
+      "page": 1,
+      "description": "3:00:00PM- 4:00:00PM",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 47000
+    }
+  ],
+  "fcc": {
+    "station_call_sign": "WREX",
+    "vendor_name": "WREX Television LLC",
+    "vendor_address": "PO Box 1001 Quincy, IL 62306-1001",
+    "contract_number": "568675",
+    "advertiser": "Citizens to Elect David Gill (33926)",
+    "agency": "Cain & Company (3993)",
+    "product": "Political - Local 1 (1103)",
+    "flight_from": "2020-03-01",
+    "flight_to": "2020-03-31",
+    "gross_amount": "4930.59",
+    "agency_commission": "-739.59",
+    "net_amount": "4191.00",
+    "tax": null
+  },
+  "notes": [
+    "Text-layer PDF, checked against image; titled 'DUPLICATE INVOICE' with 'Duplicate' watermark. Revision 1, Modified on 4/01/20 12:34 PM.",
+    "Lines are individual spot rows (contract lines 1.0, 2.0, 3.0, 7.0, 8.0, 9.0, 14.0 x3, 15.0, 22.0, 23.0, 24.0, 25.0 x2); no Program column, so description is the 'Scheduled' time range (visually truncated in the image, full string from text layer), plus the Remarks text for the line 14.0 revision rows. Dates are air dates. Quantity/unit price not printed.",
+    "Line 14.0 (03/11/20 10:21PM) appears three times: '(Revised)' $470.59, '(Original Rev)' $700.00, and 'Adj/Rate reversal' printed '$-700.00' (recorded -700.00); the latter two are highlighted. Line numbers printed as '14.0 / 1', '14.0 / 0', '14.0 / 0'.",
+    "Commission printed ($739.59), recorded negative (text layer garbled as '($$773794..5090)'). Terms Cash In Advance; no due date. Total Spots 13.",
+    "ISCI alternates DG03032000F / DG03032000FA. Brand 'L-WI-Winnebago County State Attorney (195482)' (truncated in image). Bill Type Calendar. Agency address 685 FEATHERSTONE RD ROCKFORD, IL 61107-6304."
+  ]
+}

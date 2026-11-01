@@ -1,0 +1,117 @@
+{
+  "source": {
+    "dataset": "VRDU ad-buy forms (DeepForm), FCC public inspection files",
+    "url": "https://github.com/google-research-datasets/vrdu/blob/main/ad-buy-form/main/pdfs/463900-kovr-afscme-d-issue-ord33778-fed-natl-invoice.pdf",
+    "file": "463900-kovr-afscme-d-issue-ord33778-fed-natl-invoice.pdf"
+  },
+  "document_type": "invoice",
+  "invoice_number": "1191-347200",
+  "invoice_date": "2012-09-30",
+  "due_date": "2012-10-30",
+  "total_minor_accepted": [
+    3400000,
+    4000000
+  ],
+  "lines": [
+    {
+      "page": 1,
+      "description": "DR PHIL",
+      "quantity": "5",
+      "unit_price": "500.00",
+      "amount_minor": null
+    },
+    {
+      "page": 1,
+      "description": "JUDGE JUDY SA/SU",
+      "quantity": "1",
+      "unit_price": "125.00",
+      "amount_minor": null
+    },
+    {
+      "page": 1,
+      "description": "CBS13 NEWS @ 5",
+      "quantity": "5",
+      "unit_price": "1500.00",
+      "amount_minor": null
+    },
+    {
+      "page": 2,
+      "description": "CBS13 NEWS @ 6",
+      "quantity": "5",
+      "unit_price": "2500.00",
+      "amount_minor": null
+    },
+    {
+      "page": 2,
+      "description": "CBS13 NEWS @ 5PM (SUN)",
+      "quantity": "1",
+      "unit_price": "1200.00",
+      "amount_minor": null
+    },
+    {
+      "page": 2,
+      "description": "ENTERTAINMENT TONIGHT M-F",
+      "quantity": "3",
+      "unit_price": "1500.00",
+      "amount_minor": null
+    },
+    {
+      "page": 3,
+      "description": "CBS 13 10PM NEWS M-SU",
+      "quantity": "5",
+      "unit_price": "2000.00",
+      "amount_minor": null
+    },
+    {
+      "page": 3,
+      "description": "CBS13 NEWSRPT @ 11 (SAT)",
+      "quantity": "1",
+      "unit_price": "500.00",
+      "amount_minor": null
+    },
+    {
+      "page": 3,
+      "description": "DAVID LETTERMAN",
+      "quantity": "1",
+      "unit_price": "800.00",
+      "amount_minor": null
+    },
+    {
+      "page": 3,
+      "description": "CSI: MIAMI",
+      "quantity": "1",
+      "unit_price": "250.00",
+      "amount_minor": null
+    },
+    {
+      "page": 4,
+      "description": "THE CLOSER",
+      "quantity": "1",
+      "unit_price": "250.00",
+      "amount_minor": null
+    }
+  ],
+  "fcc": {
+    "station_call_sign": "KOVR-TV",
+    "vendor_name": "KOVR-TV",
+    "vendor_address": "P.O. BOX 33091 NEWARK, NJ 07188-0091",
+    "contract_number": "1191-33778",
+    "advertiser": "AFSCME(186729)",
+    "agency": "THE CAMPAIGN GROUP, INC.(8131)",
+    "product": "American Federation of State, County & Municipal..",
+    "flight_from": "2012-09-25",
+    "flight_to": "2012-10-07",
+    "gross_amount": "40000.00",
+    "agency_commission": "6000.00",
+    "net_amount": "34000.00",
+    "tax": "0.00"
+  },
+  "notes": [
+    "Text-layer PDF (4 pages), checked against images; 'DUPLICATE' watermark. CBS Television Stations / The CW logos.",
+    "Lines are the buy lines (1, 3, 4, 6, 7, 9, 13, 15, 17, 22, 23); start/end are Buy Line Dates, quantity is Total Spots, unit_price is Rate; no per-line amount printed, so amount null. Individual air dates listed beneath each buy line, Material ACA1201THE, :30.",
+    "Buy line 3 (JUDGE JUDY SA/SU, 1 spot @ 125.00): its only spot row (09/29/2012 Sa) has no air time and Remarks 'Credit', i.e. it did not air; Air Time Totals 28 spots / 40,000.00 exclude it.",
+    "Buy line 9 lists 3 total spots; buy line 13 lists 5 total spots for a T-S pattern; as printed.",
+    "Flight from Contract Dates 09/25/2012-10/07/2012; Billing Period 08/27/2012-09/30/2012. Due date from 'PAY BY 10/30/2012 Net 30 days'.",
+    "Tax: Local Tax 0.00 and State Tax 0.00 printed (recorded tax '0.00'). Trade Value 0.00, Pre Paid Amount 0.00. Product Desc truncated with '..' as printed. Advertiser 'For:' address 1625 L St NW Washington, DC 20036-5665."
+  ]
+}
