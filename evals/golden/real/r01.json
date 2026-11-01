@@ -1,0 +1,89 @@
+{
+  "source": {
+    "dataset": "VRDU ad-buy forms (DeepForm), FCC public inspection files",
+    "url": "https://github.com/google-research-datasets/vrdu/blob/main/ad-buy-form/main/pdfs/00a83bbc-0101-f092-4bd7-e75f315e8f14.pdf",
+    "file": "00a83bbc-0101-f092-4bd7-e75f315e8f14.pdf"
+  },
+  "document_type": "invoice",
+  "invoice_number": "950658-1",
+  "invoice_date": "2020-02-23",
+  "due_date": null,
+  "total_minor_accepted": [
+    478125,
+    562500
+  ],
+  "lines": [
+    {
+      "page": 1,
+      "description": "Fox 9 AM News at 6am Political Candidate LUR Rate 6a-7a",
+      "quantity": "2",
+      "unit_price": "550.00",
+      "amount_minor": null
+    },
+    {
+      "page": 1,
+      "description": "Fox 9 AM News at 6am Political Candidate LUR Rate 6a-7a",
+      "quantity": "3",
+      "unit_price": "575.00",
+      "amount_minor": null
+    },
+    {
+      "page": 1,
+      "description": "Fox 9 AM News at 7am Political Candidate LUR Rate 7a-8a",
+      "quantity": "1",
+      "unit_price": "650.00",
+      "amount_minor": null
+    },
+    {
+      "page": 1,
+      "description": "M-F 12p-1p Political Candidate CDR Rate 12p-1p",
+      "quantity": "5",
+      "unit_price": "125.00",
+      "amount_minor": null
+    },
+    {
+      "page": 1,
+      "description": "M-F 1p-2p Political Candidate CDR Rate 1p-2p",
+      "quantity": "5",
+      "unit_price": "125.00",
+      "amount_minor": null
+    },
+    {
+      "page": 2,
+      "description": ".M-F 4p-430p EF 3 Political Candidate LUR Rate M-F 4p-430p",
+      "quantity": "1",
+      "unit_price": "450.00",
+      "amount_minor": null
+    },
+    {
+      "page": 2,
+      "description": ".M-F 4p-430p EF 3 Political Candidate LUR Rate M-F 4p-430p",
+      "quantity": "1",
+      "unit_price": "450.00",
+      "amount_minor": null
+    }
+  ],
+  "fcc": {
+    "station_call_sign": "KMSP",
+    "vendor_name": "KMSP",
+    "vendor_address": "4614 Collection Center Drive Chicago, IL 60693",
+    "contract_number": "950658",
+    "advertiser": "Michael Bloomberg 2020, Inc",
+    "agency": "Assembly Media",
+    "product": "MIKE BLOOMBERG 2020 INC",
+    "flight_from": "2019-12-30",
+    "flight_to": "2020-03-29",
+    "gross_amount": "5625.00",
+    "agency_commission": "843.75",
+    "net_amount": "4781.25",
+    "tax": null
+  },
+  "notes": [
+    "Lines recorded at contract-line level (Lines 1-7): quantity = 'Nx' spots ordered for week 02/17/20 to 02/23/20, unit_price = Rate printed on each aired spot; no line amount printed (null). Channel column = '9'. Line 5 continues onto page 2 (recorded on page 1).",
+    "Aired spot detail: L1 W 02/19 6:27AM, Th 02/20 6:28AM; L2 W 02/19, Th 02/20, F 02/21; L3 W 02/19 7:14AM; L4 5 spots 02/19-02/21; L5 5 spots (2 on p1, 3 on p2); L6 Th 02/20 4:28PM; L7 F 02/21 4:17PM. Aired Spots 18.",
+    "contract_number = Order # 950658; Alt Order # WOC12390987; Estimate Number 0129.",
+    "flight_from/to = Order Flight; separate Invoice Period printed: 01/27/20 - 02/21/20",
+    "agency not labelled; 'Assembly Media' is the Billing Address (Agency Code TV15458).",
+    "Agency Commission printed as positive $843.75. Payment Terms 30 Days, no due date printed. Logo FOX 9 KMSP."
+  ]
+}

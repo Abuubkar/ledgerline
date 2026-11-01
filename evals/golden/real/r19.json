@@ -1,0 +1,90 @@
+{
+  "source": {
+    "dataset": "VRDU ad-buy forms (DeepForm), FCC public inspection files",
+    "url": "https://github.com/google-research-datasets/vrdu/blob/main/ad-buy-form/main/pdfs/4b330586-f3e8-28ea-b0cc-2d060dc10622.pdf",
+    "file": "4b330586-f3e8-28ea-b0cc-2d060dc10622.pdf"
+  },
+  "document_type": "invoice",
+  "invoice_number": "1471574",
+  "invoice_date": "2020-05-31",
+  "due_date": null,
+  "total_minor_accepted": [
+    199750,
+    235000
+  ],
+  "lines": [
+    {
+      "page": 1,
+      "description": "SPOT 30297-Wake Up Wiscons Day,Th-2",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 25000
+    },
+    {
+      "page": 1,
+      "description": "SPOT 30297-Wake Up Wiscons Day,Th-2",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 25000
+    },
+    {
+      "page": 1,
+      "description": "SPOT 62748-GOOD MORNING AM Day,Th-1",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 25000
+    },
+    {
+      "page": 1,
+      "description": "SPOT 30368-News 9 WAOW at Day,W-1",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 40000
+    },
+    {
+      "page": 1,
+      "description": "SPOT 30368-News 9 WAOW at Day,Th-1",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 40000
+    },
+    {
+      "page": 1,
+      "description": "SPOT 30370-News 9 WAOW at Day,W-1",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 40000
+    },
+    {
+      "page": 1,
+      "description": "SPOT 30370-News 9 WAOW at Day,Th-1",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 40000
+    }
+  ],
+  "fcc": {
+    "station_call_sign": "WAOW",
+    "vendor_name": "WAOW-WYOW Television Inc",
+    "vendor_address": "PO Box 1001 Quincy, IL 62306-1001",
+    "contract_number": "575794",
+    "advertiser": "Our Future Matters (34209)",
+    "agency": "Max Media (2668)",
+    "product": "Services - Banks/S&Ls/Financial Institutions/Credit Cards (1",
+    "flight_from": "2020-04-27",
+    "flight_to": "2020-05-31",
+    "gross_amount": "2350.00",
+    "agency_commission": "-352.50",
+    "net_amount": "1997.50",
+    "tax": null
+  },
+  "notes": [
+    "Document titled 'DUPLICATE INVOICE' with a 'Duplicate' watermark.",
+    "One line per aired spot (length 01:00); quantity/unit_price not printed per line (null). Description = Type + Scheduled (program) + Schedule Days to Run; channel = section header 'WAOW+ ABC (WAOW)'.",
+    "Scheduled/program names are clipped in the rendered image (e.g. '30297-Wake Up Wisc'); fuller text taken from the PDF text layer, which itself appears truncated ('Wake Up Wiscons', 'News 9 WAOW at').",
+    "Product is clipped on the page; text layer reads 'Services - Banks/S&Ls/Financial Institutions/Credit Cards (1' (truncated). Odd product for a political account.",
+    "Advertiser printed as 'Advertiser/T-Code Our Future Matters (34209)/SWBK'; T-code '/SWBK' omitted from advertiser.",
+    "agency_commission printed as '($352.50)'; recorded as -352.50.",
+    "Terms Net 30 but no due date printed. Brand 'MAY 2020 (190627)'. Total Spots 7."
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "source": {
+    "dataset": "VRDU ad-buy forms (DeepForm), FCC public inspection files",
+    "url": "https://github.com/google-research-datasets/vrdu/blob/main/ad-buy-form/main/pdfs/00c29ad8-c88b-b3bb-1a39-3267e47c7a88.pdf",
+    "file": "00c29ad8-c88b-b3bb-1a39-3267e47c7a88.pdf"
+  },
+  "document_type": "invoice",
+  "invoice_number": "2436316-1",
+  "invoice_date": "2020-03-29",
+  "due_date": null,
+  "total_minor_accepted": [
+    24650,
+    29000
+  ],
+  "lines": [
+    {
+      "page": 1,
+      "description": "EM (M-F) 4-9a",
+      "quantity": "1",
+      "unit_price": "90.00",
+      "amount_minor": null
+    },
+    {
+      "page": 1,
+      "description": "News10 at 6a News10 at 6a",
+      "quantity": "1",
+      "unit_price": "200.00",
+      "amount_minor": null
+    }
+  ],
+  "fcc": {
+    "station_call_sign": "WXXA",
+    "vendor_name": "WXXA",
+    "vendor_address": "PO Box 743299 Atlanta, GA 30384",
+    "contract_number": "2436316",
+    "advertiser": "POL/FWD.US PAC",
+    "agency": "Targeted Platform Media",
+    "product": "issue",
+    "flight_from": "2020-03-27",
+    "flight_to": "2020-03-31",
+    "gross_amount": "290.00",
+    "agency_commission": "43.50",
+    "net_amount": "246.50",
+    "tax": null
+  },
+  "notes": [
+    "Invoice with 'DUPLICATE' watermark behind the 'INVOICE' title.",
+    "Lines at contract-line level (Line 1 and Line 4): quantity = '1x' for week 03/23/20 to 03/29/20, unit_price = Rate on the aired spot (F 03/27/20, length 1:00, Ad-ID FWD0120H); no line amount printed (null). Aired Spots 2.",
+    "contract_number = Order # 2436316; Alt Order # 26855873; Estimate Number 8496.",
+    "flight_from/to = Order Flight; separate Invoice Period printed: 02/24/20 - 03/29/20",
+    "agency not labelled; 'Targeted Platform Media' is the Billing Address (Agency Code 9920316).",
+    "Agency Commission printed positive $43.50. Payment Terms 30 Days, no due date. Logo FOX 23."
+  ]
+}

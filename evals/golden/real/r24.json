@@ -1,0 +1,143 @@
+{
+  "source": {
+    "dataset": "VRDU ad-buy forms (DeepForm), FCC public inspection files",
+    "url": "https://github.com/google-research-datasets/vrdu/blob/main/ad-buy-form/main/pdfs/d58c4b22-afac-c842-1227-bce0a053837d.pdf",
+    "file": "d58c4b22-afac-c842-1227-bce0a053837d.pdf"
+  },
+  "document_type": "invoice",
+  "invoice_number": "1458020",
+  "invoice_date": "2020-03-29",
+  "due_date": null,
+  "total_minor_accepted": [
+    91800,
+    108000
+  ],
+  "lines": [
+    {
+      "page": 1,
+      "description": "62748-GOOD MORN",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 10000
+    },
+    {
+      "page": 1,
+      "description": "62748-GOOD MORN",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 10000
+    },
+    {
+      "page": 1,
+      "description": "62748-GOOD MORN",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 10000
+    },
+    {
+      "page": 1,
+      "description": "109805-HOI ABC Go",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 10000
+    },
+    {
+      "page": 1,
+      "description": "109805-HOI ABC Go",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 10000
+    },
+    {
+      "page": 1,
+      "description": "109805-HOI ABC Go",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 10000
+    },
+    {
+      "page": 1,
+      "description": "109805-HOI ABC Go",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 10000
+    },
+    {
+      "page": 1,
+      "description": "109804-HOI ABC Go",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 3000
+    },
+    {
+      "page": 1,
+      "description": "109804-HOI ABC Go",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 3000
+    },
+    {
+      "page": 1,
+      "description": "109804-HOI ABC Go",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 3000
+    },
+    {
+      "page": 1,
+      "description": "109804-HOI ABC Go",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 3000
+    },
+    {
+      "page": 1,
+      "description": "109804-HOI ABC Go",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 3000
+    },
+    {
+      "page": 1,
+      "description": "62748-GOOD MORN",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 10000
+    },
+    {
+      "page": 1,
+      "description": "109805-HOI ABC Go",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 10000
+    },
+    {
+      "page": 1,
+      "description": "109804-HOI ABC Go",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 3000
+    }
+  ],
+  "fcc": {
+    "station_call_sign": "WEEK",
+    "vendor_name": "WEEK Television Inc",
+    "vendor_address": "PO BOX 1001 QUINCY IL 62306-1001",
+    "contract_number": "569385",
+    "advertiser": "Friends of Chris McCall (33963)",
+    "agency": "DIRECT Political (4707)",
+    "product": null,
+    "flight_from": "2020-02-24",
+    "flight_to": "2020-03-29",
+    "gross_amount": "1080.00",
+    "agency_commission": "-162.00",
+    "net_amount": "918.00",
+    "tax": "0.00"
+  },
+  "notes": [
+    "Text-layer PDF, checked against image (text layer doubles characters in the table header).",
+    "No Product field printed; Brand: 'L-IL-PEORIA COUNTY STATES ATTORNEY'. product left null.",
+    "Lines are individual spot rows (contract lines 1.0-9.0); no Program column, so description is the 'Scheduled Time' column as printed (truncated, e.g. '62748-GOOD MORN', '109805-HOI ABC Go'); dates are air dates; quantity/unit price not printed. All 00:30, ISCI FOCM032030NH.",
+    "Commission printed '-$162.00' (label 'Commission Agency'); Sales Tax $0.00. Terms 'Cash In Advance'; no due date. Rev # 0. Total Spots 15. Station header 'WEEK ABC (EEEK)'. Signed by Quincy Media, Inc."
+  ]
+}

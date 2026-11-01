@@ -1,0 +1,46 @@
+{
+  "source": {
+    "dataset": "VRDU ad-buy forms (DeepForm), FCC public inspection files",
+    "url": "https://github.com/google-research-datasets/vrdu/blob/main/ad-buy-form/main/pdfs/0184c40e-1467-7368-6eb9-0395acd37689.pdf",
+    "file": "0184c40e-1467-7368-6eb9-0395acd37689.pdf"
+  },
+  "document_type": "invoice",
+  "invoice_number": "1336165-2",
+  "invoice_date": "2020-02-09",
+  "due_date": null,
+  "total_minor_accepted": [
+    3400,
+    4000
+  ],
+  "lines": [
+    {
+      "page": 1,
+      "description": "The Doctors 10a-11a",
+      "quantity": "1",
+      "unit_price": "40.00",
+      "amount_minor": null
+    }
+  ],
+  "fcc": {
+    "station_call_sign": "KPTH",
+    "vendor_name": "KPTH",
+    "vendor_address": "100 Gold Circle Drive Dakota Dunes, SD 57049",
+    "contract_number": "1336165",
+    "advertiser": "Tom Steyer for President-D",
+    "agency": "Buying Time, LLC",
+    "product": "1232/1246/8291/STEYER FOR PRESIDENT",
+    "flight_from": "2020-01-28",
+    "flight_to": "2020-02-03",
+    "gross_amount": "40.00",
+    "agency_commission": "6.00",
+    "net_amount": "34.00",
+    "tax": null
+  },
+  "notes": [
+    "Scanned invoice; text layer is OCR with errors (e.g. 'Oe 19780' for Agency Code 9915780, 'Total' for 'Gross Total'); values read from image.",
+    "Send Payment To: 'KPTH REMIT TO Sinclair Broadcast Group Inc c/o KPTH PO Box 206270 Dallas, TX 75320-6270'. vendor_name/address taken from page-top station block.",
+    "One contract line: 02/03/20-02/03/20, The Doctors 10a-11a, :30, Spots/Week 1, Rate $40.00, Type NM; no line amount printed (null). Aired: KPTH M 02/03/20 10:24 AM, Ad-ID TS20-TV20-04BH. Total Spots 1.",
+    "contract_number = Order # 1336165; Alt Order # 09742697; Estimate # 8291. Flight Dates 01/28/20 - 02/03/20; Invoice Period 02/03/20 - 02/09/20 (spot aired 02/03/20).",
+    "agency not labelled; 'Buying Time, LLC' is the Billing Address (Agency Code 9915780). Payment Terms 30 Days, no due date."
+  ]
+}

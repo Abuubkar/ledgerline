@@ -1,0 +1,144 @@
+{
+  "source": {
+    "dataset": "VRDU ad-buy forms (DeepForm), FCC public inspection files",
+    "url": "https://github.com/google-research-datasets/vrdu/blob/main/ad-buy-form/main/pdfs/5f244e75-2cfe-04e6-f851-5d719f236fbb.pdf",
+    "file": "5f244e75-2cfe-04e6-f851-5d719f236fbb.pdf"
+  },
+  "document_type": "invoice",
+  "invoice_number": "7245066",
+  "invoice_date": "2020-02-23",
+  "due_date": null,
+  "total_minor_accepted": [
+    64600,
+    76000
+  ],
+  "lines": [
+    {
+      "page": 1,
+      "description": "ABC-America This Morning",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 2000
+    },
+    {
+      "page": 1,
+      "description": "ABC-America This Morning",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 2000
+    },
+    {
+      "page": 1,
+      "description": "ABC-America This Morning",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 2000
+    },
+    {
+      "page": 1,
+      "description": "ABC-America This Morning",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 2000
+    },
+    {
+      "page": 1,
+      "description": "ABC-America This Morning",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 2000
+    },
+    {
+      "page": 1,
+      "description": "ABC-America This Morning",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 2000
+    },
+    {
+      "page": 1,
+      "description": "ABC-Good Morning America",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 9000
+    },
+    {
+      "page": 1,
+      "description": "ABC-Good Morning America",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 9000
+    },
+    {
+      "page": 1,
+      "description": "ABC-Good Morning America",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 9000
+    },
+    {
+      "page": 1,
+      "description": "ABC-Good Morning America",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 9000
+    },
+    {
+      "page": 1,
+      "description": "ABC-Good Morning America",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 9000
+    },
+    {
+      "page": 1,
+      "description": "ABC-Good Morning America",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 9000
+    },
+    {
+      "page": 1,
+      "description": "ABC-Good Morning American Saturday",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 3000
+    },
+    {
+      "page": 1,
+      "description": "ABC-Good Morning American Saturday",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 3000
+    },
+    {
+      "page": 1,
+      "description": "ABC-Good Morning America Sunday",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 4000
+    }
+  ],
+  "fcc": {
+    "station_call_sign": "WXLV",
+    "vendor_name": "Sinclair Broadcast Group Inc",
+    "vendor_address": "c/o WXLV PO Box 206270 Dallas, TX 75320-6270",
+    "contract_number": "4248847",
+    "advertiser": "Citizens for Responsible Energy (84874)",
+    "agency": "Matson Media LLC (19039)",
+    "product": "POLITICAL ISSUE (ns) (1187)",
+    "flight_from": "2020-02-17",
+    "flight_to": "2020-02-23",
+    "gross_amount": "760.00",
+    "agency_commission": "-114.00",
+    "net_amount": "646.00",
+    "tax": null
+  },
+  "notes": [
+    "Text-layer PDF, checked against image. Remit-to name is visually truncated in the image ('REMIT TO Sinclair Broadcast'); text layer gives 'Sinclair Broadcast Group Inc'.",
+    "Lines are individual spot rows (contract lines 1.0 x6 'News', 4.0 x6, 7.0, 9.0, 11.0 'SPOT'); description is the Program column; dates are air dates; quantity/unit price not printed per row. All 00:30, ISCI SEFTV021820H.",
+    "Program on lines 7.0 and 9.0 printed 'ABC-Good Morning American Saturday' (sic, wraps to two lines); line 11.0 'ABC-Good Morning America Sunday'.",
+    "Commission printed as ($114.00), recorded negative (text layer garbles it as '($$111144..0000)'). Terms CIA; footer 'Net 30-Payment is due within 30 days from invoice date'; no due date printed.",
+    "Est/External # 11637/ECR26803967; Brand NCHD29 (1340882); Bill Type Weekly/Irregular; Total Spots 15. Market 'Greensboro (WXLV)'."
+  ]
+}

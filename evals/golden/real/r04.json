@@ -1,0 +1,124 @@
+{
+  "source": {
+    "dataset": "VRDU ad-buy forms (DeepForm), FCC public inspection files",
+    "url": "https://github.com/google-research-datasets/vrdu/blob/main/ad-buy-form/main/pdfs/03ec997a-d19a-9b69-9d69-3c70f2924389.pdf",
+    "file": "03ec997a-d19a-9b69-9d69-3c70f2924389.pdf"
+  },
+  "document_type": "invoice",
+  "invoice_number": "7302924",
+  "invoice_date": "2020-03-08",
+  "due_date": null,
+  "total_minor_accepted": [
+    15300,
+    18000
+  ],
+  "lines": [
+    {
+      "page": 1,
+      "description": "SPOT 9:00:00AM- 5:00:00 Day,M-4",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 1000
+    },
+    {
+      "page": 1,
+      "description": "SPOT 9:00:00AM- 5:00:00 Day,M-4",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 1000
+    },
+    {
+      "page": 1,
+      "description": "SPOT 9:00:00AM- 5:00:00 Day,M-4",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 1000
+    },
+    {
+      "page": 1,
+      "description": "SPOT 9:00:00AM- 5:00:00 Day,M-4",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 1000
+    },
+    {
+      "page": 1,
+      "description": "SPOT 9:00:00AM- 5:00:00 Day,M-4",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 2000
+    },
+    {
+      "page": 1,
+      "description": "SPOT 9:00:00AM- 5:00:00 Day,M-4",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 2000
+    },
+    {
+      "page": 1,
+      "description": "SPOT 9:00:00AM- 5:00:00 Day,M-4",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 2000
+    },
+    {
+      "page": 1,
+      "description": "SPOT 9:00:00AM- 5:00:00 Day,M-4",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 2000
+    },
+    {
+      "page": 1,
+      "description": "SPOT 9:00:00AM- 2:00:00 Day,Tu-2",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 1000
+    },
+    {
+      "page": 1,
+      "description": "SPOT 9:00:00AM- 2:00:00 Day,Tu-2",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 1000
+    },
+    {
+      "page": 1,
+      "description": "SPOT 9:00:00AM- 2:00:00 Day,Tu-2",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 2000
+    },
+    {
+      "page": 1,
+      "description": "SPOT 9:00:00AM- 2:00:00 Day,Tu-2",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 2000
+    }
+  ],
+  "fcc": {
+    "station_call_sign": "WTTO",
+    "vendor_name": "Sinclair Broadcast",
+    "vendor_address": "c/o WTTO PO Box 206270 Dallas, TX 75320-6270",
+    "contract_number": "4263696",
+    "advertiser": "Mike Miles for Jefferson County Tr(135304)",
+    "agency": "Ads That Work (3438)",
+    "product": "POLITICAL CANDIDATE (ns) (1186)",
+    "flight_from": "2020-03-02",
+    "flight_to": "2020-03-08",
+    "gross_amount": "180.00",
+    "agency_commission": "-27.00",
+    "net_amount": "153.00",
+    "tax": null
+  },
+  "notes": [
+    "One line per aired spot; quantity/unit_price not printed per line (null). Description = Type + Scheduled time + Schedule Days to Run; channel = section header 'Birmingham (WTTO)'. Contract line numbers 2.0/4.0/5.0/6.0.",
+    "agency_commission printed as '($27.00)' (parenthesized negative); recorded as -27.00.",
+    "vendor_name taken from 'REMIT TO Sinclair Broadcast c/o WTTO'; logo shows 'THE CW21'. Footer: 'Station owned or provided services by the Sinclair Broadcast Group.'",
+    "due_date not printed; terms 'CIA' and footer 'Net 30-Payment is due within 30 days from invoice date.'",
+    "Brand: 'Primary Flight (1346211)'. Total Spots 12. Currency inferred from '$' signs.",
+    "Text layer duplicates characters in commission ('($$2277..0000)'); value read from image."
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "source": {
+    "dataset": "VRDU ad-buy forms (DeepForm), FCC public inspection files",
+    "url": "https://github.com/google-research-datasets/vrdu/blob/main/ad-buy-form/main/pdfs/462537-4073029-1-13498881057828-_-pdf.pdf",
+    "file": "462537-4073029-1-13498881057828-_-pdf.pdf"
+  },
+  "document_type": "invoice",
+  "invoice_number": "4073029-1",
+  "invoice_date": "2012-09-30",
+  "due_date": null,
+  "total_minor_accepted": [
+    126225,
+    148500
+  ],
+  "lines": [
+    {
+      "page": 1,
+      "description": "Fox 35 5p News",
+      "quantity": "1",
+      "unit_price": "630.00",
+      "amount_minor": null
+    },
+    {
+      "page": 1,
+      "description": "Fox 35 5p News",
+      "quantity": "1",
+      "unit_price": "630.00",
+      "amount_minor": null
+    },
+    {
+      "page": 1,
+      "description": "Fox News Sunday",
+      "quantity": "1",
+      "unit_price": "225.00",
+      "amount_minor": null
+    }
+  ],
+  "fcc": {
+    "station_call_sign": "WOFL",
+    "vendor_name": "WOFL",
+    "vendor_address": "12315 Collection Center Drive Chicago, IL 60693",
+    "contract_number": "4073029",
+    "advertiser": "NRSC and Friends of Connie Mack",
+    "agency": "McLaughlin & Associates",
+    "product": "NRSC/MACK",
+    "flight_from": "2012-09-19",
+    "flight_to": "2012-09-24",
+    "gross_amount": "1485.00",
+    "agency_commission": "222.75",
+    "net_amount": "1262.25",
+    "tax": null
+  },
+  "notes": [
+    "Scanned image, page printed rotated 90 degrees; transcribed from the rotated image.",
+    "Lines: each has a scheduled week range (used as start/end dates), '1x' (quantity) and a single dollar figure in the Rate column; no separate line amount column, so amount is null. Air dates: line 1 aired 09/24/12 5:39 PM, line 2 aired 09/20/12 5:57 PM, line 3 aired 09/23/12 10:34 AM; all :30, Ad-ID CMDF0917RH; each line sub-labeled 'CANDIDATE DISCOUNT'.",
+    "Flight taken from 'Order Flight 09/19/12 - 09/24/12'; Invoice Period printed separately as 08/27/12 - 09/24/12; Invoice Month September 2012. Line 1 week range (09/24/12 to 09/30/12) extends past the order flight as printed.",
+    "Agency field: no 'Agency' label printed; McLaughlin & Associates is the Billing Address. Estimate Number printed 'ORDER# 484'. Alt Order # printed truncated 'NRSC/FRIENDS OF CO'.",
+    "Agency Commission printed as positive $222.75 (no sign). Payment Terms 30 Days; no due date printed. Aired Spots 3."
+  ]
+}

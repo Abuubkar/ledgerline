@@ -1,0 +1,89 @@
+{
+  "source": {
+    "dataset": "VRDU ad-buy forms (DeepForm), FCC public inspection files",
+    "url": "https://github.com/google-research-datasets/vrdu/blob/main/ad-buy-form/main/pdfs/08560ca2-8832-bd62-8674-1ed14b677f23.pdf",
+    "file": "08560ca2-8832-bd62-8674-1ed14b677f23.pdf"
+  },
+  "document_type": "invoice",
+  "invoice_number": "1990774-1",
+  "invoice_date": "2020-05-10",
+  "due_date": null,
+  "total_minor_accepted": [
+    1965625,
+    2312500
+  ],
+  "lines": [
+    {
+      "page": 1,
+      "description": "Today Show 7-9a",
+      "quantity": "2",
+      "unit_price": "475.00",
+      "amount_minor": null
+    },
+    {
+      "page": 1,
+      "description": "Local News @ 4p M-F 4-5p",
+      "quantity": "1",
+      "unit_price": "225.00",
+      "amount_minor": null
+    },
+    {
+      "page": 1,
+      "description": "Local News @ 5p M-F 5-530p",
+      "quantity": "4",
+      "unit_price": "300.00",
+      "amount_minor": null
+    },
+    {
+      "page": 1,
+      "description": "Local News @ 530p M-F 530-6p",
+      "quantity": "5",
+      "unit_price": "350.00",
+      "amount_minor": null
+    },
+    {
+      "page": 2,
+      "description": "Jeopardy 7-730p 7-730p",
+      "quantity": "5",
+      "unit_price": "2500.00",
+      "amount_minor": null
+    },
+    {
+      "page": 2,
+      "description": "Wheel of Frtune 730-8p 730-8p",
+      "quantity": "1",
+      "unit_price": "2500.00",
+      "amount_minor": null
+    },
+    {
+      "page": 2,
+      "description": "Local News @ 11p M-F 11-1135p",
+      "quantity": "5",
+      "unit_price": "800.00",
+      "amount_minor": null
+    }
+  ],
+  "fcc": {
+    "station_call_sign": "WCNC",
+    "vendor_name": "WCNC",
+    "vendor_address": "P.O. Box 637386 Cincinnati, OH 45263-7386",
+    "contract_number": "1990774",
+    "advertiser": "ISS/ Taxpayers Protection Alliance PAC",
+    "agency": "SRH Media / POL",
+    "product": "Issue",
+    "flight_from": "2020-04-28",
+    "flight_to": "2020-05-04",
+    "gross_amount": "23125.00",
+    "agency_commission": "3468.75",
+    "net_amount": "19656.25",
+    "tax": null
+  },
+  "notes": [
+    "Lines at contract-line level (Lines 1-7): quantity = Spots/Week, unit_price = Rate; no line amount printed (null). Description = Description + Start/End Time columns. Channel = spot 'Ch' column ('All'). Line 4 header on page 1, its spots on page 2 (recorded page 1). Total Spots 23.",
+    "Line 6 description printed 'Wheel of Frtune' (sic); its Weeks row shows 04/27/20-05/03/20 while line dates are 04/28/20-04/29/20.",
+    "vendor_address = 'Send Payment To' (WCNC P.O. Box 637386 Cincinnati, OH 45263-7386); page-top station address is 1001 Wood Ridge Ctr. Charlotte, NC 28217. TEGNA station.",
+    "contract_number = Order # 1990774; Alt Order # WOC12490332; Estimate # 576. flight = Flight Dates 04/28/20 - 05/04/20; Invoice Period 04/27/20 - 05/04/20.",
+    "agency not labelled; 'SRH Media / POL' is the Billing Address (Agency Code blank).",
+    "Agency Commission printed positive. 'Include Invoice # on Check - Payment Terms 30 Days'; no due date."
+  ]
+}

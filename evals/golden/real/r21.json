@@ -1,0 +1,116 @@
+{
+  "source": {
+    "dataset": "VRDU ad-buy forms (DeepForm), FCC public inspection files",
+    "url": "https://github.com/google-research-datasets/vrdu/blob/main/ad-buy-form/main/pdfs/9736d40e-73d7-121f-db69-3cdab0bba2ae.pdf",
+    "file": "9736d40e-73d7-121f-db69-3cdab0bba2ae.pdf"
+  },
+  "document_type": "invoice",
+  "invoice_number": "7325760",
+  "invoice_date": "2020-03-29",
+  "due_date": null,
+  "total_minor_accepted": [
+    58650,
+    69000
+  ],
+  "lines": [
+    {
+      "page": 1,
+      "description": "News-Fox 11s Eyewitness News This Morning",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 3500
+    },
+    {
+      "page": 1,
+      "description": "News-Fox 11s Eyewitness News This Morning",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 3500
+    },
+    {
+      "page": 1,
+      "description": "News-Fox 11s Eyewitness News This Morning",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 3500
+    },
+    {
+      "page": 1,
+      "description": "News-Fox 11s Eyewitness News This Morning",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 3500
+    },
+    {
+      "page": 1,
+      "description": "News-Fox 11s Eyewitness News This Morning",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 3500
+    },
+    {
+      "page": 1,
+      "description": "News-Fox 11s Eyewitness News This Morning",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 3500
+    },
+    {
+      "page": 1,
+      "description": "News-Fox 11s Eyewitness News This Morning",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 3500
+    },
+    {
+      "page": 1,
+      "description": "News-Fox 11s Eyewitness News This Morning",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 3500
+    },
+    {
+      "page": 1,
+      "description": "News-Ten OClock News",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 20000
+    },
+    {
+      "page": 1,
+      "description": "News-Ten OClock News",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 20000
+    },
+    {
+      "page": 1,
+      "description": "News-Simulcast of WCHS News-Eyewitness News This Morning 6am",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 1000
+    }
+  ],
+  "fcc": {
+    "station_call_sign": "WVAH",
+    "vendor_name": "Sinclair Broadcast Group Inc",
+    "vendor_address": "c/o WVAH PO Box 206270 Dallas, TX 75320-6270",
+    "contract_number": "4294974",
+    "advertiser": "Jim Justice for West Virginia Gove(133949)",
+    "agency": "FP1 Strategies LLC (19867)",
+    "product": "POLITICAL CANDIDATE (ns) (1186)",
+    "flight_from": "2020-03-23",
+    "flight_to": "2020-03-29",
+    "gross_amount": "690.00",
+    "agency_commission": "-103.50",
+    "net_amount": "586.50",
+    "tax": null
+  },
+  "notes": [
+    "One line per aired spot; quantity/unit_price not printed per line (null). Description = Program column; channel = section header 'Charleston WV (WVAH)'. Line type 'News'; contract line numbers 1.0,2.0,2.0,3.0,3.0,6.0,7.0,8.0,13.0,15.0,16.0.",
+    "vendor_name: image shows 'REMIT TO Sinclair Broadcast' (clipped); text layer has 'Sinclair Broadcast Group Inc'. Logo 'FOX 11'.",
+    "Scheduled column is clipped in the image (e.g. '7:00:00AM- 7:30:00A'); not used.",
+    "agency_commission printed as '($103.50)'; recorded as -103.50. Text layer garbles it.",
+    "due_date not printed; terms 'CIA', footer Net 30. Brand '12/12/263 (1359296)', Est/External # '263/ECR26836204'. Total Spots 11."
+  ]
+}

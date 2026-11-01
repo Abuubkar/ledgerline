@@ -1,0 +1,109 @@
+{
+  "source": {
+    "dataset": "VRDU ad-buy forms (DeepForm), FCC public inspection files",
+    "url": "https://github.com/google-research-datasets/vrdu/blob/main/ad-buy-form/main/pdfs/08fe4888-65a4-3254-b5d2-dad9186a9694.pdf",
+    "file": "08fe4888-65a4-3254-b5d2-dad9186a9694.pdf"
+  },
+  "document_type": "invoice",
+  "invoice_number": "2485647-1",
+  "invoice_date": "2020-04-26",
+  "due_date": null,
+  "total_minor_accepted": [
+    285175,
+    335500
+  ],
+  "lines": [
+    {
+      "page": 1,
+      "description": "CBS This Morning 7a-9a",
+      "quantity": "3",
+      "unit_price": "60.00",
+      "amount_minor": null
+    },
+    {
+      "page": 1,
+      "description": "CBS Sunday Morning 9a-1030a",
+      "quantity": "1",
+      "unit_price": "250.00",
+      "amount_minor": null
+    },
+    {
+      "page": 1,
+      "description": "Face the Nation 1030a-11a",
+      "quantity": "1",
+      "unit_price": "250.00",
+      "amount_minor": null
+    },
+    {
+      "page": 1,
+      "description": "Eyewitness News @ 6p 6p-630p",
+      "quantity": "3",
+      "unit_price": "150.00",
+      "amount_minor": null
+    },
+    {
+      "page": 1,
+      "description": "Eyewitness News @ 6 Sat 6p-630p",
+      "quantity": "1",
+      "unit_price": "150.00",
+      "amount_minor": null
+    },
+    {
+      "page": 1,
+      "description": "Fri Prime Hour 3 10p-11p",
+      "quantity": "1",
+      "unit_price": "650.00",
+      "amount_minor": null
+    },
+    {
+      "page": 1,
+      "description": "Sun Prime Hour 1 7p-8p",
+      "quantity": "1",
+      "unit_price": "800.00",
+      "amount_minor": null
+    },
+    {
+      "page": 1,
+      "description": "Eyewitness News at 11 M-F 11p-1135p",
+      "quantity": "3",
+      "unit_price": "125.00",
+      "amount_minor": null
+    },
+    {
+      "page": 2,
+      "description": "Saturday Late News 11p-1130p",
+      "quantity": "1",
+      "unit_price": "125.00",
+      "amount_minor": null
+    },
+    {
+      "page": 2,
+      "description": "Eyewitness News @11p 11p-1130p",
+      "quantity": "1",
+      "unit_price": "125.00",
+      "amount_minor": null
+    }
+  ],
+  "fcc": {
+    "station_call_sign": "WYOU",
+    "vendor_name": "WYOU",
+    "vendor_address": "PO Box 419779 Boston, MA 02241-9779",
+    "contract_number": "2485647",
+    "advertiser": "POL/AB PAC",
+    "agency": "Amplify Media",
+    "product": "AB PAC",
+    "flight_from": "2020-04-21",
+    "flight_to": "2020-04-27",
+    "gross_amount": "3355.00",
+    "agency_commission": "503.25",
+    "net_amount": "2851.75",
+    "tax": null
+  },
+  "notes": [
+    "Invoice with 'DUPLICATE' watermark behind the 'INVOICE' title.",
+    "Lines at contract-line level (Lines 1-10): quantity = 'Nx' for week 04/20/20 to 04/26/20, unit_price = Rate on aired spots; no line amount printed (null). Description = Description + Time columns. Line 8 (3x) has 1 spot on page 1 and 2 on page 2 (recorded page 1). Aired Spots 16.",
+    "contract_number = Order # 2485647; Alt Order # 26905918; Estimate Number 1284. flight = Order Flight 04/21/20 - 04/27/20; Invoice Period 03/30/20 - 04/26/20.",
+    "agency not labelled; 'Amplify Media' is the Billing Address (222 Ontrario Street (sic), Chicago). Agency Code blank.",
+    "Agency Commission printed positive. Payment Terms 30 Days, no due date."
+  ]
+}

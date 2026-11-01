@@ -1,0 +1,122 @@
+{
+  "source": {
+    "dataset": "VRDU ad-buy forms (DeepForm), FCC public inspection files",
+    "url": "https://github.com/google-research-datasets/vrdu/blob/main/ad-buy-form/main/pdfs/1f1cc382-92b4-4499-31d9-92ea3bcaf6e8.pdf",
+    "file": "1f1cc382-92b4-4499-31d9-92ea3bcaf6e8.pdf"
+  },
+  "document_type": "invoice",
+  "invoice_number": "1465203",
+  "invoice_date": "2020-04-26",
+  "due_date": null,
+  "total_minor_accepted": [
+    139400,
+    164000
+  ],
+  "lines": [
+    {
+      "page": 1,
+      "description": "SPOT 2606-TODAY SHOW Day,Th-1",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 11000
+    },
+    {
+      "page": 1,
+      "description": "SPOT 2606-TODAY SHOW Day,F-1",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 8500
+    },
+    {
+      "page": 1,
+      "description": "SPOT 61130-WVVA News Day,Th-1",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 5000
+    },
+    {
+      "page": 1,
+      "description": "SPOT 61130-WVVA News Day,F-1",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 5000
+    },
+    {
+      "page": 1,
+      "description": "SPOT 26153-Inside Edition Day,Th-1",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 8500
+    },
+    {
+      "page": 1,
+      "description": "SPOT 26153-Inside Edition Day,F-1",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 8500
+    },
+    {
+      "page": 1,
+      "description": "SPOT 61135-WVVA News Day,F-1",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 11000
+    },
+    {
+      "page": 1,
+      "description": "SPOT 61137-WVVA News Day,Th-1",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 27500
+    },
+    {
+      "page": 1,
+      "description": "SPOT 65733-NIGHTLY NE Day,Th-1",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 35000
+    },
+    {
+      "page": 1,
+      "description": "SPOT 71868-Entertainment Day,Th-1",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 9000
+    },
+    {
+      "page": 1,
+      "description": "SPOT 61139-WVVA News Day,Th-1",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 17500
+    },
+    {
+      "page": 1,
+      "description": "SPOT 61139-WVVA News Day,F-1",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 17500
+    }
+  ],
+  "fcc": {
+    "station_call_sign": "WVVA",
+    "vendor_name": "WVVA Television Inc",
+    "vendor_address": "PO BOX 1001 QUINCY IL 62306-1001",
+    "contract_number": "574639",
+    "advertiser": "Committee to Re-Elect Jim Justice(34026)",
+    "agency": "FP1 Strategies, LLC(5375)",
+    "product": null,
+    "flight_from": "2020-03-30",
+    "flight_to": "2020-04-26",
+    "gross_amount": "1640.00",
+    "agency_commission": "-246.00",
+    "net_amount": "1394.00",
+    "tax": "0.00"
+  },
+  "notes": [
+    "One line per aired spot; quantity/unit_price not printed per line (null). Description = Type + Scheduled Time (program) + Schedule Day to Run; channel = section header 'WVVA NBC (WVVA)'.",
+    "No Product field printed; Brand '12/12/297 (197922)', Estimate/HL '297/ECR26907576'.",
+    "Rev # 0. Terms 'Cash In Advance'; no due date printed. Sales Tax printed $0.00. Total Spots 12.",
+    "Signed by Quincy Media, Inc (parent); vendor_name from header 'WVVA Television Inc'."
+  ]
+}

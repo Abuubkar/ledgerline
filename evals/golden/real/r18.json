@@ -1,0 +1,172 @@
+{
+  "source": {
+    "dataset": "VRDU ad-buy forms (DeepForm), FCC public inspection files",
+    "url": "https://github.com/google-research-datasets/vrdu/blob/main/ad-buy-form/main/pdfs/494008-103012-murphy-invoice-4-13516266179190-_-pdf.pdf",
+    "file": "494008-103012-murphy-invoice-4-13516266179190-_-pdf.pdf"
+  },
+  "document_type": "invoice",
+  "invoice_number": "640565",
+  "invoice_date": "2012-10-28",
+  "due_date": null,
+  "total_minor_accepted": [
+    1068875,
+    1257500
+  ],
+  "lines": [
+    {
+      "page": 1,
+      "description": "Today Show",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 62500
+    },
+    {
+      "page": 1,
+      "description": "Today Show",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 62500
+    },
+    {
+      "page": 1,
+      "description": "1 preempt @ $625.00",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 0
+    },
+    {
+      "page": 1,
+      "description": "JUDGE JUDY 4P",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 40000
+    },
+    {
+      "page": 1,
+      "description": "JUDGE JUDY 4P",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 40000
+    },
+    {
+      "page": 1,
+      "description": "1 preempt @ $400.00",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 0
+    },
+    {
+      "page": 1,
+      "description": "2 preempts @ $800.00",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 0
+    },
+    {
+      "page": 1,
+      "description": "CHANNEL 11 NEWS-FIRST AT FIVE",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 80000
+    },
+    {
+      "page": 1,
+      "description": "1 preempt @ $800.00",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 0
+    },
+    {
+      "page": 1,
+      "description": "Channel 11 News At 6pm M-F",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 100000
+    },
+    {
+      "page": 1,
+      "description": "Channel 11 News At 6pm M-F",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 100000
+    },
+    {
+      "page": 1,
+      "description": "Channel 11 News At 6pm M-F",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 100000
+    },
+    {
+      "page": 1,
+      "description": "Wheel Of Fortune",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 165000
+    },
+    {
+      "page": 1,
+      "description": "CHANNEL 11 NEWS AT 11P",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 200000
+    },
+    {
+      "page": 1,
+      "description": "CHANNEL 11 NEWS",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 67500
+    },
+    {
+      "page": 1,
+      "description": "Channel 11 News 6am",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 80000
+    },
+    {
+      "page": 1,
+      "description": "Channel 11 News 6am",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 80000
+    },
+    {
+      "page": 1,
+      "description": "Channel 11 News 5am",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 40000
+    },
+    {
+      "page": 1,
+      "description": "Channel 11 News 5am",
+      "quantity": null,
+      "unit_price": null,
+      "amount_minor": 40000
+    }
+  ],
+  "fcc": {
+    "station_call_sign": "WPXI",
+    "vendor_name": "WPXI",
+    "vendor_address": "P.O. Box 640132 Pittsburgh, PA 15264-0132",
+    "contract_number": "331377",
+    "advertiser": "Pol/T Murphy/R/Con/PA (16299)",
+    "agency": "BrabenderCox (3844)",
+    "product": "Political - Federal Candidate (1067)",
+    "flight_from": "2012-10-01",
+    "flight_to": "2012-10-28",
+    "gross_amount": "12575.00",
+    "agency_commission": "-1886.25",
+    "net_amount": "10688.75",
+    "tax": null
+  },
+  "notes": [
+    "Scanned image, no text layer; transcribed from the page image.",
+    "Lines are individual spot rows (Type 'Spot'); description is the Program column, or the preempt text for preempt rows ($0.00). Contract line remarks (e.g. 'TODAY 7-8A/112') not included in descriptions. Dates are air dates. Quantity/unit price not printed per row; Length 00:30 per spot; ISCI BCTM1203H on all aired spots.",
+    "Commission printed as ($1,886.25) (parenthesized, recorded as negative).",
+    "Est/Headline printed as '/06292001' (estimate reference, not recorded as contract number). Brand: POL/T MURPHY/R/CON/PA (29258). Terms Net 30; no due date printed.",
+    "Bill-to address prints 'Pittsburgh, PE 15211' (sic). Total Spots 15. Comment: '***** THIS IS A CASH IN ADVANCE'."
+  ]
+}

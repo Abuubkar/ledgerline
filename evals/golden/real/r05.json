@@ -1,0 +1,123 @@
+{
+  "source": {
+    "dataset": "VRDU ad-buy forms (DeepForm), FCC public inspection files",
+    "url": "https://github.com/google-research-datasets/vrdu/blob/main/ad-buy-form/main/pdfs/0719de4c-5538-0fe8-123b-f0aca437b53d.pdf",
+    "file": "0719de4c-5538-0fe8-123b-f0aca437b53d.pdf"
+  },
+  "document_type": "invoice",
+  "invoice_number": "AA20040134",
+  "invoice_date": "2020-04-26",
+  "due_date": null,
+  "total_minor_accepted": [
+    808350,
+    951000
+  ],
+  "lines": [
+    {
+      "page": 1,
+      "description": "The Wheel of Fortune 7:00 PM-7:30 PM",
+      "quantity": "1",
+      "unit_price": "1200.00",
+      "amount_minor": null
+    },
+    {
+      "page": 1,
+      "description": "The Wheel of Fortune 7:00 PM-7:30 PM",
+      "quantity": "1",
+      "unit_price": "1200.00",
+      "amount_minor": null
+    },
+    {
+      "page": 1,
+      "description": "The Wheel of Fortune 7:00 PM-7:30 PM",
+      "quantity": "1",
+      "unit_price": "1200.00",
+      "amount_minor": null
+    },
+    {
+      "page": 1,
+      "description": "The Wheel of Fortune 7:00 PM-7:30 PM",
+      "quantity": "1",
+      "unit_price": "1200.00",
+      "amount_minor": null
+    },
+    {
+      "page": 1,
+      "description": "Jeopardy 7:30 PM-8:00 PM",
+      "quantity": "1",
+      "unit_price": "1400.00",
+      "amount_minor": null
+    },
+    {
+      "page": 1,
+      "description": "Jeopardy 7:30 PM-8:00 PM",
+      "quantity": "1",
+      "unit_price": "1400.00",
+      "amount_minor": null
+    },
+    {
+      "page": 1,
+      "description": "Jeopardy 7:30 PM-8:00 PM",
+      "quantity": "1",
+      "unit_price": "1400.00",
+      "amount_minor": null
+    },
+    {
+      "page": 1,
+      "description": "Kimmel 11:35 PM-12:35 XM",
+      "quantity": "1",
+      "unit_price": "30.00",
+      "amount_minor": null
+    },
+    {
+      "page": 1,
+      "description": "Kimmel 11:35 PM-12:35 XM",
+      "quantity": "1",
+      "unit_price": "30.00",
+      "amount_minor": null
+    },
+    {
+      "page": 2,
+      "description": "Late News M-F 11:00 PM-11:35 PM",
+      "quantity": "1",
+      "unit_price": "150.00",
+      "amount_minor": null
+    },
+    {
+      "page": 2,
+      "description": "Late News M-F 11:00 PM-11:35 PM",
+      "quantity": "1",
+      "unit_price": "150.00",
+      "amount_minor": null
+    },
+    {
+      "page": 2,
+      "description": "Late News M-F 11:00 PM-11:35 PM",
+      "quantity": "1",
+      "unit_price": "150.00",
+      "amount_minor": null
+    }
+  ],
+  "fcc": {
+    "station_call_sign": "WVII",
+    "vendor_name": "WVII-TV",
+    "vendor_address": "371 - Target Industrial Circle Bangor, ME 04401",
+    "contract_number": "8973",
+    "advertiser": "Sara Gideon-US Senate",
+    "agency": "Grassroots Media LLC",
+    "product": "Political",
+    "flight_from": "2020-03-31",
+    "flight_to": "2020-04-06",
+    "gross_amount": "9510.00",
+    "agency_commission": "1426.50",
+    "net_amount": "8083.50",
+    "tax": null
+  },
+  "notes": [
+    "Lines at contract-line level (Lines 1-12): quantity = '1x' per week range, unit_price = Rate on the single aired spot; no line amount printed (null). Description = Description + Time columns. Aired Spots 12.",
+    "Kimmel time printed as '11:35 PM-12:35 XM' (sic).",
+    "contract_number = Order # 8973; Alt Order # 26889288; Estimate Number 115. flight = Order Flight 03/31/20 - 04/06/20; Invoice Period 03/30/20 - 04/06/20.",
+    "agency not labelled; 'Grassroots Media LLC' is the Billing Address (Agency Code blank).",
+    "Agency Commission printed positive. 'Invoice Balance as of 05/05/20 11:55:15 AM ET $0.00' printed below Net Amount Due $8,083.50. Payment Terms 30 Days."
+  ]
+}

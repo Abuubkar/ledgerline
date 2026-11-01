@@ -1,0 +1,174 @@
+{
+  "source": {
+    "dataset": "VRDU ad-buy forms (DeepForm), FCC public inspection files",
+    "url": "https://github.com/google-research-datasets/vrdu/blob/main/ad-buy-form/main/pdfs/482663-bera-963706-1-oct-16-21-inv-13510363868925-_-pdf.pdf",
+    "file": "482663-bera-963706-1-oct-16-21-inv-13510363868925-_-pdf.pdf"
+  },
+  "document_type": "invoice",
+  "invoice_number": "963706-1",
+  "invoice_date": "2012-10-21",
+  "due_date": null,
+  "total_minor_accepted": [
+    3920625,
+    4612500
+  ],
+  "lines": [
+    {
+      "page": 1,
+      "description": "KCRA-TV News at 6am",
+      "quantity": "3",
+      "unit_price": "1500.00",
+      "amount_minor": null
+    },
+    {
+      "page": 1,
+      "description": "NBC Today Show",
+      "quantity": "3",
+      "unit_price": "1500.00",
+      "amount_minor": null
+    },
+    {
+      "page": 1,
+      "description": "KCRA-TV News at 7am",
+      "quantity": "2",
+      "unit_price": "650.00",
+      "amount_minor": null
+    },
+    {
+      "page": 1,
+      "description": "KATIE EF",
+      "quantity": "3",
+      "unit_price": "700.00",
+      "amount_minor": null
+    },
+    {
+      "page": 1,
+      "description": "M-F 4-5p",
+      "quantity": "3",
+      "unit_price": "900.00",
+      "amount_minor": null
+    },
+    {
+      "page": 2,
+      "description": "KCRA-TV News at 5pm",
+      "quantity": "1",
+      "unit_price": "3000.00",
+      "amount_minor": null
+    },
+    {
+      "page": 2,
+      "description": "KCRA 3 OTO Newscast",
+      "quantity": "1",
+      "unit_price": "1800.00",
+      "amount_minor": null
+    },
+    {
+      "page": 2,
+      "description": "ACESS HOLLYWOOD AC",
+      "quantity": "1",
+      "unit_price": "1500.00",
+      "amount_minor": null
+    },
+    {
+      "page": 2,
+      "description": "M-F 730pm-8pm",
+      "quantity": "3",
+      "unit_price": "1500.00",
+      "amount_minor": null
+    },
+    {
+      "page": 2,
+      "description": "LAW & ORDER SVU",
+      "quantity": "1",
+      "unit_price": "4000.00",
+      "amount_minor": null
+    },
+    {
+      "page": 2,
+      "description": "NBC Tonight Show",
+      "quantity": "3",
+      "unit_price": "1000.00",
+      "amount_minor": null
+    },
+    {
+      "page": 2,
+      "description": "Late Night w/Jimmy F",
+      "quantity": "4",
+      "unit_price": "600.00",
+      "amount_minor": null
+    },
+    {
+      "page": 3,
+      "description": "M-F 9am-10am",
+      "quantity": "3",
+      "unit_price": "550.00",
+      "amount_minor": null
+    },
+    {
+      "page": 3,
+      "description": "NBC Today Show II",
+      "quantity": "3",
+      "unit_price": "450.00",
+      "amount_minor": null
+    },
+    {
+      "page": 3,
+      "description": "KCRA-TV News at Noon",
+      "quantity": "2",
+      "unit_price": "650.00",
+      "amount_minor": null
+    },
+    {
+      "page": 3,
+      "description": "Days of Our Lives",
+      "quantity": "3",
+      "unit_price": "700.00",
+      "amount_minor": null
+    },
+    {
+      "page": 3,
+      "description": "ANDERSON COOPER DAY",
+      "quantity": "3",
+      "unit_price": "450.00",
+      "amount_minor": null
+    },
+    {
+      "page": 3,
+      "description": "Notre Dame Football",
+      "quantity": "2",
+      "unit_price": "1500.00",
+      "amount_minor": null
+    },
+    {
+      "page": 3,
+      "description": "HOLLYSCOOP",
+      "quantity": "1",
+      "unit_price": "75.00",
+      "amount_minor": null
+    }
+  ],
+  "fcc": {
+    "station_call_sign": "KCRA",
+    "vendor_name": "KCRA",
+    "vendor_address": "PO Box 26861 Lehigh Valley, PA 18002-6861",
+    "contract_number": "963706",
+    "advertiser": "Bera/D/Congress",
+    "agency": "Adelstein/Liston",
+    "product": "CONGRESS(D) #3337",
+    "flight_from": "2012-10-16",
+    "flight_to": "2012-10-21",
+    "gross_amount": "46125.00",
+    "agency_commission": "6918.75",
+    "net_amount": "39206.25",
+    "tax": null
+  },
+  "notes": [
+    "Text-layer PDF (4 pages), checked against images; 'DUPLICATE' watermark.",
+    "vendor_address is the 'Send Payment To' address; station's own address printed as '3 Television Circle Sacramento, CA 95814'. Footer references Hearst Television's terms.",
+    "Lines are the 19 buy lines; start/end are line Start/End Date, quantity is Spots/Week (single week 10/15/12-10/21/12), unit_price is Rate; no per-line amount printed, so amount null. Channel column on spot rows 'KCRA'. All :30, Type NM.",
+    "Line 17 description in the buy-line row is visually overlapped by the time column ('ANDERSON COOPER D' then '11AM TO 12PM'); text layer and spot rows give 'ANDERSON COOPER DAY'. Line 8 description 'ACESS HOLLYWOOD AC' (sic, truncated) overlaps its time '7:01pm-7:30pm/7:30pm'.",
+    "Line 5 and line 12 spot lists continue onto the next page; line 19 header on page 3, its details on page 4; recorded with the page the line starts on.",
+    "Agency: no Agency label; Adelstein/Liston is the Billing Address (222 West Ontario Suite 600 Chicago, IL 60610). Product printed 'CONGRESS(D) #3337'; Estimate Number box empty. Order # 963706, Alt Order # 07911950, Advertiser Code BERA.",
+    "Commission printed positive $6,918.75. Payment Terms 30 Days; no due date. Invoice Period 10/01/12 - 10/21/12. Total Spots 45."
+  ]
+}
