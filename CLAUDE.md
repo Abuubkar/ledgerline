@@ -58,7 +58,11 @@ uv run python evals/sweep.py [--live]     # every model in evals/sweep.py MODELS
   `infra/rabbitmq/definitions.json` (RabbitMQ only reads it at boot: restart it after a change).
 - New failure types go through `errors.classify`: transient is retried, permanent is dead-lettered. Error
   classes must stay picklable (Celery pickles exceptions).
-- The worker image doesn't reload code: rebuild it after changing anything under `apps/api/src`.
+- The worker image doesn't reload code: rebuild it after changing anything under `apps/api/src`. The code is installed
+  into the image's virtualenv (non-editable), so mounting source over it changes nothing.
+- One `Dockerfile` builds every Python service (targets `api`, `worker`, `erp-mock`; worker is the default);
+  `apps/web/Dockerfile` builds the UI from the repo root. Merges to main publish signed images to GHCR (ADR 0019);
+  verify with the `cosign verify` command in ADR 0019.
 - All model calls go through `extraction.call_model`, which budgets the prompt first: Ollama truncates over-long
   prompts silently and `prompt_eval_count` is the only way to notice afterwards (ADR 0010). Extraction wraps it
   in `_chat` (JSON schema); the agent calls it with `tools=`.

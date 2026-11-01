@@ -181,7 +181,7 @@ Each slice is one end-to-end change. The destination layout and stack are in [do
 | 6b | Model sweep: gemma4:12b, qwen3.5:9b, qwen2.5:7b on the same eval ([evals/SWEEP.md](evals/SWEEP.md)) | Done |
 | 6c | Extraction prompt v4 from the sweep's findings: gemma4 at 100% header fields, 99.3% line items | Done |
 | 7a | GitHub Actions on every PR: lint, contracts, unit and integration tests, migration lint, web tests, offline eval | Done |
-| 7b | Release: signed multi-arch images to GHCR with SBOM, provenance and a vulnerability scan | Planned |
+| 7b | Release: signed multi-arch images to GHCR with SBOM, provenance and a vulnerability scan | Done |
 | 8 | OpenTelemetry: one invoice traced from upload to approval; dashboards and alerts | Planned |
 
 ## Layout
