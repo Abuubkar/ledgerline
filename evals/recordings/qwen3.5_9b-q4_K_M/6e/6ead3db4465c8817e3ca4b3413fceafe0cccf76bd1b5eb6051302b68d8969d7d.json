@@ -1,0 +1,27 @@
+{
+ "model": "qwen3.5:9b-q4_K_M",
+ "created_at": "2026-11-01T03:28:52.131426Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 8236700083,
+ "load_duration": 2634416,
+ "prompt_eval_count": 1839,
+ "prompt_eval_duration": 1159247000,
+ "eval_count": 154,
+ "eval_duration": 7060670000,
+ "message": {
+  "role": "assistant",
+  "content": "The invoice has a vendor mismatch: the PO was issued to a different vendor than the one on the invoice. The goods were received correctly (4 units at €89.50 each), and there's no overbilling. Since the vendor doesn't match the PO, this is a fundamental issue that requires manual review.",
+  "tool_calls": [
+   {
+    "function": {
+     "name": "propose_hold",
+     "arguments": {
+      "reason_code": "vendor_mismatch",
+      "explanation": "The invoice vendor (Nordwerk Industrietechnik GmbH) does not match the vendor on PO 4500200001. Manual review required to verify if this is a legitimate change or an error."
+     }
+    }
+   }
+  ]
+ }
+}

@@ -1,0 +1,26 @@
+{
+ "model": "qwen3.5:9b-q4_K_M",
+ "created_at": "2026-11-01T03:27:46.060319Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 6823070333,
+ "load_duration": 2784375,
+ "prompt_eval_count": 1368,
+ "prompt_eval_duration": 1890429000,
+ "eval_count": 108,
+ "eval_duration": 4915578000,
+ "message": {
+  "role": "assistant",
+  "content": "The invoice cites a PO number `4500999999`, but the system reports that this PO was not found in the ERP data. This is a critical issue because we cannot verify the ordered quantity or price without a valid PO.\n\nLet me first try to retrieve the PO using the provided number to confirm it's missing:",
+  "tool_calls": [
+   {
+    "function": {
+     "name": "get_po",
+     "arguments": {
+      "po_number": "4500999999"
+     }
+    }
+   }
+  ]
+ }
+}

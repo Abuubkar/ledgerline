@@ -1,0 +1,26 @@
+{
+ "model": "qwen2.5:7b-instruct",
+ "created_at": "2026-11-01T02:45:15.1705Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 1952830042,
+ "load_duration": 1573417,
+ "prompt_eval_count": 1067,
+ "prompt_eval_duration": 1108385000,
+ "eval_count": 21,
+ "eval_duration": 791922000,
+ "message": {
+  "role": "assistant",
+  "content": "",
+  "tool_calls": [
+   {
+    "function": {
+     "name": "get_vendor_history",
+     "arguments": {
+      "limit": 5
+     }
+    }
+   }
+  ]
+ }
+}

@@ -1,0 +1,27 @@
+{
+ "model": "qwen3.5:9b-q4_K_M",
+ "created_at": "2026-11-01T03:27:18.572872Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 8982085375,
+ "load_duration": 2060334,
+ "prompt_eval_count": 1359,
+ "prompt_eval_duration": 1884316000,
+ "eval_count": 155,
+ "eval_duration": 7086344000,
+ "message": {
+  "role": "assistant",
+  "content": "The invoice has a problem: it's marked as a duplicate of an earlier invoice. This is a clear case where the invoice should be held for review due to duplication.\n\nI'll propose holding this invoice with the appropriate reason code.",
+  "tool_calls": [
+   {
+    "function": {
+     "name": "propose_hold",
+     "arguments": {
+      "reason_code": "duplicate",
+      "explanation": "This invoice is a duplicate of invoice 0199dddd-0000-7000-8000-000000000015. The system has flagged it as invalid due to duplication, so it should not be processed further until reviewed by a person."
+     }
+    }
+   }
+  ]
+ }
+}

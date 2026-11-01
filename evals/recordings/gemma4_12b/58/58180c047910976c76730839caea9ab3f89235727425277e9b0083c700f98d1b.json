@@ -1,0 +1,16 @@
+{
+ "model": "gemma4:12b",
+ "created_at": "2026-11-01T04:17:20.780538Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 36518126167,
+ "load_duration": 6587042,
+ "prompt_eval_count": 589,
+ "prompt_eval_duration": 3751306000,
+ "eval_count": 464,
+ "eval_duration": 32428523000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"Alpenblick Logistik_AG\",\n  \"vendor_tax_id\": \"CHE-123.456.789\",\n  \"invoice_number\": \"AB-2026-1028\",\n  \"po_number\": \"4500100004\",\n  \"invoice_date\": \"2026-08-18\",\n  \"due_date\": \"2026-09-18\",\n  \"currency\": \"EUR\",\n  \"subtotal\": 522.02,\n  \"tax\": 41.76,\n  \"total\": 563.78,\n  \"field_confidence\": {\n    \"vendor_name\": 1.0,\n    \"vendor_tax_id\": 1.0,\n    \"invoice_number\": 1.0,\n    \"po_number\": 1.0,\n    \"invoice_date\": 1.0,\n    \"due_date\": 1.0,\n    \"currency\": 1.0,\n    \"subtotal\": 1.0,\n    \"tax\": 1.0,\n    \"total\": 1.0\n  },\n  \"line_items\": [\n    {\n      \"description\": \"Cable ties, pack of 1000\",\n      \"quantity\": 29,\n      \"unit_price\": 7.58,\n      \"amount\": 219.82\n    },\n    {\n      \"description\": \"Laser printer toner, black\",\n      \"quantity\": 15,\n      \"unit_price\": 0.98,\n      \"amount\": 14.70\n    },\n    {\n      \"description\": \"Hand truck, folding\",\n      \"quantity\": 25,\n      \"unit_price\": 11.50,\n      \"amount\": 287.50\n    }\n  ]\n}"
+ }
+}

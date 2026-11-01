@@ -1,0 +1,16 @@
+{
+ "model": "qwen2.5:7b-instruct",
+ "created_at": "2026-11-01T03:53:23.162771Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 18375717708,
+ "load_duration": 625167,
+ "prompt_eval_count": 611,
+ "prompt_eval_duration": 1351694000,
+ "eval_count": 431,
+ "eval_duration": 17006294999,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"Nordwerk Industrietechnik GmbH\",\n  \"vendor_tax_id\": \"DE 274 918 365\",\n  \"invoice_number\": \"RE-2026-1217\",\n  \"po_number\": \"4500100031\",\n  \"invoice_date\": \"2026-05-12\",\n  \"due_date\": \"2026-06-12\",\n  \"currency\": \"EUR\",\n  \"subtotal\": 3623.11,\n  \"tax\": 688.39,\n  \"total\": 4311.50,\n  \"field_confidence\": {\n    \"vendor_name\": 1,\n    \"vendor_tax_id\": 1,\n    \"invoice_number\": 1,\n    \"po_number\": 1,\n    \"invoice_date\": 1,\n    \"due_date\": 1,\n    \"currency\": 1,\n    \"subtotal\": 1,\n    \"tax\": 1,\n    \"total\": 1\n  },\n  \"line_items\": [\n    {\n      \"description\": \"USB-C docking station\",\n      \"quantity\": 20,\n      \"unit_price\": 152.50,\n      \"amount\": 3050.00\n    },\n    {\n      \"description\": \"Industrial shelving bracket\",\n      \"quantity\": 31,\n      \"unit_price\": 6.11,\n      \"amount\": 189.41\n    },\n    {\n      \"description\": \"Hand truck, folding\",\n      \"quantity\": 22,\n      \"unit_price\": 15.00,\n      \"amount\": 330.00\n    },\n    {\n      \"description\": \"Industrial shelving bracket\",\n      \"quantity\": 1,\n      \"unit_price\": 53.70,\n      \"amount\": 53.70\n    }\n  ]\n}"
+ }
+}

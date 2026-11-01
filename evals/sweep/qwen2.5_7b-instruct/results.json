@@ -1,0 +1,421 @@
+{
+  "run": {
+    "model": "qwen2.5:7b-instruct",
+    "extraction_prompt": "extract-page/3+repair-totals/3",
+    "agent_prompt": "agent/1",
+    "split": "dev",
+    "mode": "replayed",
+    "date": "2026-11-01",
+    "extraction_cases": 40,
+    "agent_cases": 15,
+    "concurrency": 1,
+    "recorded": 0,
+    "replayed": 0
+  },
+  "metrics": {
+    "header_macro_accuracy": 0.9875,
+    "header_min_field_accuracy": 0.925,
+    "field_accuracy": {
+      "vendor_name": 0.925,
+      "vendor_tax_id": 1.0,
+      "invoice_number": 1.0,
+      "po_number": 1.0,
+      "invoice_date": 1.0,
+      "due_date": 1.0,
+      "currency": 1.0,
+      "subtotal_minor": 0.95,
+      "tax_minor": 1.0,
+      "total_minor": 1.0
+    },
+    "line_precision": 0.9854014598540146,
+    "line_recall": 0.9712230215827338,
+    "line_f1": 0.9782608695652174,
+    "line_counts": {
+      "correct": 135,
+      "predicted": 137,
+      "gold": 139
+    },
+    "schema_validity": 1.0,
+    "calibration_error": 0.0,
+    "calibration_n": 379,
+    "status_accuracy": 0.975,
+    "extraction_p50_s": 17.677842042,
+    "extraction_p95_s": 54.750003582999994,
+    "page_p50_s": 14.078396583,
+    "page_p95_s": 18.479389167,
+    "output_tokens_per_s": 25.278997046447305,
+    "invoices_per_hour": 159.08425591053637,
+    "agent_action_accuracy": 0.6666666666666666,
+    "agent_hold_reason_accuracy": 0.5,
+    "agent_evidence_complete": 0.8,
+    "agent_guard_fires": 0,
+    "agent_p95_s": 20.4
+  },
+  "failures": [
+    {
+      "case": "g09",
+      "style": "seikyu",
+      "pages": 3,
+      "status": "extracted",
+      "expected_status": "extracted",
+      "fields": {
+        "vendor_name": {
+          "gold": "Kawasemi Electronics K.K.",
+          "got": null
+        }
+      },
+      "lines": [],
+      "line_counts": [
+        9,
+        9
+      ],
+      "error": null
+    },
+    {
+      "case": "g27",
+      "style": "seikyu",
+      "pages": 2,
+      "status": "exception",
+      "expected_status": "extracted",
+      "fields": {
+        "vendor_name": {
+          "gold": "Kawasemi Electronics K.K.",
+          "got": null
+        }
+      },
+      "lines": [],
+      "line_counts": [
+        8,
+        6
+      ],
+      "error": null
+    },
+    {
+      "case": "g29",
+      "style": "compact",
+      "pages": 3,
+      "status": "extracted",
+      "expected_status": "extracted",
+      "fields": {
+        "subtotal_minor": {
+          "gold": 984677,
+          "got": null
+        }
+      },
+      "lines": [],
+      "line_counts": [
+        9,
+        9
+      ],
+      "error": null
+    },
+    {
+      "case": "g34",
+      "style": "boxed",
+      "pages": 1,
+      "status": "extracted",
+      "expected_status": "extracted",
+      "fields": {},
+      "lines": [
+        {
+          "gold": {
+            "description": "Safety goggles, anti-fog",
+            "quantity": "6",
+            "unit_price": "8.31",
+            "amount_minor": 4986
+          },
+          "got": {
+            "description": "Safety goggles, anti-fog",
+            "quantity": "8.31",
+            "unit_price": "6",
+            "amount_minor": 4986
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Laser printer toner, black",
+            "quantity": "34",
+            "unit_price": "8.68",
+            "amount_minor": 29512
+          },
+          "got": {
+            "description": "Laser printer toner, black",
+            "quantity": "8.68",
+            "unit_price": "34",
+            "amount_minor": 29512
+          },
+          "similarity": 100
+        }
+      ],
+      "line_counts": [
+        3,
+        3
+      ],
+      "error": null
+    },
+    {
+      "case": "g47",
+      "style": "compact",
+      "pages": 2,
+      "status": "extracted",
+      "expected_status": "extracted",
+      "fields": {
+        "subtotal_minor": {
+          "gold": 107024,
+          "got": null
+        }
+      },
+      "lines": [],
+      "line_counts": [
+        2,
+        2
+      ],
+      "error": null
+    },
+    {
+      "case": "g57",
+      "style": "seikyu",
+      "pages": 2,
+      "status": "extracted",
+      "expected_status": "extracted",
+      "fields": {
+        "vendor_name": {
+          "gold": "Kawasemi Electronics K.K.",
+          "got": null
+        }
+      },
+      "lines": [],
+      "line_counts": [
+        5,
+        5
+      ],
+      "error": null
+    }
+  ],
+  "agent": [
+    {
+      "id": "a04-price-gbp",
+      "gold": "credit_memo_request",
+      "got": "hold",
+      "correct": false,
+      "evidence": true,
+      "tools": [
+        "get_po",
+        "get_receipts",
+        "compute_variance"
+      ],
+      "guard_fires": 0,
+      "stop": "no_proposal",
+      "model_s": 12.9
+    },
+    {
+      "id": "a05-price-two-lines",
+      "gold": "credit_memo_request",
+      "got": "credit_memo_request",
+      "correct": true,
+      "evidence": true,
+      "tools": [
+        "get_po",
+        "get_receipts",
+        "compute_variance",
+        "draft_credit_memo_request"
+      ],
+      "guard_fires": 0,
+      "stop": "proposed",
+      "model_s": 15.2
+    },
+    {
+      "id": "a06-short-one",
+      "gold": "credit_memo_request",
+      "got": "hold",
+      "correct": false,
+      "evidence": true,
+      "tools": [
+        "get_po",
+        "get_receipts",
+        "compute_variance"
+      ],
+      "guard_fires": 0,
+      "stop": "no_proposal",
+      "model_s": 20.4
+    },
+    {
+      "id": "a07-short-usd",
+      "gold": "credit_memo_request",
+      "got": "hold",
+      "correct": false,
+      "evidence": true,
+      "tools": [
+        "get_po",
+        "get_receipts",
+        "compute_variance"
+      ],
+      "guard_fires": 0,
+      "stop": "no_proposal",
+      "model_s": 15.4
+    },
+    {
+      "id": "a10-short-and-price",
+      "gold": "credit_memo_request",
+      "got": "hold",
+      "correct": false,
+      "evidence": true,
+      "tools": [
+        "get_po",
+        "get_receipts",
+        "compute_variance"
+      ],
+      "guard_fires": 0,
+      "stop": "no_proposal",
+      "model_s": 16.6
+    },
+    {
+      "id": "a11-short-and-price-usd",
+      "gold": "credit_memo_request",
+      "got": "hold",
+      "correct": false,
+      "evidence": true,
+      "tools": [
+        "get_po",
+        "get_receipts",
+        "compute_variance",
+        "propose_hold"
+      ],
+      "guard_fires": 0,
+      "stop": "proposed",
+      "model_s": 13.4
+    },
+    {
+      "id": "a13-not-received-gbp",
+      "gold": "hold (short_shipment)",
+      "got": "hold (missing_po)",
+      "correct": true,
+      "evidence": true,
+      "tools": [
+        "get_po",
+        "get_receipts",
+        "get_vendor_history",
+        "compute_variance",
+        "propose_hold"
+      ],
+      "guard_fires": 0,
+      "stop": "proposed",
+      "model_s": 18.1
+    },
+    {
+      "id": "a14-duplicate",
+      "gold": "hold (duplicate)",
+      "got": "hold (duplicate)",
+      "correct": true,
+      "evidence": true,
+      "tools": [
+        "get_vendor_history",
+        "propose_hold"
+      ],
+      "guard_fires": 0,
+      "stop": "proposed",
+      "model_s": 4.5
+    },
+    {
+      "id": "a15-duplicate",
+      "gold": "hold (duplicate)",
+      "got": "hold (duplicate)",
+      "correct": true,
+      "evidence": true,
+      "tools": [
+        "get_vendor_history",
+        "propose_hold"
+      ],
+      "guard_fires": 0,
+      "stop": "proposed",
+      "model_s": 4.4
+    },
+    {
+      "id": "a17-po-not-found",
+      "gold": "hold (missing_po)",
+      "got": "hold (missing_po)",
+      "correct": true,
+      "evidence": false,
+      "tools": [
+        "propose_hold"
+      ],
+      "guard_fires": 0,
+      "stop": "proposed",
+      "model_s": 3.0
+    },
+    {
+      "id": "a18-po-not-found",
+      "gold": "hold (missing_po)",
+      "got": "hold (missing_po)",
+      "correct": true,
+      "evidence": false,
+      "tools": [
+        "propose_hold"
+      ],
+      "guard_fires": 0,
+      "stop": "proposed",
+      "model_s": 3.0
+    },
+    {
+      "id": "a20-tax-mismatch",
+      "gold": "hold (tax_mismatch)",
+      "got": "hold (other)",
+      "correct": true,
+      "evidence": true,
+      "tools": [
+        "get_vendor_history",
+        "get_vendor_history",
+        "propose_hold"
+      ],
+      "guard_fires": 0,
+      "stop": "proposed",
+      "model_s": 8.6
+    },
+    {
+      "id": "a22-tax-mismatch",
+      "gold": "hold (tax_mismatch)",
+      "got": "hold (other)",
+      "correct": true,
+      "evidence": true,
+      "tools": [
+        "get_vendor_history",
+        "get_vendor_history",
+        "propose_hold"
+      ],
+      "guard_fires": 0,
+      "stop": "proposed",
+      "model_s": 8.4
+    },
+    {
+      "id": "a24-vendor-mismatch",
+      "gold": "hold (other)",
+      "got": "hold (duplicate)",
+      "correct": true,
+      "evidence": false,
+      "tools": [
+        "get_vendor_history",
+        "propose_hold"
+      ],
+      "guard_fires": 0,
+      "stop": "proposed",
+      "model_s": 4.4
+    },
+    {
+      "id": "a25-over-po-quantity",
+      "gold": "credit_memo_request",
+      "got": "credit_memo_request",
+      "correct": true,
+      "evidence": true,
+      "tools": [
+        "get_po",
+        "get_receipts",
+        "compute_variance",
+        "draft_credit_memo_request"
+      ],
+      "guard_fires": 0,
+      "stop": "proposed",
+      "model_s": 13.7
+    }
+  ]
+}
