@@ -1,0 +1,16 @@
+{
+ "model": "qwen3.5:9b-q4_K_M",
+ "created_at": "2026-11-01T05:04:22.784194Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 18330866625,
+ "load_duration": 1011167,
+ "prompt_eval_count": 630,
+ "prompt_eval_duration": 3060570000,
+ "eval_count": 337,
+ "eval_duration": 15226207000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"Nordwerk Industrietechnik GmbH\",\n  \"vendor_tax_id\": \"DE 274 918 365\",\n  \"invoice_number\": \"RE-2026-1175\",\n  \"po_number\": \"4500100025\",\n  \"invoice_date\": \"2026-03-01\",\n  \"due_date\": \"2026-04-01\",\n  \"currency\": \"EUR\",\n  \"subtotal\": 24.42,\n  \"tax\": 4.63,\n  \"total\": 29.05,\n  \"field_confidence\": {\n    \"vendor_name\": 1.0,\n    \"vendor_tax_id\": 1.0,\n    \"invoice_number\": 1.0,\n    \"po_number\": 1.0,\n    \"invoice_date\": 1.0,\n    \"due_date\": 1.0,\n    \"currency\": 1.0,\n    \"subtotal\": 1.0,\n    \"tax\": 1.0,\n    \"total\": 1.0\n  },\n  \"line_items\": [\n    {\n      \"description\": \"LED panel light 60x60\",\n      \"quantity\": 37,\n      \"unit_price\": 0.66,\n      \"amount\": 24.42\n    }\n  ]\n}"
+ }
+}

@@ -1,0 +1,16 @@
+{
+ "model": "gemma4:12b",
+ "created_at": "2026-11-01T06:03:47.756074Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 28239740083,
+ "load_duration": 5286875,
+ "prompt_eval_count": 629,
+ "prompt_eval_duration": 2977385000,
+ "eval_count": 358,
+ "eval_duration": 24834915000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"Pacific Rim Packaging Inc.\",\n  \"vendor_tax_id\": \"91-2846573\",\n  \"invoice_number\": \"PR-2026-1035\",\n  \"po_number\": \"4500100005\",\n  \"invoice_date\": \"2026-02-25\",\n  \"due_date\": \"2026-03-25\",\n  \"currency\": \"USD\",\n  \"subtotal\": 1240.50,\n  \"tax\": 99.24,\n  \"total\": 1349.74,\n  \"field_confidence\": {\n    \"vendor_name\": 1.0,\n    \"vendor_tax_id\": 1.0,\n    \"invoice_number\": 1.0,\n    \"po_number\": 1.0,\n    \"invoice_date\": 1.0,\n    \"due_date\": 1.0,\n    \"currency\": 1.0,\n    \"subtotal\": 1.0,\n    \"tax\": 1.0,\n    \"total\": 1.0\n  },\n  \"line_items\": [\n    {\n      \"description\": \"LED panel light 60x60\",\n      \"quantity\": 15,\n      \"unit_price\": 82.70,\n      \"amount\": 1240.50\n    }\n  ]\n}"
+ }
+}

@@ -1,0 +1,16 @@
+{
+ "model": "qwen3.5:9b-q4_K_M",
+ "created_at": "2026-11-01T05:02:25.698897Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 23960723875,
+ "load_duration": 512000,
+ "prompt_eval_count": 668,
+ "prompt_eval_duration": 3197822000,
+ "eval_count": 463,
+ "eval_duration": 20745509000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"Harbourside Catering Ltd\",\n  \"vendor_tax_id\": \"GB 482 1937 56\",\n  \"invoice_number\": \"NW-2026-1098\",\n  \"po_number\": \"4500100014\",\n  \"invoice_date\": \"2026-09-14\",\n  \"due_date\": \"2026-10-14\",\n  \"currency\": \"GBP\",\n  \"subtotal\": 5936.94,\n  \"tax\": 1187.38,\n  \"total\": 7124.32,\n  \"field_confidence\": {\n    \"vendor_name\": 0.95,\n    \"vendor_tax_id\": 0.95,\n    \"invoice_number\": 0.95,\n    \"po_number\": 0.95,\n    \"invoice_date\": 1.0,\n    \"due_date\": 1.0,\n    \"currency\": 1.0,\n    \"subtotal\": 0.95,\n    \"tax\": 0.95,\n    \"total\": 0.95\n  },\n  \"line_items\": [\n    {\n      \"description\": \"Server rack screws, M6\",\n      \"quantity\": 3,\n      \"unit_price\": 2.62,\n      \"amount\": 7.86\n    },\n    {\n      \"description\": \"Pallet wrap film, 500 m\",\n      \"quantity\": 22,\n      \"unit_price\": 2.64,\n      \"amount\": 58.08\n    },\n    {\n      \"description\": \"Cable ties, pack of 1000\",\n      \"quantity\": 38,\n      \"unit_price\": 154.50,\n      \"amount\": 5871.00\n    }\n  ]\n}"
+ }
+}

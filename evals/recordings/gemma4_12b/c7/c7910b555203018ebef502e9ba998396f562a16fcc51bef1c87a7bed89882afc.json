@@ -1,0 +1,16 @@
+{
+ "model": "gemma4:12b",
+ "created_at": "2026-11-01T06:33:19.171033Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 37104963833,
+ "load_duration": 3214375,
+ "prompt_eval_count": 643,
+ "prompt_eval_duration": 3988054000,
+ "eval_count": 453,
+ "eval_duration": 31644146000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"Alpenblick Logistik AG\",\n  \"vendor_tax_id\": \"CHE-123.456.789\",\n  \"invoice_number\": \"AB-2026-1406\",\n  \"po_number\": \"4500100058\",\n  \"invoice_date\": \"2026-08-06\",\n  \"due_date\": \"2026-09-06\",\n  \"currency\": \"EUR\",\n  \"subtotal\": null,\n  \"tax\": null,\n  \"total\": null,\n  \"field_confidence\": {\n    \"vendor_name\": 1.0,\n    \"vendor_tax_id\": 1.0,\n    \"invoice_number\": 1.0,\n    \"po_number\": 1.0,\n    \"invoice_date\": 1.0,\n    \"due_date\": 1.0,\n    \"currency\": 1.0,\n    \"subtotal\": 0.0,\n    \"tax\": 0.0,\n    \"total\": 0.0\n  },\n  \"line_items\": [\n    {\n      \"description\": \"Server rack screws, M6\",\n      \"quantity\": 12,\n      \"unit_price\": 47.00,\n      \"amount\": 564.00\n    },\n    {\n      \"description\": \"Pallet wrap film, 500 m\",\n      \"quantity\": 40,\n      \"unit_price\": 3.77,\n      \"amount\": 150.80\n    },\n    {\n      \"description\": \"Cable ties, pack of 1000\",\n      \"quantity\": 21,\n      \"unit_price\": 4.38,\n      \"amount\": 91.98\n    }\n  ]\n}"
+ }
+}

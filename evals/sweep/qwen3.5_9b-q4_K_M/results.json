@@ -1,7 +1,7 @@
 {
   "run": {
     "model": "qwen3.5:9b-q4_K_M",
-    "extraction_prompt": "extract-page/3+repair-totals/3",
+    "extraction_prompt": "extract-page/4+repair-totals/4",
     "agent_prompt": "agent/1",
     "split": "dev",
     "mode": "replayed",
@@ -13,18 +13,18 @@
     "replayed": 0
   },
   "metrics": {
-    "header_macro_accuracy": 0.9625,
-    "header_min_field_accuracy": 0.725,
+    "header_macro_accuracy": 0.99,
+    "header_min_field_accuracy": 0.9,
     "field_accuracy": {
       "vendor_name": 1.0,
-      "vendor_tax_id": 0.925,
+      "vendor_tax_id": 0.9,
       "invoice_number": 1.0,
       "po_number": 1.0,
       "invoice_date": 1.0,
       "due_date": 1.0,
       "currency": 1.0,
-      "subtotal_minor": 0.725,
-      "tax_minor": 0.975,
+      "subtotal_minor": 1.0,
+      "tax_minor": 1.0,
       "total_minor": 1.0
     },
     "line_precision": 1.0,
@@ -37,14 +37,14 @@
     },
     "schema_validity": 1.0,
     "calibration_error": 0.0,
-    "calibration_n": 374,
+    "calibration_n": 385,
     "status_accuracy": 0.975,
-    "extraction_p50_s": 25.914538625000002,
-    "extraction_p95_s": 66.20192675,
-    "page_p50_s": 22.413849166,
-    "page_p95_s": 29.159685542,
-    "output_tokens_per_s": 20.117555017631744,
-    "invoices_per_hour": 109.54707093361442,
+    "extraction_p50_s": 25.456214375,
+    "extraction_p95_s": 62.79426820799999,
+    "page_p50_s": 21.143124790999998,
+    "page_p95_s": 26.5917755,
+    "output_tokens_per_s": 21.839909791355964,
+    "invoices_per_hour": 115.35574161353425,
     "agent_action_accuracy": 0.9333333333333333,
     "agent_hold_reason_accuracy": 0.625,
     "agent_evidence_complete": 0.8666666666666667,
@@ -52,25 +52,6 @@
     "agent_p95_s": 23.5
   },
   "failures": [
-    {
-      "case": "g07",
-      "style": "german",
-      "pages": 2,
-      "status": "extracted",
-      "expected_status": "extracted",
-      "fields": {
-        "subtotal_minor": {
-          "gold": 195723,
-          "got": null
-        }
-      },
-      "lines": [],
-      "line_counts": [
-        4,
-        4
-      ],
-      "error": null
-    },
     {
       "case": "g09",
       "style": "seikyu",
@@ -81,35 +62,12 @@
         "vendor_tax_id": {
           "gold": "T9876543210987",
           "got": null
-        },
-        "subtotal_minor": {
-          "gold": 5781401,
-          "got": null
         }
       },
       "lines": [],
       "line_counts": [
         9,
         9
-      ],
-      "error": null
-    },
-    {
-      "case": "g17",
-      "style": "compact",
-      "pages": 2,
-      "status": "extracted",
-      "expected_status": "extracted",
-      "fields": {
-        "subtotal_minor": {
-          "gold": 788338,
-          "got": null
-        }
-      },
-      "lines": [],
-      "line_counts": [
-        8,
-        8
       ],
       "error": null
     },
@@ -123,14 +81,6 @@
         "vendor_tax_id": {
           "gold": "T9876543210987",
           "got": null
-        },
-        "subtotal_minor": {
-          "gold": 2181210,
-          "got": null
-        },
-        "tax_minor": {
-          "gold": 218121,
-          "got": null
         }
       },
       "lines": [],
@@ -141,52 +91,14 @@
       "error": null
     },
     {
-      "case": "g29",
-      "style": "compact",
-      "pages": 3,
+      "case": "g51",
+      "style": "seikyu",
+      "pages": 1,
       "status": "extracted",
       "expected_status": "extracted",
       "fields": {
-        "subtotal_minor": {
-          "gold": 984677,
-          "got": null
-        }
-      },
-      "lines": [],
-      "line_counts": [
-        9,
-        9
-      ],
-      "error": null
-    },
-    {
-      "case": "g37",
-      "style": "german",
-      "pages": 2,
-      "status": "extracted",
-      "expected_status": "extracted",
-      "fields": {
-        "subtotal_minor": {
-          "gold": 100400,
-          "got": null
-        }
-      },
-      "lines": [],
-      "line_counts": [
-        3,
-        3
-      ],
-      "error": null
-    },
-    {
-      "case": "g47",
-      "style": "compact",
-      "pages": 2,
-      "status": "extracted",
-      "expected_status": "extracted",
-      "fields": {
-        "subtotal_minor": {
-          "gold": 107024,
+        "vendor_tax_id": {
+          "gold": "T9876543210987",
           "got": null
         }
       },
@@ -194,44 +106,6 @@
       "line_counts": [
         2,
         2
-      ],
-      "error": null
-    },
-    {
-      "case": "g48",
-      "style": "classic",
-      "pages": 2,
-      "status": "extracted",
-      "expected_status": "extracted",
-      "fields": {
-        "subtotal_minor": {
-          "gold": 303683,
-          "got": null
-        }
-      },
-      "lines": [],
-      "line_counts": [
-        4,
-        4
-      ],
-      "error": null
-    },
-    {
-      "case": "g49",
-      "style": "german",
-      "pages": 3,
-      "status": "extracted",
-      "expected_status": "extracted",
-      "fields": {
-        "subtotal_minor": {
-          "gold": 1620465,
-          "got": null
-        }
-      },
-      "lines": [],
-      "line_counts": [
-        7,
-        7
       ],
       "error": null
     },
@@ -244,29 +118,6 @@
       "fields": {
         "vendor_tax_id": {
           "gold": "T9876543210987",
-          "got": null
-        },
-        "subtotal_minor": {
-          "gold": 3117253,
-          "got": null
-        }
-      },
-      "lines": [],
-      "line_counts": [
-        5,
-        5
-      ],
-      "error": null
-    },
-    {
-      "case": "g58",
-      "style": "boxed",
-      "pages": 2,
-      "status": "extracted",
-      "expected_status": "extracted",
-      "fields": {
-        "subtotal_minor": {
-          "gold": 319934,
           "got": null
         }
       },

@@ -1,0 +1,16 @@
+{
+ "model": "qwen3.5:9b-q4_K_M",
+ "created_at": "2026-11-01T05:00:35.35303Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 20001505917,
+ "load_duration": 890542,
+ "prompt_eval_count": 540,
+ "prompt_eval_duration": 2608779000,
+ "eval_count": 379,
+ "eval_duration": 17335114000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"Kawasemi Electronics K.K.\",\n  \"vendor_tax_id\": null,\n  \"invoice_number\": \"SK-2026-1063\",\n  \"po_number\": null,\n  \"invoice_date\": null,\n  \"due_date\": null,\n  \"currency\": \"JPY\",\n  \"subtotal\": null,\n  \"tax\": null,\n  \"total\": null,\n  \"field_confidence\": {\n    \"vendor_name\": 1.0,\n    \"vendor_tax_id\": 0.0,\n    \"invoice_number\": 1.0,\n    \"po_number\": 0.0,\n    \"invoice_date\": 0.0,\n    \"due_date\": 0.0,\n    \"currency\": 1.0,\n    \"subtotal\": 0.0,\n    \"tax\": 0.0,\n    \"total\": 0.0\n  },\n  \"line_items\": [\n    {\n      \"description\": \"Safety goggles, anti-fog\",\n      \"quantity\": 14,\n      \"unit_price\": 8563,\n      \"amount\": 119882\n    },\n    {\n      \"description\": \"Ergonomic office chair\",\n      \"quantity\": 37,\n      \"unit_price\": 85900,\n      \"amount\": 3178300\n    },\n    {\n      \"description\": \"Industrial shelving bracket\",\n      \"quantity\": 6,\n      \"unit_price\": 889,\n      \"amount\": 5334\n    }\n  ]\n}"
+ }
+}

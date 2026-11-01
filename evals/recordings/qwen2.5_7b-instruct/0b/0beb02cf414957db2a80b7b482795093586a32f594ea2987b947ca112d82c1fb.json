@@ -1,0 +1,16 @@
+{
+ "model": "qwen2.5:7b-instruct",
+ "created_at": "2026-11-01T05:39:27.013673Z",
+ "done": true,
+ "done_reason": "stop",
+ "total_duration": 13926197416,
+ "load_duration": 494791,
+ "prompt_eval_count": 543,
+ "prompt_eval_duration": 707310000,
+ "eval_count": 337,
+ "eval_duration": 13210001000,
+ "message": {
+  "role": "assistant",
+  "content": "{\n  \"vendor_name\": \"Pacific Rim Packaging Inc.\",\n  \"vendor_tax_id\": null,\n  \"invoice_number\": \"PR-2026-1203\",\n  \"po_number\": null,\n  \"invoice_date\": null,\n  \"due_date\": null,\n  \"currency\": \"USD\",\n  \"subtotal\": 9846.77,\n  \"tax\": 787.74,\n  \"total\": 10634.51,\n  \"field_confidence\": {\n    \"vendor_name\": 1,\n    \"vendor_tax_id\": 0,\n    \"po_number\": 0,\n    \"invoice_date\": 0,\n    \"due_date\": 0,\n    \"currency\": 1,\n    \"subtotal\": 1,\n    \"tax\": 1,\n    \"total\": 1\n  },\n  \"line_items\": [\n    {\n      \"description\": \"Hand truck, folding\",\n      \"quantity\": 40,\n      \"unit_price\": 74.80,\n      \"amount\": 2992.00\n    },\n    {\n      \"description\": \"Laser printer toner, black\",\n      \"quantity\": 10,\n      \"unit_price\": 141.00,\n      \"amount\": 1410.00\n    },\n    {\n      \"description\": \"Safety goggles, anti-fog\",\n      \"quantity\": 12,\n      \"unit_price\": 7.44,\n      \"amount\": 89.28\n    }\n  ]\n}"
+ }
+}
