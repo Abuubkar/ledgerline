@@ -16,13 +16,14 @@ from dataclasses import asdict, dataclass
 from datetime import UTC, datetime, timedelta
 
 import redis.asyncio as redis
+from opentelemetry import trace
 from sqlalchemy import func, select, update
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 from sqlalchemy.pool import NullPool
 
-from ledgerline_api import matching, prompts, service, storage, vendors
+from ledgerline_api import db, matching, prompts, service, storage, vendors
 from ledgerline_api.db import (
     DeadLetter,
     ExtractionRun,
@@ -64,7 +65,7 @@ class Outcome(enum.Enum):
 async def job_resources() -> AsyncIterator[tuple[async_sessionmaker, redis.Redis]]:
     """Fresh connections per job: each Celery task runs its own event loop (asyncio.run), and asyncpg and
     redis connections can't cross event loops."""
-    engine = create_async_engine(settings.database_url, poolclass=NullPool)
+    engine = db.new_engine(poolclass=NullPool)
     redis_client = redis.from_url(settings.redis_url)
     try:
         yield async_sessionmaker(engine, expire_on_commit=False), redis_client
@@ -229,6 +230,7 @@ async def _extract_document(content: bytes, redis_client: redis.Redis) -> Docume
 
 async def extract(invoice_id: uuid.UUID, task_id: str, attempt: int) -> Outcome:
     """Run one extraction attempt. Raises TransientError (worth retrying) or PermanentError (dead-letter it)."""
+    trace.get_current_span().set_attribute("ledgerline.invoice_id", str(invoice_id))
     async with job_resources() as (sessions, redis_client):
         # Wait out a duplicate delivery's live lease, but not forever: at most two lease periods.
         deadline = _now() + timedelta(seconds=2 * settings.extraction_lease_s)
@@ -302,6 +304,7 @@ async def match(invoice_id: uuid.UUID) -> str:
     """3-way match one invoice and store the result: `extracted` → `matched` or `exception`. Also re-matches an
     invoice whose earlier match failed (its PO or receipt may have arrived since). Returns the new status, or
     `skipped` for an invoice in any other state; safe to run twice."""
+    trace.get_current_span().set_attribute("ledgerline.invoice_id", str(invoice_id))
     async with job_resources() as (sessions, _):
         async with sessions() as session:
             invoice = (

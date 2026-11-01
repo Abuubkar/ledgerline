@@ -12,12 +12,13 @@ import logging
 from collections.abc import Callable
 from datetime import UTC, datetime
 
+from opentelemetry import context, propagate
 from sqlalchemy import select
-from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
+from sqlalchemy.ext.asyncio import async_sessionmaker
 
-from ledgerline_api.db import OutboxMessage
+from ledgerline_api.db import OutboxMessage, new_engine
 from ledgerline_api.service import OUTBOX_QUEUES
-from ledgerline_api.settings import settings
+from ledgerline_telemetry import setup_telemetry
 
 log = logging.getLogger("ledgerline.relay")
 BATCH = 100
@@ -54,12 +55,20 @@ async def publish_pending(sessions: async_sessionmaker, send: Callable[[OutboxMe
 def celery_send(row: OutboxMessage) -> None:
     from ledgerline_api.worker import app
 
-    # The outbox id doubles as the task id, so a republished job is recognisable in logs.
-    app.send_task(row.task_name, kwargs=row.payload, task_id=str(row.id), queue=OUTBOX_QUEUES[row.task_name])
+    # Publish inside the trace of the request or job that wrote the row (service.job_payload), so the worker's span
+    # joins that trace instead of starting a new one.
+    kwargs = dict(row.payload)
+    token = context.attach(propagate.extract(kwargs.pop("_trace", {})))
+    try:
+        # The outbox id doubles as the task id, so a republished job is recognisable in logs.
+        app.send_task(row.task_name, kwargs=kwargs, task_id=str(row.id), queue=OUTBOX_QUEUES[row.task_name])
+    finally:
+        context.detach(token)
 
 
 async def run_forever() -> None:
-    engine = create_async_engine(settings.database_url)
+    setup_telemetry("relay", celery=True)
+    engine = new_engine()
     sessions = async_sessionmaker(engine, expire_on_commit=False)
     log.info("outbox relay started")
     idle_wait = 0.5
