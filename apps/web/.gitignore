@@ -2,3 +2,4 @@ node_modules/
 .next/
 next-env.d.ts
 *.tsbuildinfo
+AGENTS.md  # written by `next dev` (generate-agent-files.js); regenerated on every run
