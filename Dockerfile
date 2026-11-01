@@ -31,6 +31,9 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 
 FROM python:3.13-slim-trixie AS runtime
 
+# The commit the image was built from; traces report it as service.version (ADR 0020).
+ARG LEDGERLINE_VERSION=dev
+ENV LEDGERLINE_VERSION=$LEDGERLINE_VERSION
 RUN useradd --create-home --uid 10001 ledgerline
 WORKDIR /app
 COPY --from=builder --chown=ledgerline /app/.venv /app/.venv

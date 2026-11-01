@@ -68,6 +68,8 @@ services:
       OLLAMA_HOST: ${WORKER_OLLAMA_HOST:-http://host.docker.internal:11434}
       LLM_MAX_CONCURRENCY: ${LLM_MAX_CONCURRENCY:-1}
       ERP_BASE_URL: http://erp_mock:8100
+      # Traces go to Jaeger only with TRACING=1 (and `--profile observability` to run Jaeger); otherwise tracing is off.
+      OTEL_EXPORTER_OTLP_ENDPOINT: ${TRACING:+http://jaeger:4318}
     extra_hosts:
       - "host.docker.internal:host-gateway"
     depends_on:
@@ -99,12 +101,22 @@ services:
     command: ["uvicorn", "ledgerline_erp_mock.main:app", "--host", "0.0.0.0", "--port", "8100"]
     environment:
       ERP_DATASET: /data/erp/dataset.json
+      OTEL_EXPORTER_OTLP_ENDPOINT: ${TRACING:+http://jaeger:4318}
       ERP_ERROR_RATE: ${ERP_ERROR_RATE:-0}
       ERP_LATENCY_MS: ${ERP_LATENCY_MS:-0}
     ports:
       - "8100:8100"
     volumes:
       - ./data/erp:/data/erp:ro
+
+  # Traces (ADR 0020): Jaeger v2 is both the OpenTelemetry collector (OTLP on 4318) and the trace store and UI
+  # (http://localhost:16686). In memory, so traces go when it stops. Runs only with --profile observability.
+  jaeger:
+    image: cr.jaegertracing.io/jaegertracing/jaeger:2.22.0
+    profiles: [observability]
+    ports:
+      - "16686:16686"
+      - "4318:4318"
 
 volumes:
   pgdata:
