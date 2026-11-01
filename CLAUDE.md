@@ -27,7 +27,9 @@ make codegen          # regenerate client + schema.graphql after changing contra
 make contract-check   # oasdiff: code vs contracts/openapi.yaml
 make lint             # ruff, mypy, tsc, eslint: the CI lint job (actionlint aside)
 make migrations-lint  # squawk on the SQL of migrations added since origin/main
-TRACING=1 docker compose --profile observability up -d --wait     # stack plus Jaeger (UI on :16686)
+TRACING=1 docker compose --profile observability up -d --wait     # plus collector, Jaeger :16686, Prometheus :9090, Grafana :3001
+docker compose -f docker-compose.yml -f docker-compose.release.yml up -d --wait   # the published images instead of local builds
+uv run python scripts/make_dashboard.py                            # regenerate the Grafana dashboard (never edit its JSON)
 OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318 uv run uvicorn ledgerline_api.main:app --port 8000   # traced API
 uv run python scripts/trace_tree.py [--invoice <id>]               # print an invoice's trace from Jaeger
 make seed             # 200 vendors, 20k invoices, 30 near-duplicates into the dev DB, plus data/erp/dataset.json
@@ -105,5 +107,8 @@ uv run python evals/sweep.py [--live]     # every model in evals/sweep.py MODELS
   `OTEL_EXPORTER_OTLP_ENDPOINT` is set. A new database engine comes from `db.new_engine()` (so it's traced); a new
   outbox job goes through `service.job_payload` (so it joins the caller's trace). Never put invoice content, prompt
   or answer text in a span attribute; the denylist in `ledgerline_telemetry` drops known keys, but don't rely on it.
+- Metrics (ADR 0021) are defined only in `ledgerline_api/metrics.py`. A new counter is primed at 0 in
+  `prime_counters` (Prometheus's OTLP receiver can't count a first measurement); gauge alerts and panels use
+  `last_over_time(...[1m])` (OTLP leaves no staleness marker). Every alert has a runbook in `docs/runbooks/`.
 - Golden gold files come from the generator (`make golden`); don't edit them by hand. Agent scenarios
   (`evals/golden/agent/*.yaml`) are hand-maintained.

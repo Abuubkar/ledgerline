@@ -5,6 +5,9 @@ date: 2026-11-01
 
 # Tracing: OpenTelemetry in every service, one trace per upload, Jaeger in development
 
+> Since slice 8b (ADR 0021) the services send to an OpenTelemetry Collector, which tail-samples traces into Jaeger
+> and also carries metrics and logs. Everything below about the spans themselves still holds.
+
 Every Python service (api, worker, relay, erp-mock) calls `ledgerline_telemetry.setup_telemetry` once. It sends
 traces over OTLP/HTTP, and instruments FastAPI, SQLAlchemy, httpx (the Ollama and ERP clients), Redis, botocore
 (S3) and Celery. One invoice's upload, extraction, model call and match form **one trace**. The agent run and the
