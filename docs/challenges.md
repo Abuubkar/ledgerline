@@ -150,3 +150,17 @@ print; gemma4 took the "5" in "A4 copy paper, 5 reams" as the quantity.
 - *Did:* recorded here and in the sweep; a prompt change aimed at both follows as `extract-page/4`, with every model
   rerun, instead of tuning mid-sweep (which would make the comparison unfair).
 
+## Slice 6c: prompt `extract-page/4`
+
+**A prompt fix that helped two models and cost the third.** The new rule "subtotal only where printed, never summed"
+fixed qwen3.5's invented subtotals (72.5% → 100%), but qwen2.5 stopped reading "Net GBP …" as a subtotal (95% → 90%).
+- *Did:* kept the rule (it raised the default model to 100% header and every model's lines to 99.3%), recorded the
+  trade-off in ADR 0017.
+- *Alternatives:* list subtotal labels in the prompt ("Net", "Zwischensumme", "小計"), which would fix it but tunes the
+  prompt to six generated layouts; worth trying only against real invoices.
+
+**Memory readings wandered between runs of the same model** (gemma4: 8.7 GB, then 7.1 GB), because the reading was
+taken after a long run, when macOS had compressed part of the weights.
+- *Did:* `sweep.py` measures each model on a fresh load (unload, one tiny call, read, unload); `--memory` remeasures
+  without rerunning the eval.
+
