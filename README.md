@@ -28,6 +28,8 @@ Measured on an Apple M1 Pro with 16 GB, everything local and free (`gemma4:12b` 
 | Header fields read correctly | **100%** on the 40-invoice dev set, **99.5%** on the 20 held-out invoices | [evals/REPORT.md](evals/REPORT.md), [evals/test-split/](evals/test-split/REPORT.md) |
 | Line items (F1) | **99.3%** dev, **97.1%** held out | same |
 | Agent picks the right action | **15/15** dev, **10/10** held out | same |
+| Scanned invoices (12 generated: tilted, faded, blurred, fax-like) | **91–98%** header fields, **81–100%** line items; misread amounts are caught by the arithmetic check | [evals/scans/](evals/scans/REPORT.md) |
+| Real invoices (25 FCC filings, 5 scans) | invoice number and date **91%**; totals and lines limited by `$`-only currency (a found gap, in the backlog) | [evals/real/](evals/real/REPORT.md), [ADR 0022](docs/adr/0022-scans-and-real-invoices-eval-sets.md) |
 | Model comparison | gemma4:12b vs qwen3.5:9b vs qwen2.5:7b on the same eval: quality, speed, memory | [evals/SWEEP.md](evals/SWEEP.md) |
 | Speed | ~34 s of model time per page, ~73 invoices an hour on one laptop | [docs/metrics.md](docs/metrics.md) |
 | Chaos test | 203 uploads, the model failing 15% of calls, a worker killed mid-run: 0 invoices lost, only the 3 corrupt files dead-lettered | [docs/metrics.md](docs/metrics.md) |
@@ -252,8 +254,8 @@ Each slice is one end-to-end change. The destination layout and stack are in [do
 
 Deliberately out of scope so far, in rough order of value:
 
-- **Real invoices.** The golden set is generated (6 layouts, one scan); real vendor invoices, especially scans and
-  photos, would test far more. In progress: [docs/backlog.md](docs/backlog.md).
+- **What the real invoices found.** Take the currency from the PO when an invoice prints only `$`; check VAT IDs'
+  check digits (scans misread digits); detect sideways scans. Details in [docs/backlog.md](docs/backlog.md).
 - **Logins and roles.** A decision records when and why, but not who.
 - **Start the agent automatically** when an invoice lands in `exception` (today a script queues it).
 - **Deploy it.** The signed images and the release compose file are ready; nothing runs them on a server.
@@ -282,7 +284,7 @@ docs/                     ADRs, metrics history, SLO, runbooks, challenges, back
 
 | | |
 |---|---|
-| [docs/adr/](docs/adr/) | 21 decisions: what was chosen, why, and the alternatives |
+| [docs/adr/](docs/adr/) | 22 decisions: what was chosen, why, and the alternatives |
 | [docs/metrics.md](docs/metrics.md) | every measurement, slice by slice, with the latest per model at the top |
 | [docs/challenges.md](docs/challenges.md) | what went wrong, what we did, why, and what else we could have done |
 | [docs/backlog.md](docs/backlog.md) | improvements found and deliberately parked, with their cost |

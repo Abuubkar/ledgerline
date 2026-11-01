@@ -267,3 +267,32 @@ URL carries its (development) credentials. httpx is set to WARNING.
 **My runbooks first named the dead-letter endpoints wrongly** (`/v1/dead-letters/...`); checked against the contract,
 they're `/v1/admin/dead-letters` and `.../{id}/replay`.
 
+## Real invoices and scans (after slice 8b)
+
+**No public dataset fits:** real supplier invoices with header and line labels and a license to publish them don't
+exist publicly. DocILE fits our fields but is research-only.
+- *Did:* FCC ad-buy invoices (public filings, via Google's VRDU), with our own labels, and a separate generated
+  scans set for the supplier-invoice fields (ADR 0022).
+- *Alternatives:* DocILE behind each contributor's own access; copying CC BY-NC labels.
+
+**Published labels weren't complete:** VRDU labelled 14 of the 28 spots on one invoice (adding up to $10,275 against a
+printed $20,875). Two independent transcriptions, checked against the printed totals, became the gold instead.
+
+**My first line score (6%) measured the scorer, not the model.** The model folds air dates and spot codes into line
+descriptions, and per-spot invoices repeat one description many times, so lines with the right numbers failed the
+85% description rule or were paired with their twins.
+- *Did:* for this set only, a description counts when the gold's words are all in it, and lines whose numbers agree
+  are paired first; numbers must still be exact. Tests pin both rules, and the golden and scans scores didn't move.
+  The real line score is 37%.
+
+**Most real-invoice failures were one gap: the `$` sign.** With no ISO code printed, no currency is read, and no
+amount can be converted, so totals and line amounts came back empty. Found by listing the invalid-field reasons
+instead of the scores. The fix belongs in the product (currency from the PO or vendor), not the eval (backlog).
+
+**A refactor almost changed the golden set:** moving the generator's recipe into a helper reordered one JSON key in
+all 60 gold files. Caught by regenerating and checking `git status`; the key order is restored, and the files are
+byte-identical.
+
+**Only 1 of the first 25 picks was a scan:** VRDU's recent documents are born-digital PDFs. The older (2012)
+filings are scans, and 5 of the 8 older invoices were swapped in.
+

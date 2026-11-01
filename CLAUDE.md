@@ -45,6 +45,8 @@ make eval                                 # evals on the dev split, replaying re
 make eval LIVE=1                          # the same against Ollama, recording answers (~1 h); commit evals/recordings
 make eval-test                            # the held-out test split: only to check a finished change
 uv run python evals/sweep.py [--live]     # every model in evals/sweep.py MODELS on the dev split -> evals/SWEEP.md
+uv run python evals/run.py --set scans    # 12 generated scans (report only) -> evals/scans/
+uv run python evals/run.py --set real     # 25 real FCC invoices (report only) -> evals/real/
 ```
 
 ## Rules that are easy to break
@@ -110,5 +112,7 @@ uv run python evals/sweep.py [--live]     # every model in evals/sweep.py MODELS
 - Metrics (ADR 0021) are defined only in `ledgerline_api/metrics.py`. A new counter is primed at 0 in
   `prime_counters` (Prometheus's OTLP receiver can't count a first measurement); gauge alerts and panels use
   `last_over_time(...[1m])` (OTLP leaves no staleness marker). Every alert has a runbook in `docs/runbooks/`.
-- Golden gold files come from the generator (`make golden`); don't edit them by hand. Agent scenarios
+- Golden and scans gold files come from the generator (`make golden`, `make_invoice.py --scans`); don't edit them by
+  hand. The real set's gold (`evals/golden/real`) is hand-transcribed: change it only from the PDF, never from a
+  model's answer. Agent scenarios
   (`evals/golden/agent/*.yaml`) are hand-maintained.

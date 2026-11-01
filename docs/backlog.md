@@ -7,17 +7,31 @@ archived first.
 
 ## Extraction
 
-### The golden set has only one scanned invoice
+### Currency from the purchase order when an invoice prints only a symbol
 
-- **What:** g13 (a page rendered as an image, tilted 2°, no text layer) is the only scan in the 60 golden invoices,
-  and it's in the test split. The dev split, where prompts are tuned, never exercises reading from an image. On g13
-  gemma4 paired two descriptions with the wrong numbers and misread the subtotal; code caught it (`exception`).
-- **Fix:** have `scripts/make_invoice.py --golden` render more scans (several layouts, a few tilts, one low-contrast),
-  spread across both splits, then rerun the models.
-- **Cost:** new golden cases change the split for some existing ones only if they hash into the first 20 (ADR 0015);
-  a full rerun of every model (~70 min plus rests), and the baseline moves.
-- **Why it waits:** extraction from text layers is what the current numbers measure well; scans need their own pass.
-- **Found:** slice 6d, 2026-11-01.
+- **What:** US invoices print `$`, never "USD". Ledgerline reads no currency, can't convert any amount, and sends the
+  invoice to `exception` with the total and line amounts empty. On the real set this emptied the total on 14 of 23 invoices (a 15th timed out).
+- **Fix:** keep the model copying what's printed, but when the currency is missing and the invoice cites a PO (or
+  the vendor master has one), take the currency from there before converting amounts. Never guess from the
+  symbol alone (`$` is also CAD, AUD...).
+- **Cost:** a small change in the extraction job plus tests; rerun the real set. **Found:** real-invoice eval,
+  2026-11-01 (ADR 0022).
+
+### Check VAT IDs before trusting them
+
+- **What:** on scans the model misreads single digits in VAT IDs (4 of 8 dev scans). Nothing checks them, and an
+  invoice's vendor is found by its tax ID, so a misread ID links the invoice to the wrong vendor or makes a new one.
+- **Fix:** validate the country's check digits (DE, GB, EU VAT formats) and mark a failing ID invalid instead of
+  linking it; optionally match by name when the ID fails.
+- **Cost:** a validation function with tests; no model change. **Found:** scans eval, 2026-11-01.
+
+### Real pages: sideways scans and time limits
+
+- **What:** dense real pages take 80–147 s of model time; a two-page sideways scan timed out at 180 s. Four of the
+  five real scans are printed sideways.
+- **Fix:** detect page orientation before reading (e.g. compare text-line angles, or try both and keep the better
+  answer); give image pages a longer budget.
+- **Found:** real-invoice eval, 2026-11-01.
 
 ### Japan's registration number isn't read as the vendor's tax ID (qwen3.5 only)
 
