@@ -31,7 +31,7 @@ from evals import agent_db, metrics  # noqa: E402
 from evals.replay import MissingRecording, Recorder, current_case  # noqa: E402
 from ledgerline_api import agent, jobs, prompts  # noqa: E402
 from ledgerline_api.db import AgentRun, AgentStep, PendingAction  # noqa: E402
-from ledgerline_api.errors import PermanentError  # noqa: E402
+from ledgerline_api.errors import PermanentError, TransientError  # noqa: E402
 from ledgerline_api.settings import settings  # noqa: E402
 
 GOLDEN = EVALS / "golden"
@@ -70,7 +70,13 @@ async def extract_case(case: str, recorder: Recorder) -> dict:
     token = current_case.set(case)
     started = time.perf_counter()
     try:
-        result = await jobs._extract_document((GOLDEN / "extraction" / f"{case}.pdf").read_bytes(), redis_client=None)
+        content = (GOLDEN / "extraction" / f"{case}.pdf").read_bytes()
+        try:
+            result = await jobs._extract_document(content, redis_client=None)
+        except TransientError:
+            # A model timeout, as the worker would see under memory pressure: one retry, like the job queue's.
+            recorder.stats.pop(case, None)
+            result = await jobs._extract_document(content, redis_client=None)
         header = asdict(result.header)
         out = {
             "status": result.status, "repair_attempted": result.repair_attempted, "prompt_version": result.prompt_version,
@@ -80,7 +86,7 @@ async def extract_case(case: str, recorder: Recorder) -> dict:
                        "unit_price": None if l.unit_price is None else str(l.unit_price), "amount_minor": l.amount_minor} for l in result.lines],
             "pages": [{"page_no": p.page_no, "status": p.status, "source": p.source, "error_code": p.error_code} for p in result.pages],
         }
-    except PermanentError as exc:
+    except (PermanentError, TransientError) as exc:  # still failing after the retry: scored as a failed invoice
         out = {"status": "failed", "error": exc.code, "detail": exc.detail, "header": {}, "confidence": {}, "lines": [], "pages": []}
     finally:
         current_case.reset(token)
@@ -96,7 +102,15 @@ async def agent_case(scenario: dict, recorder: Recorder) -> dict:
     invoice_id = await agent_db.seed(scenario)
     token = current_case.set(scenario["id"])
     try:
-        outcome = await agent.run(invoice_id)
+        try:
+            outcome = await agent.run(invoice_id)
+        except TransientError:
+            recorder.stats.pop(scenario["id"], None)
+            invoice_id = await agent_db.seed(scenario)  # a fresh start: the failed run left a row behind
+            try:
+                outcome = await agent.run(invoice_id)
+            except TransientError as exc:
+                outcome = f"failed: {exc.code}"
     finally:
         current_case.reset(token)
     engine = create_async_engine(settings.database_url)
@@ -319,6 +333,7 @@ def main() -> None:
     parser.add_argument("--baseline", type=Path, help="fail on a drop of more than 1.5 points against this file")
     parser.add_argument("--write-baseline", type=Path, help="save this run's metrics as a baseline")
     parser.add_argument("--cases", help="comma-separated case ids to run (for debugging; gates still apply)")
+    parser.add_argument("--out", type=Path, default=EVALS, help="where REPORT.md and results.json go (the sweep writes one folder per model)")
     args = parser.parse_args()
 
     concurrency = int(os.environ.get("OLLAMA_NUM_PARALLEL", "1"))
@@ -355,8 +370,9 @@ def main() -> None:
            "date": datetime.now(UTC).strftime("%Y-%m-%d"), "extraction_cases": len(cases), "agent_cases": len(scenarios),
            "concurrency": concurrency, "recorded": recorder.recorded, "replayed": recorder.replayed}
     summary = {k: v for k, v in m.items() if k not in ("failures", "agent_rows")}
-    (EVALS / "results.json").write_text(json.dumps({"run": run, "metrics": summary, "failures": m["failures"], "agent": m["agent_rows"]}, indent=2, default=str))
-    (EVALS / "REPORT.md").write_text(write_report(m, run, missed))
+    args.out.mkdir(parents=True, exist_ok=True)
+    (args.out / "results.json").write_text(json.dumps({"run": run, "metrics": summary, "failures": m["failures"], "agent": m["agent_rows"]}, indent=2, default=str))
+    (args.out / "REPORT.md").write_text(write_report(m, run, missed))
     if args.write_baseline:
         args.write_baseline.write_text(json.dumps({k: summary[k] for k in BASELINE_METRICS} | {"model": run["model"]}, indent=2) + "\n")
     print(f"\nheader macro {pct(m['header_macro_accuracy'])} (min field {pct(m['header_min_field_accuracy'])}), line F1 {pct(m['line_f1'])}, "
