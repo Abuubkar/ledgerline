@@ -41,6 +41,8 @@
     "status_accuracy": 0.95,
     "extraction_p50_s": 42.928204958,
     "extraction_p95_s": 147.861778917,
+    "page_p50_s": 35.511289958,
+    "page_p95_s": 46.2240645,
     "output_tokens_per_s": 14.183685297308626,
     "invoices_per_hour": 62.31301813136968,
     "agent_action_accuracy": 1.0,

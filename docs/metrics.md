@@ -218,17 +218,17 @@ gemma4:12b on the same machine, `think: false`, one run per scenario through the
 40 golden invoices and 15 agent scenarios, live against Ollama on the reference Mac (45 minutes), then replayed
 offline in 11 seconds with identical numbers. Full detail in [evals/REPORT.md](../evals/REPORT.md).
 
-| Metric | Result | Original gate |
-|---|---|---|
-| Header fields, macro / lowest field | 98.8% / 95.0% (vendor name) | ≥ 95% / ≥ 93% |
-| Line items F1 | 97.8% (135 of 139 lines right) | ≥ 88% |
-| First-try schema validity | 100% | ≥ 98% |
-| Calibration error (fields ≥ 90% sure) | 0.3% of 385 | ≤ 3% |
-| Agent action accuracy | 100% (15/15) | ≥ 75% |
-| Model time per invoice, p50 / p95 | 41 s / 148 s | p95 ≤ 45 s: **missed** |
-| Model time per page, p50 / p95 | 36 s / 46 s | — |
-| Output tokens per second | 14.2 | — |
-| Invoices per hour (one model slot) | 62 | — |
+| Metric | Result | Original gate | Gate now |
+|---|---|---|---|
+| Header fields, macro / lowest field | 98.8% / 95.0% (vendor name) | ≥ 95% / ≥ 93% | ≥ 97% / ≥ 93% |
+| Line items F1 | 97.8% (135 of 139 lines right) | ≥ 88% | ≥ 95% |
+| First-try schema validity | 100% | ≥ 98% | ≥ 98% |
+| Calibration error (fields ≥ 90% sure) | 0.3% of 385 | ≤ 3% | ≤ 2% |
+| Agent action accuracy | 100% (15/15) | ≥ 75% | ≥ 85% |
+| Model time per invoice, p50 / p95 | 41 s / 148 s | p95 ≤ 45 s (missed) | reported only |
+| Model time per page, p50 / p95 | 36 s / 46 s | — | reported only |
+| Output tokens per second | 14.2 | — | reported only |
+| Invoices per hour (one model slot) | 62 | — | reported only |
 
 Time grows with pages: one-page invoices took 29–62 s, two-page 52–148 s, three-page 104–174 s (a repair call adds
 a whole-invoice pass). What the 6 failing invoices show: a stamp over the lines lost 2 of 8 lines; one layout's total
