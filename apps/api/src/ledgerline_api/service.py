@@ -10,6 +10,7 @@ from datetime import UTC, datetime, timedelta
 
 import httpx
 from botocore.exceptions import ClientError
+from opentelemetry import propagate, trace
 from sqlalchemy import func, select, tuple_, update
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -57,19 +58,30 @@ def content_fingerprint(pages: list[str | None] | None, content: bytes) -> str:
     return hashlib.sha256(text.encode() if text else content).hexdigest()
 
 
+def job_payload(invoice_id: uuid.UUID) -> dict:
+    """An outbox job's arguments, plus the current trace context under `_trace` when tracing is on: the relay
+    publishes in that context, so one invoice's upload, extraction and match form one trace (ADR 0020)."""
+    payload: dict = {"invoice_id": str(invoice_id)}
+    carrier: dict[str, str] = {}
+    propagate.inject(carrier)
+    if carrier:
+        payload["_trace"] = carrier
+    return payload
+
+
 def enqueue_extraction(session: AsyncSession, invoice_id: uuid.UUID) -> None:
     """Add the job to the caller's transaction; the outbox relay publishes it once that transaction commits."""
-    session.add(OutboxMessage(task_name=EXTRACT_TASK, payload={"invoice_id": str(invoice_id)}))
+    session.add(OutboxMessage(task_name=EXTRACT_TASK, payload=job_payload(invoice_id)))
 
 
 def enqueue_match(session: AsyncSession, invoice_id: uuid.UUID) -> None:
     """Queue a 3-way match of the invoice, through the outbox like extraction."""
-    session.add(OutboxMessage(task_name=MATCH_TASK, payload={"invoice_id": str(invoice_id)}))
+    session.add(OutboxMessage(task_name=MATCH_TASK, payload=job_payload(invoice_id)))
 
 
 def enqueue_agent(session: AsyncSession, invoice_id: uuid.UUID) -> None:
     """Queue an exception-agent run for the invoice, through the outbox."""
-    session.add(OutboxMessage(task_name=AGENT_TASK, payload={"invoice_id": str(invoice_id)}))
+    session.add(OutboxMessage(task_name=AGENT_TASK, payload=job_payload(invoice_id)))
 
 
 # --- backpressure ---------------------------------------------------------------------------------------
@@ -357,6 +369,9 @@ async def decide_pending_action(session: AsyncSession, action_id: uuid.UUID, dec
     )).scalar_one_or_none()
     if row is not None:
         await session.commit()
+        # The approval is its own trace (a person decides later); the invoice id ties it to the invoice's others.
+        trace.get_current_span().set_attributes({"ledgerline.invoice_id": str(row.invoice_id),
+                                                 "ledgerline.decision": decision})
         return row
     await session.rollback()
     current = await get_pending_action(session, action_id)

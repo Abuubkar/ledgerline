@@ -24,6 +24,7 @@ import uuid
 from typing import NoReturn
 
 from celery import Celery, Task
+from celery.signals import worker_process_init
 from kombu import Queue
 
 from ledgerline_api import agent, erp_sync, jobs
@@ -39,8 +40,17 @@ from ledgerline_api.service import (
     SYNC_TASK,
 )
 from ledgerline_api.settings import settings
+from ledgerline_telemetry import setup_telemetry
 
 log = logging.getLogger("ledgerline.worker")
+
+
+@worker_process_init.connect(weak=False)
+def _start_tracing(**_) -> None:
+    # Per worker process, after the fork: a tracer's export thread doesn't survive one.
+    from ledgerline_api.db import engine
+
+    setup_telemetry("worker", sqlalchemy_engines=[engine], celery=True)
 
 app = Celery("ledgerline", broker=settings.broker_url)
 app.conf.update(

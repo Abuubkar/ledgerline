@@ -2,6 +2,7 @@ import uuid
 from collections.abc import AsyncIterator
 from datetime import date, datetime
 from decimal import Decimal
+from typing import Any
 
 from sqlalchemy import (
     BigInteger,
@@ -16,6 +17,7 @@ from sqlalchemy import (
     text,
 )
 from sqlalchemy.dialects.postgresql import JSONB
+from sqlalchemy.ext import asyncio as sa_asyncio
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
@@ -23,6 +25,12 @@ from ledgerline_api.settings import settings
 
 engine = create_async_engine(settings.database_url)
 SessionLocal = async_sessionmaker(engine, expire_on_commit=False)
+
+
+def new_engine(**kwargs: Any) -> sa_asyncio.AsyncEngine:
+    """An extra engine (a job's own NullPool engine, the relay's). Looked up on the module at call time, so the
+    tracing setup, which wraps create_async_engine once the process starts, instruments it too."""
+    return sa_asyncio.create_async_engine(settings.database_url, **kwargs)
 
 
 async def get_session() -> AsyncIterator[AsyncSession]:

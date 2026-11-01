@@ -26,6 +26,8 @@ from fastapi import FastAPI, Query, Request
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
+from ledgerline_telemetry import setup_telemetry
+
 RESOURCES = {"purchase-orders": "purchase_orders", "receipts": "receipts"}
 PAGE_CAP = 100
 
@@ -138,3 +140,4 @@ def create_app(dataset: dict | None = None, faults: Faults | None = None, seed: 
 
 
 app = create_app()
+setup_telemetry("erp-mock", fastapi_app=app)

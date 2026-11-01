@@ -18,6 +18,7 @@ from dataclasses import asdict, dataclass, field
 from decimal import ROUND_HALF_UP, Decimal
 from typing import Any, Literal
 
+from opentelemetry import trace
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 from sqlalchemy import func, select
 from sqlalchemy.exc import IntegrityError
@@ -60,6 +61,8 @@ class DraftCreditMemoRequest(_Args):
     lines: list[str] = Field(min_length=1, description='The over-billed invoice lines, such as "page 1 line 2"')
     reason: str = Field(min_length=3, max_length=500, description="Why the vendor should credit these lines")
 
+
+tracer = trace.get_tracer("ledgerline.agent")
 
 HOLD_REASONS = ("missing_po", "duplicate", "tax_mismatch", "price_variance", "short_shipment", "other")
 
@@ -321,6 +324,16 @@ async def _order_and_receipts(session, po_number: str | None):
 
 def _executor(sessions, evidence: Evidence) -> Execute:
     async def execute(name: str, args: _Args) -> tuple[dict, Proposal | None]:
+        # One span per tool call (GenAI execute_tool); arguments and results stay out of it (ADR 0020).
+        with tracer.start_as_current_span(f"execute_tool {name}", attributes={
+                "gen_ai.operation.name": "execute_tool", "gen_ai.tool.name": name, "gen_ai.tool.type": "function"}) as span:
+            try:
+                return await _execute(name, args)
+            except ToolError:
+                span.set_status(trace.StatusCode.ERROR, "tool_error")
+                raise
+
+    async def _execute(name: str, args: _Args) -> tuple[dict, Proposal | None]:
         async with sessions() as session:
             if name == "get_po":
                 assert isinstance(args, GetPo)  # validate_call built the tool's own argument model
@@ -391,7 +404,8 @@ def _executor(sessions, evidence: Evidence) -> Execute:
 
 async def _chat(messages: list, timeout_s: float) -> tuple:
     response, prompt_tokens, output_tokens, llm_ms = await call_model(
-        messages, tools=tool_schemas(), timeout_s=min(timeout_s, settings.llm_timeout_s)
+        messages, tools=tool_schemas(), timeout_s=min(timeout_s, settings.llm_timeout_s),
+        prompt_version=prompts.AGENT_VERSION,
     )
     return response.message, prompt_tokens, output_tokens, llm_ms
 
@@ -433,8 +447,14 @@ async def run(invoice_id: uuid.UUID, chat: Chat = _chat) -> str:
         try:
             # One model slot for the whole run: the wall clock measures the agent, not the queue for the model.
             async with llm_slot(redis_client):
-                result = await run_loop(messages, chat, _executor(sessions, evidence), on_step,
-                                        settings.agent_max_turns, settings.agent_wall_clock_s)
+                with tracer.start_as_current_span("invoke_agent exception-agent", attributes={
+                        "gen_ai.operation.name": "invoke_agent", "gen_ai.agent.name": "exception-agent",
+                        "gen_ai.provider.name": "ollama", "gen_ai.request.model": settings.llm_model,
+                        "gen_ai.prompt.version": prompts.AGENT_VERSION, "ledgerline.invoice_id": str(invoice_id)}) as span:
+                    result = await run_loop(messages, chat, _executor(sessions, evidence), on_step,
+                                            settings.agent_max_turns, settings.agent_wall_clock_s)
+                    span.set_attributes({"ledgerline.agent.stop_reason": result.stop_reason,
+                                         "ledgerline.agent.tool_turns": result.tool_turns})
         except Exception as exc:
             error = classify(exc)
             async with sessions() as session:

@@ -18,10 +18,10 @@ from decimal import Decimal
 import httpx
 from sqlalchemy import String, cast, delete, func, select, text
 from sqlalchemy.dialects.postgresql import insert
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
+from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.pool import NullPool
 
-from ledgerline_api import service, vendors
+from ledgerline_api import db, service, vendors
 from ledgerline_api.db import ErpSyncState, GoodsReceipt, MatchResult, OutboxMessage, PoLine, PurchaseOrder, ReceiptLine
 from ledgerline_api.errors import PermanentError, TransientError
 from ledgerline_api.normalize import normalize_tax_id, po_number_key
@@ -212,7 +212,7 @@ async def sync_resource(session: AsyncSession, client: httpx.AsyncClient, resour
 async def run(client: httpx.AsyncClient | None = None) -> RunResult:
     """One sync of every ERP list. Skips if another run holds the lock (beat fired while a slow run was
     still going, or a crashed run's message was redelivered next to a new one)."""
-    engine = create_async_engine(settings.database_url, poolclass=NullPool)
+    engine = db.new_engine(poolclass=NullPool)
     own_client = client is None
     client = client or httpx.AsyncClient(base_url=settings.erp_base_url, timeout=settings.erp_timeout_s)
     try:
