@@ -8,6 +8,18 @@ projections. The point is to compare **before and after** when slice 3 moves ext
 > invoices. Treat differences of a second or two as noise. The real measurement is the 60-invoice golden set
 > in slice 6.
 
+## Latest eval results per model
+
+Kept current: each eval run that changes a model's numbers updates its row here, and the numbers it replaces stay
+in that slice's section below and in [evals/archive/](../evals/archive/). Dev split (40 invoices, 15 agent
+scenarios), reference Mac, one model call at a time. Full table and recommendation: [evals/SWEEP.md](../evals/SWEEP.md).
+
+| Model | Prompts | Header avg / lowest field | Line F1 | Agent | Page p50 / p95 | Invoices/h | Memory | Measured |
+|---|---|---|---|---|---|---|---|---|
+| **gemma4:12b** (default) | extract-page/3, agent/1 | 99.5% / 95.0% (vendor name) | 96.4% | 15/15 | 34 / 42 s | 74 | 8.7 GB | 2026-11-01, slice 6b |
+| qwen3.5:9b-q4_K_M | extract-page/3, agent/1 | 96.2% / 72.5% (subtotal) | 99.3% | 14/15 | 22 / 29 s | 110 | 7.1 GB | 2026-11-01, slice 6b |
+| qwen2.5:7b-instruct | extract-page/3, agent/1 | 98.8% / 92.5% (vendor name) | 97.8% | 10/15 | 14 / 18 s | 159 | 5.2 GB | 2026-11-01, slice 6b |
+
 ## Model time per invoice
 
 From `invoices.llm_ms` (wall-clock around the Ollama call, including any model load), `prompt_tokens` and
@@ -234,3 +246,45 @@ Time grows with pages: one-page invoices took 29–62 s, two-page 52–148 s, th
 a whole-invoice pass). What the 6 failing invoices show: a stamp over the lines lost 2 of 8 lines; one layout's total
 labels ("Net / VAT / Amount payable") weren't read; the compact layout's quantity column was missed twice; one
 vendor name came back with an underscore and one not at all.
+
+## Slice 6b: model sweep (dev split)
+
+Three models through the same eval (`evals/sweep.py`), one after another with a 15-minute rest between them. Wall
+time: qwen3.5 26 min, qwen2.5 15 min (its agent results were reused, see below), gemma4 33 min. Every run replays
+offline with identical numbers.
+
+**First pass, strings-only schema (`extract-page/2`), superseded.** The schema allowed amounts only as JSON
+strings, and Ollama enforces it while generating, so a model that writes bare numbers could only answer `null`
+(ADR 0016). Kept in [evals/archive/2026-11-01-strings-only-schema/](../evals/archive/2026-11-01-strings-only-schema/README.md):
+
+| Model | Header avg / lowest field | Line F1 | Agent | Page p50 / p95 | Invoices/h |
+|---|---|---|---|---|---|
+| gemma4:12b (6a baseline) | 98.8% / 95.0% (vendor name) | 97.8% | 15/15 | 36 / 46 s | 62 |
+| qwen2.5:7b-instruct | 66.5% / 2.5% (totals) | 2.9% | 10/15 | 14 / 19 s | 94 |
+| qwen3.5:9b-q4_K_M | 2-invoice trial only: numbers empty, agent correct | | | | |
+
+**After the fix (`extract-page/3`):**
+
+| Model | Header avg / lowest field | Line F1 | Schema valid | Calibration error | Agent | Page p50 / p95 | Invoice p50 / p95 | Tokens/s | Invoices/h | Memory |
+|---|---|---|---|---|---|---|---|---|---|---|
+| gemma4:12b | 99.5% / 95.0% | 96.4% | 100% | 0.3% | 15/15 | 34 / 42 s | 39 / 99 s | 14.5 | 74 | 8.7 GB |
+| qwen3.5:9b-q4_K_M | 96.2% / 72.5% | 99.3% | 100% | 0.0% | 14/15 | 22 / 29 s | 26 / 66 s | 20.1 | 110 | 7.1 GB |
+| qwen2.5:7b-instruct | 98.8% / 92.5% | 97.8% | 100% | 0.0% | 10/15 | 14 / 18 s | 18 / 55 s | 25.3 | 159 | 5.2 GB |
+
+What changed and why:
+
+- **qwen2.5 went from 66.5% to 98.8% header and 2.9% to 97.8% line F1** with no change but the schema. Its agent
+  results (10/15) come from its first-pass run: the agent never uses the extraction schema, and its prompt didn't
+  change.
+- **gemma4 changed too, though it never had the problem.** In 6a it quoted every amount only because the grammar
+  left it a quote or `null`; given the choice it writes bare numbers (558 of 558). Subtotal, tax and total went to
+  100%. On 4 invoices it now takes the "5" in "A4 copy paper, 5 reams" as the quantity (line F1 97.8% → 96.4%,
+  within the 1.5-point baseline tolerance). The baseline is now this run (old one archived).
+- **qwen3.5's subtotal (72.5%).** On 10 multi-page invoices it reported its own sum of a page's lines as that page's
+  subtotal, where none was printed. The pages then disagree, and the merge correctly leaves the field invalid
+  (ADR 0010). qwen2.5 did it once.
+- **Memory** is the resident size of Ollama's model server with the model loaded at `num_ctx` 8192. Ollama's
+  `/api/ps` reported 1.0 GB for gemma4:12b (it leaves out the weights), so the sweep now reads the process instead.
+- gemma4's p95 per invoice fell from 148 s to 99 s: totals now add up more often, so it made 2 repair calls instead
+  of 7 (each re-reads the whole invoice).
+

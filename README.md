@@ -114,8 +114,10 @@ Around that:
   loop, every step is stored, and every run ends in exactly one proposal.
   ([ADR 0013](docs/adr/0013-exception-agent-proposes-a-person-decides.md))
 - **Quality is measured, not eyeballed.** A generated golden set (60 invoices, 25 agent scenarios) with gates on
-  field accuracy, line-item F1, schema validity, calibration, agent accuracy and speed. Model answers are recorded,
-  so the eval replays offline with identical numbers. ([ADR 0015](docs/adr/0015-evals-golden-set-gates-replay.md),
+  field accuracy, line-item F1, schema validity, calibration and agent accuracy; speed is reported. Model answers
+  are recorded, so the eval replays offline with identical numbers. The same eval compares models
+  ([evals/SWEEP.md](evals/SWEEP.md)), and it caught a schema that silently blanked one model family's amounts.
+  ([ADR 0015](docs/adr/0015-evals-golden-set-gates-replay.md), [ADR 0016](docs/adr/0016-extraction-schema-accepts-bare-numbers.md),
   [evals/REPORT.md](evals/REPORT.md))
 - **Leases, not long-held locks.** A worker owns an invoice through a lease it renews; a unique index allows
   only one completed extraction per invoice, so double extraction is impossible rather than unlikely.
@@ -146,6 +148,7 @@ make test                                 # unit tests, offline
 make test-int                             # service tests against a throwaway Postgres (needs Docker)
 make test-web                             # reviewer UI tests (Jest, GraphQL mocked with MSW)
 make eval                                 # accuracy and speed on the golden set, replayed offline (LIVE=1: against Ollama)
+uv run python evals/sweep.py [--live]     # the same eval for each model in evals/sweep.py, table in evals/SWEEP.md
 make contract-check                       # code vs. contracts/openapi.yaml (needs Docker)
 make chaos                                # 200 invoices, stub model failing 15%, a worker killed mid-run; cleans up after
 make seed                                 # 200 vendors, 20k invoices, 30 near-duplicates, 5k POs for the ERP mock
@@ -172,7 +175,8 @@ Each slice is one end-to-end change. The destination layout and stack are in [do
 | 4b | ERP mock, resumable ERP sync on Celery beat, 3-way match, `matched` status | Done |
 | 5a | Exception agent (tool calling, guards, budgets), pending actions, ETag approval in REST and GraphQL | Done |
 | 5b | Reviewer UI (Next.js + urql): queue, case file, decisions, upload, dead letters; Jest tests | Done |
-| 6 | Golden set of 60 invoices, eval script with gates, model sweep | Planned |
+| 6a | Golden set of 60 invoices and 25 agent scenarios, eval script with gates, recorded answers | Done |
+| 6b | Model sweep: gemma4:12b, qwen3.5:9b, qwen2.5:7b on the same eval ([evals/SWEEP.md](evals/SWEEP.md)) | Done |
 | 7 | GitHub Actions: checks, offline eval, signed images to GHCR | Planned |
 | 8 | OpenTelemetry: one invoice traced from upload to approval; dashboards and alerts | Planned |
 

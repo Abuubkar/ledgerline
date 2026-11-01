@@ -5,6 +5,8 @@ Accounts-payable automation: invoice PDFs in, structured and matched invoices ou
 - **How we work:** [HOW_WE_BUILD.md](HOW_WE_BUILD.md). It wins over everything else, including slice prompts.
 - **Where it's heading:** [docs/architecture.md](docs/architecture.md). A destination, not a to-do list.
 - **Why things are the way they are:** [docs/adr/](docs/adr/). Add one for every real choice.
+- **What went wrong before:** [docs/challenges.md](docs/challenges.md). Each slice adds what it hit: the problem,
+  what we did, why, and the alternatives.
 
 ## Run it
 
@@ -33,6 +35,7 @@ make test-web                             # Jest + MSW for the UI
 make eval                                 # evals on the dev split, replaying recorded model answers (no Ollama)
 make eval LIVE=1                          # the same against Ollama, recording answers (~1 h); commit evals/recordings
 make eval-test                            # the held-out test split: only to check a finished change
+uv run python evals/sweep.py [--live]     # every model in evals/sweep.py MODELS on the dev split -> evals/SWEEP.md
 ```
 
 ## Rules that are easy to break
@@ -80,5 +83,8 @@ make eval-test                            # the held-out test split: only to che
 - Changing a prompt (and bumping its version) or anything that changes what's sent to the model invalidates the
   recordings: run `make eval LIVE=1`, then commit `evals/recordings/`, `evals/REPORT.md` and `evals/results.json`.
   Never tune against the test split.
+- Eval results, reports, baselines and recordings are never deleted. When a prompt, schema or tool change
+  supersedes them, move them to `evals/archive/<date>-<reason>/` with a README, and keep docs/metrics.md's "Latest
+  eval results per model" current.
 - Golden gold files come from the generator (`make golden`); don't edit them by hand. Agent scenarios
   (`evals/golden/agent/*.yaml`) are hand-maintained.
