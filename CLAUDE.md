@@ -25,6 +25,8 @@ make test             # unit tests, offline
 make test-int         # service tests (testcontainers Postgres)
 make codegen          # regenerate client + schema.graphql after changing contracts or GraphQL types
 make contract-check   # oasdiff: code vs contracts/openapi.yaml
+make lint             # ruff, mypy, tsc, eslint: the CI lint job (actionlint aside)
+make migrations-lint  # squawk on the SQL of migrations added since origin/main
 make seed             # 200 vendors, 20k invoices, 30 near-duplicates into the dev DB, plus data/erp/dataset.json
                       # for the ERP mock (PROFILE=large: ~1M lines); restarts erp_mock
 uv run python scripts/sync_erp.py [--full]   # one ERP sync now; beat runs it every 5 min
@@ -88,5 +90,9 @@ uv run python evals/sweep.py [--live]     # every model in evals/sweep.py MODELS
 - Eval results, reports, baselines and recordings are never deleted. When a prompt, schema or tool change
   supersedes them, move them to `evals/archive/<date>-<reason>/` with a README, and keep docs/metrics.md's "Latest
   eval results per model" current.
+- Every PR runs `.github/workflows/ci.yml` and merges only when it's green (ADR 0018). Third-party actions are pinned
+  to a full commit SHA with the version in a comment; bump the SHA and the comment together.
+- A new migration must pass squawk (`make migrations-lint`): `CREATE INDEX CONCURRENTLY`, `NOT VALID` then
+  `VALIDATE`, and `SET lock_timeout` first. Deliberate exceptions need the `breaking-change-approved` label.
 - Golden gold files come from the generator (`make golden`); don't edit them by hand. Agent scenarios
   (`evals/golden/agent/*.yaml`) are hand-maintained.
