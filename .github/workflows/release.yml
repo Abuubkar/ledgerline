@@ -35,8 +35,13 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with: { persist-credentials: false }
-      - name: Image name (GHCR needs lowercase)
-        run: echo "IMAGE=ghcr.io/${GITHUB_REPOSITORY,,}/${{ matrix.service }}" >> "$GITHUB_ENV"
+      # The images are ghcr.io/<owner>/ledgerline-<service> (ADR 0023). Until 2026-12-04 the same build is also
+      # published under the old name, ghcr.io/<owner>/ledgerline/<service>, so anyone pulling it keeps getting
+      # updates; then the LEGACY_IMAGE lines go.
+      - name: Image names (GHCR needs lowercase)
+        run: |
+          echo "IMAGE=ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/ledgerline-${{ matrix.service }}" >> "$GITHUB_ENV"
+          echo "LEGACY_IMAGE=ghcr.io/${GITHUB_REPOSITORY,,}/${{ matrix.service }}" >> "$GITHUB_ENV"
       - uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1 # v4.4.0
       - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
       - uses: docker/login-action@81c6f93d4bc991e510b342a00b419b3bb4efc5c6 # v4.7.0
@@ -44,7 +49,9 @@ jobs:
       - id: meta
         uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6.2.0
         with:
-          images: ${{ env.IMAGE }}
+          images: |
+            ${{ env.IMAGE }}
+            ${{ env.LEGACY_IMAGE }}
           tags: |
             type=sha,prefix=sha-
             type=ref,event=branch
@@ -78,13 +85,15 @@ jobs:
         with: { cosign-release: v3.1.4 }
       - name: Sign (only images that passed the scan)
         env: { DIGEST: "${{ steps.build.outputs.digest }}" }
-        run: cosign sign --yes "$IMAGE@$DIGEST"
+        run: |
+          cosign sign --yes "$IMAGE@$DIGEST"
+          cosign sign --yes "$LEGACY_IMAGE@$DIGEST"  # signatures are stored per repository
       - name: Summary
         env: { DIGEST: "${{ steps.build.outputs.digest }}", TAGS: "${{ steps.meta.outputs.tags }}" }
         run: |
           {
             echo "### ${{ matrix.service }}"
-            echo "\`$IMAGE@$DIGEST\`, signed; tags: $(echo "$TAGS" | sed 's/.*://' | paste -sd ' ' -)"
+            echo "\`$IMAGE@$DIGEST\` (also \`$LEGACY_IMAGE\`), signed; tags: $(echo "$TAGS" | sed 's/.*://' | sort -u | paste -sd ' ' -)"
           } >> "$GITHUB_STEP_SUMMARY"
 
   migrations-sql:

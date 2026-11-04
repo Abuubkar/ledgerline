@@ -13,7 +13,7 @@ x-release-image: &pull
 services:
   api:
     extends: {file: docker-compose.yml, service: worker}  # same environment and dependencies as the worker
-    image: ghcr.io/abuubkar/ledgerline/api:${LEDGERLINE_TAG:-main}
+    image: ghcr.io/abuubkar/ledgerline-api:${LEDGERLINE_TAG:-main}
     command: ["uvicorn", "ledgerline_api.main:app", "--host", "0.0.0.0", "--port", "8000"]
     <<: *pull
     ports:
@@ -21,21 +21,21 @@ services:
 
   web:
     # Proxies /graphql and /v1 to http://api:8000, the address built into the image.
-    image: ghcr.io/abuubkar/ledgerline/web:${LEDGERLINE_TAG:-main}
+    image: ghcr.io/abuubkar/ledgerline-web:${LEDGERLINE_TAG:-main}
     <<: *pull
     ports:
       - "3000:3000"
     depends_on: [api]
 
   worker:
-    image: ghcr.io/abuubkar/ledgerline/worker:${LEDGERLINE_TAG:-main}
+    image: ghcr.io/abuubkar/ledgerline-worker:${LEDGERLINE_TAG:-main}
     <<: *pull
   relay:
-    image: ghcr.io/abuubkar/ledgerline/worker:${LEDGERLINE_TAG:-main}
+    image: ghcr.io/abuubkar/ledgerline-worker:${LEDGERLINE_TAG:-main}
     <<: *pull
   beat:
-    image: ghcr.io/abuubkar/ledgerline/worker:${LEDGERLINE_TAG:-main}
+    image: ghcr.io/abuubkar/ledgerline-worker:${LEDGERLINE_TAG:-main}
     <<: *pull
   erp_mock:
-    image: ghcr.io/abuubkar/ledgerline/erp-mock:${LEDGERLINE_TAG:-main}
+    image: ghcr.io/abuubkar/ledgerline-erp-mock:${LEDGERLINE_TAG:-main}
     <<: *pull
