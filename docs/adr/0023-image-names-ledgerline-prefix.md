@@ -3,7 +3,7 @@ status: accepted
 date: 2026-11-04
 ---
 
-# Image names get a ledgerline- prefix, published under both names for a month
+# Image names get a ledgerline- prefix
 
 The images move from `ghcr.io/abuubkar/ledgerline/<service>` to `ghcr.io/abuubkar/ledgerline-api`,
 `ledgerline-worker`, `ledgerline-erp-mock` and `ledgerline-web` (the user's call). On the owner's package list the old
@@ -28,3 +28,10 @@ belongs to.
 - **Hard rename:** simplest, but it's the silent-staleness case above.
 - **Keep the nested names:** no risk, and they're GitHub's default for repository-linked packages; the user wanted
   the project name in each package's own name.
+
+## Update, 2026-11-04: the old names stopped the same day
+
+The owner decided not to wait the month: the old names are no longer published (release.yml pushes and signs only
+`ledgerline-<service>`), and the owner is deleting the old `ledgerline/<service>` packages in GHCR. Anyone still
+pulling `ghcr.io/abuubkar/ledgerline/<service>` gets "not found" and should switch to the new names.
+

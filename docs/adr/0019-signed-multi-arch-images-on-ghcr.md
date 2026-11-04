@@ -5,8 +5,8 @@ date: 2026-11-01
 
 # Releases: signed multi-arch images on GHCR, scanned before signing
 
-> **2026-11-04:** the images are now `ghcr.io/abuubkar/ledgerline-<service>`, published under the names below as
-> well until 2026-12-04 ([ADR 0023](0023-image-names-ledgerline-prefix.md)). Everything else here still holds.
+> **2026-11-04:** the images are now `ghcr.io/abuubkar/ledgerline-<service>`; the `ledgerline/<service>` names below
+> are retired ([ADR 0023](0023-image-names-ledgerline-prefix.md)). Everything else here still holds.
 
 Every push to `main` and every `v*` tag runs `.github/workflows/release.yml`. For each service (api, worker, erp-mock,
 web) it builds a `linux/amd64` + `linux/arm64` image and pushes it to `ghcr.io/abuubkar/ledgerline/<service>`,
