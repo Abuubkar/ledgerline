@@ -1,0 +1,258 @@
+{
+  "run": {
+    "set": "scans",
+    "model": "gemma4:12b",
+    "extraction_prompt": "extract-page/4+repair-totals/4",
+    "agent_prompt": "agent/1",
+    "split": "dev",
+    "mode": "replayed",
+    "date": "2026-11-01",
+    "extraction_cases": 8,
+    "agent_cases": 0,
+    "concurrency": 1,
+    "recorded": 0,
+    "replayed": 0
+  },
+  "metrics": {
+    "header_macro_accuracy": 0.9125,
+    "header_min_field_accuracy": 0.5,
+    "field_accuracy": {
+      "vendor_name": 1.0,
+      "vendor_tax_id": 0.5,
+      "invoice_number": 0.875,
+      "po_number": 1.0,
+      "invoice_date": 1.0,
+      "due_date": 0.875,
+      "currency": 1.0,
+      "subtotal_minor": 0.875,
+      "tax_minor": 1.0,
+      "total_minor": 1.0
+    },
+    "line_precision": 0.8095238095238095,
+    "line_recall": 0.8095238095238095,
+    "line_f1": 0.8095238095238095,
+    "line_counts": {
+      "correct": 17,
+      "predicted": 21,
+      "gold": 21
+    },
+    "schema_validity": 1.0,
+    "calibration_error": 0.08860759493670886,
+    "calibration_n": 79,
+    "status_accuracy": 0.75,
+    "statuses": {
+      "exception": 2,
+      "extracted": 6
+    },
+    "non_invoices": [],
+    "extraction_p50_s": 40.196507083,
+    "extraction_p95_s": 155.55396158500002,
+    "page_p50_s": 35.361664250000004,
+    "page_p95_s": 44.703045792,
+    "output_tokens_per_s": 13.930494467007257,
+    "invoices_per_hour": 46.05624336964773,
+    "agent_action_accuracy": 0,
+    "agent_hold_reason_accuracy": 0,
+    "agent_evidence_complete": 0,
+    "agent_guard_fires": 0,
+    "agent_p95_s": 0.0
+  },
+  "failures": [
+    {
+      "case": "s01",
+      "style": "classic",
+      "pages": 1,
+      "status": "extracted",
+      "expected_status": "extracted",
+      "fields": {
+        "due_date": {
+          "gold": "2026-08-21",
+          "got": "2026-08-31"
+        }
+      },
+      "lines": [],
+      "line_counts": [
+        3,
+        3
+      ],
+      "error": null
+    },
+    {
+      "case": "s02",
+      "style": "german",
+      "pages": 1,
+      "status": "extracted",
+      "expected_status": "extracted",
+      "fields": {
+        "vendor_tax_id": {
+          "gold": "DE274918365",
+          "got": "DE274918362"
+        }
+      },
+      "lines": [],
+      "line_counts": [
+        2,
+        2
+      ],
+      "error": null
+    },
+    {
+      "case": "s03",
+      "style": "right",
+      "pages": 1,
+      "status": "extracted",
+      "expected_status": "extracted",
+      "fields": {
+        "vendor_tax_id": {
+          "gold": "GB482193756",
+          "got": "GB482115756"
+        },
+        "invoice_number": {
+          "gold": "NW-2026-1014",
+          "got": "INV-2026-1014"
+        }
+      },
+      "lines": [
+        {
+          "gold": {
+            "description": "Thermal labels 100x150",
+            "quantity": "37",
+            "unit_price": "137.25",
+            "amount_minor": 507825
+          },
+          "got": {
+            "description": "Thermal labels 100x150",
+            "quantity": "5",
+            "unit_price": "5.40",
+            "amount_minor": 2700
+          },
+          "similarity": 100
+        },
+        {
+          "gold": {
+            "description": "Ergonomic office chair",
+            "quantity": "5",
+            "unit_price": "5.40",
+            "amount_minor": 2700
+          },
+          "got": {
+            "description": "Ergonomic office chair",
+            "quantity": "37",
+            "unit_price": "137.25",
+            "amount_minor": 507825
+          },
+          "similarity": 100
+        }
+      ],
+      "line_counts": [
+        4,
+        4
+      ],
+      "error": null
+    },
+    {
+      "case": "s06",
+      "style": "compact",
+      "pages": 1,
+      "status": "extracted",
+      "expected_status": "extracted",
+      "fields": {
+        "vendor_tax_id": {
+          "gold": "912846573",
+          "got": "912946573"
+        }
+      },
+      "lines": [],
+      "line_counts": [
+        1,
+        1
+      ],
+      "error": null
+    },
+    {
+      "case": "s08",
+      "style": "german",
+      "pages": 1,
+      "status": "exception",
+      "expected_status": "extracted",
+      "fields": {
+        "subtotal_minor": {
+          "gold": 596505,
+          "got": 599505
+        }
+      },
+      "lines": [
+        {
+          "gold": {
+            "description": "Hand truck, folding",
+            "quantity": "38",
+            "unit_price": "122.00",
+            "amount_minor": 463600
+          },
+          "got": {
+            "description": "Hand truck, folding",
+            "quantity": "38",
+            "unit_price": "122.00",
+            "amount_minor": 453600
+          },
+          "similarity": 100
+        }
+      ],
+      "line_counts": [
+        4,
+        4
+      ],
+      "error": null
+    },
+    {
+      "case": "s09",
+      "style": "right",
+      "pages": 1,
+      "status": "extracted",
+      "expected_status": "extracted",
+      "fields": {
+        "vendor_tax_id": {
+          "gold": "GB482193756",
+          "got": "GB492193759"
+        }
+      },
+      "lines": [],
+      "line_counts": [
+        1,
+        1
+      ],
+      "error": null
+    },
+    {
+      "case": "s12",
+      "style": "compact",
+      "pages": 3,
+      "status": "exception",
+      "expected_status": "extracted",
+      "fields": {},
+      "lines": [
+        {
+          "gold": {
+            "description": "LED panel light 60x60",
+            "quantity": "32",
+            "unit_price": "20.40",
+            "amount_minor": 65280
+          },
+          "got": {
+            "description": "LED panel light 60x60",
+            "quantity": "32",
+            "unit_price": "20.40",
+            "amount_minor": 66280
+          },
+          "similarity": 100
+        }
+      ],
+      "line_counts": [
+        3,
+        3
+      ],
+      "error": null
+    }
+  ],
+  "agent": []
+}

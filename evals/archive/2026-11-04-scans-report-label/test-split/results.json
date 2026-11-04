@@ -1,0 +1,77 @@
+{
+  "run": {
+    "set": "scans",
+    "model": "gemma4:12b",
+    "extraction_prompt": "extract-page/4+repair-totals/4",
+    "agent_prompt": "agent/1",
+    "split": "test",
+    "mode": "live",
+    "date": "2026-11-01",
+    "extraction_cases": 4,
+    "agent_cases": 0,
+    "concurrency": 1,
+    "recorded": 5,
+    "replayed": 0
+  },
+  "metrics": {
+    "header_macro_accuracy": 0.975,
+    "header_min_field_accuracy": 0.75,
+    "field_accuracy": {
+      "vendor_name": 1.0,
+      "vendor_tax_id": 1.0,
+      "invoice_number": 1.0,
+      "po_number": 1.0,
+      "invoice_date": 1.0,
+      "due_date": 1.0,
+      "currency": 1.0,
+      "subtotal_minor": 1.0,
+      "tax_minor": 0.75,
+      "total_minor": 1.0
+    },
+    "line_precision": 1.0,
+    "line_recall": 1.0,
+    "line_f1": 1.0,
+    "line_counts": {
+      "correct": 8,
+      "predicted": 8,
+      "gold": 8
+    },
+    "schema_validity": 1.0,
+    "calibration_error": 0.02631578947368421,
+    "calibration_n": 38,
+    "status_accuracy": 0.75,
+    "extraction_p50_s": 43.569117917,
+    "extraction_p95_s": 98.62870575,
+    "page_p50_s": 43.569117917,
+    "page_p95_s": 47.357551959,
+    "output_tokens_per_s": 12.942441295082462,
+    "invoices_per_hour": 64.02443054891624,
+    "agent_action_accuracy": 0,
+    "agent_hold_reason_accuracy": 0,
+    "agent_evidence_complete": 0,
+    "agent_guard_fires": 0,
+    "agent_p95_s": 0.0
+  },
+  "failures": [
+    {
+      "case": "s11",
+      "style": "boxed",
+      "pages": 1,
+      "status": "exception",
+      "expected_status": "extracted",
+      "fields": {
+        "tax_minor": {
+          "gold": 3887,
+          "got": 3687
+        }
+      },
+      "lines": [],
+      "line_counts": [
+        2,
+        2
+      ],
+      "error": null
+    }
+  ],
+  "agent": []
+}

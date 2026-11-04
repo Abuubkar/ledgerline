@@ -296,3 +296,26 @@ byte-identical.
 **Only 1 of the first 25 picks was a scan:** VRDU's recent documents are born-digital PDFs. The older (2012)
 filings are scans, and 5 of the 8 older invoices were swapped in.
 
+
+## Portfolio README (2026-11-04)
+
+**The scans report said "All gates pass" under numbers that missed them.** The scans set is reported only, so the
+eval skipped the gate check, but the report still printed the gate table with "pass" on every row (header fields
+91.2% against a 97% gate). Found while writing the README's "where it falls short" table.
+- *Did:* reports for the scans and real sets now say "Measured, not gated" and mark each value "meets" or "below"
+  the golden set's gate; the console says "reported, not gated". The old reports are archived, the numbers are
+  unchanged.
+
+**The quick start took three commands and two settings** (a separate migration, `--profile observability`,
+`TRACING=1`) before the dashboard showed anything.
+- *Did:* the release compose file runs migrations as a one-shot service and turns observability on (ADR 0024).
+  Development stays lean.
+- *Alternatives:* observability on everywhere (more memory for every dev session); migrating in the api's start
+  command (replicas race).
+
+**A dashboard screenshot of one short run is one spike in an empty six hours.** The stub model also answered in
+1 ns, so its speed panels were meaningless, and it blocked its event loop while sleeping.
+- *Did:* the dashboard opens on the last 30 minutes, with sparklines on the stats, points on every sample and a
+  Last / Max legend. The stub takes `TOKENS_PER_S` to answer at a plausible speed and report matching durations,
+  sleeps without blocking, and answers `/api/version` (so "Ollama up" means the stub is up). The screenshot is a
+  15-minute run of uneven traffic against the stub, labelled `stub` on every model panel.
