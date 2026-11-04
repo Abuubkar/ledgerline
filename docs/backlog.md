@@ -99,14 +99,3 @@ archived first.
 - **Fix:** add Alertmanager to the observability profile with a route per severity (`page`, `ticket`) to a channel
   (email, Slack, a webhook); Prometheus's `alerting:` block points at it.
 - **Why it waits:** there's no on-call channel for a local portfolio stack. Found: slice 8b, 2026-11-01.
-
-## Releases
-
-### Stop publishing the old image names on 2026-12-04
-
-- **What:** since 2026-11-04 each release goes to both `ghcr.io/abuubkar/ledgerline-<service>` and the old
-  `ghcr.io/abuubkar/ledgerline/<service>` (ADR 0023), so nobody pulling the old names is left on a frozen image.
-- **Do on or after 2026-12-04:** remove `LEGACY_IMAGE` from `.github/workflows/release.yml` (three lines: the env
-  line, the `images:` entry, the second `cosign sign`), and add a final note to ADR 0023. Leave the old packages
-  in GHCR; deleting them would break anyone pinned to an old digest, and it's the owner's call.
-

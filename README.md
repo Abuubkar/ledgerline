@@ -72,9 +72,9 @@ Open http://localhost:3000, upload a PDF from `samples/`, and watch it go from `
 about half a minute. To see traces, metrics and the dashboard as well, add `--profile observability` to the last
 command and set `TRACING=1`: Grafana on http://localhost:3001, Jaeger on http://localhost:16686.
 
-Check what you're running first (keyless signature from this repository's release workflow). The images were
-renamed on 2026-11-04 from `ghcr.io/abuubkar/ledgerline/<service>`; the old names get the same signed builds until
-2026-12-04 ([ADR 0023](docs/adr/0023-image-names-ledgerline-prefix.md)).
+Check what you're running first (keyless signature from this repository's release workflow). Until 2026-11-04 the
+images were `ghcr.io/abuubkar/ledgerline/<service>`; those names are retired
+([ADR 0023](docs/adr/0023-image-names-ledgerline-prefix.md)).
 
 ```bash
 cosign verify ghcr.io/abuubkar/ledgerline-api:main \
