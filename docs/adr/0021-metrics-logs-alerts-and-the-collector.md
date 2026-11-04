@@ -3,6 +3,10 @@ status: accepted
 date: 2026-11-01
 ---
 
+> **Update, 2026-11-04:** the release compose file now runs the observability stack and telemetry by default
+> ([ADR 0024](0024-release-compose-runs-everything.md)); in development it is still behind the profile and `TRACING=1`.
+> The dashboard opens on the last 30 minutes, with sparklines and Last / Max legends.
+
 # Metrics, logs and alerts through one OpenTelemetry Collector
 
 Every service sends traces, metrics and logs over OTLP to an OpenTelemetry Collector. It tail-samples the traces into

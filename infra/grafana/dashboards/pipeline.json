@@ -6,9 +6,9 @@
   ],
   "timezone": "browser",
   "schemaVersion": 41,
-  "refresh": "30s",
+  "refresh": "10s",
   "time": {
-    "from": "now-3h",
+    "from": "now-30m",
     "to": "now"
   },
   "panels": [
@@ -69,7 +69,7 @@
           ]
         },
         "colorMode": "background",
-        "graphMode": "none"
+        "graphMode": "area"
       },
       "targets": [
         {
@@ -79,7 +79,7 @@
           },
           "expr": "1 - ledgerline:invoice_slow_ratio:rate1h",
           "refId": "A",
-          "instant": true
+          "range": true
         }
       ]
     },
@@ -136,7 +136,7 @@
           ]
         },
         "colorMode": "background",
-        "graphMode": "none"
+        "graphMode": "area"
       },
       "targets": [
         {
@@ -146,7 +146,7 @@
           },
           "expr": "max(last_over_time(ledgerline_ollama_up[1m]))",
           "refId": "A",
-          "instant": true
+          "range": true
         }
       ]
     },
@@ -196,7 +196,7 @@
           ]
         },
         "colorMode": "background",
-        "graphMode": "none"
+        "graphMode": "area"
       },
       "targets": [
         {
@@ -206,7 +206,7 @@
           },
           "expr": "sum(increase(ledgerline_dead_letters_total[15m])) or vector(0)",
           "refId": "A",
-          "instant": true
+          "range": true
         }
       ]
     },
@@ -252,7 +252,7 @@
           ]
         },
         "colorMode": "background",
-        "graphMode": "none"
+        "graphMode": "area"
       },
       "targets": [
         {
@@ -262,7 +262,7 @@
           },
           "expr": "sum(increase(ledgerline_backpressure_rejections_total[15m])) or vector(0)",
           "refId": "A",
-          "instant": true
+          "range": true
         }
       ]
     },
@@ -287,7 +287,7 @@
         "uid": "prometheus"
       },
       "gridPos": {
-        "h": 8,
+        "h": 9,
         "w": 12,
         "x": 0,
         "y": 6
@@ -297,15 +297,21 @@
           "unit": "short",
           "custom": {
             "lineWidth": 2,
-            "fillOpacity": 10
+            "fillOpacity": 10,
+            "showPoints": "always",
+            "pointSize": 4
           }
         },
         "overrides": []
       },
       "options": {
         "legend": {
-          "displayMode": "list",
-          "placement": "bottom"
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull",
+            "max"
+          ]
         },
         "tooltip": {
           "mode": "multi"
@@ -333,7 +339,7 @@
         "uid": "prometheus"
       },
       "gridPos": {
-        "h": 8,
+        "h": 9,
         "w": 12,
         "x": 12,
         "y": 6
@@ -344,6 +350,8 @@
           "custom": {
             "lineWidth": 2,
             "fillOpacity": 10,
+            "showPoints": "always",
+            "pointSize": 4,
             "thresholdsStyle": {
               "mode": "line"
             }
@@ -366,8 +374,12 @@
       },
       "options": {
         "legend": {
-          "displayMode": "list",
-          "placement": "bottom"
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull",
+            "max"
+          ]
         },
         "tooltip": {
           "mode": "multi"
@@ -404,7 +416,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 14
+        "y": 15
       },
       "panels": []
     },
@@ -417,10 +429,10 @@
         "uid": "prometheus"
       },
       "gridPos": {
-        "h": 8,
+        "h": 9,
         "w": 12,
         "x": 0,
-        "y": 15
+        "y": 16
       },
       "fieldConfig": {
         "defaults": {
@@ -428,6 +440,8 @@
           "custom": {
             "lineWidth": 2,
             "fillOpacity": 10,
+            "showPoints": "always",
+            "pointSize": 4,
             "thresholdsStyle": {
               "mode": "line"
             }
@@ -450,8 +464,12 @@
       },
       "options": {
         "legend": {
-          "displayMode": "list",
-          "placement": "bottom"
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull",
+            "max"
+          ]
         },
         "tooltip": {
           "mode": "multi"
@@ -489,25 +507,31 @@
         "uid": "prometheus"
       },
       "gridPos": {
-        "h": 8,
+        "h": 9,
         "w": 12,
         "x": 12,
-        "y": 15
+        "y": 16
       },
       "fieldConfig": {
         "defaults": {
           "unit": "short",
           "custom": {
             "lineWidth": 2,
-            "fillOpacity": 10
+            "fillOpacity": 10,
+            "showPoints": "always",
+            "pointSize": 4
           }
         },
         "overrides": []
       },
       "options": {
         "legend": {
-          "displayMode": "list",
-          "placement": "bottom"
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull",
+            "max"
+          ]
         },
         "tooltip": {
           "mode": "multi"
@@ -535,25 +559,31 @@
         "uid": "prometheus"
       },
       "gridPos": {
-        "h": 8,
+        "h": 9,
         "w": 8,
         "x": 0,
-        "y": 23
+        "y": 25
       },
       "fieldConfig": {
         "defaults": {
           "unit": "short",
           "custom": {
             "lineWidth": 2,
-            "fillOpacity": 10
+            "fillOpacity": 10,
+            "showPoints": "always",
+            "pointSize": 4
           }
         },
         "overrides": []
       },
       "options": {
         "legend": {
-          "displayMode": "list",
-          "placement": "bottom"
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull",
+            "max"
+          ]
         },
         "tooltip": {
           "mode": "multi"
@@ -581,25 +611,31 @@
         "uid": "prometheus"
       },
       "gridPos": {
-        "h": 8,
+        "h": 9,
         "w": 8,
         "x": 8,
-        "y": 23
+        "y": 25
       },
       "fieldConfig": {
         "defaults": {
           "unit": "s",
           "custom": {
             "lineWidth": 2,
-            "fillOpacity": 10
+            "fillOpacity": 10,
+            "showPoints": "always",
+            "pointSize": 4
           }
         },
         "overrides": []
       },
       "options": {
         "legend": {
-          "displayMode": "list",
-          "placement": "bottom"
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull",
+            "max"
+          ]
         },
         "tooltip": {
           "mode": "multi"
@@ -637,25 +673,31 @@
         "uid": "prometheus"
       },
       "gridPos": {
-        "h": 8,
+        "h": 9,
         "w": 8,
         "x": 16,
-        "y": 23
+        "y": 25
       },
       "fieldConfig": {
         "defaults": {
           "unit": "s",
           "custom": {
             "lineWidth": 2,
-            "fillOpacity": 10
+            "fillOpacity": 10,
+            "showPoints": "always",
+            "pointSize": 4
           }
         },
         "overrides": []
       },
       "options": {
         "legend": {
-          "displayMode": "list",
-          "placement": "bottom"
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull",
+            "max"
+          ]
         },
         "tooltip": {
           "mode": "multi"
@@ -682,7 +724,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 31
+        "y": 34
       },
       "panels": []
     },
@@ -695,25 +737,31 @@
         "uid": "prometheus"
       },
       "gridPos": {
-        "h": 8,
+        "h": 9,
         "w": 12,
         "x": 0,
-        "y": 32
+        "y": 35
       },
       "fieldConfig": {
         "defaults": {
           "unit": "short",
           "custom": {
             "lineWidth": 2,
-            "fillOpacity": 10
+            "fillOpacity": 10,
+            "showPoints": "always",
+            "pointSize": 4
           }
         },
         "overrides": []
       },
       "options": {
         "legend": {
-          "displayMode": "list",
-          "placement": "bottom"
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull",
+            "max"
+          ]
         },
         "tooltip": {
           "mode": "multi"
@@ -751,25 +799,31 @@
         "uid": "prometheus"
       },
       "gridPos": {
-        "h": 8,
+        "h": 9,
         "w": 12,
         "x": 12,
-        "y": 32
+        "y": 35
       },
       "fieldConfig": {
         "defaults": {
           "unit": "short",
           "custom": {
             "lineWidth": 2,
-            "fillOpacity": 10
+            "fillOpacity": 10,
+            "showPoints": "always",
+            "pointSize": 4
           }
         },
         "overrides": []
       },
       "options": {
         "legend": {
-          "displayMode": "list",
-          "placement": "bottom"
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull",
+            "max"
+          ]
         },
         "tooltip": {
           "mode": "multi"
@@ -796,7 +850,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 40
+        "y": 44
       },
       "panels": []
     },
@@ -811,7 +865,7 @@
         "h": 10,
         "w": 24,
         "x": 0,
-        "y": 41
+        "y": 45
       },
       "options": {
         "showTime": true,
@@ -832,5 +886,19 @@
     }
   ],
   "editable": true,
+  "links": [
+    {
+      "title": "SLO",
+      "type": "link",
+      "url": "https://github.com/Abuubkar/ledgerline/blob/main/docs/slo.md",
+      "targetBlank": true
+    },
+    {
+      "title": "Alert runbooks",
+      "type": "link",
+      "url": "https://github.com/Abuubkar/ledgerline/blob/main/docs/runbooks/",
+      "targetBlank": true
+    }
+  ],
   "description": "Invoices from upload to a terminal status: the SLO, extraction and model speed, queues and failures (ADR 0021)."
 }

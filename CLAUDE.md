@@ -28,7 +28,7 @@ make contract-check   # oasdiff: code vs contracts/openapi.yaml
 make lint             # ruff, mypy, tsc, eslint: the CI lint job (actionlint aside)
 make migrations-lint  # squawk on the SQL of migrations added since origin/main
 TRACING=1 docker compose --profile observability up -d --wait     # plus collector, Jaeger :16686, Prometheus :9090, Grafana :3001
-docker compose -f docker-compose.yml -f docker-compose.release.yml up -d --wait   # the published images instead of local builds
+docker compose -f docker-compose.yml -f docker-compose.release.yml up -d --wait   # the published images, migrated, with observability (ADR 0024)
 uv run python scripts/make_dashboard.py                            # regenerate the Grafana dashboard (never edit its JSON)
 OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318 uv run uvicorn ledgerline_api.main:app --port 8000   # traced API
 uv run python scripts/trace_tree.py [--invoice <id>]               # print an invoice's trace from Jaeger

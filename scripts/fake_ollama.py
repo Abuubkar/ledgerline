@@ -5,20 +5,24 @@ so its answers are consistent, and it fails a configurable share of calls with H
 model server. Not a model: never use it to judge extraction quality.
 
 Run: FAIL_RATE=0.15 uv run uvicorn scripts.fake_ollama:app --port 11435
+With TOKENS_PER_S set, each answer takes as long as writing its tokens at that speed, and says so in Ollama's
+duration fields, so dashboards show plausible model times (screenshots, demos). Without it, calls take 0 to
+2 × LATENCY_S and report 1 ns.
 """
 
+import asyncio
 import json
 import os
 import random
 import re
 import threading
-import time
 
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
 FAIL_RATE = float(os.environ.get("FAIL_RATE", "0.15"))
 LATENCY_S = float(os.environ.get("LATENCY_S", "0.2"))
+TOKENS_PER_S = float(os.environ.get("TOKENS_PER_S", "0"))
 
 app = FastAPI(title="fake-ollama")
 _lock = threading.Lock()
@@ -75,10 +79,16 @@ def read_header(text: str) -> dict:
     return fields | {"field_confidence": {name: 0.99 for name in fields}}
 
 
+@app.get("/api/version")
+async def version():
+    return {"version": "fake"}
+
+
 @app.post("/api/chat")
 async def chat(request: Request):
     body = await request.json()
-    time.sleep(random.uniform(0, 2 * LATENCY_S))
+    if not TOKENS_PER_S:
+        await asyncio.sleep(random.uniform(0, 2 * LATENCY_S))
     with _lock:
         stats["calls"] += 1
         fail = random.random() < FAIL_RATE
@@ -94,14 +104,21 @@ async def chat(request: Request):
     else:
         fields["line_items"] = read_lines(prompt)
     content = json.dumps(fields)
+    prompt_tokens, output_tokens = sum(len(m["content"]) for m in body["messages"]) // 3, len(content) // 4
+    eval_ns = prompt_ns = 1
+    if TOKENS_PER_S:
+        speed = TOKENS_PER_S * random.uniform(0.8, 1.2)
+        eval_s, prompt_s = output_tokens / speed, prompt_tokens / (speed * 20)
+        await asyncio.sleep(eval_s + prompt_s)
+        eval_ns, prompt_ns = int(eval_s * 1e9), int(prompt_s * 1e9)
     return {
         "model": body["model"], "created_at": "2026-10-30T00:00:00Z",
         "message": {"role": "assistant", "content": content},
         "done": True, "done_reason": "stop",
-        "total_duration": 1, "load_duration": 0,
+        "total_duration": eval_ns + prompt_ns, "load_duration": 0,
         # ~3 characters per token over the whole prompt, as gemma4 measures for page prompts.
-        "prompt_eval_count": sum(len(m["content"]) for m in body["messages"]) // 3, "prompt_eval_duration": 1,
-        "eval_count": len(content) // 4, "eval_duration": 1,
+        "prompt_eval_count": prompt_tokens, "prompt_eval_duration": prompt_ns,
+        "eval_count": output_tokens, "eval_duration": eval_ns,
     }
 
 

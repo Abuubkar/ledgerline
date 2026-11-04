@@ -6,7 +6,7 @@
     "agent_prompt": "agent/1",
     "split": "dev",
     "mode": "replayed",
-    "date": "2026-11-01",
+    "date": "2026-11-04",
     "extraction_cases": 8,
     "agent_cases": 0,
     "concurrency": 1,

@@ -5,12 +5,12 @@
     "extraction_prompt": "extract-page/4+repair-totals/4",
     "agent_prompt": "agent/1",
     "split": "test",
-    "mode": "live",
-    "date": "2026-11-01",
+    "mode": "replayed",
+    "date": "2026-11-04",
     "extraction_cases": 4,
     "agent_cases": 0,
     "concurrency": 1,
-    "recorded": 5,
+    "recorded": 0,
     "replayed": 0
   },
   "metrics": {
@@ -40,6 +40,11 @@
     "calibration_error": 0.02631578947368421,
     "calibration_n": 38,
     "status_accuracy": 0.75,
+    "statuses": {
+      "exception": 1,
+      "extracted": 3
+    },
+    "non_invoices": [],
     "extraction_p50_s": 43.569117917,
     "extraction_p95_s": 98.62870575,
     "page_p50_s": 43.569117917,
