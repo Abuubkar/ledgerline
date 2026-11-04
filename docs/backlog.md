@@ -31,6 +31,8 @@ archived first.
   five real scans are printed sideways.
 - **Fix:** detect page orientation before reading (e.g. compare text-line angles, or try both and keep the better
   answer); give image pages a longer budget.
+- **Also:** the extraction task's hard limit is 300 s (ADR 0009); a multi-page real invoice at these page times
+  could reach it through the queue.
 - **Found:** real-invoice eval, 2026-11-01.
 
 ### Japan's registration number isn't read as the vendor's tax ID (qwen3.5 only)
@@ -99,3 +101,12 @@ archived first.
 - **Fix:** add Alertmanager to the observability profile with a route per severity (`page`, `ticket`) to a channel
   (email, Slack, a webhook); Prometheus's `alerting:` block points at it.
 - **Why it waits:** there's no on-call channel for a local portfolio stack. Found: slice 8b, 2026-11-01.
+
+## Housekeeping
+
+### Purge old idempotency keys
+
+- **What:** upload idempotency keys are kept forever (ADR 0005); nothing deletes them.
+- **Fix:** a Celery beat task that deletes keys older than the replay window (e.g. 24 h), in batches.
+- **Why it waits:** a few rows per upload; harmless at this scale. **Found:** ADR audit, 2026-11-04.
+

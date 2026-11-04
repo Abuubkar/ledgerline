@@ -5,6 +5,11 @@ date: 2026-10-30
 
 # Local LLM: gemma4:12b through Ollama, run natively on the host
 
+> **Update, 2026-11-04:** The exception agent (ADR 0013) and scanned pages both run on gemma4:12b. The slice 6 eval
+> since measured it: every gate passed (100% header fields, 99.3% line items, 15/15 agent actions on dev; 99.5%,
+> 97.1% and 10/10 held out). The newer small model was tested too: qwen3.5:9b-q4_K_M in the model sweep (ADR 0017,
+> evals/SWEEP.md). gemma4:12b stays the default.
+
 Invoice extraction (and later the exception agent and scanned pages) uses `gemma4:12b` served by Ollama on
 the developer's Mac, called through the official `ollama` Python client with a JSON schema in `format`,
 `think: false`, `temperature: 0` and an explicit `num_ctx`. It's free, already installed, current

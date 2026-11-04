@@ -5,6 +5,10 @@ date: 2026-11-01
 
 # CI: every pull request runs lint, contracts, tests, migration lint and the offline eval
 
+> **Update, 2026-11-04:** Slice 7b added an eighth job, `images`, which builds every release image for amd64 on each
+> PR without pushing it; branch protection requires it with the other seven (11 checks counting its four services).
+> mypy also covers `packages/telemetry/src`.
+
 `.github/workflows/ci.yml` runs on every pull request and every push to `main`. A PR merges only when all of it
 passes (branch protection on `main`). Images, signing and releases are slice 7b.
 

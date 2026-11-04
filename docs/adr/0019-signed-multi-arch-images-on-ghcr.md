@@ -7,6 +7,8 @@ date: 2026-11-01
 
 > **2026-11-04:** the images are now `ghcr.io/abuubkar/ledgerline-<service>`; the `ledgerline/<service>` names below
 > are retired ([ADR 0023](0023-image-names-ledgerline-prefix.md)). Everything else here still holds.
+> Since then: the api image is 116 MB (OpenTelemetry added), web still 93 MB; slice 8 added
+> `docker-compose.release.yml`, which runs the published images (nothing deploys them to a server).
 
 Every push to `main` and every `v*` tag runs `.github/workflows/release.yml`. For each service (api, worker, erp-mock,
 web) it builds a `linux/amd64` + `linux/arm64` image and pushes it to `ghcr.io/abuubkar/ledgerline/<service>`,
@@ -32,7 +34,7 @@ job renders every migration as SQL and keeps it as a run artifact; nothing appli
   release workflow on `main` or a tag:
 
   ```bash
-  cosign verify ghcr.io/abuubkar/ledgerline/api:main \
+  cosign verify ghcr.io/abuubkar/ledgerline-api:main \
     --certificate-identity-regexp '^https://github.com/Abuubkar/ledgerline/\.github/workflows/release\.yml@refs/(heads/main|tags/v.+)$' \
     --certificate-oidc-issuer https://token.actions.githubusercontent.com
   ```

@@ -5,6 +5,11 @@ date: 2026-10-30
 
 # Runtime baseline: Python 3.13 via uv, official Postgres 18 image, uv workspace from day one
 
+> **Update, 2026-11-04:** Postgres is mapped to host port **5434**, not 5432 (5432 and 5433 belong to other local
+> projects); it has been since the first commit. The workspace has four members (`apps/api`, `apps/erp_mock`,
+> `packages/clients/python`, `packages/telemetry`); the worker lives in `apps/api` as `ledgerline_api.worker`, not
+> in `apps/worker`.
+
 - **Python 3.13** (uv-managed, pinned in `.python-version`). SQLAlchemy 2.1 needs ≥ 3.11 and pydantic-settings
   ≥ 3.11. 3.14 is installed too, but 3.13 is the safer bet for compiled wheels (asyncpg) across all the
   packages coming in later slices. The original plan said 3.12.

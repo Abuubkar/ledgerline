@@ -5,6 +5,11 @@ date: 2026-11-01
 
 # Evals: a generated golden set, gates, and recorded model answers
 
+> **Update, 2026-11-04:** Two more sets now sit beside the golden set (ADR 0022): 12 generated scans and 25 real FCC
+> documents whose gold labels were transcribed by hand and are committed. `evals/run.py --set scans|real` runs them;
+> they're measured, not gated. The labelling worry held, and was handled: two independent transcriptions, each
+> checked against the printed totals.
+
 Whether a prompt or model change helps has to be answered with numbers, not by eyeballing a few invoices.
 `evals/run.py` scores extraction and the exception agent on a fixed golden set and fails when a gate is missed.
 

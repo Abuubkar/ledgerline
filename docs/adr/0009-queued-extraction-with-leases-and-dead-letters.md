@@ -5,6 +5,9 @@ date: 2026-10-30
 
 # Extraction runs on Celery + RabbitMQ quorum queues, with leases, an outbox, and dead letters
 
+> **Update, 2026-11-04:** The extraction task's hard time limit is still 300 s. ADR 0022 measured dense real pages
+> at 80–147 s of model time each, so a multi-page real invoice could approach it; noted in docs/backlog.md.
+
 Uploads store the PDF, insert the invoice and an outbox row in one transaction, and return 202. An outbox
 relay publishes the job to the `invoices.extract` quorum queue; Celery workers extract it. Failures are split
 into transient (retried with exponential backoff and full jitter, max 5) and permanent (corrupt PDF, unusable
