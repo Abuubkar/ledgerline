@@ -19,8 +19,9 @@ belongs to.
 - **The old names stop on 2026-12-04** (docs/backlog.md has the exact change). Their packages stay in GHCR, so
   anything pinned to an old digest keeps working; deleting them is the owner's decision.
 - **Flat names, not `ledgerline/ledgerline-api`:** the nested form would repeat the project's name.
-- **New packages start private:** after the first release under the new names, each is made public in GHCR's
-  package settings (no API for it), as the old ones were.
+- **Visibility:** expected to start private, as the old packages did; in the first release (2026-11-04) the four new
+  packages came out public, linked to the public repository, and `cosign verify` worked on them without logging in.
+  Both names carried the same digests.
 
 ## Alternatives considered
 
