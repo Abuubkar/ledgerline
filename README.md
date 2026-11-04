@@ -72,10 +72,12 @@ Open http://localhost:3000, upload a PDF from `samples/`, and watch it go from `
 about half a minute. To see traces, metrics and the dashboard as well, add `--profile observability` to the last
 command and set `TRACING=1`: Grafana on http://localhost:3001, Jaeger on http://localhost:16686.
 
-Check what you're running first (keyless signature from this repository's release workflow):
+Check what you're running first (keyless signature from this repository's release workflow). The images were
+renamed on 2026-11-04 from `ghcr.io/abuubkar/ledgerline/<service>`; the old names get the same signed builds until
+2026-12-04 ([ADR 0023](docs/adr/0023-image-names-ledgerline-prefix.md)).
 
 ```bash
-cosign verify ghcr.io/abuubkar/ledgerline/api:main \
+cosign verify ghcr.io/abuubkar/ledgerline-api:main \
   --certificate-identity-regexp '^https://github.com/Abuubkar/ledgerline/\.github/workflows/release\.yml@refs/(heads/main|tags/v.+)$' \
   --certificate-oidc-issuer https://token.actions.githubusercontent.com
 ```
@@ -284,7 +286,7 @@ docs/                     ADRs, metrics history, SLO, runbooks, challenges, back
 
 | | |
 |---|---|
-| [docs/adr/](docs/adr/) | 22 decisions: what was chosen, why, and the alternatives |
+| [docs/adr/](docs/adr/) | 23 decisions: what was chosen, why, and the alternatives |
 | [docs/metrics.md](docs/metrics.md) | every measurement, slice by slice, with the latest per model at the top |
 | [docs/challenges.md](docs/challenges.md) | what went wrong, what we did, why, and what else we could have done |
 | [docs/backlog.md](docs/backlog.md) | improvements found and deliberately parked, with their cost |
