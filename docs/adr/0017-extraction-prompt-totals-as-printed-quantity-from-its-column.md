@@ -5,6 +5,9 @@ date: 2026-11-01
 
 # Extraction prompt: totals only as printed, quantity from its own column
 
+> **Update, 2026-11-04:** The held-out test split has since run on this prompt (slice 6d): gemma4:12b scored 99.5%
+> on header fields, 97.1% on line items and 10/10 agent actions; every gate passed.
+
 `extract-page/4` (and `repair-totals/4`, which shares the field rules) adds two rules:
 
 - subtotal, tax and total: only the invoice's own figures, where they are printed. If they aren't printed, null.

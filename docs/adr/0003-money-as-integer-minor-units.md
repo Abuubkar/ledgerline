@@ -5,6 +5,11 @@ date: 2026-10-30
 
 # Money is integer minor units plus an ISO currency; the model returns printed strings and code converts
 
+> **Update, 2026-11-04:** Since ADR 0016 the extraction schema accepts amounts as strings or numbers; a bare number
+> is parsed as `Decimal` (never a float) and kept as its digits. The rule itself is unchanged: no floats, no
+> rounding. The European-format question is answered: the golden set's German layout ("1.234,56") is read correctly
+> (ADR 0015).
+
 Every amount is stored and passed around as `BIGINT` minor units (cents, pence, yen) with a 3-letter
 currency. The model is asked to copy amounts as plain decimal strings ("1933.94"); `money.to_minor` converts
 them using the currency's exponent and **rejects** any amount that would need rounding ("10.005" EUR) instead

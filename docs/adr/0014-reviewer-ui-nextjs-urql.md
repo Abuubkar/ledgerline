@@ -5,6 +5,10 @@ date: 2026-11-01
 
 # The reviewer UI: Next.js App Router, urql, generated GraphQL types, plain CSS
 
+> **Update, 2026-11-04:** Phone and tablet layouts were added on 2026-11-01: below 960 px the side panel stacks
+> under the case; below 640 px the rail becomes a bottom tab bar, tables scroll inside their own box, and keyboard
+> hints are hidden on touch screens (docs/challenges.md).
+
 A person decides what the agent proposes (ADR 0013), so the UI is the "case file" design picked from three
 prototypes: one invoice at a time, the evidence next to the recommendation, keyboard-first (⌘K, J/K, A/R).
 `apps/web` builds it.

@@ -5,6 +5,9 @@ date: 2026-10-30
 
 # Uploads are idempotent via Idempotency-Key, following the IETF draft
 
+> **Update, 2026-11-04:** Workers and Celery beat exist since slices 3a and 4b, but nothing purges old idempotency
+> keys yet; that's parked in docs/backlog.md.
+
 `POST /v1/invoices` requires an `Idempotency-Key` UUID and behaves as
 draft-ietf-httpapi-idempotency-key-header-08 (22 Oct 2026) describes: missing key → 400, same key with a
 different request → **422**, same key while the first request is still running → 409, and a finished request

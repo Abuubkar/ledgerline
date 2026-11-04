@@ -33,5 +33,6 @@ belongs to.
 
 The owner decided not to wait the month: the old names are no longer published (release.yml pushes and signs only
 `ledgerline-<service>`), and the owner is deleting the old `ledgerline/<service>` packages in GHCR. Anyone still
-pulling `ghcr.io/abuubkar/ledgerline/<service>` gets "not found" and should switch to the new names.
+pulling `ghcr.io/abuubkar/ledgerline/<service>` gets an error (GHCR answers 403 for a package that no longer
+exists) and should switch to the new names.
 

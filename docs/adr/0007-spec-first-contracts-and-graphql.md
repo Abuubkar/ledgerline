@@ -5,6 +5,9 @@ date: 2026-10-30
 
 # The OpenAPI file is the contract; the app is checked against it, and GraphQL reuses the REST services
 
+> **Update, 2026-11-04:** The GraphQL decision mutations shipped in slice 5a, and since slice 7a CI checks the
+> GraphQL schema against the base branch with graphql-inspector (ADR 0018).
+
 `contracts/openapi.yaml` is written by hand and is the source of truth. `make codegen` generates the typed
 Python client from it (openapi-python-client 0.29.1); `make contract-check` dumps the FastAPI app's emitted
 OpenAPI and runs `oasdiff breaking --fail-on ERR` (v1.35.0, Docker) between the two, failing if the code would

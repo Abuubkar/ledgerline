@@ -5,6 +5,9 @@ date: 2026-11-01
 
 # The exception agent proposes; a person decides
 
+> **Update, 2026-11-04:** Measured in slice 6: gemma4:12b chose the right action in 15/15 dev scenarios and 10/10
+> held out; qwen3.5:9b 14/15 and qwen2.5:7b 10/15 (evals/SWEEP.md). The gate is ≥ 85%.
+
 An invoice in `exception` needs someone to look at the PO, the receipts and the vendor's history and decide
 what to do. The agent does the looking: `gemma4:12b` with Ollama tool calling (the model asks for a function
 call, our code runs it and sends back the result) gathers evidence and proposes one action. A person approves

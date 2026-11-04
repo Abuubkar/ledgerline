@@ -5,6 +5,9 @@ date: 2026-10-31
 
 # Purchase orders come from a resumable ERP sync; invoices are 3-way matched against them
 
+> **Update, 2026-11-04:** The PO number is read by the current extraction prompt, `extract-page/4` (ADR 0017). The
+> agent shipped without a fuzzy PO suggestion; that remains a possible extension.
+
 An invoice should be paid only for what was ordered at the agreed price and actually delivered. That's the
 3-way match: invoice ↔ purchase order (PO) ↔ goods receipts. POs and receipts live in the company's ERP, so
 Ledgerline copies them in (`sync_erp`) and checks each extracted invoice against them (`match_invoice`).
